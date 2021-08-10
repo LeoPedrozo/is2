@@ -1,0 +1,28 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0em;
+}
+
+h1{
+    font-style: italic;
+    color: rgb(255, 255, 255);
+}
+
+
+.cover {
+    color: rgb(255, 255, 255);
+    height: 480px;
+    background-image: url("../img/bg_login.png");
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.397);
+    background-blend-mode: darken;
+}
+
+
+
+/* sombra para la tarjeta */
+.card{
+    border: 0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px lightslategray;
+}

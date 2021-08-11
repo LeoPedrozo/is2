@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fdadd772-63ad-4868-8466-a6ac847b4381" name="Default Changelist" comment="Nota de cambios&#10;-Creacion de SSO&#10;-Creacion de la pagina de inicio de sesion&#10;Problemas a solucionar: La imagen de fondo no carga" />
+    <list default="true" id="fdadd772-63ad-4868-8466-a6ac847b4381" name="Default Changelist" comment="Prueba de documentacion">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/img/bg_login.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/estilos/img/bg_login.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/img/billiard.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/estilos/img/billiard.png" afterDir="false" />
+    </list>
+    <list id="6c6e35c3-5b34-4b5b-829a-249fea272e31" name="Changes by josee" comment="">
+      <change beforePath="$PROJECT_DIR$/is2/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/is2/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/estilos/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/estilos/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+    </list>
+    <list id="f8cd46d9-394b-4760-ae05-e54bdc12a972" name="Changes by oscar" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,6 +64,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\luis1\PycharmProjects\is2\static\estilos" />
+      <recent name="C:\Users\luis1\PycharmProjects\is2\static" />
       <recent name="C:\Users\oscar\PycharmProjects\is2\templates\estilos" />
     </key>
   </component>
@@ -124,6 +137,8 @@
       <workItem from="1628630370183" duration="4489000" />
       <workItem from="1628635407119" duration="1537000" />
       <workItem from="1628636973998" duration="1112000" />
+      <workItem from="1628640073784" duration="1789000" />
+      <workItem from="1628646596489" duration="1150000" />
     </task>
     <task id="LOCAL-00001" summary="Creacion del entorno virtual para el proyecto">
       <created>1628436915541</created>

@@ -10,9 +10,12 @@ h1{
 
 
 .cover {
+    height: 600px;
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
     color: rgb(255, 255, 255);
-    height: 480px;
     background-image: url("img/bg_login.png");
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     background-color: rgba(0, 0, 0, 0.397);

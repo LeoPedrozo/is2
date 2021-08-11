@@ -12,7 +12,7 @@ h1{
 .cover {
     color: rgb(255, 255, 255);
     height: 480px;
-    background-image: url("../img/bg_login.png");
+    background-image: url("img/bg_login.png");
     background-size: cover;
     background-position: center;
     background-color: rgba(0, 0, 0, 0.397);

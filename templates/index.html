@@ -1,4 +1,5 @@
 {% load socialaccount %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -16,7 +17,10 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 
     <!-- importar el estilo a la pagina web-->
-    <link rel="stylesheet" href="estilos/style.css"/>
+    <link rel="stylesheet" href="{% static '/estilos/style.css' %}"/>
+
+
+
 </head>
 
 <!-- Aqui va el codigo de la pagina -->

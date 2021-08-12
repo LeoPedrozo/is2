@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'gestionUsuario',
 ]
 
 MIDDLEWARE = [
@@ -82,8 +83,12 @@ WSGI_APPLICATION = 'is2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'is2_g8_db',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'DATABASE_PORT': '5432',
     }
 }
 
@@ -150,7 +155,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 
-SITE_ID = 3
+#SITE_ID = 3
+SITE_ID = 4
 
 #Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = '/'

@@ -159,7 +159,7 @@ SOCIALACCOUNT_PROVIDERS = {
 SITE_ID = 4
 
 #Si el loggeo es exitoso dirigirse a:
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'inicio/'
 
 #Si se deslogea exitosamente dirigir a:
 LOGOUT_REDIRECT_URL = '/'

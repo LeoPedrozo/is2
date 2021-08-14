@@ -1,0 +1,129 @@
+{% extends "inicioPadre.html" %}
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<!-- nombre de la pestanha e informaciones de la pagina -->
+
+
+<head>
+
+    {% block title %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    {% endblock %}
+
+</head>
+
+<!-- Aqui va el codigo de la pagina -->
+
+<body>
+    {% block content %}
+    <div class="container section">
+        <!-- Menu desplegable del programa -->
+        <a href="#" class="sidenav-trigger" data-target="menu-side">
+            <i class="material-icons">menu</i>
+        </a>
+
+        <ul class="sidenav" id="menu-side">
+            <!--perfil-->         
+            <li>
+                <div class="user-view">
+                    <div class="background">
+                        <!-- Fondo azul-->
+                        <img src="https://images.unsplash.com/photo-1563518839049-f44a5e423f12?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=375&q=80" alt="">
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="#">
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" class="circle">
+                    </a>
+                    <a href="">
+                        <span class="name white-text">{{ user.username }} </span>
+                    </a>
+                    <a href="">
+                        <span class="email white-text">{{ user.email }}</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </li>
+            <!--menu-->
+            <!--primer elemento-->
+            <li>
+                <a href="">
+                    <i class="material-icons">assignment</i>
+                    User Stories
+                </a>
+
+
+
+            </li>
+
+            <li>
+                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
+                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown1'>
+                    <i class="material-icons">expand_more</i>
+                    ver historias
+                </a>
+                
+                <!-- Dropdown Structure -->
+                <!-- Tabla que va a desplegar el contenido-->
+                <ul id='dropdown1' class='dropdown-content'>
+                    <!-- Listado sin iconos -->
+                    <!-- <li><a href="#!">one</a></li> --> 
+
+                    <!--divisor-->
+                    <!-- <li class="divider" tabindex="-1"></li>  --> 
+                    <!-- El menu despliega este contenido-->
+                    <li><a href="#"><i class="material-icons">event_note</i>Hist 1</a></li>
+                    <li><a href="#"><i class="material-icons">event_note</i>Hist 2</a></li>
+                    <li><a href="#"><i class="material-icons">event_note</i>Hist 3</a></li>
+                    <li><a href="#"><i class="material-icons">event_note</i>Hist 4</a></li>
+                </ul>
+            </li>
+            
+            <!--Divisor-->
+            <div class="divider"></div>
+
+            <!--Segundo elemento-->
+            <li>
+                <a href="">
+                    <i class="material-icons">assessment</i>
+                    Burndown chart
+                </a>
+            </li>
+            
+            <!--primer elemento-->
+            <li>
+                <a href="">
+                    <i class="material-icons">access_time</i>
+                    Sprint
+                </a>
+            </li>
+        </ul>
+    </div>
+
+
+
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            //Barra lateral
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+            //Dropdown menu
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = M.Dropdown.init(elems);
+        });
+
+    </script>
+{% endblock %}
+</body>
+
+</html>

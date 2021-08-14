@@ -6,7 +6,7 @@ import datetime
 
 
 
-
+""" Registra los datos del usuario logeado en el sistema """
 class UsuarioLogeo(models.Model):
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)

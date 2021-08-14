@@ -15,18 +15,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from is2.views import saludo
+from is2.views import inicio,saludo,documentaciones
 
 #Librerias importadas del autenticador
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 
-urlpatterns = [
+urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('bienvenida/',saludo), # Menu principal
+    path('bienvenida/',saludo), # hola mundo
+    path('documentacion/',documentaciones),
+    
+    path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
+    path('accounts/google/login/callback/inicio/logout',LogoutView.as_view())
 ]

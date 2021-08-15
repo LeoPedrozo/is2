@@ -4,12 +4,12 @@ from django.db import models
 from django.template import  Template,Context
 from django.shortcuts import render
 
-
+#Hola mundo para probar django
 def saludo(request):
-    return render(request,"menuprincipal.html",{"nombre":"Leo"})
+    return render(request, "holaMundo.html", {"nombre": "Jose"})
 
 def inicio(request):
-    return render(request, "navbar.html", {})
+    return render(request, "sidenav.html", {})
 
 def documentaciones(request):
     return render(request,"html/index.html",{})

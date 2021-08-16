@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+#Las aplicaciones con las que interactua el sistema
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'gestionUsuario',
 ]
 
 MIDDLEWARE = [
@@ -51,12 +52,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'is2.urls'
-
+#Los templates son el codigo en html
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -79,11 +81,16 @@ WSGI_APPLICATION = 'is2.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+# Aca se define para hacer la conexion con postgreSQL usando psycopg2,
+# Se conecta con el usuario postgres, cuya contrasenha es admin
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'is2_g8_db',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': '127.0.0.1',
+        'DATABASE_PORT': '5432',
     }
 }
 
@@ -123,7 +130,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+# Los archivos estaticos de css y JS y las imagenes
 STATIC_URL = '/static/'
 
 # Default primary key field type
@@ -135,7 +142,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
-
+#El servicio de autenticacio de google
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -149,11 +156,12 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-
-SITE_ID = 3
+#Configuraciones del sitio web
+#SITE_ID = 3
+SITE_ID = 4
 
 #Si el loggeo es exitoso dirigirse a:
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'inicio/'
 
 #Si se deslogea exitosamente dirigir a:
 LOGOUT_REDIRECT_URL = '/'

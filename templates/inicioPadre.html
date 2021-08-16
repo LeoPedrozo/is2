@@ -7,6 +7,7 @@
 
 
 <head>
+
     <title>Proyecto IS2</title>
     <meta charset="utf-8"/>
     <!-- Debe mostrarse en la version de edge -->
@@ -17,16 +18,15 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
 
     <!-- importar el estilo a la pagina web-->
-    <link rel="stylesheet" href="{% static '/estilos/style.css' %}"/>
-
-
+    <link rel="stylesheet" href="{% static '/estilos/inicio.css' %}"/>
+    {% block title%} {% endblock %}
 
 </head>
 
 <!-- Aqui va el codigo de la pagina -->
 
 <body>
-<header>
+
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -49,31 +49,31 @@
                     </li>
                 </ul>
                 <span class="navbar-text">
-                        Bienvenido al sistema de gestion de Proyectos agiles con tablero kanban del grupo 8
-                    </span>
+                    <span id='date-time'></span>
+                </span>
             </div>
         </div>
     </nav>
-    <div class="cover d-flex flex-column justify-content-center align-items-center">
+    <div class="cover d-flex flex-column justify-content-top align-items-center">
+        {% block content %}{% endblock %}
         <h1>
             Proyecto Scrum
         </h1>
 
-        <p>
+        <p style="font-size:30px;">
             Gestion de proyectos agiles
         </p>
+        <!-- Mensaje de inicio de sesion-->
         {% if user.is_authenticated %}
-            <p style="color:darkgrey;">Bienvenido al sistema<p>
-        {% else %}
-            <a href="{% provider_login_url 'google' %}">
-                <button type="button" class="btn btn-secondary">
-            Iniciar sesion
-        </button>
-            </a>
+            <p style="font-size:20px;color:darkgray">Has loggeado como {{ user.username }}</p>
         {% endif %}
     </div>
-</header>
 
+    <script>
+        var today = new Date();
+        var dt = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "\t-\t" + today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+        document.getElementById('date-time').innerHTML=dt;
+    </script>
 </body>
 
 </html>

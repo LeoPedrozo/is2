@@ -11,5 +11,7 @@ def saludo(request):
 def inicio(request):
     return render(request, "sidenav.html", {})
 
+#Para acceder directamente a los archivos guardados en el directorio docs
+#(Todavia no se ha implementado)
 def documentaciones(request):
     return render(request,"html/index.html",{})

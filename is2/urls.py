@@ -24,13 +24,13 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('bienvenida/',saludo), # hola mundo
-    path('documentacion/',documentaciones),
+    path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
+    path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
     
-    path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema
+    path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
-    path('', TemplateView.as_view(template_name="index.html")),
-    path('accounts/', include('allauth.urls')),
-    path('logout', LogoutView.as_view()),
-    path('accounts/google/login/callback/inicio/logout',LogoutView.as_view())
+    path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)
+    path('accounts/', include('allauth.urls')), #Pagina SSO de Google mediante OAuth2
+    path('logout', LogoutView.as_view()), #Funcion para deslogear del sistema
+    path('accounts/google/login/callback/inicio/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
 ]

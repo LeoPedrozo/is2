@@ -4,8 +4,8 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<!-- nombre de la pestanha e informaciones de la pagina -->
 
+<!-- nombre de la pestanha e informaciones de la pagina -->
 
 <head>
 
@@ -39,10 +39,12 @@
                     </div>
                     {% if user.is_authenticated %}
                     <a href="#">
+                    <!-- Foto de perfil en blanco-->
+                        <!--  [https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png]    -->
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="" class="circle">
                     </a>
                     <a href="">
-                        <span class="name white-text">{{ user.username }} </span>
+                        <span class="name white-text">{{ user.first_name }} {{ user.last_name }} </span>
                     </a>
                     <a href="">
                         <span class="email white-text">{{ user.email }}</span>

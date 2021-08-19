@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path,os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import gestionUsuario
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'gestionUsuario',
+    'proyectos',
+    'userStory',
 ]
 
 MIDDLEWARE = [
@@ -142,6 +146,9 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend'
 ]
+
+AUTH_USER_MODEL = 'gestionUsuario.User'
+
 #El servicio de autenticacio de google
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -157,8 +164,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 #Configuraciones del sitio web
-#SITE_ID = 3
-SITE_ID = 4
+#El numero de site id se guarda en la tabla django_site
+SITE_ID = 5
 
 #Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = 'inicio/'

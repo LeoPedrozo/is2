@@ -1,17 +1,23 @@
 from django.db import models
-import datetime
+from django.contrib.auth.models import AbstractUser
+from proyectos.models import Proyecto
 
-# Create your models here.
+class User(AbstractUser):
+    """ Usuario que tiene admitido realizar loggeo en el sistema """
+    cedula = models.CharField(max_length=10)
+
+
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
 
 
 
-
-""" Registra los datos del usuario logeado en el sistema """
-class UsuarioLogeo(models.Model):
-    nombre = models.CharField(max_length=30)
-    apellido = models.CharField(max_length=30)
-    correo = models.EmailField()
-    fecha = models.DateTimeField()
+# Equipos para evitar agregar individualmente los usuarios al proyecto
+class Equipo(models.Model):
+    nombre = models.CharField(max_length=50)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
+    users = models.ManyToManyField(User)
 
     def __str__(self):
-        return f"El usuario {self.nombre} {self.apellido} ha loggeado con el correo {self.correo} fecha:{self.fecha.day}/{self.fecha.month}/{self.fecha.year}-{self.fecha.hour}:{self.fecha.minute}:{self.fecha.second}"
+            return f"El equipo {self.nombre} esta asignado al proyecto {self.proyecto}"

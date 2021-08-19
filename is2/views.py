@@ -4,10 +4,12 @@ from django.db import models
 from django.template import  Template,Context
 from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount
+from django.contrib.auth.decorators import login_required
 
 
 
 #Hola mundo para probar django
+@login_required
 def saludo(request):
     return render(request, "holaMundo.html", {"nombre": "Jose"})
 

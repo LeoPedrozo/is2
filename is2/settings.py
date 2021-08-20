@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'gestionUsuario',
     'proyectos',
     'userStory',
+    'material',
 ]
 
 MIDDLEWARE = [

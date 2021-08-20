@@ -34,6 +34,8 @@ def gestionarPermisos(Modelos):
                         continue
                     #Si pudo asignar, el carga ese permiso al grupo
                     new_group.permissions.add(model_add_perm)
+    print("creado con exito")
+
 
 
 def agregarRol(user, grupo):

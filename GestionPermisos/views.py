@@ -9,11 +9,11 @@ from proyectos.models import Sprint, Proyecto
 
 
 
-Modelos = {
-    "Rol": "Scrum master",
-    "Historia": ["add", "delete"],
-    "Sprint" : ["change","view"]
-}
+#Modelos = {
+#    "Rol": "Scrum master",
+#    "Historia": ["add", "delete"],
+#    "Sprint" : ["change","view"]
+#}
 
 def gestionarPermisos(Modelos):
     # Crear el grupo
@@ -40,6 +40,3 @@ def agregarRol(user, grupo):
     #Agregar al usuario al grupo
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
-
-
-gestionarPermisos(Modelos)

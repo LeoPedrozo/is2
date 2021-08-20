@@ -13,6 +13,6 @@ class crearRolForm(forms.Form):
     Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
 
 
-class asignarRolForm(forms.Form):
-    nombreUsuario = forms.CharField(30)
+#class asignarRolForm(forms.Form):
+ #   nombreUsuario = forms.CharField(30)
     #roles = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,choices = )

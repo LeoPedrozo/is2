@@ -62,7 +62,7 @@
         <p>
             Gestion de proyectos agiles
         </p>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user %}
             <p style="color:darkgrey;">Bienvenido al sistema<p>
         {% else %}
             <a href="{% provider_login_url 'google' %}">

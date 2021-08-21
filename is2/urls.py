@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from is2.views import inicio,saludo,documentaciones
+from is2.views import inicio, saludo, documentaciones, crearRol, asignarRol
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -26,7 +26,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
     path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
-    
+
+    path('crearRol/',crearRol),
+    path('asignarRol/',asignarRol),
+
     path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)

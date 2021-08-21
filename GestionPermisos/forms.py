@@ -29,5 +29,5 @@ class asignarRolForm(forms.Form):
         (3,"Developer")
     ]
 
-    Usuario = forms.TypedChoiceField(label="Selecciona un usuario",choices=OPCIONES,coerce=int)
+    Usuario = forms.TypedChoiceField(label="Selecciona un usuario",choices=OPCIONES,coerce=int,widget=forms.Select)
     roles = forms.TypedChoiceField(label="Selecciona un rol",choices=Roles,coerce=int,widget=forms.RadioSelect)

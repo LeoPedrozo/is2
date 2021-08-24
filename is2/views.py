@@ -5,17 +5,23 @@ from django.template import  Template,Context
 from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
-
 from GestionPermisos.forms import crearRolForm, asignarRolForm
-from GestionPermisos.views import gestionarPermisos,agregarRol
+from GestionPermisos.views import gestionarPermisos,agregarRol, group_required
+from django.contrib.auth.decorators import user_passes_test
+
 #Hola mundo para probar django
 @login_required
 def saludo(request):
-    return render(request, "holaMundo.html", {"nombre": "Jose"})
+    return render(request, "rolCreado.html", {"nombre": "Jose"})
 
 def inicio(request):
-    fotodeususario= SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-    return render(request, "sidenav.html", {"avatar":fotodeususario})
+    if group_required(request.user.email,'registrado') == False:
+        return render(request, "registroRequerido.html", {"mail": request.user.email})
+    else:
+        print("el usuario pertenece al grupo de registrados")
+        fotodeususario= SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        return render(request, "sidenav.html", {"avatar":fotodeususario})
+
 
 #Para acceder directamente a los archivos guardados en el directorio docs
 #(Todavia no se ha implementado)
@@ -31,7 +37,7 @@ def crearRol(request):
             gestionarPermisos(datosRol)
 
             #Retornar mensaje de exito
-            return render(request,"holaMundo.html",{"configuracionDelRol":datosRol})
+            return render(request, "rolCreado.html", {"configuracionDelRol":datosRol})
     else:
         formulario = crearRolForm()
 

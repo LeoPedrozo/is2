@@ -45,13 +45,3 @@ def agregarRol(user, grupo):
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
 
-
-def group_required(mail,*group_names):
-    """Requiere que el usuario pertenezca a almenos un grupo de los de la lista"""
-    u = User.objects.filter(email__in=mail)
-    def in_groups(u):
-        if u.is_authenticated():
-            if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
-                return True
-        return False
-    return user_passes_test(in_groups, login_url='403')

@@ -7,7 +7,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
 
 from GestionPermisos.forms import crearRolForm, asignarRolForm
-from GestionPermisos.views import gestionarPermisos
+from GestionPermisos.views import gestionarPermisos,agregarRol
 #Hola mundo para probar django
 @login_required
 def saludo(request):
@@ -43,9 +43,12 @@ def asignarRol(request):
     if request.method == "POST":
         formulario = asignarRolForm(request.POST)
         if(formulario.is_valid()):
-            datosRol = formulario.cleaned_data
+            datosRol=formulario.cleaned_data
+            userdata = formulario.cleaned_data['Usuario']
+            rol = formulario.cleaned_data['Roles']
             #Acciones a realizar con el form
 
+            agregarRol(userdata,rol)
 
             #Retornar mensaje de exito
             return render(request,"outputAsignarRol.html",{"asignaciondeRol":datosRol})

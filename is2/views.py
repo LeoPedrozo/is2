@@ -6,7 +6,7 @@ from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm
-from GestionPermisos.views import gestionarPermisos,agregarRol, group_required
+from GestionPermisos.views import gestionarPermisos,agregarRol
 from django.contrib.auth.decorators import user_passes_test
 
 #Hola mundo para probar django
@@ -15,12 +15,12 @@ def saludo(request):
     return render(request, "rolCreado.html", {"nombre": "Jose"})
 
 def inicio(request):
-    if group_required(request.user.email,'registrado') == False:
-        return render(request, "registroRequerido.html", {"mail": request.user.email})
-    else:
+    if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
-        fotodeususario= SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-        return render(request, "sidenav.html", {"avatar":fotodeususario})
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        return render(request, "sidenav.html", {"avatar": fotodeususario})
+    else:
+        return render(request, "registroRequerido.html", {"mail": request.user.email})
 
 
 #Para acceder directamente a los archivos guardados en el directorio docs

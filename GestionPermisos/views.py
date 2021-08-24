@@ -2,9 +2,12 @@ from django.shortcuts import render
 from django.core.management import BaseCommand
 from django.contrib.auth.models import Group , Permission
 import logging
+from django.contrib.auth.decorators import user_passes_test
 # Modelos a los que se le aplicara los permisos
 from userStory.models import Historia
 from gestionUsuario.models import User,Equipo
+from django.http import HttpRequest
+
 from proyectos.models import Sprint, Proyecto
 
 
@@ -37,8 +40,18 @@ def gestionarPermisos(Modelos):
     print("creado con exito")
 
 
-
 def agregarRol(user, grupo):
     #Agregar al usuario al grupo
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
+
+
+def group_required(mail,*group_names):
+    """Requiere que el usuario pertenezca a almenos un grupo de los de la lista"""
+    u = User.objects.filter(email__in=mail)
+    def in_groups(u):
+        if u.is_authenticated():
+            if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
+                return True
+        return False
+    return user_passes_test(in_groups, login_url='403')

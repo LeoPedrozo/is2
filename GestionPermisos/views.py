@@ -19,7 +19,12 @@ from proyectos.models import Sprint, Proyecto
 #}
 
 def gestionarPermisos(Modelos):
-    # Crear el grupo
+    """Gestion de permisos por medio de creaciones de grupos por medio de modelos previamente definidos con sus respectivos
+    permisos, si el grupo es creado se imprime un mensaje de confirmacion sino se imprime un mensaje de error
+
+    :param Modelos: (dict) listado de modelos de usuarios con sus permisos correspondientes
+
+    :raises (str): Mensaje de error al asignar permisos a un grupo"""
     new_group, created = Group.objects.get_or_create(name=Modelos["Rol"])
     print("Creando el grupo "+Modelos["Rol"])
 
@@ -41,7 +46,11 @@ def gestionarPermisos(Modelos):
 
 
 def agregarRol(user, grupo):
-    #Agregar al usuario al grupo
+    """Agrega al usuarios a un grupo
+
+    :param user: usuario del sistema web
+    :param grupo: grupo con sus permisos correspondientes"""
+
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
 

@@ -3,9 +3,9 @@ from django.contrib.auth.models import AbstractUser
 from proyectos.models import Proyecto
 
 class User(AbstractUser):
-    """ Usuario que tiene admitido realizar loggeo en el sistema """
-    cedula = models.CharField(max_length=10)
+    """ Usuario que tiene admitido loggearse al sistema """
 
+    cedula = models.CharField(max_length=10)
 
     class Meta:
         verbose_name = 'Usuario'
@@ -15,6 +15,11 @@ class User(AbstractUser):
 
 # Equipos para evitar agregar individualmente los usuarios al proyecto
 class Equipo(models.Model):
+    """ Asignar equipos de trabajo a proyectos de manera a evitar agregarlos individualmente
+
+    :return: Mensaje de confirmacion
+    :rtype: (str)"""
+
     nombre = models.CharField(max_length=50)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
     users = models.ManyToManyField(User)

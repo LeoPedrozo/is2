@@ -1,6 +1,8 @@
 from django import forms
 
 class crearRolForm(forms.Form):
+    """Formulario de creacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'"""
+
     Rol = forms.CharField()
     OPTIONS = (
         ("add", "Agregar"),

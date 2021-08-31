@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-3b$c_clf1qh_=8^u*(h)(#ei6qg=#=3^!a_)izs!n9t=k#x8if
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+#Los host que van a poder funcionar con gunicorn
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -166,7 +166,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 #Configuraciones del sitio web
 #El numero de site id se guarda en la tabla django_site
-SITE_ID = 6
+SITE_ID = 7
 
 #Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = 'inicio/'

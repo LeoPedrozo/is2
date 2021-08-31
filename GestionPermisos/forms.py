@@ -20,4 +20,9 @@ class asignarRolForm(forms.Form):
     ##Aca debe hacerse una cosulta para filtrar a los usuarios
     ##estos usuarios se cargaran en un choice diccionary para poder ser usado en el campo usuario
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0)
-    Roles = forms.ModelChoiceField(queryset=Group.objects.all(), initial=0)
+    Roles = forms.ModelChoiceField(queryset=Group.objects.all(),initial=0)
+
+class crearUsuarioForm(forms.Form):
+    Nombre= forms.CharField()
+    correo= forms.CharField()
+

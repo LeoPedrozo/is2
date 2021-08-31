@@ -5,7 +5,7 @@ import logging
 from django.contrib.auth.decorators import user_passes_test
 # Modelos a los que se le aplicara los permisos
 from userStory.models import Historia
-from gestionUsuario.models import User,Equipo
+from gestionUsuario.models import User
 from django.http import HttpRequest
 
 from proyectos.models import Sprint, Proyecto
@@ -18,7 +18,7 @@ from proyectos.models import Sprint, Proyecto
 #    "Sprint" : ["change","view"]
 #}
 
-def gestionarPermisos(Modelos):
+def fabricarRol(Modelos):
     # Crear el grupo
     new_group, created = Group.objects.get_or_create(name=Modelos["Rol"])
     print("Creando el grupo "+Modelos["Rol"])
@@ -40,7 +40,7 @@ def gestionarPermisos(Modelos):
     print("creado con exito")
 
 
-def agregarRol(user, grupo):
+def enlazar_Ususario_con_Rol(user, grupo):
     #Agregar al usuario al grupo
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))

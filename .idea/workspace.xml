@@ -2,50 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fdadd772-63ad-4868-8466-a6ac847b4381" name="Default Changelist" comment="Nota de cambios&#10;-Creacion de SSO&#10;-Creacion de la pagina de inicio de sesion&#10;Problemas a solucionar: La imagen de fondo no carga">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/is2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/is2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_10_8_2021_19_29_[Default_Changelist]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_10_8_2021_19_29__Default_Changelist_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_8_2021_13_27_[Default_Changelist]/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_8_2021_13_27_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_11_8_2021_13_27__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_19_41_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_19_41__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_22_13_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_22_13__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_22_24_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_8_2021_22_24__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_8_2021_13_25_[Default_Changelist]/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_8_2021_13_25_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_8_2021_13_25__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_8_2021_16_20_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_8_2021_16_20__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_8_2021_21_23_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_8_8_2021_21_23__Default_Changelist_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionPermisos/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/GestionPermisos/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionPermisos/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/GestionPermisos/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionPermisos/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/GestionPermisos/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/helloworld.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/helloworld.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/holamundo.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/holamundo.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/index.doctree" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/is2.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/is2.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/manage.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/manage.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/modules.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/modules.doctree" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/.buildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/.buildinfo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/is2.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/is2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestionUsuario/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestionUsuario/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestionUsuario/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestionUsuario/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gestionUsuario/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/gestionUsuario/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/is2/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/is2/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/inicioPadre.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/inicioPadre.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proyectos/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/proyectos/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proyectos/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/proyectos/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userStory/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/userStory/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userStory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/userStory/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,6 +121,10 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Django tests.Test: templates" />
+      <item itemvalue="Django Server.is2" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Django tests.Test: templates" />

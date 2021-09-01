@@ -7,6 +7,9 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm
 from GestionPermisos.views import fabricarRol,enlazar_Ususario_con_Rol
+from gestionUsuario.models import User
+from proyectos.views import nuevoProyecto
+from proyectos.forms import crearproyectoForm
 from django.contrib.auth.decorators import user_passes_test
 
 #Hola mundo para probar django
@@ -54,7 +57,7 @@ def asignarRol(request):
             rol = formulario.cleaned_data['Roles']
             #Acciones a realizar con el form
 
-            enlazar_Ususario_con_Rol(userdata, rol)
+            enlazar_Ususario_con_Rol(userdata,rol)
 
             #Retornar mensaje de exito
             return render(request,"outputAsignarRol.html",{"asignaciondeRol":datosRol})
@@ -62,4 +65,26 @@ def asignarRol(request):
         formulario = asignarRolForm()
 
     return render(request, "asignarRol.html",{"form":formulario})
+
+
+
+def crearProyecto(request):
+    if request.method == "POST":
+        ##instance = User.objects.filter(user=request.user).first()
+
+        formulario = crearproyectoForm(request.POST,request=request)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosProyecto=formulario.cleaned_data
+
+            nuevoProyecto(formulario.cleaned_data)
+
+            # Retornar mensaje de exito
+            return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
+    else:
+        formulario = crearproyectoForm(request=request)
+
+    return render(request, "crearProyecto.html", {"form": formulario})
+
+
 

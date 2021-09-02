@@ -5,8 +5,8 @@ from django.template import  Template,Context
 from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
-from GestionPermisos.forms import crearRolForm, asignarRolForm
-from GestionPermisos.views import fabricarRol,enlazar_Ususario_con_Rol
+from GestionPermisos.forms import crearRolForm, asignarRolForm,registroDeUsuariosForm
+from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario
 from gestionUsuario.models import User
 from proyectos.views import nuevoProyecto
 from proyectos.forms import crearproyectoForm
@@ -57,7 +57,7 @@ def asignarRol(request):
             rol = formulario.cleaned_data['Roles']
             #Acciones a realizar con el form
 
-            enlazar_Ususario_con_Rol(userdata,rol)
+            enlazar_Usuario_con_Rol(userdata,rol)
 
             #Retornar mensaje de exito
             return render(request,"outputAsignarRol.html",{"asignaciondeRol":datosRol})
@@ -68,9 +68,28 @@ def asignarRol(request):
 
 
 
+
+
+def registrarUsuario(request):
+    if request.method == "POST":
+        formulario = registroDeUsuariosForm(request.POST)
+        if(formulario.is_valid()):
+            datos=formulario.cleaned_data
+            userdata = formulario.cleaned_data['Usuario']
+            estado = formulario.cleaned_data['Habilitado']
+            #Acciones a realizar con el form
+            registrar_usuario(userdata,estado)
+
+            #Retornar mensaje de exito
+            return render(request,"outputAsignarRol.html",{"asignaciondeRol":datos})
+    else:
+        formulario = registroDeUsuariosForm()
+
+    return render(request, "RegistrarUsuario.html", {"form":formulario})
+
+
 def crearProyecto(request):
     if request.method == "POST":
-        ##instance = User.objects.filter(user=request.user).first()
 
         formulario = crearproyectoForm(request.POST,request=request)
         if (formulario.is_valid()):

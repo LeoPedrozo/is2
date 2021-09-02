@@ -1,24 +1,60 @@
-from django.test import TestCase
+import unittest
+import time
+from proyectos.models import Proyecto
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
-class YourTestClass(TestCase):
+from gestionUsuario.models import User
+from userStory.models import Historia
 
-    @classmethod
-    def setUpTestData(cls):
-        print("setUpTestData: Run once to set up non-modified data for all class methods.")
-        pass
+class Test(unittest.TestCase):
+    """
+        Test : Validacion de creacion del proyecto
+    """
+    def test_crearProyecto(self):
+        nuevoProyecto = Proyecto(nombre='Primer Proyecto',descripcion='Proyecto de prueba',estado='PENDIENTE',fecha='25/07/2021',fecha_entrega='26/07/2021')
+        #nuevoProyecto = Proyecto()
+        self.assertIsNotNone(nuevoProyecto)
+    """
+        Test: Validacion de inicio y fin de proyecto
+    """
+    def test_fechasProyectoValida(self):
+        proyecto1 = Proyecto(nombre='Prueba proyecto', fecha='25/07/2021', fecha_entrega='26/07/2021')
+        fechIni = time.strptime(proyecto1.fecha, "%d/%m/%Y")
+        fechFin = time.strptime(proyecto1.fecha_entrega, "%d/%m/%Y")
+        self.assertLessEqual(fechIni, fechFin, "Fecha no valida. fecha inicio debe ser menor a entrega")
 
-    def setUp(self):
-        print("setUp: Run once for every test method to setup clean data.")
-        pass
+    """
+    Test de creacion de Rol llamado rolNuevo con permiso para agregar proyecto
+    """
+    def test_crearRol(self):
+        rol1, created = Group.objects.get_or_create(name='rolNuevo')
+        #Obtener el contenido de proyecto
+        ct = ContentType.objects.get_for_model(Proyecto)
 
-    def test_false_is_false(self):
-        print("Method: test_false_is_false.")
-        self.assertFalse(False)
+        #permission = Permission.objects.create(codename='can_add_Proyecto',name='Can add Proyecto',content_type=ct)
+        permission = Permission.objects.get(codename='can_add_Proyecto')
+        rol1.permissions.add(permission)
+        self.assertIsNotNone(rol1)
 
-    def test_false_is_true(self):
-        print("Method: test_false_is_true.")
-        self.assertTrue(False)
+    def test_crearUsuario(self):
+        nuevoUsuario = User()
+        self.assertIsNotNone(nuevoUsuario)
 
-    def test_one_plus_one_equals_two(self):
-        print("Method: test_one_plus_one_equals_two.")
-        self.assertEqual(1 + 1, 2)
+    def test_crearUserStory(self):
+        nuevoUS = Historia(id_historia=3,nombre='Historia 1',descripcion='Historia de prueba',prioridad='ALTA',
+                           fecha_creacion='2021/09/02',horasEstimadas=20,estados='PENDIENTE',horas_dedicadas=50)
+        self.assertIsNotNone(nuevoUS)
+
+
+print(__name__)
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+
+
+
+
+

@@ -19,7 +19,7 @@ class Sprint(models.Model):
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion=models.TextField(null=True,blank=True)
-    estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES)
+    estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES, default='PENDIENTE')
     fecha = models.DateField(auto_now_add=True,blank=True)
     fecha_entrega = models.DateField()
     fecha_finalizacion = models.DateField(null=True)

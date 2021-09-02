@@ -19,9 +19,9 @@ class Historia(models.Model):
     descripcion = models.TextField()
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES)
     fecha_creacion = models.DateField(auto_now_add=True)
-    horasEstimadas = models.IntegerField
+    horasEstimadas = models.IntegerField(default=0)
     estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES)
-    horas_dedicadas=models.IntegerField
+    horas_dedicadas=models.IntegerField(default=0)
     #encargado = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:

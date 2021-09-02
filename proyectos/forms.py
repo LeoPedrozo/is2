@@ -14,10 +14,10 @@ class crearproyectoForm(forms.Form):
         self.fields['creador'].initial=self.request.user.username
 
     estados = (
-        ("iniciar","Iniciar al finalizar la configuracion"),
-        ("esperar","Iniciar cuando se indique en la configuracion del proyecto"),
-        ("finalizar","Finalizado"),
-        ("qualityc","Quality check"),
+        ('PENDIENTE', 'Pendiente'),
+        ('INICIADO', 'Iniciado'),
+        ('FINALIZADO', 'Finalizado'),
+        ('CANCELADO', 'Cancelado'),
     )
 
     nombre = forms.CharField()

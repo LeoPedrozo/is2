@@ -15,6 +15,7 @@ class User(AbstractUser):
 
 
 
+
 # Equipos para evitar agregar individualmente los usuarios al proyecto
 #class Equipo(models.Model):
 #    nombre = models.CharField(max_length=50)

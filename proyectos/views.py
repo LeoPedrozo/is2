@@ -10,6 +10,7 @@ from proyectos.models import Proyecto
 def nuevoProyecto(datos):
     """
     Metodo que se ejecuta para visualizar los datos de un nuevo proyecto creado
+
     :param datos: informaciones referentes a los compos de datos de un proyecto
     :return: info del nuevo proyecto
     """

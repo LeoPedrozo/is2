@@ -43,6 +43,7 @@ class Proyecto(models.Model):
     def __str__(self):
         """
         Metodo que retorna el nombre del proyecto actual
+
         :return: retorna el valor del campo nombre del objeto actual
         """
         return self.nombre

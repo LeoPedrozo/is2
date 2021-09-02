@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import user_passes_test
 def saludo(request):
     """
     Metodo que es ejecutado para mostrar un mensaje de saludo al usuario loggeado en el sistema
+
     :param request: consulta recibida
     :return: respuesta
     """
@@ -25,6 +26,7 @@ def saludo(request):
 def inicio(request):
     """
     Metodo que es ejecutado para mostrar la pagina de inicio del sistema
+
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de INICIO
     """
@@ -41,6 +43,7 @@ def inicio(request):
 def documentaciones(request):
     """
     Metodo para acceder directamente a los archivos referentes a la documentacion del sistema
+
     :param request: consulta recibida
     :return: respuesta de redireccionamiento
     """
@@ -49,6 +52,7 @@ def documentaciones(request):
 def crearRol(request):
     """
     Metodo para la creacion de roles del sistema
+
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR ROL
     """
@@ -71,6 +75,7 @@ def crearRol(request):
 def asignarRol(request):
     """
     Metodo para la asignacion de roles a los usuarios del sistema
+
     :param request: solicitud recibida
     :return: respuesta a la solicitud de ASIGNAR ROL
     """
@@ -96,6 +101,7 @@ def asignarRol(request):
 def crearProyecto(request):
     """
     Metodo para la creacion de proyectos
+
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR PROYECTO
     """

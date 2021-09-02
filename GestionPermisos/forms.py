@@ -35,3 +35,14 @@ class crearUsuarioForm(forms.Form):
     Nombre= forms.CharField()
     correo= forms.CharField()
 
+
+class registroDeUsuariosForm(forms.Form):
+    estados=(
+        (True,"Habilitar acceso al sistema"),
+        (False,"Restringir acceso al sistema"),
+    )
+    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0,label="Seleccione un usuario")
+    Habilitado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados,label="Ustedes desea?")
+
+
+

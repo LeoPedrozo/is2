@@ -46,7 +46,7 @@ def fabricarRol(Modelos):
     print("creado con exito")
 
 
-def enlazar_Ususario_con_Rol(user, grupo):
+def enlazar_Usuario_con_Rol(user, grupo):
     #Agregar al usuario al grupo
     """Agrega al usuario a un grupo
 
@@ -55,4 +55,24 @@ def enlazar_Ususario_con_Rol(user, grupo):
     """
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
+
+
+
+def registrar_usuario(user,state):
+    grupo = Group.objects.get(name='registrado')
+    users_in_group = grupo.user_set.all()
+
+    if (state=='True'):
+        if user in users_in_group :
+            print("Ya existe por lo que no se agrega")
+        else:
+            print("se agrega")
+            grupo.user_set.add(user)
+    else:
+        if user in users_in_group :
+            grupo.user_set.remove(user)
+            print("se remueve")
+        else:
+            print("No esta en el grupo por lo que no se necesrio hacer remove")
+
 

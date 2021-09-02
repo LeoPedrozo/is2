@@ -15,9 +15,19 @@ from django.contrib.auth.decorators import user_passes_test
 #Hola mundo para probar django
 @login_required
 def saludo(request):
+    """
+    Metodo que es ejecutado para mostrar un mensaje de saludo al usuario loggeado en el sistema
+    :param request: consulta recibida
+    :return: respuesta
+    """
     return render(request, "rolCreado.html", {"nombre": "Jose"})
 
 def inicio(request):
+    """
+    Metodo que es ejecutado para mostrar la pagina de inicio del sistema
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de INICIO
+    """
     if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
         fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
@@ -29,9 +39,19 @@ def inicio(request):
 #Para acceder directamente a los archivos guardados en el directorio docs
 #(Todavia no se ha implementado)
 def documentaciones(request):
+    """
+    Metodo para acceder directamente a los archivos referentes a la documentacion del sistema
+    :param request: consulta recibida
+    :return: respuesta de redireccionamiento
+    """
     return render(request,"html/index.html",{})
 
 def crearRol(request):
+    """
+    Metodo para la creacion de roles del sistema
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR ROL
+    """
     if request.method == "POST":
         formulario = crearRolForm(request.POST)
         if(formulario.is_valid()):
@@ -49,6 +69,11 @@ def crearRol(request):
 
 
 def asignarRol(request):
+    """
+    Metodo para la asignacion de roles a los usuarios del sistema
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de ASIGNAR ROL
+    """
     if request.method == "POST":
         formulario = asignarRolForm(request.POST)
         if(formulario.is_valid()):
@@ -69,6 +94,11 @@ def asignarRol(request):
 
 
 def crearProyecto(request):
+    """
+    Metodo para la creacion de proyectos
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR PROYECTO
+    """
     if request.method == "POST":
         ##instance = User.objects.filter(user=request.user).first()
 

@@ -1,5 +1,8 @@
 from django import forms
 
+from django.contrib.auth.models import Group
+from gestionUsuario.models import User
+
 class crearRolForm(forms.Form):
     Rol = forms.CharField()
     OPTIONS = (
@@ -14,20 +17,12 @@ class crearRolForm(forms.Form):
 
 
 class asignarRolForm(forms.Form):
-    ##Aca debe hacerse una cosulta para filtrar a los usuarios del proyecto,
+    ##Aca debe hacerse una cosulta para filtrar a los usuarios
     ##estos usuarios se cargaran en un choice diccionary para poder ser usado en el campo usuario
+    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0)
+    Roles = forms.ModelChoiceField(queryset=Group.objects.all(),initial=0)
 
-    OPCIONES = [
-        (1 , "Luis" ),
-        (2 , "Leo"  ),
-        (3 , "Edher")
-        ]
+class crearUsuarioForm(forms.Form):
+    Nombre= forms.CharField()
+    correo= forms.CharField()
 
-    Roles=[
-        (1,"Product Owner"),
-        (2,"Scrum Master"),
-        (3,"Developer")
-    ]
-
-    Usuario = forms.TypedChoiceField(label="Selecciona un usuario",choices=OPCIONES,coerce=int,widget=forms.Select)
-    roles = forms.TypedChoiceField(label="Selecciona un rol",choices=Roles,coerce=int,widget=forms.RadioSelect)

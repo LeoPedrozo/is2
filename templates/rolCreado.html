@@ -1,10 +1,46 @@
-<html>
+{% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
 
-    <body>
-        <h1>
-            rol creado exitosamente!
-            <p> {{ configuracionDelRol }}</p>
-        </h1>
-    </body>
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- nombre de la pestanha e informaciones de la pagina -->
+
+
+
+<head>
+
+    <title>Rol Creado</title>
+    <meta charset="utf-8"/>
+    <!-- Debe mostrarse en la version de edge -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+</head>
+
+
+<body>
+
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card light-blue darken-3">
+        <div class="card-content white-text">
+          <span class="card-title">Creacion de rol exitosa!</span>
+            <p>Usuario: {{ asignaciondeRol.Nom }}
+            <br>Rol: {{ asignaciondeRol.Roles }}
+            </p>
+        </div>
+        <div class="card-action">
+          <a href="javascript:history.back()" style="color:#bcdbe3;">Asignar otro Rol</a>
+          <a href="http://127.0.0.1:8000/accounts/google/login/callback/inicio/" style="color:#bcdbe3;">Inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
 
 </html>
+

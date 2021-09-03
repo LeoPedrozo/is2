@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>GestionPermisos package &mdash; documentación de Proyecto IS2 2021-Grupo 8 - </title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="GestionPermisos.migrations package" href="GestionPermisos.migrations.html" />
+    <link rel="prev" title="gestionUsuario.migrations package" href="gestionUsuario.migrations.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Proyecto IS2 2021-Grupo 8
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">is2</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="is2.html">is2 package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.html">gestionUsuario package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">GestionPermisos package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="GestionPermisos.migrations.html">GestionPermisos.migrations package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos.admin">GestionPermisos.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos.apps">GestionPermisos.apps module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos.forms">GestionPermisos.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos.models">GestionPermisos.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestionpermisos-tests-module">GestionPermisos.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos.views">GestionPermisos.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-GestionPermisos">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="proyectos.html">proyectos package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userStory.html">userStory package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth_app.html">oauth_app package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Proyecto IS2 2021-Grupo 8</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">is2</a> &raquo;</li>
+        
+      <li>GestionPermisos package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/GestionPermisos.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gestionpermisos-package">
+<h1>GestionPermisos package<a class="headerlink" href="#gestionpermisos-package" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="GestionPermisos.migrations.html">GestionPermisos.migrations package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GestionPermisos.migrations.html#module-GestionPermisos.migrations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-GestionPermisos.admin">
+<span id="gestionpermisos-admin-module"></span><h2>GestionPermisos.admin module<a class="headerlink" href="#module-GestionPermisos.admin" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-GestionPermisos.apps">
+<span id="gestionpermisos-apps-module"></span><h2>GestionPermisos.apps module<a class="headerlink" href="#module-GestionPermisos.apps" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.apps.GestionpermisosConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.apps.</span></span><span class="sig-name descname"><span class="pre">GestionpermisosConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.apps.GestionpermisosConfig" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<p>Clase para configurar algunos de los atributos de la aplicación.</p>
+<blockquote>
+<div><p>En esta:</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>El tipo predeterminado de clave primaria: Un entero de 64 bits</p></li>
+<li><p>El nombre de la aplicacion: GestionPermisos</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="GestionPermisos.apps.GestionpermisosConfig.default_auto_field">
+<span class="sig-name descname"><span class="pre">default_auto_field</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'django.db.models.BigAutoField'</span></em><a class="headerlink" href="#GestionPermisos.apps.GestionpermisosConfig.default_auto_field" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="GestionPermisos.apps.GestionpermisosConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'GestionPermisos'</span></em><a class="headerlink" href="#GestionPermisos.apps.GestionpermisosConfig.name" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-GestionPermisos.forms">
+<span id="gestionpermisos-forms-module"></span><h2>GestionPermisos.forms module<a class="headerlink" href="#module-GestionPermisos.forms" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.asignarRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">asignarRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.asignarRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario de asignacion de roles a usuarios del sistema con consulta a un filtro de usuario previo</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Usuario</span></code>: Usuario (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Roles</span></code>: Roles (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.asignarRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.asignarRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.crearRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">crearRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.crearRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario de creacion de roles con las opciones de “agregar”, “borrar”,”modificar” y “ver”</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Rol</span></code>: Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Historia</span></code>: Historia (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Sprint</span></code>: Sprint (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="GestionPermisos.forms.crearRolForm.OPTIONS">
+<span class="sig-name descname"><span class="pre">OPTIONS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">(('add',</span> <span class="pre">'Agregar'),</span> <span class="pre">('delete',</span> <span class="pre">'Borrar'),</span> <span class="pre">('change',</span> <span class="pre">'Modificar'),</span> <span class="pre">('view',</span> <span class="pre">'Ver'))</span></em><a class="headerlink" href="#GestionPermisos.forms.crearRolForm.OPTIONS" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.crearRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.crearRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.crearUsuarioForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">crearUsuarioForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.crearUsuarioForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario de creacion de usuarios del sistema, solicitando el nombre y correo</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Nombre</span></code>: Nombre (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">correo</span></code>: Correo (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+</ul>
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.crearUsuarioForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.crearUsuarioForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.registroDeUsuariosForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">registroDeUsuariosForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.registroDeUsuariosForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario para habilitacion de usuarios dentro del sistema</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Usuario</span></code>: Seleccione un usuario (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Habilitado</span></code>: Usted desea? (<code class="xref py py-class docutils literal notranslate"><span class="pre">ChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="GestionPermisos.forms.registroDeUsuariosForm.estados">
+<span class="sig-name descname"><span class="pre">estados</span></span><em class="property"> <span class="pre">=</span> <span class="pre">((True,</span> <span class="pre">'Habilitar</span> <span class="pre">acceso</span> <span class="pre">al</span> <span class="pre">sistema'),</span> <span class="pre">(False,</span> <span class="pre">'Restringir</span> <span class="pre">acceso</span> <span class="pre">al</span> <span class="pre">sistema'))</span></em><a class="headerlink" href="#GestionPermisos.forms.registroDeUsuariosForm.estados" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.registroDeUsuariosForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.registroDeUsuariosForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-GestionPermisos.models">
+<span id="gestionpermisos-models-module"></span><h2>GestionPermisos.models module<a class="headerlink" href="#module-GestionPermisos.models" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="gestionpermisos-tests-module">
+<h2>GestionPermisos.tests module<a class="headerlink" href="#gestionpermisos-tests-module" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-GestionPermisos.views">
+<span id="gestionpermisos-views-module"></span><h2>GestionPermisos.views module<a class="headerlink" href="#module-GestionPermisos.views" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="GestionPermisos.views.enlazar_Usuario_con_Rol">
+<span class="sig-prename descclassname"><span class="pre">GestionPermisos.views.</span></span><span class="sig-name descname"><span class="pre">enlazar_Usuario_con_Rol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grupo</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.views.enlazar_Usuario_con_Rol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Agrega al usuario a un grupo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – usuario del sistema web</p></li>
+<li><p><strong>grupo</strong> – grupo con sus permisos correspondientes</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GestionPermisos.views.fabricarRol">
+<span class="sig-prename descclassname"><span class="pre">GestionPermisos.views.</span></span><span class="sig-name descname"><span class="pre">fabricarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Modelos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.views.fabricarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><dl class="simple">
+<dt>Gestion de permisos por medio de creaciones de grupos por medio de modelos previamente definidos con sus respectivos</dt><dd><p>permisos, si el grupo es creado se imprime un mensaje de confirmacion sino se imprime un mensaje de error</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>Modelos</strong> – (dict) listado de modelos de usuarios con sus permisos correspondientes</p>
+</dd>
+<dt class="field-even">Muestra</dt>
+<dd class="field-even"><p><strong>(</strong><strong>str</strong><strong>)</strong> – Mensaje de error al asignar permisos a un grupo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GestionPermisos.views.registrar_usuario">
+<span class="sig-prename descclassname"><span class="pre">GestionPermisos.views.</span></span><span class="sig-name descname"><span class="pre">registrar_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.views.registrar_usuario" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-GestionPermisos">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-GestionPermisos" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="GestionPermisos.migrations.html" class="btn btn-neutral float-right" title="GestionPermisos.migrations package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="gestionUsuario.migrations.html" class="btn btn-neutral float-left" title="gestionUsuario.migrations package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Derechos de autor 2021, Oscar Pedrozo, Jose Gonzalez, Edher Coronel, Luis Canete.
+
+    </p>
+  </div>
+    
+    
+    
+    Construido con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

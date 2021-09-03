@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="es" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>gestionUsuario package &mdash; documentación de Proyecto IS2 2021-Grupo 8 - </title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="gestionUsuario.migrations package" href="gestionUsuario.migrations.html" />
+    <link rel="prev" title="manage module" href="manage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Proyecto IS2 2021-Grupo 8
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Buscar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">is2</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="is2.html">is2 package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">manage module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gestionUsuario package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gestionUsuario.migrations.html">gestionUsuario.migrations package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario.admin">gestionUsuario.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario.apps">gestionUsuario.apps module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario.forms">gestionUsuario.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario.models">gestionUsuario.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestionusuario-tests-module">gestionUsuario.tests module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario.views">gestionUsuario.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-gestionUsuario">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="GestionPermisos.html">GestionPermisos package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="proyectos.html">proyectos package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="userStory.html">userStory package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth_app.html">oauth_app package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Proyecto IS2 2021-Grupo 8</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">is2</a> &raquo;</li>
+        
+      <li>gestionUsuario package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/gestionUsuario.rst.txt" rel="nofollow"> Ver código fuente de la página</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gestionusuario-package">
+<h1>gestionUsuario package<a class="headerlink" href="#gestionusuario-package" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gestionUsuario.migrations.html">gestionUsuario.migrations package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.migrations.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.migrations.html#module-gestionUsuario.migrations.0001_initial">gestionUsuario.migrations.0001_initial module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.migrations.html#module-gestionUsuario.migrations.0002_auto_20210825_1848">gestionUsuario.migrations.0002_auto_20210825_1848 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.migrations.html#module-gestionUsuario.migrations.0003_auto_20210901_0043">gestionUsuario.migrations.0003_auto_20210901_0043 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gestionUsuario.migrations.html#module-gestionUsuario.migrations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-gestionUsuario.admin">
+<span id="gestionusuario-admin-module"></span><h2>gestionUsuario.admin module<a class="headerlink" href="#module-gestionUsuario.admin" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gestionUsuario.admin.UserAdmin">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gestionUsuario.admin.</span></span><span class="sig-name descname"><span class="pre">UserAdmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">admin_site</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.admin.UserAdmin" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>Implementa la clase del usuario administrativo</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.admin.UserAdmin.list_display">
+<span class="sig-name descname"><span class="pre">list_display</span></span><em class="property"> <span class="pre">=</span> <span class="pre">('username',</span> <span class="pre">'email',</span> <span class="pre">'first_name',</span> <span class="pre">'last_name',</span> <span class="pre">'is_staff')</span></em><a class="headerlink" href="#gestionUsuario.admin.UserAdmin.list_display" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gestionUsuario.admin.UserAdmin.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#gestionUsuario.admin.UserAdmin.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gestionUsuario.apps">
+<span id="gestionusuario-apps-module"></span><h2>gestionUsuario.apps module<a class="headerlink" href="#module-gestionUsuario.apps" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gestionUsuario.apps.GestionusuarioConfig">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gestionUsuario.apps.</span></span><span class="sig-name descname"><span class="pre">GestionusuarioConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.apps.GestionusuarioConfig" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<p>Clase para configurar algunos de los atributos de la aplicación.
+En esta:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>El tipo predeterminado de clave primaria: Un entero de 64 bits</p></li>
+<li><p>El nombre de la aplicacion: GestionUsuario</p></li>
+</ul>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.apps.GestionusuarioConfig.default_auto_field">
+<span class="sig-name descname"><span class="pre">default_auto_field</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'django.db.models.BigAutoField'</span></em><a class="headerlink" href="#gestionUsuario.apps.GestionusuarioConfig.default_auto_field" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.apps.GestionusuarioConfig.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'gestionUsuario'</span></em><a class="headerlink" href="#gestionUsuario.apps.GestionusuarioConfig.name" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gestionUsuario.forms">
+<span id="gestionusuario-forms-module"></span><h2>gestionUsuario.forms module<a class="headerlink" href="#module-gestionUsuario.forms" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gestionUsuario.forms.crearRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gestionUsuario.forms.</span></span><span class="sig-name descname"><span class="pre">crearRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.forms.crearRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario de creacion de roles con las opciones de “agregar”, “borrar”,”modificar” y “ver”</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Rol</span></code>: Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Historia</span></code>: Historia (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Sprint</span></code>: Sprint (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.forms.crearRolForm.OPTIONS">
+<span class="sig-name descname"><span class="pre">OPTIONS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">(('add',</span> <span class="pre">'Agregar'),</span> <span class="pre">('delete',</span> <span class="pre">'Borrar'),</span> <span class="pre">('change',</span> <span class="pre">'Modificar'),</span> <span class="pre">('view',</span> <span class="pre">'Ver'))</span></em><a class="headerlink" href="#gestionUsuario.forms.crearRolForm.OPTIONS" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gestionUsuario.forms.crearRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#gestionUsuario.forms.crearRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gestionUsuario.models">
+<span id="gestionusuario-models-module"></span><h2>gestionUsuario.models module<a class="headerlink" href="#module-gestionUsuario.models" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gestionUsuario.models.User">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">gestionUsuario.models.</span></span><span class="sig-name descname"><span class="pre">User</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.models.User" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.contrib.auth.models.AbstractUser</span></code></p>
+<p>Usuario que tiene admitido realizar loggeo en el sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>BigAutoField</em>) – Id</p></li>
+<li><p><strong>password</strong> (<em>CharField</em>) – Password</p></li>
+<li><p><strong>last_login</strong> (<em>DateTimeField</em>) – Last login</p></li>
+<li><p><strong>is_superuser</strong> (<em>BooleanField</em>) – Superuser status. Designates that this user has all permissions without explicitly assigning them.</p></li>
+<li><p><strong>username</strong> (<em>CharField</em>) – Username. Required. 150 characters or fewer. Letters, digits and &#64;/./+/-/_ only.</p></li>
+<li><p><strong>first_name</strong> (<em>CharField</em>) – First name</p></li>
+<li><p><strong>last_name</strong> (<em>CharField</em>) – Last name</p></li>
+<li><p><strong>email</strong> (<em>EmailField</em>) – Email address</p></li>
+<li><p><strong>is_staff</strong> (<em>BooleanField</em>) – Staff status. Designates whether the user can log into this admin site.</p></li>
+<li><p><strong>is_active</strong> (<em>BooleanField</em>) – Active. Designates whether this user should be treated as active. Unselect this instead of deleting accounts.</p></li>
+<li><p><strong>date_joined</strong> (<em>DateTimeField</em>) – Date joined</p></li>
+<li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
+<li><p><strong>groups</strong> (<em>ManyToManyField</em>) – Groups. The groups this user belongs to. A user will get all permissions granted to each of their groups.</p></li>
+<li><p><strong>user_permissions</strong> (<em>ManyToManyField</em>) – User permissions. Specific permissions for this user.</p></li>
+<li><p><strong>stories</strong> (<em>ManyToManyField</em>) – Stories</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.DoesNotExist">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#gestionUsuario.models.User.DoesNotExist" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#gestionUsuario.models.User.MultipleObjectsReturned" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.emailaddress_set">
+<span class="sig-name descname"><span class="pre">emailaddress_set</span></span><a class="headerlink" href="#gestionUsuario.models.User.emailaddress_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> user, accesses the M2M <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailAddress</span></code> model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.get_next_by_date_joined">
+<span class="sig-name descname"><span class="pre">get_next_by_date_joined</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">date_joined&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.models.User.get_next_by_date_joined" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds next instance based on <code class="xref py py-attr docutils literal notranslate"><span class="pre">date_joined</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.get_previous_by_date_joined">
+<span class="sig-name descname"><span class="pre">get_previous_by_date_joined</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">date_joined&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gestionUsuario.models.User.get_previous_by_date_joined" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds previous instance based on <code class="xref py py-attr docutils literal notranslate"><span class="pre">date_joined</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#gestionUsuario.models.User.groups" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> groups, accesses the M2M <a class="reference internal" href="#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#gestionUsuario.models.User.id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> ID</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.logentry_set">
+<span class="sig-name descname"><span class="pre">logentry_set</span></span><a class="headerlink" href="#gestionUsuario.models.User.logentry_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> user, accesses the M2M <code class="xref py py-class docutils literal notranslate"><span class="pre">LogEntry</span></code> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.proyecto">
+<span class="sig-name descname"><span class="pre">proyecto</span></span><a class="headerlink" href="#gestionUsuario.models.User.proyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.proyecto_id">
+<span class="sig-name descname"><span class="pre">proyecto_id</span></span><a class="headerlink" href="#gestionUsuario.models.User.proyecto_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.socialaccount_set">
+<span class="sig-name descname"><span class="pre">socialaccount_set</span></span><a class="headerlink" href="#gestionUsuario.models.User.socialaccount_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> user, accesses the M2M <code class="xref py py-class docutils literal notranslate"><span class="pre">SocialAccount</span></code> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.stories">
+<span class="sig-name descname"><span class="pre">stories</span></span><a class="headerlink" href="#gestionUsuario.models.User.stories" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> stories, accesses the M2M <a class="reference internal" href="#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.user_permissions">
+<span class="sig-name descname"><span class="pre">user_permissions</span></span><a class="headerlink" href="#gestionUsuario.models.User.user_permissions" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> user permissions, accesses the M2M <a class="reference internal" href="#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="gestionusuario-tests-module">
+<h2>gestionUsuario.tests module<a class="headerlink" href="#gestionusuario-tests-module" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-gestionUsuario.views">
+<span id="gestionusuario-views-module"></span><h2>gestionUsuario.views module<a class="headerlink" href="#module-gestionUsuario.views" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+<div class="section" id="module-gestionUsuario">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gestionUsuario" title="Enlazar permanentemente con este título">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="gestionUsuario.migrations.html" class="btn btn-neutral float-right" title="gestionUsuario.migrations package" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="manage.html" class="btn btn-neutral float-left" title="manage module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Derechos de autor 2021, Oscar Pedrozo, Jose Gonzalez, Edher Coronel, Luis Canete.
+
+    </p>
+  </div>
+    
+    
+    
+    Construido con <a href="https://www.sphinx-doc.org/">Sphinx</a> usando un
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    
+    proporcionado por <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

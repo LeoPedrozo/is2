@@ -10,13 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path,os
+from pathlib import Path, os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import gestionUsuario
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -29,9 +28,8 @@ DEBUG = True
 #Los host que van a poder funcionar con gunicorn
 ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
-
 # Application definition
-#Las aplicaciones con las que interactua el sistema
+# Las aplicaciones con las que interactua el sistema
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,7 +61,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'is2.urls'
-#Los templates son el codigo en html
+# Los templates son el codigo en html
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -83,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'is2.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 # Aca se define para hacer la conexion con postgreSQL usando psycopg2,
@@ -98,7 +95,6 @@ DATABASES = {
         'DATABASE_PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -118,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -131,7 +126,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -150,7 +144,7 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_USER_MODEL = 'gestionUsuario.User'
 
-#El servicio de autenticacio de google
+# El servicio de autenticacio de google
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -168,12 +162,11 @@ SOCIALACCOUNT_PROVIDERS = {
 #El numero de site id se guarda en la tabla django_site
 SITE_ID = 7
 
-#Si el loggeo es exitoso dirigirse a:
+# Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = 'inicio/'
 
-#Si se deslogea exitosamente dirigir a:
+# Si se deslogea exitosamente dirigir a:
 LOGOUT_REDIRECT_URL = '/'
-
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]

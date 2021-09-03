@@ -7,10 +7,10 @@ Bienvenidos a la documentacion del Proyecto IS2 2021-Grupo 8
 ============================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 6
    :caption: Contents:
 
-	modules
+   modules
 
 Indices y tablas
 ==================

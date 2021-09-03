@@ -9,10 +9,9 @@
 <!-- nombre de la pestanha e informaciones de la pagina -->
 
 
-
 <head>
 
-    <title>Rol Creado</title>
+    <title>Registro usuario</title>
     <meta charset="utf-8"/>
     <!-- Debe mostrarse en la version de edge -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -27,13 +26,17 @@
     <div class="col s12 m6">
       <div class="card light-blue darken-3">
         <div class="card-content white-text">
-          <span class="card-title">Creacion de rol exitosa!</span>
-            <p>Usuario: {{ asignaciondeRol.Nom }}
-            <br>Rol: {{ asignaciondeRol.Roles }}
+          <span class="card-title">Estado de registro Actualizado!</span>
+            <p>Usuario: {{ usuario.Usuario }}
+                {%  if usuario.Habilitado == "True"  %}
+                    <br>Estado: El usuario ha adquirido acceso
+                {% else %}
+                    <br>Estado: El usuario ha sido removido de entre los usuarios con acceso
+                {% endif %}
             </p>
         </div>
         <div class="card-action">
-          <a href="javascript:history.back()" style="color:#bcdbe3;">Asignar otro Rol</a>
+          <a href="javascript:history.back()" style="color:#bcdbe3;">Registrar otro Usuario</a>
           <a href="http://127.0.0.1:8000/accounts/google/login/callback/inicio/" style="color:#bcdbe3;">Inicio</a>
         </div>
       </div>

@@ -5,7 +5,11 @@ from userStory.models import Historia
 
 
 class User(AbstractUser):
-    """ Usuario que tiene admitido realizar loggeo en el sistema """
+    """
+    Usuario que tiene admitido realizar loggeo en el sistema
+
+    """
+
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
     stories = models.ManyToManyField(Historia)
 
@@ -15,8 +19,10 @@ class User(AbstractUser):
 
 
 
+
 # Equipos para evitar agregar individualmente los usuarios al proyecto
 #class Equipo(models.Model):
+#    """ Asignar equipos de trabajo a proyectos de manera a evitar agregarlos individualmente"""
 #    nombre = models.CharField(max_length=50)
 #    proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
 #    users = models.ManyToManyField(User)

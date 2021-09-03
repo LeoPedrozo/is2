@@ -2,26 +2,38 @@ from django.db import models
 #from gestionUsuario.models import User
 
 # Create your models here.
+"""
+Definimos los estados de un UserStory
+"""
 ESTADOS_CHOICES=[
     ('FINALIZADO','Finalizado'),
     ('PENDIENTE','Pendiente'),
     ('EN_CURSO','En Curso'),
     ('QUALITY_ASSURANCE','Quality Assurance'),
 ]
+
+"""
+Definimos la prioridad de un UserStory
+"""
 PRIORIDAD_CHOICES=[
     ('ALTA','Alta'),
     ('MEDIA','Media'),
     ('BAJA','Baja'),
 ]
+
 class Historia(models.Model):
+    """
+    Implementa la clase de Historias de Usuario, almacena datos generales acerca del UserStory:
+    identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
+    """
     id_historia = models.AutoField(primary_key = True)
     nombre=models.CharField(max_length=20)
     descripcion = models.TextField()
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES)
     fecha_creacion = models.DateField(auto_now_add=True)
-    horasEstimadas = models.IntegerField
+    horasEstimadas = models.IntegerField(default=0)
     estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES)
-    horas_dedicadas=models.IntegerField
+    horas_dedicadas=models.IntegerField(default=0)
     #encargado = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
@@ -29,5 +41,10 @@ class Historia(models.Model):
         verbose_name_plural = 'Historias'
 
     def __str__(self):
+        """
+        Metodo que retorna el nombre del UserStory actual
+
+        :return: retorna el valor del campo nombre del objeto actual
+        """
         return self.nombre
 

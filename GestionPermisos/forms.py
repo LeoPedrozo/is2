@@ -37,6 +37,9 @@ class crearUsuarioForm(forms.Form):
 
 
 class registroDeUsuariosForm(forms.Form):
+    """
+    Formulario para habilitacion de usuarios dentro del sistema
+    """
     estados=(
         (True,"Habilitar acceso al sistema"),
         (False,"Restringir acceso al sistema"),

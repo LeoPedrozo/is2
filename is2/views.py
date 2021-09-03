@@ -45,7 +45,7 @@ def documentaciones(request):
     Metodo para acceder directamente a los archivos referentes a la documentacion del sistema
 
     :param request: consulta recibida
-    :return: respuesta de redireccionamiento
+    :return: respuesta: de redireccionamiento
     """
     return render(request,"html/index.html",{})
 
@@ -77,7 +77,7 @@ def asignarRol(request):
     Metodo para la asignacion de roles a los usuarios del sistema
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de ASIGNAR ROL
+    :return: respuesta: a la solicitud de ASIGNAR ROL
     """
     if request.method == "POST":
         formulario = asignarRolForm(request.POST)

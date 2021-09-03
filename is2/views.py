@@ -99,6 +99,12 @@ def asignarRol(request):
 
 
 def registrarUsuario(request):
+    """
+    Metodo para registrar usuarios al sistema
+
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de REGISTRAR USUARIO
+    """
     if request.method == "POST":
         formulario = registroDeUsuariosForm(request.POST)
         if(formulario.is_valid()):

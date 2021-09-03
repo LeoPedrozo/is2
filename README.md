@@ -11,6 +11,9 @@ Materiales y documentacion
   - Materialize: https://materializecss.com/
   - Bootstrap: https://getbootstrap.com/
 # Iteracion 2
-- Modelado de datos de usuarios, roles y permisos (models.py)
-- Verificacion de usuario (Codificar el manejo de verificacion de acceso al sistema y asignacion de rol)
-- Interfaz de Verificador de usuario (Templates)  https://www.figma.com/file/aGwY6mMJ4byz8fjx5GUUzR/Gestor-de-Proyectos-8?node-id=0%3A1
+- Modelado de datos de usuarios, roles, permisos, proyecto, sprint (models.py).
+- Verificacion de usuario (Codificar el manejo de verificacion de acceso al sistema y asignacion de rol).
+- Los usuarios necesitan estar registrados al sistema para poder acceder.
+- Sistema para crear/asignar roles dinamicos a un usuario.
+- Sistema para crear proyectos y asignar usuarios al mismo.
+- Sistema navegable para crear/asignar roles, y crear y asignar proyectos a usuario.

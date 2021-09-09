@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario
 from gestionUsuario.models import User
-from proyectos.views import nuevoProyecto
-from proyectos.forms import crearproyectoForm
+from gestionUsuario.views import asociarProyectoaUsuario
+from proyectos.views import nuevoProyecto, getIdProyecto, updateProyecto
+from proyectos.forms import crearproyectoForm, modificarproyectoForm
 from django.contrib.auth.decorators import user_passes_test
 
 #Hola mundo para probar django
@@ -140,9 +141,10 @@ def crearProyecto(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosProyecto=formulario.cleaned_data
-
+            miembros=formulario.cleaned_data["miembros"]
             nuevoProyecto(formulario.cleaned_data)
-
+            proyecto = getIdProyecto(formulario.cleaned_data['nombre'])
+            asociarProyectoaUsuario(proyecto,miembros)
             # Retornar mensaje de exito
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
@@ -151,6 +153,37 @@ def crearProyecto(request):
     return render(request, "crearProyecto.html", {"form": formulario})
 
 
+
+
+##No se deberia guardar la configuracion de proyecto?
+def modificarProyecto(request):
+    """
+    Metodo para la modificacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+        ##instance = User.objects.filter(user=request.user).first()
+
+        formulario = modificarproyectoForm(request.POST,request=request)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosProyecto=formulario.cleaned_data
+            miembros = formulario.cleaned_data["miembros"]
+
+            updateProyecto(formulario.cleaned_data)
+
+            proyecto = getIdProyecto(formulario.cleaned_data['nombre'])
+
+            asociarProyectoaUsuario(proyecto,miembros)
+
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto})
+    else:
+        formulario = modificarproyectoForm(request=request)
+
+    return render(request, "modificarProyecto.html", {"form": formulario})
 
 
 

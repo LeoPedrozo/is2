@@ -18,7 +18,8 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from is2.views import inicio, saludo, documentaciones, crearRol, asignarRol, crearProyecto, registrarUsuario
+from is2.views import inicio, saludo, documentaciones, crearRol, asignarRol, crearProyecto, registrarUsuario, \
+    modificarProyecto
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -32,9 +33,9 @@ urlpatterns = [
 
     path('crearRol/',crearRol),
     path('asignarRol/',asignarRol),
-path('registrarUsuario/',registrarUsuario),
+    path('registrarUsuario/',registrarUsuario),
     path('crearProyecto/',crearProyecto),
-    
+    path('modificarProyecto/',modificarProyecto),
 
     path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google

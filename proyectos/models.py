@@ -1,5 +1,7 @@
 from django.db import models
-from userStory.models import Historia
+
+from Sprints.models import Sprint
+from UserStory.models import Historia
 
 """
 Definimos los estados de un Proyecto
@@ -10,18 +12,6 @@ ESTADOS_CHOICES = [
     ('FINALIZADO','Finalizado'),
     ('CANCELADO','Cancelado'),
 ]
-
-class Sprint(models.Model):
-    """
-    Implementa la clase de Sprint, almacena datos generales acerca del los sprint de un proyecto:
-    identificador, Numero de Sprint, fecha de inicio, fecha fin e historias
-    """
-    id = models.AutoField(primary_key=True)
-    sprintNumber = models.IntegerField()
-    fecha_inicio = models.DateField(auto_now_add=True,blank=True)
-    fecha_fin = models.DateField(auto_now_add=True,blank=True)
-    historias = models.ManyToManyField(Historia)
-
 
 class Proyecto(models.Model):
     """

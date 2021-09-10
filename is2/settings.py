@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'gestionUsuario',
     'proyectos',
-    'userStory',
+    'UserStory',
     'material',
 ]
 
@@ -160,7 +160,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 #Configuraciones del sitio web
 #El numero de site id se guarda en la tabla django_site
-SITE_ID = 7
+SITE_ID = 8
 
 # Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = 'inicio/'

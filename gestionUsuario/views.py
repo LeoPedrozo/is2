@@ -12,10 +12,6 @@ def asociarProyectoaUsuario( proyecto,miembros):
         u.save()
 
 
-
-
-
-
 ##No se si funca como deberia
 def desasociarUsuariodeProyecto(miembro):
     u = User.objects.get(username=miembro)

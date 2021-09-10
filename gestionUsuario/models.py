@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from proyectos.models import Proyecto
-from userStory.models import Historia
+from UserStory.models import Historia
 
 
 class User(AbstractUser):

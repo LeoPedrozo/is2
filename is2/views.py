@@ -9,7 +9,7 @@ from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuari
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario
-from proyectos.views import nuevoProyecto, getIdProyecto, updateProyecto
+from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm
 from django.contrib.auth.decorators import user_passes_test
 
@@ -174,7 +174,7 @@ def modificarProyecto(request):
 
             updateProyecto(formulario.cleaned_data)
 
-            proyecto = getIdProyecto(formulario.cleaned_data['nombre'])
+            proyecto = getProyecto(formulario.cleaned_data['nombre'])
 
             asociarProyectoaUsuario(proyecto,miembros)
 
@@ -184,6 +184,8 @@ def modificarProyecto(request):
         formulario = modificarproyectoForm(request=request)
 
     return render(request, "modificarProyecto.html", {"form": formulario})
+
+
 
 
 

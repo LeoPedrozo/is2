@@ -41,12 +41,15 @@ def updateProyecto(datos):
 
 
 
-def getIdProyecto(project_name):
+def getProyecto(project_name):
 
     proyecto=Proyecto.objects.get(nombre=project_name)
 
     ##id= proyecto.id
     return proyecto
+
+
+
 
 
 ## la vista que reciba el id de un proyecto()

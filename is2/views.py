@@ -61,11 +61,14 @@ def crearRol(request):
         formulario = crearRolForm(request.POST)
         if(formulario.is_valid()):
             datosRol = formulario.cleaned_data
+            nombreRol = formulario.cleaned_data["RolName"]
+            historia=formulario.cleaned_data["Historia"]
+            proyecto=formulario.cleaned_data["Proyecto"]
+            sprint=formulario.cleaned_data["Sprint"]
             #Acciones a realizar con el form
             fabricarRol(datosRol)
-
             #Retornar mensaje de exito
-            return render(request, "rolCreado.html", {"configuracionDelRol":datosRol})
+            return render(request, "rolCreado.html", {"nombreRol":nombreRol,"historia":historia,"proyecto":proyecto,"sprint":sprint})
     else:
         formulario = crearRolForm()
 
@@ -143,7 +146,7 @@ def crearProyecto(request):
             datosProyecto=formulario.cleaned_data
             miembros=formulario.cleaned_data["miembros"]
             nuevoProyecto(formulario.cleaned_data)
-            proyecto = getIdProyecto(formulario.cleaned_data['nombre'])
+            proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto,miembros)
             # Retornar mensaje de exito
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})

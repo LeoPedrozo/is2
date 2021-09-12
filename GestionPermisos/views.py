@@ -26,10 +26,10 @@ def fabricarRol(Modelos):
     :raises (str): Mensaje de error al asignar permisos a un grupo
     """
     #crear el grupo
-    new_group, created = Group.objects.get_or_create(name=Modelos["Rol"])
-    print("Creando el grupo "+Modelos["Rol"])
+    new_group, created = Group.objects.get_or_create(name=Modelos["RolName"])
+    print("Creando el grupo "+Modelos["RolName"])
 
-    Modelos.pop("Rol")
+    Modelos.pop("RolName")
 
     #Asignar los permisos al grupo
     for modelo in Modelos:

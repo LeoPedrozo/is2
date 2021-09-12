@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'proyectos',
     'UserStory',
     'material',
+    'Sprints',
 ]
 
 MIDDLEWARE = [

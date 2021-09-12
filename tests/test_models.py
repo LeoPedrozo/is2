@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from gestionUsuario.models import User
-from UserStory.models import Historia
+from userStory.models import Historia
 
 class Test(unittest.TestCase):
     """

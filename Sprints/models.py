@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from UserStory.models import Historia
+from userStory.models import Historia
 
 
 class Sprint(models.Model):

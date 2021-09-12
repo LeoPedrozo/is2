@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 """
-Definimos los estados de un UserStory
+Definimos los estados de un userStory
 """
 ESTADOS_CHOICES=[
     ('FINALIZADO','Finalizado'),
@@ -13,7 +13,7 @@ ESTADOS_CHOICES=[
 ]
 
 """
-Definimos la prioridad de un UserStory
+Definimos la prioridad de un userStory
 """
 PRIORIDAD_CHOICES=[
     ('ALTA','Alta'),
@@ -23,7 +23,7 @@ PRIORIDAD_CHOICES=[
 
 class Historia(models.Model):
     """
-    Implementa la clase de Historias de Usuario, almacena datos generales acerca del UserStory:
+    Implementa la clase de Historias de Usuario, almacena datos generales acerca del userStory:
     identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
     """
     id_historia = models.AutoField(primary_key = True)
@@ -42,7 +42,7 @@ class Historia(models.Model):
 
     def __str__(self):
         """
-        Metodo que retorna el nombre del UserStory actual
+        Metodo que retorna el nombre del userStory actual
 
         :return: retorna el valor del campo nombre del objeto actual
         """

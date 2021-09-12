@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group , Permission
 import logging
 from django.contrib.auth.decorators import user_passes_test
 # Modelos a los que se le aplicara los permisos
-from UserStory.models import Historia
+from userStory.models import Historia
 from gestionUsuario.models import User
 from django.http import HttpRequest
 

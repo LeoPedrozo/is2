@@ -1,7 +1,7 @@
 from django.db import models
 
 from Sprints.models import Sprint
-from UserStory.models import Historia
+from userStory.models import Historia
 
 """
 Definimos los estados de un Proyecto

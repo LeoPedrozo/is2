@@ -55,7 +55,7 @@ class modificarproyectoForm(forms.Form):
         self.fields['fecha'].initial=self.request.user.proyecto.fecha
         self.fields['fecha_entrega'].initial=self.request.user.proyecto.fecha_entrega
         self.fields['id'].initial=self.request.user.proyecto_id
-
+        self.fields['miembros'].queryset=User.objects.filter(proyecto_id=self.request.user.proyecto_id).exclude(username="admin")
 
     estados = (
         ('PENDIENTE', 'Pendiente'),
@@ -64,7 +64,6 @@ class modificarproyectoForm(forms.Form):
         ('CANCELADO', 'Cancelado'),
     )
 
-    valor= (("",""))
 
     id=forms.IntegerField(disabled=True,label="ID del proyecto")
     nombre = forms.CharField()
@@ -74,8 +73,7 @@ class modificarproyectoForm(forms.Form):
 
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     fecha_entrega = forms.DateField(initial=datetime.date.today, label="Fecha de Entrega")
-   #la lista de miembros debe no logra funcionar corrctamente, ya que es necesrio
-    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.filter(proyecto_id=5).exclude(username="admin"),initial=0,label="Miembros")
+    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.filter().exclude(username="admin"),initial=0, label="Miembros")
     usuarios= forms.ModelMultipleChoiceField(queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username="admin"), initial=0,label="Agregar Nuevos usuarios")
 
 

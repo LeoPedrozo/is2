@@ -170,7 +170,7 @@ def modificarProyecto(request):
     if request.method == "POST":
         ##instance = User.objects.filter(user=request.user).first()
 
-        formulario = modificarproyectoForm(request.POST,request=request)
+        formulario = modificarproyectoForm(request.POST,)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosProyecto=formulario.cleaned_data
@@ -188,6 +188,9 @@ def modificarProyecto(request):
         formulario = modificarproyectoForm(request=request)
 
     return render(request, "modificarProyecto.html", {"form": formulario})
+
+
+
 
 
 

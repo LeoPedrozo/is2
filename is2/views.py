@@ -12,6 +12,7 @@ from gestionUsuario.views import asociarProyectoaUsuario
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm
 from django.contrib.auth.decorators import user_passes_test
+from Sprints.forms import crearSprintForm
 
 #Hola mundo para probar django
 @login_required
@@ -190,5 +191,21 @@ def modificarProyecto(request):
 
 
 
+def crearSprint(request):
+
+    if request.method == "POST":
+        ##instance = User.objects.filter(user=request.user).first()
+
+        formulario = crearSprintForm(request.POST)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosSprint=formulario.cleaned_data
+            #nuevoSprint(formulario.cleaned_data)
+            # Retornar mensaje de exito
+            return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
+    else:
+        formulario = crearSprintForm()
+
+    return render(request, "crearSprint.html", {"form": formulario})
 
 

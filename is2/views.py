@@ -190,10 +190,6 @@ def modificarProyecto(request):
     return render(request, "modificarProyecto.html", {"form": formulario})
 
 
-
-
-
-
 def crearSprint(request):
 
     if request.method == "POST":
@@ -212,3 +208,20 @@ def crearSprint(request):
     return render(request, "crearSprint.html", {"form": formulario})
 
 
+def verMiembros(request):
+    """
+    Metodo que es ejecutado para mostrar los miembros de un proyecto
+
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de verMiembros
+    """
+    usuario = User.objects.get(username=request.user.username)
+    id = usuario.proyecto_id
+    usuarios = User.objects.filter(proyecto_id=id)
+    fotos = {}
+
+
+    for u in usuarios:
+        fotos[u.email] = SocialAccount.objects.filter(user=u)[0].extra_data['picture']
+
+    return render(request, "AvatarContent.html", {"miembros": usuarios,"fotos": fotos})

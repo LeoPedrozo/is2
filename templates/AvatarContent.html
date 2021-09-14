@@ -1,0 +1,35 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+ {% for miembro in miembros  %}
+    <ul class="collection">
+        <li class="collection-item avatar">
+                {% for key, value in fotos.items %}
+                    {% if key == miembro.email %}
+                        <img src="{{ value }}" alt="" class="circle">
+                    {% endif %}
+                {% endfor %}
+            <span class="title">{{ miembro.first_name }} {{ miembro.last_name }}</span>
+            <p>{{ miembro.email }} <br>
+
+          </p>
+          <a href="#" class="secondary-content"><i class="material-icons">account_circle</i></a>
+        </li>
+    </ul>
+{% endfor %}
+</body>
+</html>

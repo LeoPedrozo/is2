@@ -18,8 +18,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from is2.views import inicio, saludo, documentaciones, crearRol,crearSprint, asignarRol, crearProyecto, registrarUsuario, \
-    modificarProyecto
+from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
+    registrarUsuario, \
+    modificarProyecto, verMiembros
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -37,6 +38,7 @@ urlpatterns = [
     path('crearProyecto/',crearProyecto),
     path('modificarProyecto/',modificarProyecto),
     path('crearSprint/',crearSprint),
+    path('listarMiembros/',verMiembros),
 
     path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
@@ -44,4 +46,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')), #Pagina SSO de Google mediante OAuth2
     path('logout', LogoutView.as_view()), #Funcion para deslogear del sistema
     path('accounts/google/login/callback/inicio/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
+
 ]

@@ -5,8 +5,8 @@ from django.template import  Template,Context
 from django.shortcuts import render
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
-from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm
-from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario
+from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, eliminarRolForm
+from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
@@ -50,6 +50,9 @@ def documentaciones(request):
     :return: respuesta: de redireccionamiento
     """
     return render(request,"html/index.html",{})
+
+
+##VISTAS RELACIONADAS AL MANEJO DE ROL
 
 def crearRol(request):
     """
@@ -103,7 +106,32 @@ def asignarRol(request):
 
 
 
+def eliminarRol(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+        """
+    if request.method == "POST":
+        formulario = eliminarRolForm(request.POST)
+        if (formulario.is_valid()):
+            RolSeleccionado = formulario.cleaned_data['Rol']
+
+            print(formulario.cleaned_data)
+
+            # Acciones a realizar con el form
+            removerRol(RolSeleccionado)
+            # Retornar mensaje de exito
+            return render(request, "outputEliminarRol.html", {"roleliminado": RolSeleccionado})
+    else:
+        formulario = eliminarRolForm()
+
+    return render(request, "eliminarRol.html", {"form": formulario})
+
+
 def registrarUsuario(request):
+
     """
     Metodo para registrar usuarios al sistema
 

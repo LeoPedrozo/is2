@@ -30,6 +30,22 @@ class asignarRolForm(forms.Form):
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0)
     Roles = forms.ModelChoiceField(queryset=Group.objects.all(),initial=0)
 
+
+
+class eliminarRolForm(forms.Form):
+    Rol = forms.ModelChoiceField(queryset=Group.objects.all(), initial=0,label="Seleccione Rol a eliminar")
+
+
+
+
+
+
+
+
+
+
+
+
 class crearUsuarioForm(forms.Form):
     """
     Formulario de creacion de usuarios del sistema, solicitando el nombre y correo
@@ -48,6 +64,7 @@ class registroDeUsuariosForm(forms.Form):
     )
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario")
     Habilitado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados,label="Usted desea?")
+
 
 
 

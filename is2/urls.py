@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
     registrarUsuario, \
-    modificarProyecto, verMiembros
+    modificarProyecto, verMiembros, eliminarRol
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('crearRol/',crearRol),
     path('asignarRol/',asignarRol),
+    path('eliminarRol/',eliminarRol),
     path('registrarUsuario/',registrarUsuario),
     path('crearProyecto/',crearProyecto),
     path('modificarProyecto/',modificarProyecto),

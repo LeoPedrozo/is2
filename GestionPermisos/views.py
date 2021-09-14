@@ -46,6 +46,15 @@ def fabricarRol(Modelos):
     print("creado con exito")
 
 
+
+def removerRol(RolSeleccionado):
+
+    print(RolSeleccionado)
+    Group.objects.filter(name=RolSeleccionado).delete()
+
+
+
+
 def enlazar_Usuario_con_Rol(user, grupo):
     #Agregar al usuario al grupo
     """Agrega al usuario a un grupo
@@ -55,7 +64,6 @@ def enlazar_Usuario_con_Rol(user, grupo):
     """
     grupo.user_set.add(user)
     print("Adding {} to {}".format(user,grupo))
-
 
 
 def registrar_usuario(user,state):

@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
     registrarUsuario, \
-    modificarProyecto, verMiembros, eliminarRol
+    modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -39,6 +39,10 @@ urlpatterns = [
     path('crearProyecto/',crearProyecto),
     path('modificarProyecto/',modificarProyecto),
     path('crearSprint/',crearSprint),
+
+    path('modificarRol/1/',seleccionarRol),
+    path('modificarRol/2/',modificarRol),
+
     path('listarMiembros/',verMiembros),
 
     path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)

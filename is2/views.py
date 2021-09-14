@@ -1,11 +1,13 @@
+from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.db import models
 
 from django.template import  Template,Context
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
-from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, eliminarRolForm
+from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
+    modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario
@@ -65,6 +67,9 @@ def crearRol(request):
         formulario = crearRolForm(request.POST)
         if(formulario.is_valid()):
             datosRol = formulario.cleaned_data
+
+            print(formulario.cleaned_data)
+
             nombreRol = formulario.cleaned_data["RolName"]
             historia=formulario.cleaned_data["Historia"]
             proyecto=formulario.cleaned_data["Proyecto"]
@@ -114,7 +119,7 @@ def eliminarRol(request):
         :return: respuesta: a la solicitud de ASIGNAR ROL
         """
     if request.method == "POST":
-        formulario = eliminarRolForm(request.POST)
+        formulario = seleccionarRolForm(request.POST)
         if (formulario.is_valid()):
             RolSeleccionado = formulario.cleaned_data['Rol']
 
@@ -125,9 +130,74 @@ def eliminarRol(request):
             # Retornar mensaje de exito
             return render(request, "outputEliminarRol.html", {"roleliminado": RolSeleccionado})
     else:
-        formulario = eliminarRolForm()
+        formulario = seleccionarRolForm()
 
     return render(request, "eliminarRol.html", {"form": formulario})
+
+
+
+def seleccionarRol(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+        """
+    if request.method == "POST":
+        formulario = seleccionarRolForm(request.POST)
+        if (formulario.is_valid()):
+            RolSeleccionado = formulario.cleaned_data['Rol']
+
+            request.session['RolSeleccionado']=RolSeleccionado.name
+
+
+            print("el modelo pasado a dicc es:")
+            print(request.session['RolSeleccionado'])
+
+
+            print(" ")
+            print("El clened data :")
+            print(formulario.cleaned_data)
+
+            # Retornar mensaje de exito
+            #return render(request, "outputEliminarRol.html", {"roleliminado": RolSeleccionado})
+
+            return redirect(modificarRol)
+    else:
+        formulario = seleccionarRolForm()
+
+    return render(request, "seleccionarRol.html", {"form": formulario})
+
+
+def modificarRol(request):
+    """
+    Metodo para la modificacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+
+
+        formulario = modificarRolForm(request.POST)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosdeRol=formulario.cleaned_data
+
+
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosdeRol})
+    else:
+
+        formulario = modificarRolForm(datosdelRol=request.session['RolSeleccionado'])
+
+    return render(request, "modificarProyecto.html", {"form": formulario})
+
+
+
+
+
+
 
 
 def registrarUsuario(request):

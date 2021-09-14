@@ -32,12 +32,36 @@ class asignarRolForm(forms.Form):
 
 
 
-class eliminarRolForm(forms.Form):
-    Rol = forms.ModelChoiceField(queryset=Group.objects.all(), initial=0,label="Seleccione Rol a eliminar")
+class seleccionarRolForm(forms.Form):
+    Rol = forms.ModelChoiceField(queryset=Group.objects.all(), initial=0,label="Seleccione Rol")
 
 
 
 
+
+class modificarRolForm(forms.Form):
+    """
+    Formulario de creacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
+    """
+    # overwrite __init__
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("datosdelRol")  # store value of request
+
+        super(modificarRolForm, self).__init__(*args, **kwargs)
+        self.fields['RolName'].initial = self.datos
+
+
+
+    OPTIONS = (
+        ("add", "Agregar"),
+        ("delete", "Borrar"),
+        ("change","Modificar"),
+        ("view","Ver"),
+    )
+    RolName = forms.CharField(required=True,label="Nombre del Rol")
+    Historia = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+    Proyecto = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+    Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
 
 
 

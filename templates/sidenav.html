@@ -57,10 +57,17 @@
 
 
         <li>
-                <a href="http://127.0.0.1:8000/crearProyecto/">
-                    <i class="material-icons">assignment</i>
-                    NuevoProyecto
+            {% if perms.proyectos.add_proyecto %}
+            <a href="http://127.0.0.1:8000/crearProyecto/" >
+                <i class="material-icons">assignment</i>
+                Nuevo Proyecto
                 </a>
+            {% else %}
+            <a href="#" onclick="toast_permisos()">
+                <i class="material-icons">assignment</i>
+                Nuevo Proyecto
+            </a>
+            {% endif %}
             </li>
 
 
@@ -180,6 +187,16 @@
             var instances = M.Dropdown.init(elems);
         });
     </script>
+        <!-- Alertar al usuario que no posee los permisos suficientes -->
+        <script>
+            function toast_permisos() {
+                  M.toast({
+                      html: 'Permisos requeridos',
+                      classes: "red"
+                  })
+
+            }
+        </script>
 {% endblock %}
 </body>
 

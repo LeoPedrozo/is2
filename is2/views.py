@@ -75,6 +75,7 @@ def crearRol(request):
             historia=formulario.cleaned_data["Historia"]
             proyecto=formulario.cleaned_data["Proyecto"]
             sprint=formulario.cleaned_data["Sprint"]
+
             #Acciones a realizar con el form
             fabricarRol(datosRol)
             #Retornar mensaje de exito
@@ -83,7 +84,6 @@ def crearRol(request):
         formulario = crearRolForm()
 
     return render(request, "crearRol.html",{"form":formulario})
-
 
 
 def asignarRol(request):
@@ -111,7 +111,6 @@ def asignarRol(request):
     return render(request, "asignarRol.html",{"form":formulario})
 
 
-
 def eliminarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -136,7 +135,7 @@ def eliminarRol(request):
     return render(request, "eliminarRol.html", {"form": formulario})
 
 
-
+#modificar Rol 1
 def seleccionarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -151,17 +150,10 @@ def seleccionarRol(request):
 
             request.session['RolSeleccionado']=RolSeleccionado.name
 
+            modeloRol=model_to_dict(RolSeleccionado)
 
-            print("el modelo pasado a dicc es:")
-            print(request.session['RolSeleccionado'])
+            getPermisos(request,modeloRol['permissions'])
 
-
-            print(" ")
-            print("El clened data :")
-            print(formulario.cleaned_data)
-
-            # Retornar mensaje de exito
-            #return render(request, "outputEliminarRol.html", {"roleliminado": RolSeleccionado})
 
             return redirect(modificarRol)
     else:
@@ -169,7 +161,7 @@ def seleccionarRol(request):
 
     return render(request, "seleccionarRol.html", {"form": formulario})
 
-
+#modificar Rol 2
 def modificarRol(request):
     """
     Metodo para la modificacion de proyectos
@@ -190,7 +182,7 @@ def modificarRol(request):
             return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosdeRol})
     else:
 
-        formulario = modificarRolForm(datosdelRol=request.session['RolSeleccionado'])
+        formulario = modificarRolForm(datosdelRol=request.session)
 
     return render(request, "modificarProyecto.html", {"form": formulario})
 
@@ -228,7 +220,7 @@ def registrarUsuario(request):
 
 
 
-
+#VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
 
 def crearProyecto(request):
     """
@@ -254,8 +246,6 @@ def crearProyecto(request):
         formulario = crearproyectoForm(request=request)
 
     return render(request, "crearProyecto.html", {"form": formulario})
-
-
 
 
 ##No se deberia guardar la configuracion de proyecto?
@@ -287,6 +277,65 @@ def modificarProyecto(request):
         formulario = modificarproyectoForm(request=request)
 
     return render(request, "modificarProyecto.html", {"form": formulario})
+
+
+
+
+##Metodo bastante horrible pero que hace su funcion.
+def getPermisos(request,listaPermisos):
+    listaProyecto=[]
+    listaHistoria=[]
+    listaSprint=[]
+
+
+    for objeto_permiso in listaPermisos:
+         lista =(str(objeto_permiso)).split("|")
+
+         categoria=lista[1]
+         permiso=lista[2]
+
+         if(permiso.find(' Can add Proyecto')>=0):
+             listaProyecto.append("add")
+         if(permiso.find(' Can change Proyecto')>=0):
+             listaProyecto.append("change")
+         if (permiso.find(' Can delete Proyecto') >= 0):
+             listaProyecto.append("delete")
+         if (permiso.find(' Can view Proyecto') >= 0):
+             listaProyecto.append("view")
+
+         if (permiso.find(' Can add Historia') >= 0):
+             listaHistoria.append("add")
+         if (permiso.find(' Can change Historia') >= 0):
+             listaHistoria.append("change")
+         if (permiso.find(' Can delete Historia') >= 0):
+             listaHistoria.append("delete")
+         if (permiso.find(' Can view Historia') >= 0):
+             listaHistoria.append("view")
+
+         if (permiso.find(' Can add Sprint') >= 0):
+             listaSprint.append("add")
+         if (permiso.find(' Can change Sprint') >= 0):
+             listaSprint.append("change")
+         if (permiso.find(' Can delete Sprint') >= 0):
+             listaSprint.append("delete")
+         if (permiso.find(' Can view Sprint') >= 0):
+             listaSprint.append("view")
+
+    request.session['Proyecto']=listaProyecto
+    request.session['Historia']=listaHistoria
+    request.session['Sprint']=listaSprint
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def crearSprint(request):
@@ -341,3 +390,19 @@ def crearHistoria(request):
         formulario = crearHistoriaForm()
 
     return render(request, "crearUserStory.html", {"form": formulario})
+
+
+#diccionario['Proyecto']=[1,2,3,4]
+
+#Rol=administrador
+#Proyecto
+#        1 add
+#        2 change
+#        3 delete
+#        4 view
+#Historia
+#add
+#change
+#delete
+#view
+

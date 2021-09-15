@@ -15,6 +15,7 @@ from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm
+from userStory.forms import crearHistoriaForm
 
 #Hola mundo para probar django
 @login_required
@@ -323,3 +324,20 @@ def verMiembros(request):
         fotos[u.email] = SocialAccount.objects.filter(user=u)[0].extra_data['picture']
 
     return render(request, "AvatarContent.html", {"miembros": usuarios,"fotos": fotos})
+
+
+def crearHistoria(request):
+
+    if request.method == "POST":
+        ##instance = User.objects.filter(user=request.user).first()
+
+        formulario = crearHistoriaForm(request.POST)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosHistoria=formulario.cleaned_data
+            # Retornar mensaje de exito
+            return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria})
+    else:
+        formulario = crearHistoriaForm()
+
+    return render(request, "crearUserStory.html", {"form": formulario})

@@ -152,6 +152,9 @@ def seleccionarRol(request):
 
             modeloRol=model_to_dict(RolSeleccionado)
 
+            print("Modelo Rol: ")
+            print(modeloRol)
+
             getPermisos(request,modeloRol['permissions'])
 
 
@@ -176,6 +179,8 @@ def modificarRol(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosdeRol=formulario.cleaned_data
+
+
 
 
             # Retornar mensaje de exito
@@ -312,13 +317,13 @@ def getPermisos(request,listaPermisos):
          if (permiso.find(' Can view Historia') >= 0):
              listaHistoria.append("view")
 
-         if (permiso.find(' Can add Sprint') >= 0):
+         if (permiso.find(' Can add sprint') >= 0):
              listaSprint.append("add")
-         if (permiso.find(' Can change Sprint') >= 0):
+         if (permiso.find(' Can change sprint') >= 0):
              listaSprint.append("change")
-         if (permiso.find(' Can delete Sprint') >= 0):
+         if (permiso.find(' Can delete sprint') >= 0):
              listaSprint.append("delete")
-         if (permiso.find(' Can view Sprint') >= 0):
+         if (permiso.find(' Can view sprint') >= 0):
              listaSprint.append("view")
 
     request.session['Proyecto']=listaProyecto

@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
+from Sprints.views import nuevoSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
@@ -191,11 +192,6 @@ def modificarRol(request):
 
 
 
-
-
-
-
-
 def registrarUsuario(request):
 
     """
@@ -333,9 +329,33 @@ def getPermisos(request,listaPermisos):
 
 
 
+def crearSprint(request):
+    """
+    Metodo para la creacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+        ##instance = User.objects.filter(user=request.user).first()
+
+        formulario = crearSprintForm(request.POST,request=request)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+
+            datosSprint=formulario.cleaned_data
+            nuevoSprint(datosSprint)
 
 
-
+            #datosProyecto=formulario.cleaned_data
+            #miembros=formulario.cleaned_data["miembros"]
+            #nuevoProyecto(formulario.cleaned_data)
+            #proyecto = getProyecto(formulario.cleaned_data['nombre'])
+            #asociarProyectoaUsuario(proyecto,miembros)
+            # Retornar mensaje de exito
+            return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
+    else:
+          formulario = crearSprintForm(request=request)
 
     return render(request, "crearSprint.html", {"form": formulario})
 
@@ -362,12 +382,12 @@ def verMiembros(request):
 def crearHistoria(request):
 
     if request.method == "POST":
-        ##instance = User.objects.filter(user=request.user).first()
-
         formulario = crearHistoriaForm(request.POST)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosHistoria=formulario.cleaned_data
+
+            nuevaHistoria(datosHistoria)
             # Retornar mensaje de exito
             return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria})
     else:
@@ -375,18 +395,14 @@ def crearHistoria(request):
 
     return render(request, "crearUserStory.html", {"form": formulario})
 
+def verHistorias(request):
+    """
+    Metodo que es ejecutado para mostrar los miembros de un proyecto
 
-#diccionario['Proyecto']=[1,2,3,4]
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de verMiembros
+    """
+    historias = Historia.objects.all()
+    print(historias)
 
-#Rol=administrador
-#Proyecto
-#        1 add
-#        2 change
-#        3 delete
-#        4 view
-#Historia
-#add
-#change
-#delete
-#view
-
+    return render(request, "HistoriaContent.html", {"historias": historias})

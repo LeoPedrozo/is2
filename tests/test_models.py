@@ -33,8 +33,10 @@ class Test(unittest.TestCase):
         ct = ContentType.objects.get_for_model(Proyecto)
 
         #permission = Permission.objects.create(codename='can_add_Proyecto',name='Can add Proyecto',content_type=ct)
-        permission = Permission.objects.get(codename='can_add_Proyecto')
-        rol1.permissions.add(permission)
+        permission = Permission.objects.filter(codename='can_add_Proyecto').first()
+        if permission:
+            rol1.permissions.add(permission)
+
         self.assertIsNotNone(rol1)
 
     def test_crearUsuario(self):

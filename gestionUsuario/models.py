@@ -7,7 +7,6 @@ from userStory.models import Historia
 class User(AbstractUser):
     """
     Usuario que tiene admitido realizar loggeo en el sistema
-
     """
 
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)

@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         """
         Test: Validacion de inicio y fin de sprint
         """
-        sprint1 = Sprint(sprintNumber=7, fecha='25/07/2021', fecha_entrega='26/07/2021')
+        sprint1 = Sprint(sprintNumber=7, fecha_inicio='25/07/2021', fecha_fin='26/07/2021')
         fechIni = time.strptime(sprint1.fecha_inicio, "%d/%m/%Y")
         fechFin = time.strptime(sprint1.fecha_fin, "%d/%m/%Y")
         self.assertLessEqual(fechIni, fechFin, "Fecha no valida. fecha inicio debe ser menor a fecha fin")

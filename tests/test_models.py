@@ -8,26 +8,40 @@ from gestionUsuario.models import User
 from userStory.models import Historia
 
 class Test(unittest.TestCase):
+
     """
-        Test : Validacion de creacion del proyecto
+    Clase de testeo de todos los models del sistema
     """
+
     def test_crearProyecto(self):
+        """
+        Test : Validacion de creacion del proyecto
+        """
         nuevoProyecto = Proyecto(nombre='Primer Proyecto',descripcion='Proyecto de prueba',estado='PENDIENTE',fecha='25/07/2021',fecha_entrega='26/07/2021')
-        #nuevoProyecto = Proyecto()
         self.assertIsNotNone(nuevoProyecto)
-    """
-        Test: Validacion de inicio y fin de proyecto
-    """
+
+
     def test_fechasProyectoValida(self):
+        """
+        Test: Validacion de inicio y fin de proyecto
+        """
         proyecto1 = Proyecto(nombre='Prueba proyecto', fecha='25/07/2021', fecha_entrega='26/07/2021')
         fechIni = time.strptime(proyecto1.fecha, "%d/%m/%Y")
         fechFin = time.strptime(proyecto1.fecha_entrega, "%d/%m/%Y")
         self.assertLessEqual(fechIni, fechFin, "Fecha no valida. fecha inicio debe ser menor a entrega")
 
-    """
-    Test de creacion de Rol llamado rolNuevo con permiso para agregar proyecto
-    """
+
+    def test_userAdmitido(self):
+        """
+        Test de usuario admitido a loggerarse al sistema
+        """
+        user = User()
+        self.assertIsNotNone(user)
+
     def test_crearRol(self):
+        """
+        Test de creacion de Rol llamado rolNuevo con permiso para agregar proyecto
+        """
         rol1, created = Group.objects.get_or_create(name='rolNuevo')
         #Obtener el contenido de proyecto
         ct = ContentType.objects.get_for_model(Proyecto)

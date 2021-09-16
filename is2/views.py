@@ -179,10 +179,6 @@ def modificarRol(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosdeRol=formulario.cleaned_data
-
-
-
-
             # Retornar mensaje de exito
             return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosdeRol})
     else:
@@ -325,6 +321,7 @@ def getPermisos(request,listaPermisos):
              listaSprint.append("delete")
          if (permiso.find(' Can view sprint') >= 0):
              listaSprint.append("view")
+
 
     request.session['Proyecto']=listaProyecto
     request.session['Historia']=listaHistoria

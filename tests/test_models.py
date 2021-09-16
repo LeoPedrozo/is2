@@ -1,5 +1,7 @@
 import unittest
 import time
+
+from Sprints.models import Sprint
 from proyectos.models import Proyecto
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -35,8 +37,25 @@ class Test(unittest.TestCase):
         """
         Test de usuario admitido a loggerarse al sistema
         """
-        user = User()
-        self.assertIsNotNone(user)
+        userNew = User()
+        self.assertIsNotNone(userNew)
+
+
+    def test_creacionSprint(self):
+        """
+        Test de creacion de sprint
+        """
+        sprint = Sprint(sprintNumber=5,fecha_inicio='16/09/2021',fecha_fin='20/09/2021')
+        self.assertIsNotNone(sprint)
+
+    def test_fechasSprintValida(self):
+        """
+        Test: Validacion de inicio y fin de sprint
+        """
+        sprint1 = Sprint(sprintNumber=7, fecha='25/07/2021', fecha_entrega='26/07/2021')
+        fechIni = time.strptime(sprint1.fecha_inicio, "%d/%m/%Y")
+        fechFin = time.strptime(sprint1.fecha_fin, "%d/%m/%Y")
+        self.assertLessEqual(fechIni, fechFin, "Fecha no valida. fecha inicio debe ser menor a fecha fin")
 
     def test_crearRol(self):
         """
@@ -52,10 +71,6 @@ class Test(unittest.TestCase):
             rol1.permissions.add(permission)
 
         self.assertIsNotNone(rol1)
-
-    def test_crearUsuario(self):
-        nuevoUsuario = User()
-        self.assertIsNotNone(nuevoUsuario)
 
     def test_crearUserStory(self):
         nuevoUS = Historia(id_historia=3,nombre='Historia 1',descripcion='Historia de prueba',prioridad='ALTA',

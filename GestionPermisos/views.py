@@ -40,11 +40,30 @@ def fabricarRol(Modelos):
                 model_add_perm = Permission.objects.get(name=name)
 
             except Permission.DoesNotExist:
-                logging.warning("Permission not found with name '{}'.".format(name))
-                continue
+                logging.warning("Permiso no encontrado con el nombre '{}'.".format(name))
+                try:
+                    lower_name = "Can {} {}".format(app_model, modelo.lower())
+                    print("Creando {}".format(lower_name))
+                    model_add_perm = Permission.objects.get(name=lower_name)
+                except Permission.DoesNotExist:
+                    logging.warning("Permiso no encontrado con el nombre '{}'.".format(lower_name))
+                    try:
+                        #Sacarle la palabra can
+                        name2 = name.replace("Can ","").lower()
+                        codename = name2.replace(" ","_")
+                        print("Buscar usando el codename={}".format(codename))
+                        model_add_perm = Permission.objects.get(codename=codename)
+                    except Permission.DoesNotExist:
+                        logging.warning("Permiso no encontrado con el codename '{}'.".format(codename))
+                    except MultipleObjectsReturned:
+                        model_add_perm = Permission.objects.filter(codename=codename).last()
+                except MultipleObjectsReturned:
+                    model_add_perm = Permission.objects.filter(name=lower_name).last()
             except MultipleObjectsReturned:
                 model_add_perm = Permission.objects.filter(name=name).first()
+
             # Si pudo asignar, el carga ese permiso al grupo
+            print("Permiso a agregar : ",model_add_perm)
             new_group.permissions.add(model_add_perm)
 
     print("creado con exito")

@@ -1,0 +1,33 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <meta charset="UTF-8">
+    <title>Lista de Historias</title>
+</head>
+<body>
+ {% for historia in historias  %}
+    <ul class="collection">
+        <li class="collection-item avatar">
+
+            <span class="title">Nombre: {{ historia.nombre }}</span>
+            <p>
+                <span class="title">Descripcion: {{ historia.descripcion }}</span>
+            </p>
+
+
+          <a href="#" class="secondary-content"><i class="material-icons">account_circle</i></a>
+        </li>
+    </ul>
+{% endfor %}
+</body>
+</html>

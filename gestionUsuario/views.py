@@ -6,11 +6,11 @@ from gestionUsuario.models import User
 ##asociarmiembrosaproyecto
 
 def asociarProyectoaUsuario( proyecto,miembros):
-    """Metodo para asociar a un grupo de usuarios del sistema a un proyecto
+    """Metodo para asociar un proyecto a un grupo de usuarios del sistema
 
     :param proyecto: proyecto que se quiere asociar
     :param miembros: lista de usuarios que van a ser asociados al proyecto
-    :return:
+    :return: void
     """
     for miembro in miembros:
         u= User.objects.get(username=miembro)
@@ -23,7 +23,7 @@ def desasociarUsuariodeProyecto(miembros):
     """Metodo para desasociar a un usuario de un proyecto
 
     :param miembro: usuario que va ser excluido del proyecto
-    :return:
+    :return: void
     """
 
     for miembro in miembros:

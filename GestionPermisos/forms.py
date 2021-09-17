@@ -41,7 +41,7 @@ class seleccionarRolForm(forms.Form):
 
 class modificarRolForm(forms.Form):
     """
-    Formulario de creacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
+    Formulario de modificacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
     """
     # overwrite __init__
     def __init__(self, *args, **kwargs):
@@ -82,8 +82,8 @@ class crearUsuarioForm(forms.Form):
 
 
 class registroDeUsuariosForm(forms.Form):
-    """Formulario para habilitacion de usuarios dentro del sistema
-
+    """
+    Formulario para habilitacion de usuarios dentro del sistema
     """
     estados=(
         (True,"Habilitar acceso al sistema"),

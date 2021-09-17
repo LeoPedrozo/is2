@@ -6,7 +6,7 @@ from userStory.models import Historia
 
 class Sprint(models.Model):
     """
-    Clase de Sprint, almacena datos generales acerca del los sprint de un proyecto:
+    Clase de Sprint, almacena datos generales acerca de los sprint de un proyecto:
     identificador, Numero de Sprint, fecha de inicio, fecha fin e historias
     """
     id = models.AutoField(primary_key=True)

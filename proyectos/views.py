@@ -11,7 +11,7 @@ def nuevoProyecto(datos):
     """
     Metodo que se ejecuta para visualizar los datos de un nuevo proyecto creado
 
-    :param datos: informaciones referentes a los compos de datos de un proyecto
+    :param datos: informaciones referentes a los campos de datos de un proyecto
     :return: info del nuevo proyecto
     """
     newP= Proyecto(nombre = datos['nombre'],estado = datos['estado'],
@@ -24,7 +24,7 @@ def nuevoProyecto(datos):
 
 def updateProyecto(datos):
     """
-    Metodo que se ejecuta para visualizar los datos de un nuevo proyecto creado
+    Metodo que se ejecuta para actualizar los datos de un nuevo proyecto creado
 
     :param datos: informaciones referentes a los compos de datos de un proyecto
     :return: info del nuevo proyecto

@@ -40,8 +40,11 @@ def inicio(request):
     """
     if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
-        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-        return render(request, "sidenav.html", {"avatar": fotodeususario})
+        if request.user.is_superuser:
+            return render(request, "sidenav.html", {"avatar": None})
+        else:
+            fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+            return render(request, "sidenav.html", {"avatar": fotodeususario})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 

@@ -37,7 +37,11 @@ class Test(unittest.TestCase):
         """
         Test de usuario admitido a loggerarse al sistema
         """
-        userNew = User()
+        h = Historia(id_historia=2,nombre='Historia2',descripcion='Historia de prueba',prioridad='ALTA',
+                           fecha_creacion='2021/09/16',horasEstimadas=20,estados='PENDIENTE',horas_dedicadas=50)
+        p = Proyecto(nombre='Primer Proyecto',descripcion='Proyecto de prueba',estado='PENDIENTE',fecha='25/07/2021',fecha_entrega='26/07/2021')
+        s = Sprint(sprintNumber=5,fecha_inicio='16/09/2021',fecha_fin='20/09/2021')
+        userNew = User(proyecto=p.id)
         self.assertIsNotNone(userNew)
 
 

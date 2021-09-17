@@ -70,6 +70,11 @@ def fabricarRol(Modelos):
 
 
 def removerRol(RolSeleccionado):
+    """Metodo para eliminar rol
+
+    :param RolSeleccionado: rol a ser eliminado
+    :return:
+    """
     print(RolSeleccionado)
     Group.objects.filter(name=RolSeleccionado).delete()
 
@@ -86,6 +91,12 @@ def enlazar_Usuario_con_Rol(user, grupo):
 
 
 def registrar_usuario(user, state):
+    """ Metodo para registrar un usuario en el sistema
+
+    :param user: usuario que va ser registrado
+    :param state: estado que se encuentra
+    :return: Mensaje de confirmacion del registro
+    """
     grupo = Group.objects.get(name='registrado')
     users_in_group = grupo.user_set.all()
 
@@ -100,4 +111,4 @@ def registrar_usuario(user, state):
             grupo.user_set.remove(user)
             print("se remueve")
         else:
-            print("No esta en el grupo por lo que no se necesrio hacer remove")
+            print("No esta en el grupo por lo que no es necesario hacer remove")

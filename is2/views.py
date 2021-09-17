@@ -181,12 +181,12 @@ def modificarRol(request):
     if request.method == "POST":
 
 
-        formulario = modificarRolForm(request.POST)
+        formulario = modificarRolForm(request.POST,datosdelRol=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosdeRol=formulario.cleaned_data
             # Retornar mensaje de exito
-            return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosdeRol})
+            return render(request, "outputmodificarRol.html", {"rolModificado": datosdeRol})
     else:
 
         formulario = modificarRolForm(datosdelRol=request.session)
@@ -409,3 +409,55 @@ def verHistorias(request):
     print(historias)
 
     return render(request, "HistoriaContent.html", {"historias": historias})
+
+
+#Seleccionar historia 1
+def seleccionarHistoria(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarHistoriaForm(request.POST,proyecto=request.session)
+        if (formulario.is_valid()):
+            HistoriaSeleccionada = formulario.cleaned_data['Historia']
+
+            print("el modelo de historia es:")
+            print(HistoriaSeleccionada)
+
+            request.session['HistoriaSeleccionada']=HistoriaSeleccionada
+
+            return redirect(modificarHistoria)
+    else:
+        usuarioActual = User.objects.get(username=request.user.username)
+        request.session['ProyectoActual']=usuarioActual.proyecto.id
+        formulario = seleccionarHistoriaForm(proyecto=request.session['ProyectoActual'])
+
+    return render(request, "seleccionarHistoria.html", {"form": formulario})
+
+#modificar historia 2
+def modificarHistoria(request):
+    """
+        Metodo para la modificacion de proyectos
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+
+        formulario = modificarHistoriaForm(request.POST,)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosdeHistoria = formulario.cleaned_data
+
+            #metodo que realiza la logica de la modificacion
+
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarHistoria.html", {"HistoriaCreada": datosdeHistoria})
+    else:
+
+        formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
+
+    return render(request, "modificarHistoria.html", {"form": formulario})

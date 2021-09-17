@@ -90,3 +90,6 @@ class crearHistoriaForm(forms.Form):
     horasEstimadas = forms.IntegerField(initial=0)
     estados = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=ESTADOS_CHOICES)
     horas_dedicadas = forms.IntegerField(initial=0)
+
+
+

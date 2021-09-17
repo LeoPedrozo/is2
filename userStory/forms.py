@@ -19,7 +19,7 @@ class seleccionarHistoriaForm(forms.Form):
 
 class modificarHistoriaForm(forms.Form):
     """
-      Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto
+      Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de una historia de usuario
     """
     def __init__(self, *args, **kwargs):
         self.datosHistoria = kwargs.pop("datosdelaHistoria")  # store value of request
@@ -60,7 +60,7 @@ class modificarHistoriaForm(forms.Form):
 
 class crearHistoriaForm(forms.Form):
     """
-    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un proyecto
+    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de una Historia de usuario
     """
     # overwrite __init__
     # def __init__(self, *args, **kwargs):

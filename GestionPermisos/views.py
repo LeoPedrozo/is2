@@ -73,7 +73,7 @@ def removerRol(RolSeleccionado):
     """Metodo para eliminar rol
 
     :param RolSeleccionado: rol a ser eliminado
-    :return:
+    :return: void
     """
     print(RolSeleccionado)
     Group.objects.filter(name=RolSeleccionado).delete()

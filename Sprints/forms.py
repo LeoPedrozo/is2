@@ -1,7 +1,12 @@
 from django import forms
 import datetime
 from userStory.models import Historia
+
 class crearSprintForm(forms.Form):
+        """
+        Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un sprint con los
+        campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+        """
         def __init__(self, *args, **kwargs):
                 self.request = kwargs.pop("request")  # store value of request
                 super(crearSprintForm, self).__init__(*args, **kwargs)

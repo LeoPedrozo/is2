@@ -68,7 +68,7 @@ def crearRol(request):
     Metodo para la creacion de roles del sistema
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR ROL
+    :return: respuesta a la solicitud de CREARROL
     """
     if request.method == "POST":
         formulario = crearRolForm(request.POST)
@@ -119,10 +119,10 @@ def asignarRol(request):
 
 def eliminarRol(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+        Metodo para quitar roles a los usuarios del sistema
 
         :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+        :return: respuesta: a la solicitud de ELIMINARROL
         """
     if request.method == "POST":
         formulario = seleccionarRolForm(request.POST)
@@ -144,10 +144,10 @@ def eliminarRol(request):
 #modificar Rol 1
 def seleccionarRol(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+        Metodo para seleccionar roles
 
         :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+        :return: respuesta: a la solicitud de SELECCIONARROL
         """
     if request.method == "POST":
         formulario = seleccionarRolForm(request.POST)
@@ -173,10 +173,10 @@ def seleccionarRol(request):
 #modificar Rol 2
 def modificarRol(request):
     """
-    Metodo para la modificacion de proyectos
+    Metodo para la modificacion de roles del sistema
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de MODIFICARPROYECTO
     """
     if request.method == "POST":
 
@@ -201,7 +201,7 @@ def registrarUsuario(request):
     Metodo para registrar usuarios al sistema
 
     :param request: solicitud recibida
-    :return: respuesta: a la solicitud de REGISTRAR USUARIO
+    :return: respuesta: a la solicitud de REGISTRARUSUARIO
     """
     if request.method == "POST":
         formulario = registroDeUsuariosForm(request.POST)
@@ -229,7 +229,7 @@ def crearProyecto(request):
     Metodo para la creacion de proyectos
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de CREARPROYECTO
     """
     if request.method == "POST":
         ##instance = User.objects.filter(user=request.user).first()
@@ -256,7 +256,7 @@ def modificarProyecto(request):
     Metodo para la modificacion de proyectos
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de MODIFICARPROYECTO
     """
     if request.method == "POST":
         ##instance = User.objects.filter(user=request.user).first()
@@ -341,10 +341,10 @@ def getPermisos(request,listaPermisos):
 
 def crearSprint(request):
     """
-    Metodo para la creacion de proyectos
+    Metodo para la creacion de sprint
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de CREARSPRINT
     """
     if request.method == "POST":
         formulario = crearSprintForm(request.POST,request=request)
@@ -392,7 +392,7 @@ def crearHistoria(request):
     Metodo que es ejecutado para crear un user story
 
     :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de crearHistoria
+    :return: respuesta a la solicitud de ejecucion de CREAR HISTORIA
     """
     if request.method == "POST":
         formulario = crearHistoriaForm(request.POST)
@@ -412,10 +412,10 @@ def crearHistoria(request):
 
 def verHistorias(request):
     """
-    Metodo que es ejecutado para mostrar los miembros de un proyecto
+    Metodo que es ejecutado para mostrar las historias de usuario
 
     :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de verMiembros
+    :return: respuesta a la solicitud de ejecucion de VER HISTORIAS
     """
     historias = Historia.objects.all()
     print(historias)
@@ -452,10 +452,10 @@ def seleccionarHistoria(request):
 #modificar historia 2
 def modificarHistoria(request):
     """
-        Metodo para la modificacion de proyectos
+        Metodo para la modificacion de historias de usuarios
 
         :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR PROYECTO
+        :return: respuesta a la solicitud de MODIFICARHISTORIA
     """
     if request.method == "POST":
 

@@ -41,20 +41,23 @@ def updateProyecto(datos):
 
 
 
-def getProyecto(project_name):
+def getProyecto(project_id):
     """
     Metodo para obtener todos los datos de un proyecto
 
     :param project_name: nombre del proyecto
     :return: informacion completa del proyecto
     """
-    proyecto=Proyecto.objects.get(nombre=project_name)
+    proyecto=Proyecto.objects.get(id=project_id)
 
-    ##id= proyecto.id
     return proyecto
 
 
 
+
+
+def deleteProyecto(proyecto):
+    proyecto.delete()
 
 
 ## la vista que reciba el id de un proyecto()

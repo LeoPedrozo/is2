@@ -19,16 +19,17 @@ def asociarProyectoaUsuario( proyecto,miembros):
 
 
 ##No se si funca como deberia
-def desasociarUsuariodeProyecto(miembro):
+def desasociarUsuariodeProyecto(miembros):
     """Metodo para desasociar a un usuario de un proyecto
 
     :param miembro: usuario que va ser excluido del proyecto
     :return:
     """
-    u = User.objects.get(username=miembro)
-    ##u.proyecto.objects.delete(nombre=project_name)
-    u.proyecto.delete()
-    u.save()
+
+    for miembro in miembros:
+        u = User.objects.get(username=miembro)
+        u.proyecto.delete()
+        u.save()
 
 
 

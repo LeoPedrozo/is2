@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import Group
 from gestionUsuario.models import User
+from proyectos.models import Proyecto
 import datetime
 
 
@@ -32,9 +33,6 @@ class crearproyectoForm(forms.Form):
     miembros = forms.ModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin","Admin"]), initial=0)
 
 
-
-
-
 # crear formualrios de  modificar y eliminar proyecto.
 # el campo de miembros pierde el estado original, se solucionaria si el modelo de proyecto si tenga un campo de miembros
 
@@ -55,7 +53,7 @@ class modificarproyectoForm(forms.Form):
         self.fields['fecha'].initial=self.request.user.proyecto.fecha
         self.fields['fecha_entrega'].initial=self.request.user.proyecto.fecha_entrega
         self.fields['id'].initial=self.request.user.proyecto_id
-        self.fields['miembros'].queryset=User.objects.filter(proyecto_id=self.request.user.proyecto_id).exclude(username="admin")
+        self.fields['miembros'].queryset=User.objects.filter(proyecto_id=self.request.user.proyecto_id).exclude(username='admin')
 
     estados = (
         ('PENDIENTE', 'Pendiente'),
@@ -73,10 +71,11 @@ class modificarproyectoForm(forms.Form):
 
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     fecha_entrega = forms.DateField(initial=datetime.date.today, label="Fecha de Entrega")
-    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.filter().exclude(username="admin"),initial=0, label="Miembros")
-    usuarios= forms.ModelMultipleChoiceField(queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username="admin"), initial=0,label="Agregar Nuevos usuarios")
+    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
+    usuarios= forms.ModelMultipleChoiceField(queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 
 
-
+class eliminarProyectoForm(forms.Form):
+    Proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0,label="Seleccione algun proyecto")
 
 

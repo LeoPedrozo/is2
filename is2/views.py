@@ -1,3 +1,4 @@
+import requests
 from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.db import models
@@ -13,12 +14,12 @@ from Sprints.views import nuevoSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm
+from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm
 from userStory.forms import crearHistoriaForm,seleccionarHistoriaForm,modificarHistoriaForm
 from userStory.models import Historia
-from userStory.views import nuevaHistoria
+from userStory.views import nuevaHistoria, updateHistoria
 
 #Hola mundo para probar django
 @login_required
@@ -153,9 +154,9 @@ def seleccionarRol(request):
         formulario = seleccionarRolForm(request.POST)
         if (formulario.is_valid()):
             RolSeleccionado = formulario.cleaned_data['Rol']
-
-            request.session['RolSeleccionado']=RolSeleccionado.name
-
+            #request.session
+            #request.session['RolSeleccionado']=RolSeleccionado.name
+            request.session['RolSeleccionado'] = RolSeleccionado
             modeloRol=model_to_dict(RolSeleccionado)
 
             print("Modelo Rol: ")
@@ -185,6 +186,24 @@ def modificarRol(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosdeRol=formulario.cleaned_data
+            print("cleaned data de los datos de Rol cambiados")
+
+            #1 Se crea el nuevo Rol con sus respectivos permisos
+            fabricarRol(datosdeRol)
+            #2 Se estira el nuevo rol desde la base de datos
+              # Se estira la viejo rol desde el diccionario de session
+            viejoRol = request.session['RolSeleccionado']
+            nuevoRol = Group.objects.get_or_create(name=datosRol["RolName"])
+
+            #3 Se estira los usuarios que forman parte al viejo Rol
+            usuarios = User.objects.filter(groups__name=viejoRol.name)
+
+            #4 Se colocan los usuarios del viejo Rol al nuevo Rol
+            for usuario in usuarios:
+                enlazar_Usuario_con_Rol(usuario, nuevoRol)
+
+            #5 Se elimina el viejo Rol
+            viejoRol.delete()
             # Retornar mensaje de exito
             return render(request, "outputmodificarRol.html", {"rolModificado": datosdeRol})
     else:
@@ -218,8 +237,6 @@ def registrarUsuario(request):
         formulario = registroDeUsuariosForm()
 
     return render(request, "RegistrarUsuario.html", {"form":formulario})
-
-
 
 
 #VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
@@ -259,19 +276,23 @@ def modificarProyecto(request):
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
-        ##instance = User.objects.filter(user=request.user).first()
-
         formulario = modificarproyectoForm(request.POST,)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
+            idproyecto=formulario.cleaned_data['id']
             datosProyecto=formulario.cleaned_data
+
             miembros = formulario.cleaned_data["miembros"]
+            usuarios = formulario.cleaned_data["usuarios"]
 
             updateProyecto(formulario.cleaned_data)
 
-            proyecto = getProyecto(formulario.cleaned_data['nombre'])
+            proyecto = getProyecto(idproyecto)
 
-            asociarProyectoaUsuario(proyecto,miembros)
+            #se agrega los usuarios nuevos
+            asociarProyectoaUsuario(proyecto,usuarios)
+            #se elimina los usuarios viejos
+            desasociarUsuariodeProyecto(miembros)
 
             # Retornar mensaje de exito
             return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto})
@@ -279,6 +300,29 @@ def modificarProyecto(request):
         formulario = modificarproyectoForm(request=request)
 
     return render(request, "modificarProyecto.html", {"form": formulario})
+
+
+
+def eliminarProyecto(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+    """
+    if request.method == "POST":
+        formulario = eliminarProyectoForm(request.POST)
+        if (formulario.is_valid()):
+            ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
+
+            # Acciones a realizar con el form
+            ProyectoSeleccionado.delete()
+            # Retornar mensaje de exito
+            return render(request, "outputEliminarProyecto.html", {"Proyectoeliminado": ProyectoSeleccionado})
+    else:
+        formulario = eliminarProyectoForm()
+
+    return render(request, "eliminarProyecto.html", {"form": formulario})
 
 
 
@@ -395,18 +439,89 @@ def crearHistoria(request):
     :return: respuesta a la solicitud de ejecucion de crearHistoria
     """
     if request.method == "POST":
-        formulario = crearHistoriaForm(request.POST)
+        formulario = crearHistoriaForm(request.POST,proyecto=request.session['idproyecto'])
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosHistoria=formulario.cleaned_data
+            print("el cleaned data en bruto del formulario de crear Historia")
+            print(datosHistoria)
+
+
+            datosHistoria['proyecto']=getProyecto(formulario.cleaned_data['proyecto'])
+
+            print("el cleaned data en bruto del formulario de crear Historia + asociado al proyecto actual")
+            print(datosHistoria)
 
             nuevaHistoria(datosHistoria)
+
             # Retornar mensaje de exito
             return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria})
     else:
-        formulario = crearHistoriaForm()
+        usuarioActual = User.objects.get(username=request.user.username)
+        u = model_to_dict(usuarioActual)
+        request.session['idproyecto'] = u['proyecto']
+
+        formulario = crearHistoriaForm(proyecto=request.session['idproyecto'])
 
     return render(request, "crearUserStory.html", {"form": formulario})
+
+
+
+#Seleccionar historia 1
+def seleccionarHistoria(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarHistoriaForm(request.POST,proyecto=request.session['idproyecto'] )
+        if (formulario.is_valid()):
+
+            HistoriaSeleccionada=model_to_dict(formulario.cleaned_data['Historia'])
+            print("el modelo de historia es:")
+            print(HistoriaSeleccionada)
+
+            request.session['HistoriaSeleccionada']=HistoriaSeleccionada
+
+            return redirect(modificarHistoria)
+    else:
+        usuarioActual = User.objects.get(username=request.user.username)
+        usu=model_to_dict(usuarioActual)
+        request.session['idproyecto'] = usu['proyecto']
+        formulario = seleccionarHistoriaForm(proyecto=request.session['idproyecto'] )
+    return render(request, "seleccionarHistoria.html", {"form": formulario})
+
+#modificar historia 2
+def modificarHistoria(request):
+    """
+        Metodo para la modificacion de proyectos
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+
+        formulario = modificarHistoriaForm(request.POST,datosdelaHistoria=request.session['HistoriaSeleccionada'])
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosdeHistoria = formulario.cleaned_data
+            print("Los datos del cleaned data son ahora")
+
+            print(datosdeHistoria)
+            #metodo que realiza la logica de la modificacion
+
+            updateHistoria(datosdeHistoria)
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarHistoria.html", {"HistoriaCreada": datosdeHistoria})
+    else:
+
+        formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
+
+    return render(request, "modificarHistoria.html", {"form": formulario})
+
+
 
 
 
@@ -421,55 +536,3 @@ def verHistorias(request):
     print(historias)
 
     return render(request, "HistoriaContent.html", {"historias": historias})
-
-
-#Seleccionar historia 1
-def seleccionarHistoria(request):
-    """
-        Metodo para la asignacion de roles a los usuarios del sistema
-
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
-    """
-    if request.method == "POST":
-        formulario = seleccionarHistoriaForm(request.POST,proyecto=request.session)
-        if (formulario.is_valid()):
-            HistoriaSeleccionada = formulario.cleaned_data['Historia']
-
-            print("el modelo de historia es:")
-            print(HistoriaSeleccionada)
-
-            request.session['HistoriaSeleccionada']=HistoriaSeleccionada
-
-            return redirect(modificarHistoria)
-    else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        request.session['ProyectoActual']=usuarioActual.proyecto.id
-        formulario = seleccionarHistoriaForm(proyecto=request.session['ProyectoActual'])
-
-    return render(request, "seleccionarHistoria.html", {"form": formulario})
-
-#modificar historia 2
-def modificarHistoria(request):
-    """
-        Metodo para la modificacion de proyectos
-
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR PROYECTO
-    """
-    if request.method == "POST":
-
-        formulario = modificarHistoriaForm(request.POST,)
-        if (formulario.is_valid()):
-            # Acciones a realizar con el form
-            datosdeHistoria = formulario.cleaned_data
-
-            #metodo que realiza la logica de la modificacion
-
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarHistoria.html", {"HistoriaCreada": datosdeHistoria})
-    else:
-
-        formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
-
-    return render(request, "modificarHistoria.html", {"form": formulario})

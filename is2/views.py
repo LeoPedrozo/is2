@@ -285,6 +285,13 @@ def modificarProyecto(request):
 
 ##Metodo bastante horrible pero que hace su funcion.
 def getPermisos(request,listaPermisos):
+    """
+    Metodo de gestion y asignacion de permisos para los usuarios del sistema
+
+    :param request: solicitud recibida
+    :param listaPermisos: lista de permisos a ser distribuidos
+    :return: respuesta a la solicitud de ejecucion recibida para el metodo GETPERMISOS
+    """
     listaProyecto=[]
     listaHistoria=[]
     listaSprint=[]
@@ -383,7 +390,12 @@ def verMiembros(request):
 
 
 def crearHistoria(request):
+    """
+    Metodo que es ejecutado para crear un user story
 
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de crearHistoria
+    """
     if request.method == "POST":
         formulario = crearHistoriaForm(request.POST)
         if (formulario.is_valid()):
@@ -397,6 +409,8 @@ def crearHistoria(request):
         formulario = crearHistoriaForm()
 
     return render(request, "crearUserStory.html", {"form": formulario})
+
+
 
 def verHistorias(request):
     """

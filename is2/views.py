@@ -191,7 +191,7 @@ def modificarRol(request):
 
         formulario = modificarRolForm(datosdelRol=request.session)
 
-    return render(request, "modificarProyecto.html", {"form": formulario})
+    return render(request, "modificarRol.html", {"form": formulario})
 
 
 

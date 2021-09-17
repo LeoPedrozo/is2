@@ -2,6 +2,7 @@ from django.db import models
 #from gestionUsuario.models import User
 
 # Create your models here.
+
 """
 Definimos los estados de un userStory
 """
@@ -34,6 +35,7 @@ class Historia(models.Model):
     horasEstimadas = models.IntegerField(default=0)
     estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES)
     horas_dedicadas=models.IntegerField(default=0)
+    proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
     #encargado = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:

@@ -16,7 +16,7 @@ from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm
-from userStory.forms import crearHistoriaForm
+from userStory.forms import crearHistoriaForm,seleccionarHistoriaForm,modificarHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria
 
@@ -347,8 +347,6 @@ def crearSprint(request):
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
-        ##instance = User.objects.filter(user=request.user).first()
-
         formulario = crearSprintForm(request.POST,request=request)
         if (formulario.is_valid()):
             # Acciones a realizar con el form

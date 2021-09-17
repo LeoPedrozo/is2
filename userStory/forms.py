@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group
 from gestionUsuario.models import User
 import datetime
 
+from userStory.models import Historia
+
 
 class seleccionarHistoriaForm(forms.Form):
     """

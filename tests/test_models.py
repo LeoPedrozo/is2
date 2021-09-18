@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from gestionUsuario.models import User
 from userStory.models import Historia
 
-class Test(unittest.TestCase):
+class TestModels(unittest.TestCase):
 
     """
     Clase de testeo de todos los models del sistema

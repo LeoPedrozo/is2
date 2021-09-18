@@ -18,7 +18,7 @@ def nuevoProyecto(datos):
                    descripcion = datos['descripcion'],fecha = datos['fecha'],
                    fecha_entrega =datos['fecha_entrega'],fecha_finalizacion=None)
     newP.save()
-
+    return newP
 
 
 
@@ -48,8 +48,8 @@ def getProyecto(project_id):
     :param project_name: nombre del proyecto
     :return: informacion completa del proyecto
     """
-    proyecto=Proyecto.objects.get(id=project_id)
-
+    #proyecto=Proyecto.objects.get(id=project_id)
+    proyecto = Proyecto.objects.get(nombre=project_id)
     return proyecto
 
 

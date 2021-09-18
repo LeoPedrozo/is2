@@ -256,8 +256,8 @@ def crearProyecto(request):
             # Acciones a realizar con el form
             datosProyecto=formulario.cleaned_data
             miembros=formulario.cleaned_data["miembros"]
-            nuevoProyecto(formulario.cleaned_data)
-            proyecto = getProyecto(formulario.cleaned_data['nombre'])
+            proyecto = nuevoProyecto(formulario.cleaned_data)
+            #proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto,miembros)
             # Retornar mensaje de exito
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})

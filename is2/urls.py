@@ -66,6 +66,7 @@ urlpatterns = [
     #next_page=reverse_lazy('Userauth:login') # you can use your named URL here just like you use the **url** tag in your django template
     #), name='logout'),
     path('inicio/logout', LogoutView.as_view()), #Funcion para deslogear del sistema
+    path('logout/', LogoutView.as_view()),  # Funcion para deslogear del sistema
     path('accounts/google/login/callback/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
 
 ]

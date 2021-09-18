@@ -103,7 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.admin">proyectos.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.apps">proyectos.apps module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-proyectos.forms">proyectos.forms module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#proyectos-forms-module">proyectos.forms module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.models">proyectos.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#proyectos-tests-module">proyectos.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.views">proyectos.views module</a></li>
@@ -232,41 +232,8 @@ En esta:</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-proyectos.forms">
-<span id="proyectos-forms-module"></span><h2>proyectos.forms module<a class="headerlink" href="#module-proyectos.forms" title="Enlazar permanentemente con este título">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="proyectos.forms.crearproyectoForm">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">crearproyectoForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.crearproyectoForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
-<p>Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un proyecto</p>
-<p><strong>Form fields:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">nombre</span></code>: Nombre (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">descripcion</span></code>: Descripcion (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">creador</span></code>: Creador (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">estado</span></code>: Estado (<code class="xref py py-class docutils literal notranslate"><span class="pre">ChoiceField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fecha</span></code>: Fecha de Creacion (<code class="xref py py-class docutils literal notranslate"><span class="pre">DateField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fecha_entrega</span></code>: Fecha de Entrega (<code class="xref py py-class docutils literal notranslate"><span class="pre">DateField</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">miembros</span></code>: Miembros (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMultipleChoiceField</span></code>)</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="proyectos.forms.crearproyectoForm.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.crearproyectoForm.__init__" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.forms.crearproyectoForm.estados">
-<span class="sig-name descname"><span class="pre">estados</span></span><em class="property"> <span class="pre">=</span> <span class="pre">(('PENDIENTE',</span> <span class="pre">'Pendiente'),</span> <span class="pre">('INICIADO',</span> <span class="pre">'Iniciado'),</span> <span class="pre">('FINALIZADO',</span> <span class="pre">'Finalizado'),</span> <span class="pre">('CANCELADO',</span> <span class="pre">'Cancelado'))</span></em><a class="headerlink" href="#proyectos.forms.crearproyectoForm.estados" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="proyectos.forms.crearproyectoForm.media">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#proyectos.forms.crearproyectoForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Return all media required to render the widgets on this form.</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="proyectos-forms-module">
+<h2>proyectos.forms module<a class="headerlink" href="#proyectos-forms-module" title="Enlazar permanentemente con este título">¶</a></h2>
 </div>
 <div class="section" id="module-proyectos.models">
 <span id="proyectos-models-module"></span><h2>proyectos.models module<a class="headerlink" href="#module-proyectos.models" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -363,6 +330,12 @@ nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="proyectos.models.Proyecto.historia_set">
+<span class="sig-name descname"><span class="pre">historia_set</span></span><a class="headerlink" href="#proyectos.models.Proyecto.historia_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the M2M <a class="reference internal" href="userStory.html#userStory.models.Historia" title="userStory.models.Historia"><code class="xref py py-class docutils literal notranslate"><span class="pre">Historia</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="proyectos.models.Proyecto.id">
 <span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#proyectos.models.Proyecto.id" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> ID</p>
@@ -393,102 +366,6 @@ nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints</p>
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="proyectos.models.Sprint">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.models.</span></span><span class="sig-name descname"><span class="pre">Sprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.models.Sprint" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
-<p>Implementa la clase de Sprint, almacena datos generales acerca del los sprint de un proyecto:
-identificador, Numero de Sprint, fecha de inicio, fecha fin e historias</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>id</strong> (<em>AutoField</em>) – Id</p></li>
-<li><p><strong>sprintNumber</strong> (<em>IntegerField</em>) – Sprintnumber</p></li>
-<li><p><strong>fecha_inicio</strong> (<em>DateField</em>) – Fecha inicio</p></li>
-<li><p><strong>fecha_fin</strong> (<em>DateField</em>) – Fecha fin</p></li>
-<li><p><strong>historias</strong> (<em>ManyToManyField</em>) – Historias</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py exception">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.DoesNotExist">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#proyectos.models.Sprint.DoesNotExist" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.MultipleObjectsReturned">
-<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#proyectos.models.Sprint.MultipleObjectsReturned" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.fecha_fin">
-<span class="sig-name descname"><span class="pre">fecha_fin</span></span><a class="headerlink" href="#proyectos.models.Sprint.fecha_fin" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> fecha fin</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.fecha_inicio">
-<span class="sig-name descname"><span class="pre">fecha_inicio</span></span><a class="headerlink" href="#proyectos.models.Sprint.fecha_inicio" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> fecha inicio</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.get_next_by_fecha_fin">
-<span class="sig-name descname"><span class="pre">get_next_by_fecha_fin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_fin&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.models.Sprint.get_next_by_fecha_fin" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Autogenerated:</strong> Finds next instance based on <a class="reference internal" href="#proyectos.models.Sprint.fecha_fin" title="proyectos.models.Sprint.fecha_fin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_fin</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.get_next_by_fecha_inicio">
-<span class="sig-name descname"><span class="pre">get_next_by_fecha_inicio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_inicio&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.models.Sprint.get_next_by_fecha_inicio" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Autogenerated:</strong> Finds next instance based on <a class="reference internal" href="#proyectos.models.Sprint.fecha_inicio" title="proyectos.models.Sprint.fecha_inicio"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_inicio</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.get_previous_by_fecha_fin">
-<span class="sig-name descname"><span class="pre">get_previous_by_fecha_fin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_fin&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.models.Sprint.get_previous_by_fecha_fin" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Autogenerated:</strong> Finds previous instance based on <a class="reference internal" href="#proyectos.models.Sprint.fecha_fin" title="proyectos.models.Sprint.fecha_fin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_fin</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.get_previous_by_fecha_inicio">
-<span class="sig-name descname"><span class="pre">get_previous_by_fecha_inicio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_inicio&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.models.Sprint.get_previous_by_fecha_inicio" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Autogenerated:</strong> Finds previous instance based on <a class="reference internal" href="#proyectos.models.Sprint.fecha_inicio" title="proyectos.models.Sprint.fecha_inicio"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_inicio</span></code></a>.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.historias">
-<span class="sig-name descname"><span class="pre">historias</span></span><a class="headerlink" href="#proyectos.models.Sprint.historias" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> historias, accesses the M2M <a class="reference internal" href="#proyectos.models.Sprint" title="proyectos.models.Sprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sprint</span></code></a> model.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.id">
-<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#proyectos.models.Sprint.id" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> id</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.objects">
-<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#proyectos.models.Sprint.objects" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.proyecto_set">
-<span class="sig-name descname"><span class="pre">proyecto_set</span></span><a class="headerlink" href="#proyectos.models.Sprint.proyecto_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> id sprints, accesses the M2M <a class="reference internal" href="#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a> model.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="proyectos.models.Sprint.sprintNumber">
-<span class="sig-name descname"><span class="pre">sprintNumber</span></span><a class="headerlink" href="#proyectos.models.Sprint.sprintNumber" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> sprintNumber</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="proyectos-tests-module">
 <h2>proyectos.tests module<a class="headerlink" href="#proyectos-tests-module" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -496,9 +373,42 @@ identificador, Numero de Sprint, fecha de inicio, fecha fin e historias</p>
 <div class="section" id="module-proyectos.views">
 <span id="proyectos-views-module"></span><h2>proyectos.views module<a class="headerlink" href="#module-proyectos.views" title="Enlazar permanentemente con este título">¶</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="proyectos.views.deleteProyecto">
+<span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">deleteProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proyecto</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.deleteProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="proyectos.views.getProyecto">
+<span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">getProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.getProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para obtener todos los datos de un proyecto</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>project_name</strong> – nombre del proyecto</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>informacion completa del proyecto</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="proyectos.views.nuevoProyecto">
 <span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">nuevoProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.nuevoProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Metodo que se ejecuta para visualizar los datos de un nuevo proyecto creado</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>datos</strong> – informaciones referentes a los campos de datos de un proyecto</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>info del nuevo proyecto</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="proyectos.views.updateProyecto">
+<span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">updateProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.updateProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que se ejecuta para actualizar los datos de un nuevo proyecto creado</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros</dt>
 <dd class="field-odd"><p><strong>datos</strong> – informaciones referentes a los compos de datos de un proyecto</p>

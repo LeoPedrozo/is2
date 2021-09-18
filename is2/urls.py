@@ -27,6 +27,9 @@ from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, as
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
+from django.urls import path
+from django.urls import include, re_path
+
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
@@ -54,11 +57,15 @@ urlpatterns = [
 
     path('listarMiembros/',verMiembros),
 
-    path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
+    re_path(r'^docs/', include('docs.urls')),
+    path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)
     path('accounts/', include('allauth.urls')), #Pagina SSO de Google mediante OAuth2
-    path('logout', LogoutView.as_view()), #Funcion para deslogear del sistema
-    path('accounts/google/login/callback/inicio/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
+    #path('logout/', LogoutView.as_view(
+    #next_page=reverse_lazy('Userauth:login') # you can use your named URL here just like you use the **url** tag in your django template
+    #), name='logout'),
+    path('inicio/logout', LogoutView.as_view()), #Funcion para deslogear del sistema
+    path('accounts/google/login/callback/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
 
 ]

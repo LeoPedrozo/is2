@@ -235,14 +235,14 @@ En esta:</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="userStory.models.ESTADOS_CHOICES">
 <span class="sig-prename descclassname"><span class="pre">userStory.models.</span></span><span class="sig-name descname"><span class="pre">ESTADOS_CHOICES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[('FINALIZADO',</span> <span class="pre">'Finalizado'),</span> <span class="pre">('PENDIENTE',</span> <span class="pre">'Pendiente'),</span> <span class="pre">('EN_CURSO',</span> <span class="pre">'En</span> <span class="pre">Curso'),</span> <span class="pre">('QUALITY_ASSURANCE',</span> <span class="pre">'Quality</span> <span class="pre">Assurance')]</span></em><a class="headerlink" href="#userStory.models.ESTADOS_CHOICES" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Definimos la prioridad de un UserStory</p>
+<dd><p>Definimos la prioridad de un userStory</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="userStory.models.Historia">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userStory.models.</span></span><span class="sig-name descname"><span class="pre">Historia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.Historia" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
-<p>Implementa la clase de Historias de Usuario, almacena datos generales acerca del UserStory:
+<p>Implementa la clase de Historias de Usuario, almacena datos generales acerca del userStory:
 identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros</dt>
@@ -255,6 +255,7 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <li><p><strong>horasEstimadas</strong> (<em>IntegerField</em>) – Horasestimadas</p></li>
 <li><p><strong>estados</strong> (<em>CharField</em>) – Estados</p></li>
 <li><p><strong>horas_dedicadas</strong> (<em>IntegerField</em>) – Horas dedicadas</p></li>
+<li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
 </ul>
 </dd>
 </dl>
@@ -348,9 +349,21 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.proyecto">
+<span class="sig-name descname"><span class="pre">proyecto</span></span><a class="headerlink" href="#userStory.models.Historia.proyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.proyecto_id">
+<span class="sig-name descname"><span class="pre">proyecto_id</span></span><a class="headerlink" href="#userStory.models.Historia.proyecto_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="userStory.models.Historia.sprint_set">
 <span class="sig-name descname"><span class="pre">sprint_set</span></span><a class="headerlink" href="#userStory.models.Historia.sprint_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> historias, accesses the M2M <a class="reference internal" href="proyectos.html#proyectos.models.Sprint" title="proyectos.models.Sprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sprint</span></code></a> model.</p>
+<dd><p><strong>Model field:</strong> historias, accesses the M2M <a class="reference internal" href="Sprints.html#Sprints.models.Sprint" title="Sprints.models.Sprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sprint</span></code></a> model.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -367,6 +380,16 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 </div>
 <div class="section" id="module-userStory.views">
 <span id="userstory-views-module"></span><h2>userStory.views module<a class="headerlink" href="#module-userStory.views" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="userStory.views.nuevaHistoria">
+<span class="sig-prename descclassname"><span class="pre">userStory.views.</span></span><span class="sig-name descname"><span class="pre">nuevaHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datosHistoria</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.views.nuevaHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="userStory.views.updateHistoria">
+<span class="sig-prename descclassname"><span class="pre">userStory.views.</span></span><span class="sig-name descname"><span class="pre">updateHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datosHistoria</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.views.updateHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-userStory">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-userStory" title="Enlazar permanentemente con este título">¶</a></h2>

@@ -11,3 +11,4 @@ is2
    proyectos
    userStory
    oauth_app
+   Sprints

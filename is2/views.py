@@ -1,5 +1,6 @@
 import requests
 from django.forms import model_to_dict
+from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.db import models
 
@@ -12,7 +13,7 @@ from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuari
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
 from Sprints.views import nuevoSprint
 from gestionUsuario.models import User
-from gestionUsuario.views import asociarProyectoaUsuario
+from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
@@ -193,7 +194,7 @@ def modificarRol(request):
             #2 Se estira el nuevo rol desde la base de datos
               # Se estira la viejo rol desde el diccionario de session
             viejoRol = request.session['RolSeleccionado']
-            nuevoRol = Group.objects.get_or_create(name=datosRol["RolName"])
+            nuevoRol = Group.objects.get_or_create(name=datosdeRol["RolName"])
 
             #3 Se estira los usuarios que forman parte al viejo Rol
             usuarios = User.objects.filter(groups__name=viejoRol.name)

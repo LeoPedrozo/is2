@@ -96,7 +96,8 @@ class modificarHistoriaForm(forms.Form):
     horas_dedicadas = forms.IntegerField(initial=0)
 
 
-
+class eliminarHistoriaForm(forms.Form):
+    Historia = forms.ModelChoiceField(queryset=Historia.objects.all(), initial=0,label="Seleccione Una Historia")
 
 
 

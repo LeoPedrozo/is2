@@ -18,7 +18,7 @@ from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm
-from userStory.forms import crearHistoriaForm,seleccionarHistoriaForm,modificarHistoriaForm
+from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
 
@@ -515,7 +515,7 @@ def modificarHistoria(request):
 
             updateHistoria(datosdeHistoria)
             # Retornar mensaje de exito
-            return render(request, "outputmodificarHistoria.html", {"HistoriaCreada": datosdeHistoria})
+            return render(request, "outputmodificarHistoria.html", {"historiaModificada": datosdeHistoria})
     else:
 
         formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
@@ -524,7 +524,26 @@ def modificarHistoria(request):
 
 
 
+def eliminarHistoria(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
 
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+    """
+    if request.method == "POST":
+        formulario = eliminarHistoriaForm(request.POST)
+        if (formulario.is_valid()):
+            HistoriaSeleccionado = formulario.cleaned_data['Historia']
+
+            # Acciones a realizar con el form
+            HistoriaSeleccionado.delete()
+            # Retornar mensaje de exito
+            return render(request, "outputEliminarHistoria.html", {"HistoriaEliminado": HistoriaSeleccionado})
+    else:
+        formulario = eliminarHistoriaForm()
+
+    return render(request, "eliminarHistoria.html", {"form": formulario})
 
 def verHistorias(request):
     """

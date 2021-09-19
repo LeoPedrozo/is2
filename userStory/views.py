@@ -20,7 +20,7 @@ def updateHistoria(datosHistoria):
     oldH.nombre=datosHistoria["nombre"]
     oldH.descripcion=datosHistoria["descripcion"]
     oldH.prioridad=datosHistoria["prioridad"]
-    oldH.fecha_creacion = datosHistoria["fecha_creacion"]
+    #oldH.fecha_creacion = datosHistoria["fecha_creacion"]
     oldH.horasEstimadas=datosHistoria["horasEstimadas"]
     oldH.estados=datosHistoria["estados"]
     oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]

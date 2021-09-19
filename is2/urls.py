@@ -21,7 +21,7 @@ from django.urls import path
 from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
     registrarUsuario, \
     modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol, crearHistoria, verHistorias, \
-    seleccionarHistoria, modificarHistoria, eliminarProyecto
+    seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -54,6 +54,7 @@ urlpatterns = [
 
     path('modificarHistoria/1/',seleccionarHistoria),
     path('modificarHistoria/2/',modificarHistoria),
+    path('eliminarHistoria/',eliminarHistoria),
 
     path('listarMiembros/',verMiembros),
 

@@ -11,7 +11,7 @@
 
 <head>
 
-    <title>Historia Modificada</title>
+    <title>Historia Eliminado</title>
     <meta charset="utf-8"/>
     <!-- Debe mostrarse en la version de edge -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -26,22 +26,13 @@
     <div class="col s12 m6">
       <div class="card light-blue darken-3">
         <div class="card-content white-text">
-          <span class="card-title">Modificacion de historia exitosa!</span>
+          <span class="card-title">Eliminacion de Historia exitosa!</span>
+            <p>Historia : {{ HistoriaEliminado}}
 
-
-            <p> Id Historia : {{ historiaModificada.id_historia }}
-                <br>Nombre : {{ historiaModificada.nombre }}
-                <br>Descripcion: {{ historiaModificada.descripcion }}
-                <br>Prioridad: {{ historiaModificada.prioridad }}
-                <br>Fecha de creacion: {{ historiaModificada.fecha_creacion }}
-                <br>Horas estimadas: {{ historiaModificada.horasEstimadas }}
-                <br>Estado: {{ historiaModificada.estados }}
-                <br>Horas dedicadas: {{ historiaModificada.horas_dedicadas }}
             </p>
-
         </div>
         <div class="card-action">
-          <a href="javascript:history.back()" style="color:#bcdbe3;">Volver a modificar Historia</a>
+          <a href="javascript:history.back()" style="color:#bcdbe3;">eliminar otro Historia</a>
           <a href="http://127.0.0.1:8000/inicio/" style="color:#bcdbe3;">Inicio</a>
         </div>
       </div>
@@ -51,3 +42,4 @@
 </body>
 
 </html>
+

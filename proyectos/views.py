@@ -48,8 +48,10 @@ def getProyecto(project_id):
     :param project_name: nombre del proyecto
     :return: informacion completa del proyecto
     """
-    #proyecto=Proyecto.objects.get(id=project_id)
-    proyecto = Proyecto.objects.get(nombre=project_id)
+    print("EL id del proyecto es ", project_id)
+    proyecto=Proyecto.objects.filter(id=project_id).latest('id')
+
+   # proyecto = Proyecto.objects.get(nombre=project_id)
     return proyecto
 
 

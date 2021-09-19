@@ -67,7 +67,7 @@ def fabricarRol(Modelos):
             new_group.permissions.add(model_add_perm)
 
     print("creado con exito")
-
+    return new_group
 
 def removerRol(RolSeleccionado):
     """Metodo para eliminar rol

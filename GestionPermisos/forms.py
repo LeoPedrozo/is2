@@ -48,7 +48,7 @@ class modificarRolForm(forms.Form):
         self.datos = kwargs.pop("datosdelRol")  # store value of request
 
         super(modificarRolForm, self).__init__(*args, **kwargs)
-        self.fields['RolName'].initial = self.datos['RolSeleccionado']
+        self.fields['RolName'].initial = self.datos['nombreRol']
         self.fields['Proyecto'].initial=self.datos['Proyecto']
         self.fields['Historia'].initial = self.datos['Historia']
         self.fields['Sprint'].initial = self.datos['Sprint']

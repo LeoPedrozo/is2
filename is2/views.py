@@ -155,16 +155,16 @@ def seleccionarRol(request):
         formulario = seleccionarRolForm(request.POST)
         if (formulario.is_valid()):
             RolSeleccionado = formulario.cleaned_data['Rol']
-            #request.session
-            #request.session['RolSeleccionado']=RolSeleccionado.name
-            request.session['RolSeleccionado'] = RolSeleccionado
             modeloRol=model_to_dict(RolSeleccionado)
-
             print("Modelo Rol: ")
             print(modeloRol)
 
-            getPermisos(request,modeloRol['permissions'])
+            request.session['RolSeleccionado_id'] = modeloRol['id']
+            request.session['nombreRol'] = modeloRol['name']
 
+
+            getPermisos(request,modeloRol['permissions'])
+            print("Permisos obtenidos")
 
             return redirect(modificarRol)
     else:
@@ -175,38 +175,37 @@ def seleccionarRol(request):
 #modificar Rol 2
 def modificarRol(request):
     """
-    Metodo para la modificacion de proyectos
+    Metodo para la modificacion de roles
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de MODIFICAR ROL
     """
     if request.method == "POST":
-
 
         formulario = modificarRolForm(request.POST,datosdelRol=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
-            datosdeRol=formulario.cleaned_data
-            print("cleaned data de los datos de Rol cambiados")
+            datosNuevos=formulario.cleaned_data
+            print("cleaned data de los datos de Rol cambiados ",datosNuevos)
+            #Obtener los usuarios que pertenecen al viejo rol, buscando por la id del rol
+            viejoRol_id = request.session['RolSeleccionado_id']
+            #Se estira los usuarios que forman parte al viejo Rol
+            usuarios = User.objects.filter(groups__id=viejoRol_id)
 
-            #1 Se crea el nuevo Rol con sus respectivos permisos
-            fabricarRol(datosdeRol)
-            #2 Se estira el nuevo rol desde la base de datos
-              # Se estira la viejo rol desde el diccionario de session
-            viejoRol = request.session['RolSeleccionado']
-            nuevoRol = Group.objects.get_or_create(name=datosdeRol["RolName"])
+            # Se elimina el viejo Rol
+            modeloViejoRol = Group.objects.filter(id=viejoRol_id)
+            modeloViejoRol.delete()
 
-            #3 Se estira los usuarios que forman parte al viejo Rol
-            usuarios = User.objects.filter(groups__name=viejoRol.name)
+            #Se crea el nuevo Rol con sus respectivos permisos
+            nombreRol = datosNuevos['RolName']
+            nuevoRol = fabricarRol(datosNuevos)
 
-            #4 Se colocan los usuarios del viejo Rol al nuevo Rol
+            #Se enlazan los usuarios del viejo Rol al nuevo Rol
             for usuario in usuarios:
                 enlazar_Usuario_con_Rol(usuario, nuevoRol)
 
-            #5 Se elimina el viejo Rol
-            viejoRol.delete()
             # Retornar mensaje de exito
-            return render(request, "outputmodificarRol.html", {"rolModificado": datosdeRol})
+            return render(request, "outputmodificarRol.html", {"rolModificado": datosNuevos, "nombreRol":nombreRol})
     else:
 
         formulario = modificarRolForm(datosdelRol=request.session)

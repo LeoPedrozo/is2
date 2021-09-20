@@ -35,7 +35,6 @@ class TestForms(unittest.TestCase):
     def test_crearRolForm(self):
         form = crearRolForm(data={
             'RolName':'Nombre rol',
-            'Historia':self.historia,
             'Proyecto':self.proyecto,
             'Sprint':self.sprints
         })
@@ -63,7 +62,6 @@ class TestForms(unittest.TestCase):
     def test_modificarRolForm(self):
         form = modificarRolForm(data={
             'RolName':'Nombre rol',
-            'Historia':self.historia,
             'Proyecto':self.proyecto,
             'Sprint':self.sprints
         })

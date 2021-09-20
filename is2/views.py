@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.db import models
 
-from django.template import  Template,Context
+from django.template import Template, Context
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
@@ -15,14 +15,15 @@ from Sprints.views import nuevoSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
+from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
 
-#Hola mundo para probar django
+
+# Hola mundo para probar django
 @login_required
 def saludo(request):
     """
@@ -32,6 +33,7 @@ def saludo(request):
     :return: respuesta
     """
     return render(request, "rolCreado.html", {"nombre": "Jose"})
+
 
 def inicio(request):
     """
@@ -51,8 +53,8 @@ def inicio(request):
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 
 
-#Para acceder directamente a los archivos guardados en el directorio docs
-#(Todavia no se ha implementado)
+# Para acceder directamente a los archivos guardados en el directorio docs
+# (Todavia no se ha implementado)
 def documentaciones(request):
     """
     Metodo para acceder directamente a los archivos referentes a la documentacion del sistema
@@ -60,7 +62,7 @@ def documentaciones(request):
     :param request: consulta recibida
     :return: respuesta: de redireccionamiento
     """
-    return render(request,"html/index.html",{})
+    return render(request, "html/index.html", {})
 
 
 ##VISTAS RELACIONADAS AL MANEJO DE ROL
@@ -74,24 +76,25 @@ def crearRol(request):
     """
     if request.method == "POST":
         formulario = crearRolForm(request.POST)
-        if(formulario.is_valid()):
+        if (formulario.is_valid()):
             datosRol = formulario.cleaned_data
 
             print(formulario.cleaned_data)
 
             nombreRol = formulario.cleaned_data["RolName"]
-            historia=formulario.cleaned_data["Historia"]
-            proyecto=formulario.cleaned_data["Proyecto"]
-            sprint=formulario.cleaned_data["Sprint"]
+            historia = formulario.cleaned_data["Historia"]
+            proyecto = formulario.cleaned_data["Proyecto"]
+            sprint = formulario.cleaned_data["Sprint"]
 
-            #Acciones a realizar con el form
+            # Acciones a realizar con el form
             fabricarRol(datosRol)
-            #Retornar mensaje de exito
-            return render(request, "rolCreado.html", {"nombreRol":nombreRol,"historia":historia,"proyecto":proyecto,"sprint":sprint})
+            # Retornar mensaje de exito
+            return render(request, "rolCreado.html",
+                          {"nombreRol": nombreRol, "historia": historia, "proyecto": proyecto, "sprint": sprint})
     else:
         formulario = crearRolForm()
 
-    return render(request, "crearRol.html",{"form":formulario})
+    return render(request, "crearRol.html", {"form": formulario})
 
 
 def asignarRol(request):
@@ -103,20 +106,20 @@ def asignarRol(request):
     """
     if request.method == "POST":
         formulario = asignarRolForm(request.POST)
-        if(formulario.is_valid()):
-            datosRol=formulario.cleaned_data
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
             userdata = formulario.cleaned_data['Usuario']
             rol = formulario.cleaned_data['Roles']
-            #Acciones a realizar con el form
+            # Acciones a realizar con el form
 
-            enlazar_Usuario_con_Rol(userdata,rol)
+            enlazar_Usuario_con_Rol(userdata, rol)
 
-            #Retornar mensaje de exito
-            return render(request,"outputAsignarRol.html",{"asignaciondeRol":datosRol})
+            # Retornar mensaje de exito
+            return render(request, "outputAsignarRol.html", {"asignaciondeRol": datosRol})
     else:
         formulario = asignarRolForm()
 
-    return render(request, "asignarRol.html",{"form":formulario})
+    return render(request, "asignarRol.html", {"form": formulario})
 
 
 def eliminarRol(request):
@@ -143,7 +146,7 @@ def eliminarRol(request):
     return render(request, "eliminarRol.html", {"form": formulario})
 
 
-#modificar Rol 1
+# modificar Rol 1
 def seleccionarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -155,15 +158,14 @@ def seleccionarRol(request):
         formulario = seleccionarRolForm(request.POST)
         if (formulario.is_valid()):
             RolSeleccionado = formulario.cleaned_data['Rol']
-            modeloRol=model_to_dict(RolSeleccionado)
+            modeloRol = model_to_dict(RolSeleccionado)
             print("Modelo Rol: ")
             print(modeloRol)
 
             request.session['RolSeleccionado_id'] = modeloRol['id']
             request.session['nombreRol'] = modeloRol['name']
 
-
-            getPermisos(request,modeloRol['permissions'])
+            getPermisos(request, modeloRol['permissions'])
             print("Permisos obtenidos")
 
             return redirect(modificarRol)
@@ -172,7 +174,8 @@ def seleccionarRol(request):
 
     return render(request, "seleccionarRol.html", {"form": formulario})
 
-#modificar Rol 2
+
+# modificar Rol 2
 def modificarRol(request):
     """
     Metodo para la modificacion de roles
@@ -182,30 +185,30 @@ def modificarRol(request):
     """
     if request.method == "POST":
 
-        formulario = modificarRolForm(request.POST,datosdelRol=request.session)
+        formulario = modificarRolForm(request.POST, datosdelRol=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
-            datosNuevos=formulario.cleaned_data
-            print("cleaned data de los datos de Rol cambiados ",datosNuevos)
-            #Obtener los usuarios que pertenecen al viejo rol, buscando por la id del rol
+            datosNuevos = formulario.cleaned_data
+            print("cleaned data de los datos de Rol cambiados ", datosNuevos)
+            # Obtener los usuarios que pertenecen al viejo rol, buscando por la id del rol
             viejoRol_id = request.session['RolSeleccionado_id']
-            #Se estira los usuarios que forman parte al viejo Rol
+            # Se estira los usuarios que forman parte al viejo Rol
             usuarios = User.objects.filter(groups__id=viejoRol_id)
 
             # Se elimina el viejo Rol
             modeloViejoRol = Group.objects.filter(id=viejoRol_id)
             modeloViejoRol.delete()
 
-            #Se crea el nuevo Rol con sus respectivos permisos
+            # Se crea el nuevo Rol con sus respectivos permisos
             nombreRol = datosNuevos['RolName']
             nuevoRol = fabricarRol(datosNuevos)
 
-            #Se enlazan los usuarios del viejo Rol al nuevo Rol
+            # Se enlazan los usuarios del viejo Rol al nuevo Rol
             for usuario in usuarios:
                 enlazar_Usuario_con_Rol(usuario, nuevoRol)
 
             # Retornar mensaje de exito
-            return render(request, "outputmodificarRol.html", {"rolModificado": datosNuevos, "nombreRol":nombreRol})
+            return render(request, "outputmodificarRol.html", {"rolModificado": datosNuevos, "nombreRol": nombreRol})
     else:
 
         formulario = modificarRolForm(datosdelRol=request.session)
@@ -213,9 +216,7 @@ def modificarRol(request):
     return render(request, "modificarProyecto.html", {"form": formulario})
 
 
-
 def registrarUsuario(request):
-
     """
     Metodo para registrar usuarios al sistema
 
@@ -224,22 +225,22 @@ def registrarUsuario(request):
     """
     if request.method == "POST":
         formulario = registroDeUsuariosForm(request.POST)
-        if(formulario.is_valid()):
-            datos=formulario.cleaned_data
+        if (formulario.is_valid()):
+            datos = formulario.cleaned_data
             userdata = formulario.cleaned_data['Usuario']
             estado = formulario.cleaned_data['Habilitado']
-            #Acciones a realizar con el form
-            registrar_usuario(userdata,estado)
+            # Acciones a realizar con el form
+            registrar_usuario(userdata, estado)
 
-            #Retornar mensaje de exito
-            return render(request,"outputRegistrarUsuario.html",{"usuario":datos})
+            # Retornar mensaje de exito
+            return render(request, "outputRegistrarUsuario.html", {"usuario": datos})
     else:
         formulario = registroDeUsuariosForm()
 
-    return render(request, "RegistrarUsuario.html", {"form":formulario})
+    return render(request, "RegistrarUsuario.html", {"form": formulario})
 
 
-#VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
+# VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
 
 def crearProyecto(request):
     """
@@ -251,14 +252,14 @@ def crearProyecto(request):
     if request.method == "POST":
         ##instance = User.objects.filter(user=request.user).first()
 
-        formulario = crearproyectoForm(request.POST,request=request)
+        formulario = crearproyectoForm(request.POST, request=request)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
-            datosProyecto=formulario.cleaned_data
-            miembros=formulario.cleaned_data["miembros"]
+            datosProyecto = formulario.cleaned_data
+            miembros = formulario.cleaned_data["miembros"]
             proyecto = nuevoProyecto(formulario.cleaned_data)
-            #proyecto = getProyecto(formulario.cleaned_data['nombre'])
-            asociarProyectoaUsuario(proyecto,miembros)
+            # proyecto = getProyecto(formulario.cleaned_data['nombre'])
+            asociarProyectoaUsuario(proyecto, miembros)
             # Retornar mensaje de exito
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
@@ -275,33 +276,36 @@ def modificarProyecto(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
-    if request.method == "POST":
-        formulario = modificarproyectoForm(request.POST,)
-        if (formulario.is_valid()):
-            # Acciones a realizar con el form
-            idproyecto=formulario.cleaned_data['id']
-            datosProyecto=formulario.cleaned_data
+    print("request modificar proyecto")
 
-            miembros = formulario.cleaned_data["miembros"]
-            usuarios = formulario.cleaned_data["usuarios"]
+    try:
+        if request.method == "POST":
+            formulario = modificarproyectoForm(request.POST, )
+            if (formulario.is_valid()):
+                # Acciones a realizar con el form
+                idproyecto = formulario.cleaned_data['id']
+                datosProyecto = formulario.cleaned_data
 
-            updateProyecto(formulario.cleaned_data)
+                miembros = formulario.cleaned_data["miembros"]
+                usuarios = formulario.cleaned_data["usuarios"]
 
-            proyecto = getProyecto(idproyecto)
+                updateProyecto(formulario.cleaned_data)
 
-            #se agrega los usuarios nuevos
-            asociarProyectoaUsuario(proyecto,usuarios)
-            #se elimina los usuarios viejos
-            desasociarUsuariodeProyecto(miembros)
+                proyecto = getProyecto(idproyecto)
 
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto})
-    else:
-        formulario = modificarproyectoForm(request=request)
+                # se agrega los usuarios nuevos
+                asociarProyectoaUsuario(proyecto, usuarios)
+                # se elimina los usuarios viejos
+                desasociarUsuariodeProyecto(miembros)
 
-    return render(request, "modificarProyecto.html", {"form": formulario})
+                # Retornar mensaje de exito
+                return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto})
+        else:
+            formulario = modificarproyectoForm(request=request)
 
-
+        return render(request, "modificarProyecto.html", {"form": formulario})
+    except AttributeError:
+        print("El usuario no posee ningun proyecto")
 
 def eliminarProyecto(request):
     """
@@ -325,10 +329,8 @@ def eliminarProyecto(request):
     return render(request, "eliminarProyecto.html", {"form": formulario})
 
 
-
-
 ##Metodo bastante horrible pero que hace su funcion.
-def getPermisos(request,listaPermisos):
+def getPermisos(request, listaPermisos):
     """
     Metodo de gestion y asignacion de permisos para los usuarios del sistema
 
@@ -336,51 +338,46 @@ def getPermisos(request,listaPermisos):
     :param listaPermisos: lista de permisos a ser distribuidos
     :return: respuesta a la solicitud de ejecucion recibida para el metodo GETPERMISOS
     """
-    listaProyecto=[]
-    listaHistoria=[]
-    listaSprint=[]
-
+    listaProyecto = []
+    listaHistoria = []
+    listaSprint = []
 
     for objeto_permiso in listaPermisos:
-         lista =(str(objeto_permiso)).split("|")
+        lista = (str(objeto_permiso)).split("|")
 
-         categoria=lista[1]
-         permiso=lista[2]
+        categoria = lista[1]
+        permiso = lista[2]
 
-         if(permiso.find(' Can add Proyecto')>=0):
-             listaProyecto.append("add")
-         if(permiso.find(' Can change Proyecto')>=0):
-             listaProyecto.append("change")
-         if (permiso.find(' Can delete Proyecto') >= 0):
-             listaProyecto.append("delete")
-         if (permiso.find(' Can view Proyecto') >= 0):
-             listaProyecto.append("view")
+        if (permiso.find(' Can add Proyecto') >= 0):
+            listaProyecto.append("add")
+        if (permiso.find(' Can change Proyecto') >= 0):
+            listaProyecto.append("change")
+        if (permiso.find(' Can delete Proyecto') >= 0):
+            listaProyecto.append("delete")
+        if (permiso.find(' Can view Proyecto') >= 0):
+            listaProyecto.append("view")
 
-         if (permiso.find(' Can add Historia') >= 0):
-             listaHistoria.append("add")
-         if (permiso.find(' Can change Historia') >= 0):
-             listaHistoria.append("change")
-         if (permiso.find(' Can delete Historia') >= 0):
-             listaHistoria.append("delete")
-         if (permiso.find(' Can view Historia') >= 0):
-             listaHistoria.append("view")
+        if (permiso.find(' Can add Historia') >= 0):
+            listaHistoria.append("add")
+        if (permiso.find(' Can change Historia') >= 0):
+            listaHistoria.append("change")
+        if (permiso.find(' Can delete Historia') >= 0):
+            listaHistoria.append("delete")
+        if (permiso.find(' Can view Historia') >= 0):
+            listaHistoria.append("view")
 
-         if (permiso.find(' Can add sprint') >= 0):
-             listaSprint.append("add")
-         if (permiso.find(' Can change sprint') >= 0):
-             listaSprint.append("change")
-         if (permiso.find(' Can delete sprint') >= 0):
-             listaSprint.append("delete")
-         if (permiso.find(' Can view sprint') >= 0):
-             listaSprint.append("view")
+        if (permiso.find(' Can add sprint') >= 0):
+            listaSprint.append("add")
+        if (permiso.find(' Can change sprint') >= 0):
+            listaSprint.append("change")
+        if (permiso.find(' Can delete sprint') >= 0):
+            listaSprint.append("delete")
+        if (permiso.find(' Can view sprint') >= 0):
+            listaSprint.append("view")
 
-
-    request.session['Proyecto']=listaProyecto
-    request.session['Historia']=listaHistoria
-    request.session['Sprint']=listaSprint
-
-
-
+    request.session['Proyecto'] = listaProyecto
+    request.session['Historia'] = listaHistoria
+    request.session['Sprint'] = listaSprint
 
 
 def crearSprint(request):
@@ -391,23 +388,22 @@ def crearSprint(request):
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
-        formulario = crearSprintForm(request.POST,request=request)
+        formulario = crearSprintForm(request.POST, request=request)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
 
-            datosSprint=formulario.cleaned_data
+            datosSprint = formulario.cleaned_data
             nuevoSprint(datosSprint)
 
-
-            #datosProyecto=formulario.cleaned_data
-            #miembros=formulario.cleaned_data["miembros"]
-            #nuevoProyecto(formulario.cleaned_data)
-            #proyecto = getProyecto(formulario.cleaned_data['nombre'])
-            #asociarProyectoaUsuario(proyecto,miembros)
+            # datosProyecto=formulario.cleaned_data
+            # miembros=formulario.cleaned_data["miembros"]
+            # nuevoProyecto(formulario.cleaned_data)
+            # proyecto = getProyecto(formulario.cleaned_data['nombre'])
+            # asociarProyectoaUsuario(proyecto,miembros)
             # Retornar mensaje de exito
             return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
     else:
-          formulario = crearSprintForm(request=request)
+        formulario = crearSprintForm(request=request)
 
     return render(request, "crearSprint.html", {"form": formulario})
 
@@ -424,11 +420,10 @@ def verMiembros(request):
     usuarios = User.objects.filter(proyecto_id=id)
     fotos = {}
 
-
     for u in usuarios:
         fotos[u.email] = SocialAccount.objects.filter(user=u)[0].extra_data['picture']
 
-    return render(request, "AvatarContent.html", {"miembros": usuarios,"fotos": fotos})
+    return render(request, "AvatarContent.html", {"miembros": usuarios, "fotos": fotos})
 
 
 def crearHistoria(request):
@@ -439,15 +434,14 @@ def crearHistoria(request):
     :return: respuesta a la solicitud de ejecucion de crearHistoria
     """
     if request.method == "POST":
-        formulario = crearHistoriaForm(request.POST,proyecto=request.session['idproyecto'])
+        formulario = crearHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
         if (formulario.is_valid()):
             # Acciones a realizar con el form
-            datosHistoria=formulario.cleaned_data
+            datosHistoria = formulario.cleaned_data
             print("el cleaned data en bruto del formulario de crear Historia")
             print(datosHistoria)
 
-
-            datosHistoria['proyecto']=getProyecto(formulario.cleaned_data['proyecto'])
+            datosHistoria['proyecto'] = getProyecto(formulario.cleaned_data['proyecto'])
 
             print("el cleaned data en bruto del formulario de crear Historia + asociado al proyecto actual")
             print(datosHistoria)
@@ -466,8 +460,7 @@ def crearHistoria(request):
     return render(request, "crearUserStory.html", {"form": formulario})
 
 
-
-#Seleccionar historia 1
+# Seleccionar historia 1
 def seleccionarHistoria(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -476,24 +469,24 @@ def seleccionarHistoria(request):
         :return: respuesta: a la solicitud de ASIGNAR ROL
     """
     if request.method == "POST":
-        formulario = seleccionarHistoriaForm(request.POST,proyecto=request.session['idproyecto'] )
+        formulario = seleccionarHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
         if (formulario.is_valid()):
-
-            HistoriaSeleccionada=model_to_dict(formulario.cleaned_data['Historia'])
+            HistoriaSeleccionada = model_to_dict(formulario.cleaned_data['Historia'])
             print("el modelo de historia es:")
             print(HistoriaSeleccionada)
 
-            request.session['HistoriaSeleccionada']=HistoriaSeleccionada
+            request.session['HistoriaSeleccionada'] = HistoriaSeleccionada
 
             return redirect(modificarHistoria)
     else:
         usuarioActual = User.objects.get(username=request.user.username)
-        usu=model_to_dict(usuarioActual)
+        usu = model_to_dict(usuarioActual)
         request.session['idproyecto'] = usu['proyecto']
-        formulario = seleccionarHistoriaForm(proyecto=request.session['idproyecto'] )
+        formulario = seleccionarHistoriaForm(proyecto=request.session['idproyecto'])
     return render(request, "seleccionarHistoria.html", {"form": formulario})
 
-#modificar historia 2
+
+# modificar historia 2
 def modificarHistoria(request):
     """
         Metodo para la modificacion de proyectos
@@ -503,14 +496,14 @@ def modificarHistoria(request):
     """
     if request.method == "POST":
 
-        formulario = modificarHistoriaForm(request.POST,datosdelaHistoria=request.session['HistoriaSeleccionada'])
+        formulario = modificarHistoriaForm(request.POST, datosdelaHistoria=request.session['HistoriaSeleccionada'])
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosdeHistoria = formulario.cleaned_data
             print("Los datos del cleaned data son ahora")
 
             print(datosdeHistoria)
-            #metodo que realiza la logica de la modificacion
+            # metodo que realiza la logica de la modificacion
 
             updateHistoria(datosdeHistoria)
             # Retornar mensaje de exito
@@ -520,7 +513,6 @@ def modificarHistoria(request):
         formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
 
     return render(request, "modificarHistoria.html", {"form": formulario})
-
 
 
 def eliminarHistoria(request):
@@ -543,6 +535,7 @@ def eliminarHistoria(request):
         formulario = eliminarHistoriaForm()
 
     return render(request, "eliminarHistoria.html", {"form": formulario})
+
 
 def verHistorias(request):
     """

@@ -24,16 +24,6 @@
 
 <body>
 {% block content %}
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            {% if message.tags%}
-                <p> {{ message }}</p>
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
-            {% endif %}
-        {% endfor %}
-    </ul>
-    {% endif %}
 
     <div class="container section">
         <!-- Menu desplegable del programa -->
@@ -319,6 +309,16 @@
             })
         }
     </script>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:5000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
 </body>
 

@@ -207,15 +207,16 @@
                             </a>
                         {% endif %}
 
-                        {% if perms.Sprints.delete_sprint %}
-                            <a href="http://127.0.0.1:8000/eliminarSprint/">
-                                <i class="material-icons">delete</i>
-                                Eliminar Sprint
+
+                        {% if perms.Sprints.view_sprint %}
+                            <a href="http://127.0.0.1:8000/visualizarSprint/">
+                                <i class="material-icons">remove_red_eye</i>
+                                Visualizar Sprint
                             </a>
                         {% else %}
                             <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">delete</i>
-                                Eliminar Sprint
+                                <i class="material-icons">remove_red_eye</i>
+                                Visualizar Sprint
                             </a>
                         {% endif %}
                     </li>

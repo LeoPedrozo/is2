@@ -500,9 +500,6 @@ def modificarSprint(request):
 
 
 
-
-
-
 def verMiembros(request):
     """
     Metodo que es ejecutado para mostrar los miembros de un proyecto

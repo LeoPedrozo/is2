@@ -14,25 +14,26 @@ def nuevoSprint(datosSprint):
     :param datosSprint: datos de un sprint
     :return: respuesta a la solicitud de NUEVO SPRINT
     """
-    newSprint = Sprint(sprintNumber=datosSprint["sprintNumber"], fecha_inicio=datosSprint["fecha_inicio"],fecha_fin=datosSprint["fecha_fin"])
+    newSprint = Sprint(sprintNumber=datosSprint["sprintNumber"], fecha_inicio=datosSprint["fecha_inicio"],
+                       fecha_fin=datosSprint["fecha_fin"])
     newSprint.save()
     if datosSprint["historias"]:
         for historia in datosSprint["historias"]:
             print(historia)
             newSprint.historias.add(historia)
-    proyecto=Proyecto.objects.get(id=datosSprint['idproyecto'])
+    proyecto = Proyecto.objects.get(id=datosSprint['idproyecto'])
     proyecto.id_sprints.add(newSprint)
     proyecto.save()
 
     return newSprint
 
 def updateSprint(datosSprint):
-    newSprint=Sprint.objects.filter(id=datosSprint['id'])
-    newSprint.fecha_fin=datosSprint['fecha_fin']
-    historias=datosSprint['historias']
+    newSprint = Sprint.objects.filter(id=datosSprint['id'])
+    newSprint.fecha_fin = datosSprint['fecha_fin']
+    historias = datosSprint['historias']
     for historia in historias:
-        #aca se puede modificar el campo de la histaria quitada del sprint
-        historia.estados='PENDIENTE'
+        # aca se puede modificar el campo de la histaria quitada del sprint
+        historia.estados = 'PENDIENTE'
         historia.save()
 
 

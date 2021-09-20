@@ -11,6 +11,7 @@ class crearSprintForm(forms.Form):
                 self.request = kwargs.pop("request")  # store value of request
                 super(crearSprintForm, self).__init__(*args, **kwargs)
                 self.fields['idproyecto'].initial=self.request['proyecto']
+                self.fields['historias'].queryset=Historia.objects.filter(proyecto=self.request['proyecto'],estados="PENDIENTE")
 
         idproyecto = forms.IntegerField(label="Proyecyo Propietario",disabled=True)
         sprintNumber = forms.IntegerField(label="Numero de Sprint")

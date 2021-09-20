@@ -71,8 +71,8 @@ class modificarproyectoForm(forms.Form):
 
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     fecha_entrega = forms.DateField(initial=datetime.date.today, label="Fecha de Entrega")
-    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
-    usuarios= forms.ModelMultipleChoiceField(queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
+    miembros = forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
+    usuarios= forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 
 
 class eliminarProyectoForm(forms.Form):

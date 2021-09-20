@@ -29,7 +29,7 @@ def updateProyecto(datos):
     :param datos: informaciones referentes a los compos de datos de un proyecto
     :return: info del nuevo proyecto
     """
-    proyecto=Proyecto.objects.get(nombre=datos['nombre'])
+    proyecto=Proyecto.objects.get(id=datos['id'])
     proyecto.nombre=datos['nombre']
     proyecto.estado = datos['estado']
     proyecto.descripcion = datos['descripcion']

@@ -280,7 +280,7 @@ def modificarProyecto(request):
 
     try:
         if request.method == "POST":
-            formulario = modificarproyectoForm(request.POST, )
+            formulario = modificarproyectoForm(request.POST,request=request)
             if (formulario.is_valid()):
                 # Acciones a realizar con el form
                 idproyecto = formulario.cleaned_data['id']

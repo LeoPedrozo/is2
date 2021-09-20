@@ -1,4 +1,5 @@
 {% extends "inicioPadre.html" %}
+{% include 'material/includes/material_css.html' %}
 {% load socialaccount %}
 {% load static %}
 
@@ -23,6 +24,17 @@
 
 <body>
 {% block content %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags%}
+                <p> {{ message }}</p>
+                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <div class="container section">
         <!-- Menu desplegable del programa -->
         <a href="#" class="sidenav-trigger" data-target="menu-side">
@@ -305,7 +317,6 @@
                 html: 'Permisos requeridos',
                 classes: "red"
             })
-
         }
     </script>
 {% endblock %}

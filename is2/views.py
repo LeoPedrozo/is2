@@ -1,6 +1,8 @@
 import requests
 from django.forms import model_to_dict
 from django.contrib.auth.models import Group
+from django.contrib import messages
+
 from django.http import HttpResponse
 from django.db import models
 
@@ -280,7 +282,7 @@ def modificarProyecto(request):
 
     try:
         if request.method == "POST":
-            formulario = modificarproyectoForm(request.POST,request=request)
+            formulario = modificarproyectoForm(request.POST, request=request)
             if (formulario.is_valid()):
                 # Acciones a realizar con el form
                 idproyecto = formulario.cleaned_data['id']
@@ -298,14 +300,18 @@ def modificarProyecto(request):
                 # se elimina los usuarios viejos
                 desasociarUsuariodeProyecto(miembros)
 
+                miembrosActuales = User.objects.all().filter(proyecto=idproyecto)
                 # Retornar mensaje de exito
-                return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto})
+                return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto, "members":miembrosActuales})
         else:
             formulario = modificarproyectoForm(request=request)
 
         return render(request, "modificarProyecto.html", {"form": formulario})
     except AttributeError:
         print("El usuario no posee ningun proyecto")
+        messages.error(request,'El usuario no posee ningun proyecto')
+        return redirect(inicio)
+
 
 def eliminarProyecto(request):
     """

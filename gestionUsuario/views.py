@@ -28,7 +28,7 @@ def desasociarUsuariodeProyecto(miembros):
 
     for miembro in miembros:
         u = User.objects.get(username=miembro)
-        u.proyecto.delete()
+        u.proyecto = None
         u.save()
 
 

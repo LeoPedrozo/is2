@@ -13,13 +13,15 @@ from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
-from Sprints.views import nuevoSprint
+from Sprints.views import nuevoSprint,updateSprint,sprintActivoen,guardarCamposdeSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
+from proyectos.models import Proyecto
+from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
-from Sprints.forms import crearSprintForm
+from Sprints.forms import crearSprintForm,modificarSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
@@ -386,6 +388,8 @@ def getPermisos(request, listaPermisos):
     request.session['Sprint'] = listaSprint
 
 
+
+#VISTAS RELACIONADAS A SPRINTS
 def crearSprint(request):
     """
     Metodo para la creacion de proyectos
@@ -394,24 +398,109 @@ def crearSprint(request):
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
-        formulario = crearSprintForm(request.POST, request=request)
+        formulario = crearSprintForm(request.POST,request=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
+            datosSprint=formulario.cleaned_data
+            newSprint=nuevoSprint(datosSprint)
 
-            datosSprint = formulario.cleaned_data
-            nuevoSprint(datosSprint)
-
-            # datosProyecto=formulario.cleaned_data
-            # miembros=formulario.cleaned_data["miembros"]
-            # nuevoProyecto(formulario.cleaned_data)
-            # proyecto = getProyecto(formulario.cleaned_data['nombre'])
-            # asociarProyectoaUsuario(proyecto,miembros)
-            # Retornar mensaje de exito
             return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
     else:
-        formulario = crearSprintForm(request=request)
+        usuarioActual = User.objects.get(username=request.user.username)
+        if (usuarioActual.proyecto == None):
+            mensaje="Ustede no forma parte de ningun proyecto"
+            return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
+        else:
+            proy=model_to_dict(usuarioActual.proyecto)
+            request.session['proyecto']=proy['id']
 
-    return render(request, "crearSprint.html", {"form": formulario})
+            sprintActualenProceso=sprintActivoen(proy['id'])
+
+            if(sprintActualenProceso == False):
+                formulario = crearSprintForm(request=request.session)
+                return render(request, "crearSprint.html", {"form": formulario})
+            else:
+                mensaje = "No puede crear un nuevo sprint hasta que el actual finalize"
+                return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
+
+
+#MODIFICAR SPRINT
+def modificarSprint(request):
+    """
+    Metodo para la modificacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR PROYECTO
+    """
+    if request.method == "POST":
+        formulario = modificarSprintForm(request.POST,request=request.session)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosSprint=formulario.cleaned_data
+            updateSprint(formulario.cleaned_data)
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+    else:
+        usuarioActual = User.objects.get(username=request.user.username)
+        if (usuarioActual.proyecto == None):
+            return render(request, "Condicion_requerida.html", {"form": formulario})
+        else:
+            proyectoActual=usuarioActual.proyecto
+
+            guardarCamposdeSprint(request,proyectoActual)
+
+            formulario = modificarSprintForm(request=request.session)
+            return render(request, "modificarSprint.html", {"form": formulario})
+
+
+#vista que funciona de modificar proyecto
+"""
+def modificarSprint(request):
+    if request.method == "POST":
+        formulario = modificarSprintForm(request.POST,request=request.session)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosSprint=formulario.cleaned_data
+            updateSprint(formulario.cleaned_data)
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+    else:
+        usuarioActual = User.objects.get(username=request.user.username)
+        if (usuarioActual.proyecto == None):
+            return render(request, "Condicion_requerida.html", {"form": formulario})
+        else:
+            proyectoActual=usuarioActual.proyecto
+            #getSprint(proyectoActual)
+            proyectoActual=model_to_dict(proyectoActual)
+            #print("el proyecto actual es: ", proyectoActual)
+            listaSprint=proyectoActual['id_sprints']
+            SprintActual=listaSprint[-1]##para estirar el ultimo elemento de la lista
+
+            SprintActual=model_to_dict(SprintActual)
+            #print("La lista de sprints actual es: ", SprintActual)
+
+            historias=SprintActual['historias']
+            pk_list=[]
+
+            for historia in historias:
+                h=model_to_dict(historia)
+                pk_list.append(h['id_historia'])
+
+            #getSprint(request.session,proyecto)
+            request.session['proyecto'] = usuarioActual.proyecto.id
+            request.session['id'] = SprintActual['id']
+            request.session['sprintNumber'] =SprintActual['sprintNumber']
+            request.session['historias'] = pk_list
+
+            formulario = modificarSprintForm(request=request.session)
+            return render(request, "modificarSprint.html", {"form": formulario})
+
+"""
+
+
+
+
+
 
 
 def verMiembros(request):
@@ -430,6 +519,7 @@ def verMiembros(request):
         fotos[u.email] = SocialAccount.objects.filter(user=u)[0].extra_data['picture']
 
     return render(request, "AvatarContent.html", {"miembros": usuarios, "fotos": fotos})
+
 
 
 def crearHistoria(request):

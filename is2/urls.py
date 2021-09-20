@@ -46,7 +46,7 @@ urlpatterns = [
     path('eliminarProyecto/',eliminarProyecto),
 
     path('crearSprint/',crearSprint),
-    path('modificarSprint',modificarSprint),
+    path('modificarSprint/',modificarSprint),
 
     path('crearHistoria/',crearHistoria),
     path('verHistorias/',verHistorias),

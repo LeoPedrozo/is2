@@ -41,10 +41,12 @@ def sprintActivoen(idProyecto):
     proyecto = Proyecto.objects.get(id=idProyecto)
 
     ultimoSprint=proyecto.id_sprints.last()
+    if ultimoSprint == None:
+        return False
+    fechaFinalizacion = ultimoSprint.fecha_fin
+    fechaActual = datetime.date.today()
 
-    fechaFinalizacion=ultimoSprint.fecha_fin
-    fechaActual=  datetime.date.today()
-    if( fechaFinalizacion>  fechaActual):
+    if( fechaFinalizacion>fechaActual):
         return True
     else:
         return False

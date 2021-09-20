@@ -20,6 +20,8 @@ def nuevoSprint(datosSprint):
     if datosSprint["historias"]:
         for historia in datosSprint["historias"]:
             print(historia)
+            historia.estados='EN_CURSO'
+            historia.save()
             newSprint.historias.add(historia)
     proyecto = Proyecto.objects.get(id=datosSprint['idproyecto'])
     proyecto.id_sprints.add(newSprint)

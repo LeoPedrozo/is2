@@ -21,7 +21,7 @@ from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarPr
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
-from Sprints.forms import crearSprintForm,modificarSprintForm
+from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
@@ -443,7 +443,7 @@ def modificarSprint(request):
     else:
         usuarioActual = User.objects.get(username=request.user.username)
         if (usuarioActual.proyecto == None):
-            return render(request, "Condicion_requerida.html", {"form": formulario})
+            return render(request, "Condicion_requerida.html")
         else:
             proyectoActual=usuarioActual.proyecto
 
@@ -451,6 +451,34 @@ def modificarSprint(request):
 
             formulario = modificarSprintForm(request=request.session)
             return render(request, "modificarSprint.html", {"form": formulario})
+
+def visualizarSprint(request):
+    """
+    Metodo para la visualizacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de VISUALIZAR PROYECTO
+    """
+    if request.method == "POST":
+        formulario = visualizarSprintForm(request.POST,request=request.session)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosSprint=formulario.cleaned_data
+            #updateSprint(formulario.cleaned_data)
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+    else:
+        usuarioActual = User.objects.get(username=request.user.username)
+        if (usuarioActual.proyecto == None):
+            return render(request, "Condicion_requerida.html")
+        else:
+            proyectoActual=usuarioActual.proyecto
+
+            guardarCamposdeSprint(request,proyectoActual)
+
+            formulario = visualizarSprintForm(request=request.session)
+            return render(request, "visualizarSprint.html", {"form": formulario})
+
 
 
 #vista que funciona de modificar proyecto

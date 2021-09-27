@@ -16,7 +16,7 @@ from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registra
 from Sprints.views import nuevoSprint,updateSprint,sprintActivoen,guardarCamposdeSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
-from proyectos.views import nuevoProyecto, getProyecto, updateProyecto
+from proyectos.views import nuevoProyecto, getProyecto, updateProyecto,guardarCamposdeProyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
@@ -284,7 +284,7 @@ def modificarProyecto(request):
 
     try:
         if request.method == "POST":
-            formulario = modificarproyectoForm(request.POST, request=request)
+            formulario = modificarproyectoForm(request.POST, request=request.session)
             if (formulario.is_valid()):
                 # Acciones a realizar con el form
                 idproyecto = formulario.cleaned_data['id']
@@ -306,9 +306,14 @@ def modificarProyecto(request):
                 # Retornar mensaje de exito
                 return render(request, "outputmodificarProyecto.html", {"proyectoCreado": datosProyecto, "members":miembrosActuales})
         else:
-            formulario = modificarproyectoForm(request=request)
-
-        return render(request, "modificarProyecto.html", {"form": formulario})
+            usuarioActual = User.objects.get(username=request.user.username)
+            if (usuarioActual.proyecto == None):
+                mensaje = "Usted no forma parte de ningun proyecto"
+                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+            else:
+                guardarCamposdeProyecto(request, usuarioActual)
+                formulario = modificarproyectoForm(request=request.session)
+                return render(request, "modificarProyecto.html", {"form": formulario})
     except AttributeError:
         print("El usuario no posee ningun proyecto")
         messages.error(request,'El usuario no posee ningun proyecto')
@@ -407,15 +412,21 @@ def crearSprint(request):
             return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
     else:
         usuarioActual = User.objects.get(username=request.user.username)
-        if (usuarioActual.proyecto == None):
+
+        #Si no pertence a un proyecto
+
+        print("usuarioActual.proyecto_id = ",usuarioActual.proyecto_id)
+        print("usuarioActual.proyecto = ", usuarioActual.proyecto)
+
+
+        if usuarioActual.proyecto_id is None:
             mensaje="Ustede no forma parte de ningun proyecto"
             return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
         else:
             proy=model_to_dict(usuarioActual.proyecto)
             request.session['proyecto']=proy['id']
-
             sprintActualenProceso=sprintActivoen(proy['id'])
-
+            #Si el proyecto no tiene todavia sprint o el sprint actual ya termino
             if(sprintActualenProceso == False):
                 formulario = crearSprintForm(request=request.session)
                 return render(request, "crearSprint.html", {"form": formulario})
@@ -436,7 +447,11 @@ def modificarSprint(request):
         formulario = modificarSprintForm(request.POST,request=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
+            #aca puede dar un problema con los datos de fechas
             datosSprint=formulario.cleaned_data
+
+            fecha_fin=formulario.cleaned_data['fecha_fin']
+            print('cleaned data = ',formulario.cleaned_data)
             updateSprint(formulario.cleaned_data)
             # Retornar mensaje de exito
             return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
@@ -446,9 +461,7 @@ def modificarSprint(request):
             return render(request, "Condicion_requerida.html")
         else:
             proyectoActual=usuarioActual.proyecto
-
             guardarCamposdeSprint(request,proyectoActual)
-
             formulario = modificarSprintForm(request=request.session)
             return render(request, "modificarSprint.html", {"form": formulario})
 

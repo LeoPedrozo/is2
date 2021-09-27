@@ -44,16 +44,17 @@ class modificarproyectoForm(forms.Form):
     # overwrite __init__
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")  # store value of request
-
         super(modificarproyectoForm, self).__init__(*args, **kwargs)
-        self.fields['creador'].initial = self.request.user.username
-        self.fields['nombre'].initial=self.request.user.proyecto.nombre
-        self.fields['descripcion'].initial=self.request.user.proyecto.descripcion
-        self.fields['estado'].initial=self.request.user.proyecto.estado
-        self.fields['fecha'].initial=self.request.user.proyecto.fecha
-        self.fields['fecha_entrega'].initial=self.request.user.proyecto.fecha_entrega
-        self.fields['id'].initial=self.request.user.proyecto_id
-        self.fields['miembros'].queryset=User.objects.filter(proyecto_id=self.request.user.proyecto_id).exclude(username='admin')
+        self.fields['creador'].initial = self.request['creador']
+        self.fields['nombre'].initial = self.request['Proyecto']
+        self.fields['descripcion'].initial = self.request['Descripcion']
+        self.fields['estado'].initial = self.request['estado']
+        self.fields['fecha'].initial = datetime.datetime.strptime(self.request['fecha'], "%Y/%m/%d")
+        self.fields['fecha_entrega'].initial = datetime.datetime.strptime(self.request['fecha_entrega'], "%Y/%m/%d")
+        self.fields['id'].initial = self.request['Proyecto_id']
+        self.fields['miembros'].queryset = User.objects.filter(proyecto_id=self.request['Proyecto_id']).exclude(
+            username='admin')
+        #self.fields['fecha_finalizacion'].initial = datetime.datetime.strptime(self.request['fecha_finalizacion'], "%Y/%m/%d")
 
     estados = (
         ('PENDIENTE', 'Pendiente'),

@@ -11,8 +11,8 @@ class Sprint(models.Model):
     """
     id = models.AutoField(primary_key=True)
     sprintNumber = models.IntegerField()
-    fecha_inicio = models.DateField(auto_now_add=True,blank=True)
-    fecha_fin = models.DateField(auto_now_add=True,blank=True)
+    fecha_inicio = models.DateField(blank=True)
+    fecha_fin = models.DateField(blank=True)
     historias = models.ManyToManyField(Historia,blank=True)
 
 

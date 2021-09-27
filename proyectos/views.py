@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.forms import model_to_dict
 from proyectos.models import Proyecto
 # Create your views here.
 
@@ -62,5 +62,23 @@ def deleteProyecto(proyecto):
     proyecto.delete()
 
 
-## la vista que reciba el id de un proyecto()
-    ##retorne la lista.
+#Esto puede generar problemas
+def guardarCamposdeProyecto(request,usuarioActual):
+
+    usuario=model_to_dict(usuarioActual)
+    proyecto=model_to_dict(usuarioActual.proyecto)
+    print("usuario = ", usuario)
+    print("proyecto", proyecto)
+
+    request.session['creador']=usuario['username']
+    request.session['Proyecto']=proyecto['nombre']
+    request.session['Descripcion']=proyecto['descripcion']
+    request.session['estado']=proyecto['estado']
+    request.session['fecha']=proyecto['fecha'].strftime("%Y/%m/%d")
+    request.session['fecha_entrega'] = proyecto['fecha_entrega'].strftime("%Y/%m/%d")
+    #request.session['fecha_finalizacion'] = proyecto['fecha_finalizacion'].strftime("%Y/%m/%d")
+    request.session['Proyecto_id']=proyecto['id']
+
+
+
+

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
-from Sprints.views import nuevoSprint,updateSprint,sprintActivoen,guardarCamposdeSprint
+from Sprints.views import nuevoSprint,updateSprint,sprintActivoen,guardarCamposdeSprint,getSprint
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto,guardarCamposdeProyecto
@@ -484,6 +484,22 @@ def visualizarSprint(request):
         return render(request, "ListarSprints.html", {"Sprints": listaSprint})
 
 
+
+def visualizarSprint2(request,id):
+    sprint=getSprint(id)
+    sprint2 = model_to_dict(sprint)
+    listaHistorias = sprint2['historias']
+    cantidaddehistorias=len(listaHistorias)
+    return render(request, "tableroKanbanSprintAnterior.html", {"Sprint": sprint, "Historias": listaHistorias,"Total":cantidaddehistorias})
+
+
+
+
+
+
+
+
+
 ##Esta vista es para mostrar el tablero kanban actual.
 def tableroKanban(request):
     usuarioActual = User.objects.get(username=request.user.username)
@@ -494,23 +510,10 @@ def tableroKanban(request):
         proyectoActual = model_to_dict(usuarioActual.proyecto)
         listaSprint = proyectoActual['id_sprints']
         sprintActual=listaSprint[-1]
-
         sprintActual2=model_to_dict(sprintActual)
-
         listaHistorias=sprintActual2['historias']
-
-        return render(request, "tableroKanban.html", {"Sprint": sprintActual,"Historias": listaHistorias})
-
-
-
-
-
-
-
-
-
-
-
+        cantidaddehistorias = len(listaHistorias)
+        return render(request, "tableroKanban.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias})
 
 
 

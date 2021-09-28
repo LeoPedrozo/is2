@@ -22,7 +22,7 @@ from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, as
     registrarUsuario, \
     modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol, crearHistoria, verHistorias, \
     seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
-    tableroKanban, moverHistoria
+    tableroKanban, moverHistoria, visualizarSprint2
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -49,6 +49,8 @@ urlpatterns = [
     path('crearSprint/',crearSprint),
     path('modificarSprint/',modificarSprint),
     path('visualizarSprint/',visualizarSprint),
+
+    path('visualizarSprint/<int:id>/',visualizarSprint2),
 
     path('crearHistoria/',crearHistoria),
     path('verHistorias/',verHistorias),

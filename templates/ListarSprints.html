@@ -14,7 +14,7 @@
     <title>Lista de Usuarios</title>
 </head>
 <body>
-    <h1>LISTA DE SPRINTS </h1>
+    <h1>HISTORIAL DE SPRINTS </h1>
  {% for sprint in Sprints  %}
     <ul class="collection">
         <li class="collection-item avatar">
@@ -22,7 +22,7 @@
             <p>Fecha de inicio : {{ sprint.fecha_inicio }} <br>
             <p>Fecha de fin :  {{ sprint.fecha_fin }} <br>
           </p>
-            <a class="btn btn-outline-primary btn-sm" href="#">Ver Detalles</a>
+            <a class="btn btn-outline-primary btn-sm" href="/visualizarSprint/{{ sprint.id }}">Ver Detalles</a>
             <a href="#" class="secondary-content"><i class="material-icons">flash_on</i></a>
         </li>
 

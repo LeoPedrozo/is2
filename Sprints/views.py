@@ -61,7 +61,9 @@ def sprintActivoen(idProyecto):
 
 
 
-
+def getSprint(id):
+    sprt = Sprint.objects.get(id=id)
+    return sprt
 
 
 # Vista subproceso de modificar, que sirve para no sobre cargar la vista de modificar. NO estoy usando

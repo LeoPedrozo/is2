@@ -1,4 +1,3 @@
-{% load socialaccount %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -15,15 +14,18 @@
     <title>Lista de Usuarios</title>
 </head>
 <body>
+    <h1>LISTA DE SPRINTS </h1>
  {% for sprint in Sprints  %}
     <ul class="collection">
         <li class="collection-item avatar">
-            <span class="title">{{ sprint.first_name }} {{ sprint.last_name }}</span>
-            <p>{{ sprint.email }} <br>
+            <span class="title"> Numero de Sprint : {{ sprint.sprintNumber}}</span>
+            <p>Fecha de inicio : {{ sprint.fecha_inicio }} <br>
+            <p>Fecha de fin :  {{ sprint.fecha_fin }} <br>
           </p>
-          <a href="#" class="secondary-content"><i class="material-icons">flash_on</i></a>
+            <a class="btn btn-outline-primary btn-sm" href="#">Ver Detalles</a>
+            <a href="#" class="secondary-content"><i class="material-icons">flash_on</i></a>
         </li>
-         <a class="btn btn-outline-primary btn-sm" href="#">Ver Detalles</a>
+
     </ul>
 {% endfor %}
 </body>

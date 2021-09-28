@@ -38,7 +38,7 @@ class crearHistoriaForm(forms.Form):
     prioridad = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     horasEstimadas = forms.IntegerField(initial=0)
-    estados = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=ESTADOS_CHOICES)
+    estados = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=ESTADOS_CHOICES, initial=None)
     horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 

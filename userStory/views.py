@@ -15,6 +15,7 @@ def nuevaHistoria(datosHistoria):
                   proyecto=datosHistoria['proyecto'])
     newH.save()
 
+#modificacion en general
 def updateHistoria(datosHistoria):
     oldH = Historia.objects.get(id_historia=datosHistoria['id_historia'])
     oldH.nombre=datosHistoria["nombre"]
@@ -25,3 +26,18 @@ def updateHistoria(datosHistoria):
     oldH.estados=datosHistoria["estados"]
     oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]
     oldH.save()
+
+
+#cambiar estado de historia,se le puede pasa directo la opcion como cadena en ves de hacer por if's.
+def cambiarEstado(id_historia,opcion):
+    h=Historia.objects.get(id_historia=id_historia)
+    if (opcion==1):
+        h.estados='PENDIENTE'
+    if (opcion==2):
+        h.estados='EN_CURSO'
+    if (opcion==3):
+        h.estados='FINALIZADO'
+    if (opcion==4):
+        h.estados='QUALITY ASSURANCE'
+
+    h.save()

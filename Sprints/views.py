@@ -21,7 +21,7 @@ def nuevoSprint(datosSprint):
         for historia in datosSprint["historias"]:
             #print(historia)
             #historia.estados="EN CURSO"
-            historia.estados='EN_CURSO'
+            historia.estados='PENDIENTE'
             historia.save()
             newSprint.historias.add(historia)
     proyecto = Proyecto.objects.get(id=datosSprint['idproyecto'])
@@ -38,7 +38,7 @@ def updateSprint(datosSprint):
     historias = datosSprint['historias']
     for historia in historias:
         # aca se puede modificar el campo de la histaria quitada del sprint
-        historia.estados = 'PENDIENTE'
+        historia.estados = None
         historia.save()
 
 

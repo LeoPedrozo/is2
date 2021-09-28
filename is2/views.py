@@ -465,6 +465,8 @@ def modificarSprint(request):
             formulario = modificarSprintForm(request=request.session)
             return render(request, "modificarSprint.html", {"form": formulario})
 
+
+##Solo muestra los sprint sin mayor detalle
 def visualizarSprint(request):
     """
     Metodo para la visualizacion de proyectos
@@ -472,71 +474,32 @@ def visualizarSprint(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de VISUALIZAR PROYECTO
     """
-    if request.method == "POST":
-        formulario = visualizarSprintForm(request.POST,request=request.session)
-        if (formulario.is_valid()):
-            # Acciones a realizar con el form
-            datosSprint=formulario.cleaned_data
-            #updateSprint(formulario.cleaned_data)
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
     else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        if (usuarioActual.proyecto == None):
-            return render(request, "Condicion_requerida.html")
-        else:
-            proyectoActual=usuarioActual.proyecto
-
-            guardarCamposdeSprint(request,proyectoActual)
-
-            formulario = visualizarSprintForm(request=request.session)
-            return render(request, "visualizarSprint.html", {"form": formulario})
+        proyectoActual=model_to_dict(usuarioActual.proyecto)
+        listaSprint=proyectoActual['id_sprints']
+        return render(request, "ListarSprints.html", {"Sprints": listaSprint})
 
 
-
-#vista que funciona de modificar proyecto
-"""
-def modificarSprint(request):
-    if request.method == "POST":
-        formulario = modificarSprintForm(request.POST,request=request.session)
-        if (formulario.is_valid()):
-            # Acciones a realizar con el form
-            datosSprint=formulario.cleaned_data
-            updateSprint(formulario.cleaned_data)
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+##Falta funcionalidad de cambiar de estado
+def tableroKanban(request):
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
     else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        if (usuarioActual.proyecto == None):
-            return render(request, "Condicion_requerida.html", {"form": formulario})
-        else:
-            proyectoActual=usuarioActual.proyecto
-            #getSprint(proyectoActual)
-            proyectoActual=model_to_dict(proyectoActual)
-            #print("el proyecto actual es: ", proyectoActual)
-            listaSprint=proyectoActual['id_sprints']
-            SprintActual=listaSprint[-1]##para estirar el ultimo elemento de la lista
+        proyectoActual = model_to_dict(usuarioActual.proyecto)
+        listaSprint = proyectoActual['id_sprints']
+        sprintActual=listaSprint[-1]
 
-            SprintActual=model_to_dict(SprintActual)
-            #print("La lista de sprints actual es: ", SprintActual)
+        sprintActual2=model_to_dict(sprintActual)
 
-            historias=SprintActual['historias']
-            pk_list=[]
+        listaHistorias=sprintActual2['historias']
 
-            for historia in historias:
-                h=model_to_dict(historia)
-                pk_list.append(h['id_historia'])
-
-            #getSprint(request.session,proyecto)
-            request.session['proyecto'] = usuarioActual.proyecto.id
-            request.session['id'] = SprintActual['id']
-            request.session['sprintNumber'] =SprintActual['sprintNumber']
-            request.session['historias'] = pk_list
-
-            formulario = modificarSprintForm(request=request.session)
-            return render(request, "modificarSprint.html", {"form": formulario})
-
-"""
+        return render(request, "tableroKanban.html", {"Sprint": sprintActual,"Historias": listaHistorias})
 
 
 
@@ -670,7 +633,7 @@ def eliminarHistoria(request):
 
     return render(request, "eliminarHistoria.html", {"form": formulario})
 
-
+##testeo pendiente
 def verHistorias(request):
     """
     Metodo que es ejecutado para mostrar los miembros de un proyecto
@@ -678,7 +641,23 @@ def verHistorias(request):
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de verMiembros
     """
-    historias = Historia.objects.all()
-    print(historias)
+    id_proyectoActual = User.objects.get(username=request.user.username)
+    id_proyectoActual = id_proyectoActual.proyecto_id
+    historias = Historia.objects.filter(proyecto=id_proyectoActual)
+
+    return render(request, "HistoriaContent.html", {"historias": historias})
+
+#Esta es una vista que lista todas las historais del proyecto pero las que estarian dentro del product backlog
+#es decir no estan en un sprint
+def productBacklog(request):
+    """
+    Metodo que es ejecutado para mostrar los miembros de un proyecto
+
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de verMiembros
+    """
+    id_proyectoActual = User.objects.get(username=request.user.username)
+    id_proyectoActual = id_proyectoActual.proyecto_id
+    historias = Historia.objects.filter(proyecto=id_proyectoActual,estados=None)
 
     return render(request, "HistoriaContent.html", {"historias": historias})

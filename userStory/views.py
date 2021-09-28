@@ -28,16 +28,3 @@ def updateHistoria(datosHistoria):
     oldH.save()
 
 
-#cambiar estado de historia,se le puede pasa directo la opcion como cadena en ves de hacer por if's.
-def cambiarEstado(id_historia,opcion):
-    h=Historia.objects.get(id_historia=id_historia)
-    if (opcion==1):
-        h.estados='PENDIENTE'
-    if (opcion==2):
-        h.estados='EN_CURSO'
-    if (opcion==3):
-        h.estados='FINALIZADO'
-    if (opcion==4):
-        h.estados='QUALITY ASSURANCE'
-
-    h.save()

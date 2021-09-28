@@ -484,7 +484,7 @@ def visualizarSprint(request):
         return render(request, "ListarSprints.html", {"Sprints": listaSprint})
 
 
-##Falta funcionalidad de cambiar de estado
+##Esta vista es para mostrar el tablero kanban actual.
 def tableroKanban(request):
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
@@ -500,6 +500,19 @@ def tableroKanban(request):
         listaHistorias=sprintActual2['historias']
 
         return render(request, "tableroKanban.html", {"Sprint": sprintActual,"Historias": listaHistorias})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -661,3 +674,20 @@ def productBacklog(request):
     historias = Historia.objects.filter(proyecto=id_proyectoActual,estados=None)
 
     return render(request, "HistoriaContent.html", {"historias": historias})
+
+
+#Vista que hace la logica de cambio de estado en el kanban
+def moverHistoria(request,id,opcion):
+    h=Historia.objects.get(id_historia=id)
+    if (opcion==1):
+        h.estados='PENDIENTE'
+    if (opcion==2):
+        h.estados='EN_CURSO'
+    if (opcion==3):
+        h.estados='FINALIZADO'
+    if (opcion==4):
+        h.estados='QUALITY_ASSURANCE'
+
+    h.save()
+
+    return tableroKanban(request)

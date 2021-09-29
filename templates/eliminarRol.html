@@ -29,7 +29,7 @@
     <div class="container">
         <div class="row">
             {% if form.errors %}
-                <p style="color: red;"> Por favor revisa los campos</p>
+                <script>M.toast({html: "Por favor revisa los campos", classes: 'red rounded', displayLength:5000});</script>
             {% endif %}
 
             <form action="" method="POST">

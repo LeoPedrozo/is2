@@ -15,7 +15,12 @@
     <title>Lista de Historias</title>
 </head>
 <body>
-<H1>HISTORIAS DEL PROYECTO</H1>
+        <div class="card-action">
+        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+            <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
+        </a>
+        </div>
+        <h3> Historias del Proyecto</h3>
 
  {% for historia in historias  %}
     <ul class="collection">
@@ -41,7 +46,7 @@
                 <span class="title">Hora Dedicadas: {{ historia.horas_dedicadas }}</span>
             </p>
 
-          <a href="#" class="secondary-content"><i class="material-icons">history</i></a>
+          <a href="#" class="secondary-content"><i class="material-icons">description</i></a>
         </li>
     </ul>
 {% endfor %}

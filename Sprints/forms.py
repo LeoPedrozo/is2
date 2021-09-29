@@ -4,7 +4,9 @@ from datetime import datetime
 from django import forms
 import datetime
 from userStory.models import Historia
+from functools import partial
 
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class crearSprintForm(forms.Form):
     """
@@ -18,10 +20,10 @@ class crearSprintForm(forms.Form):
         self.fields['idproyecto'].initial = self.request['proyecto']
         self.fields['historias'].queryset = Historia.objects.filter(proyecto=self.request['proyecto'],estados="")
 
-    idproyecto = forms.IntegerField(label="Proyecyo Propietario",disabled=True)
+    idproyecto = forms.IntegerField(label="Proyecto Propietario",disabled=True)
     sprintNumber = forms.IntegerField(label="Numero de Sprint")
     fecha_inicio =forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
-    fecha_fin = forms.DateField(initial=datetime.date.today, label="Fecha fin")
+    fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha fin")
     historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True)
 
 class modificarSprintForm(forms.Form):
@@ -46,7 +48,7 @@ class modificarSprintForm(forms.Form):
         #autovalor
         fecha_inicio =forms.DateField(disabled=True, label="Fecha de Inicio")
         #dato modificable
-        fecha_fin = forms.DateField(label="Fecha fin")
+        fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],label="Fecha fin")
         #Las historias seleccioandas se ignorara durante el sprint
         historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
 
@@ -72,7 +74,7 @@ class visualizarSprintForm(forms.Form):
     # autovalor
     fecha_inicio = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
     # dato modificable
-    fecha_fin = forms.DateField(initial=datetime.date.today, label="Fecha fin", disabled=True)
+    fecha_fin = forms.DateField( label="Fecha fin", disabled=True)
 
     # Las historias seleccioandas se ignorara durante el sprint
     historias = forms.ModelChoiceField(empty_label= "Despliegue las historias", queryset=Historia.objects.all(), label="Historias",

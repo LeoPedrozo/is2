@@ -25,11 +25,22 @@
 </head>
 
 <body>
-
+    <nav>
+        <div class="nav-wrapper blue">
+            <div class="col s12">
+            <a href="http://127.0.0.1:8000/inicio" class="breadcrumb">
+                <i class="material-icons">home</i>
+            </a>
+            <a href="http://127.0.0.1:8000/modificarHistoria/1/" class="breadcrumb">Seleccionar Historia</a>
+            <a href="http://127.0.0.1:8000/modificarHistoria/2/" class="breadcrumb">Modificar Historia</a>
+            </div>
+        </div>
+    </nav>
     <div class="container">
+        <h3> Historia a modificar</h3>
         <div class="row">
             {% if form.errors %}
-                <p style="color: red;"> Por favor revisa los campos</p>
+                <script>M.toast({html: "Por favor revisa los campos", classes: 'red rounded', displayLength:5000});</script>
             {% endif %}
 
             <form action="" method="POST">

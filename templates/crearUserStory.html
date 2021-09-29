@@ -12,9 +12,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-      $(document).ready(function(){
-        $('select').formSelect();
-      });
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
     </script>
     <meta charset="UTF-8">
     <title>Nueva Historia</title>
@@ -25,11 +25,16 @@
 </head>
 
 <body>
-
     <div class="container">
+        <div class="card-action">
+        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+            <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
+        </a>
+        </div>
+        <h3> Crear User Story</h3>
         <div class="row">
             {% if form.errors %}
-                <p style="color: red;"> Por favor revisa los campos</p>
+                <script>M.toast({html: "Por favor revisa los campos", classes: 'red rounded', displayLength:5000});</script>
             {% endif %}
 
             <form action="" method="POST">
@@ -39,7 +44,6 @@
                 <input type="submit" value="Crear" class="btn blue">
             </form>
         </div>
-
     </div>
 
 </body>

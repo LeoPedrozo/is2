@@ -3,7 +3,9 @@ from django.contrib.auth.models import Group
 from gestionUsuario.models import User
 from proyectos.models import Proyecto
 import datetime
+from functools import partial
 
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 
 class crearproyectoForm(forms.Form):
@@ -29,7 +31,7 @@ class crearproyectoForm(forms.Form):
     estado = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=estados)
 
     fecha = forms.DateField(initial=datetime.date.today,disabled=True,label="Fecha de Creacion")
-    fecha_entrega = forms.DateField(initial=datetime.date.today,label="Fecha de Entrega")
+    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha de Entrega")
     miembros = forms.ModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin","Admin"]), initial=0)
 
 
@@ -71,7 +73,7 @@ class modificarproyectoForm(forms.Form):
     estado = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=estados)
 
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
-    fecha_entrega = forms.DateField(initial=datetime.date.today, label="Fecha de Entrega")
+    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Entrega")
     miembros = forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
     usuarios= forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 

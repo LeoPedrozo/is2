@@ -461,9 +461,17 @@ def modificarSprint(request):
             return render(request, "Condicion_requerida.html")
         else:
             proyectoActual=usuarioActual.proyecto
-            guardarCamposdeSprint(request,proyectoActual)
-            formulario = modificarSprintForm(request=request.session)
-            return render(request, "modificarSprint.html", {"form": formulario})
+            poseeSprintActivo=guardarCamposdeSprint(request,proyectoActual)
+            if (poseeSprintActivo == True):
+                formulario = modificarSprintForm(request=request.session)
+                return render(request, "modificarSprint.html", {"form": formulario})
+            else:
+                mensaje = "No se puede modificar sprint ya que el proyecto aun no posee un sprint activo"
+                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+
+
+
 
 
 ##Solo muestra los sprint sin mayor detalle

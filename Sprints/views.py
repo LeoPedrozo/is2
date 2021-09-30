@@ -69,77 +69,33 @@ def getSprint(id):
 # Vista subproceso de modificar, que sirve para no sobre cargar la vista de modificar. NO estoy usando
 # recibe el diccionario que es request.session
 # recibe le objeto proyecto
-def guardarCamposdeSprint(request, proyectoActual):
 
+
+def guardarCamposdeSprint(request, proyectoActual):
     proyectoActual = model_to_dict(proyectoActual)
     listaSprint = proyectoActual['id_sprints']
-    SprintActual = listaSprint[-1]
 
+    if len(listaSprint) != 0:
+        SprintActual = listaSprint[-1]
 
-    SprintActual = model_to_dict(SprintActual)
+        SprintActual = model_to_dict(SprintActual)
 
-    print("el modelo del sprint es ")
-    print(SprintActual)
+        print("el modelo del sprint es ")
+        print(SprintActual)
 
-    historias = SprintActual['historias']
-    pk_list = []
-    for historia in historias:
-        h = model_to_dict(historia)
-        pk_list.append(h['id_historia'])
+        historias = SprintActual['historias']
+        pk_list = []
+        for historia in historias:
+            h = model_to_dict(historia)
+            pk_list.append(h['id_historia'])
 
+        request.session['proyecto'] = proyectoActual['id']
+        request.session['id'] = SprintActual['id']
+        request.session['sprintNumber'] = SprintActual['sprintNumber']
+        request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
+        request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
+        request.session['historias'] = pk_list
 
-    request.session['proyecto'] = proyectoActual['id']
-    request.session['id'] = SprintActual['id']
-    request.session['sprintNumber'] = SprintActual['sprintNumber']
-    request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
-
-    print("Date inicio : ",request.session['fecha_inicio'])
-
-
-    request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
-    request.session['historias'] = pk_list
-
-    #strptime
-
-
-
-
-
-#vista que funciona de modificar proyecto
-"""
-def modificarSprint(request):
-    if request.method == "POST":
-        formulario = modificarSprintForm(request.POST,request=request.session)
-        if (formulario.is_valid()):
-            # Acciones a realizar con el form
-            datosSprint=formulario.cleaned_data
-            updateSprint(formulario.cleaned_data)
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+        return True
     else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        if (usuarioActual.proyecto == None):
-            return render(request, "Condicion_requerida.html", {"form": formulario})
-        else:
-            proyectoActual=usuarioActual.proyecto
-            proyectoActual=model_to_dict(proyectoActual)
-            listaSprint=proyectoActual['id_sprints']
-            SprintActual=listaSprint[-1]##para estirar el ultimo elemento de la lista
-            SprintActual=model_to_dict(SprintActual)
-            historias=SprintActual['historias']
-            pk_list=[]
-            for historia in historias:
-                h=model_to_dict(historia)
-                pk_list.append(h['id_historia'])
-
-            request.session['proyecto'] = usuarioActual.proyecto.id
-            request.session['id'] = SprintActual['id']
-            request.session['sprintNumber'] =SprintActual['sprintNumber']
-            request.session['historias'] = pk_list
-
-            formulario = modificarSprintForm(request=request.session)
-            
-            return render(request, "modificarSprint.html", {"form": formulario})
-
-"""
-
+        return False

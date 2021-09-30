@@ -1,6 +1,5 @@
 
 from django.db import models
-#from gestionUsuario.models import User
 
 # Create your models here.
 

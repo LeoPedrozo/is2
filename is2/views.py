@@ -732,5 +732,11 @@ def moverHistoria(request,id,opcion):
         h.estados='QUALITY_ASSURANCE'
 
     h.save()
+    #aca se puede asociar una historia a un usuario
+    #usuario = User.objects.get(username=request.user.username)
+    #usuario.stories.add(h)
 
     return tableroKanban(request)
+
+
+#vista que cambia el tiempo trabajado de un usuario

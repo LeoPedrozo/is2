@@ -135,7 +135,7 @@
                             Usuario</a></li>
                     {% endif %}
 
-                    {% if perms.Group.add_group %}
+                    {% if perms.auth.add_group %}
                         <li><a href="http://127.0.0.1:8000/crearRol/"><i class="material-icons">assignment_ind</i>Crear
                             Rol</a>
                         </li>
@@ -152,7 +152,7 @@
                     {% endif %}
 
 
-                    {% if perms.Group.change_group %}
+                    {% if perms.auth.change_group %}
                         <li><a href="http://127.0.0.1:8000/modificarRol/1/"><i class="material-icons">build</i>Modificar
                             Rol</a>
                         </li>
@@ -161,7 +161,7 @@
                         </li>
                     {% endif %}
 
-                    {% if perms.Group.delete_group %}
+                    {% if perms.auth.delete_group %}
                         <li><a href="http://127.0.0.1:8000/eliminarRol/"><i class="material-icons">delete</i>Eliminar
                             Rol</a>
                         </li>

@@ -167,7 +167,7 @@ SITE_ID = 7
 
 # Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = '/inicio/'
-
+LOGIN_URL = '/'
 # Si se deslogea exitosamente dirigir a:
 LOGOUT_REDIRECT_URL = '/'
 

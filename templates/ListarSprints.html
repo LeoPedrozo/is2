@@ -14,7 +14,15 @@
     <title>Lista de Usuarios</title>
 </head>
 <body>
-    <h1>HISTORIAL DE SPRINTS </h1>
+    <h3 style = "position:relative; left:10px;">HISTORIAL DE SPRINTS </h3>
+    {% if not Sprints %}
+        <div class="card-action" style = "position:relative; left:10px;" >
+            <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay sprints creados</p>
+            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+                <i class="material-icons tiny" style="vertical-align: -2px;">arrow_back</i>Volver a Inicio
+            </a>
+        </div>
+    {% endif %}
  {% for sprint in Sprints  %}
     <ul class="collection">
         <li class="collection-item avatar">

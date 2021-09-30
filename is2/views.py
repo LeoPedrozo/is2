@@ -2,6 +2,9 @@ import requests
 from django.forms import model_to_dict
 from django.contrib.auth.models import Group
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 from django.http import HttpResponse
 from django.db import models
@@ -9,7 +12,6 @@ from django.db import models
 from django.template import Template, Context
 from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
-from django.contrib.auth.decorators import login_required
 from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
@@ -70,7 +72,8 @@ def documentaciones(request):
 
 
 ##VISTAS RELACIONADAS AL MANEJO DE ROL
-
+@login_required
+@permission_required('auth.add_group', raise_exception=True)
 def crearRol(request):
     """
     Metodo para la creacion de roles del sistema
@@ -100,7 +103,8 @@ def crearRol(request):
 
     return render(request, "crearRol.html", {"form": formulario})
 
-
+@login_required
+@permission_required('auth.add_group', raise_exception=True)
 def asignarRol(request):
     """
     Metodo para la asignacion de roles a los usuarios del sistema
@@ -125,7 +129,8 @@ def asignarRol(request):
 
     return render(request, "asignarRol.html", {"form": formulario})
 
-
+@login_required
+@permission_required('auth.delete_group', raise_exception=True)
 def eliminarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -151,6 +156,8 @@ def eliminarRol(request):
 
 
 # modificar Rol 1
+@login_required
+@permission_required('auth.add_group', raise_exception=True)
 def seleccionarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -180,6 +187,8 @@ def seleccionarRol(request):
 
 
 # modificar Rol 2
+@login_required
+@permission_required('auth.change_group', raise_exception=True)
 def modificarRol(request):
     """
     Metodo para la modificacion de roles
@@ -219,7 +228,8 @@ def modificarRol(request):
 
     return render(request, "modificarRol.html", {"form": formulario})
 
-
+@login_required
+@staff_member_required
 def registrarUsuario(request):
     """
     Metodo para registrar usuarios al sistema
@@ -245,7 +255,8 @@ def registrarUsuario(request):
 
 
 # VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
-
+@login_required
+@permission_required('proyectos.add_proyecto', raise_exception=True)
 def crearProyecto(request):
     """
     Metodo para la creacion de proyectos
@@ -272,7 +283,8 @@ def crearProyecto(request):
     return render(request, "crearProyecto.html", {"form": formulario})
 
 
-##No se deberia guardar la configuracion de proyecto?
+@login_required
+@permission_required('proyectos.change_proyecto', raise_exception=True)
 def modificarProyecto(request):
     """
     Metodo para la modificacion de proyectos
@@ -319,7 +331,8 @@ def modificarProyecto(request):
         messages.error(request,'El usuario no posee ningun proyecto')
         return redirect(inicio)
 
-
+@login_required
+@permission_required('proyectos.delete_proyecto', raise_exception=True)
 def eliminarProyecto(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -342,7 +355,7 @@ def eliminarProyecto(request):
     return render(request, "eliminarProyecto.html", {"form": formulario})
 
 
-##Metodo bastante horrible pero que hace su funcion.
+@login_required
 def getPermisos(request, listaPermisos):
     """
     Metodo de gestion y asignacion de permisos para los usuarios del sistema
@@ -395,6 +408,8 @@ def getPermisos(request, listaPermisos):
 
 
 #VISTAS RELACIONADAS A SPRINTS
+@login_required
+@permission_required('Sprints.add_sprint', raise_exception=True)
 def crearSprint(request):
     """
     Metodo para la creacion de proyectos
@@ -436,6 +451,8 @@ def crearSprint(request):
 
 
 #MODIFICAR SPRINT
+@login_required
+@permission_required('Sprints.change_sprint', raise_exception=True)
 def modificarSprint(request):
     """
     Metodo para la modificacion de proyectos
@@ -475,6 +492,8 @@ def modificarSprint(request):
 
 
 ##Solo muestra los sprint sin mayor detalle
+@login_required
+@permission_required('Sprints.view_sprint', raise_exception=True)
 def visualizarSprint(request):
     """
     Metodo para la visualizacion de proyectos
@@ -492,7 +511,8 @@ def visualizarSprint(request):
         return render(request, "ListarSprints.html", {"Sprints": listaSprint})
 
 
-
+@login_required
+@permission_required('Sprints.view_sprint', raise_exception=True)
 def visualizarSprint2(request,id):
     sprint=getSprint(id)
     sprint2 = model_to_dict(sprint)
@@ -509,6 +529,7 @@ def visualizarSprint2(request,id):
 
 
 ##Esta vista es para mostrar el tablero kanban actual.
+@login_required
 def tableroKanban(request):
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
@@ -527,7 +548,7 @@ def tableroKanban(request):
 
 
 
-
+@login_required
 def verMiembros(request):
     """
     Metodo que es ejecutado para mostrar los miembros de un proyecto
@@ -546,7 +567,8 @@ def verMiembros(request):
     return render(request, "AvatarContent.html", {"miembros": usuarios, "fotos": fotos})
 
 
-
+@login_required
+@permission_required('userStory.add_historia', raise_exception=True)
 def crearHistoria(request):
     """
     Metodo que es ejecutado para crear un user story
@@ -582,6 +604,8 @@ def crearHistoria(request):
 
 
 # Seleccionar historia 1
+@login_required
+@permission_required('userStory.add_historia', raise_exception=True)
 def seleccionarHistoria(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -608,6 +632,8 @@ def seleccionarHistoria(request):
 
 
 # modificar historia 2
+@login_required
+@permission_required('userStory.change_historia', raise_exception=True)
 def modificarHistoria(request):
     """
         Metodo para la modificacion de proyectos
@@ -635,7 +661,8 @@ def modificarHistoria(request):
 
     return render(request, "modificarHistoria.html", {"form": formulario})
 
-
+@login_required
+@permission_required('userStory.delete_historia', raise_exception=True)
 def eliminarHistoria(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -658,6 +685,8 @@ def eliminarHistoria(request):
     return render(request, "eliminarHistoria.html", {"form": formulario})
 
 ##testeo pendiente
+@login_required
+@permission_required('userStory.view_historia', raise_exception=True)
 def verHistorias(request):
     """
     Metodo que es ejecutado para mostrar los miembros de un proyecto
@@ -673,9 +702,11 @@ def verHistorias(request):
 
 #Esta es una vista que lista todas las historais del proyecto pero las que estarian dentro del product backlog
 #es decir no estan en un sprint
+@login_required
+@permission_required('userStory.view_historia', raise_exception=True)
 def productBacklog(request):
     """
-    Metodo que es ejecutado para mostrar los miembros de un proyecto
+    Metodo que es ejecutado para mostrar las historias del proyecto actual
 
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de verMiembros
@@ -688,6 +719,7 @@ def productBacklog(request):
 
 
 #Vista que hace la logica de cambio de estado en el kanban
+@login_required
 def moverHistoria(request,id,opcion):
     h=Historia.objects.get(id_historia=id)
     if (opcion==1):

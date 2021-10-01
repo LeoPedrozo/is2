@@ -24,7 +24,7 @@ from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm,eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
-from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm
+from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, cargarHorasHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
 
@@ -723,6 +723,19 @@ def productBacklog(request):
 @login_required
 def moverHistoria(request,id,opcion):
     h=Historia.objects.get(id_historia=id)
+
+    #print(f"Datos del formulario : {request.POST}")
+    if request.method == 'POST':
+        form = cargarHorasHistoriaForm(request.POST)
+        print(f"form : {form}")
+        if (form.is_valid()):
+            horas = form.cleaned_data['horas']
+            if (opcion == 5):
+                print(f"Historia con id {id} horas: {horas}")
+                h.horas_dedicadas = h.horas_dedicadas + horas
+        else:
+            print("formulario invalido")
+
     if (opcion==1):
         h.estados='PENDIENTE'
     if (opcion==2):
@@ -731,6 +744,7 @@ def moverHistoria(request,id,opcion):
         h.estados='FINALIZADO'
     if (opcion==4):
         h.estados='QUALITY_ASSURANCE'
+
 
     h.save()
     #aca se puede asociar una historia a un usuario

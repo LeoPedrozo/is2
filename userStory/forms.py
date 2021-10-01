@@ -41,6 +41,11 @@ class crearHistoriaForm(forms.Form):
     horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 
+class cargarHorasHistoriaForm(forms.Form):
+    """
+      Implementa la clase para ejecutar un formulario de solicitud para cargar las horas trabajadas en el User Story
+    """
+    horas = forms.IntegerField(initial=0, widget=forms.NumberInput(attrs={'type': 'number', 'id':'register-form-horas', 'name':'register-form-horas', 'value':'0', 'class':'form-control'}))
 
 class seleccionarHistoriaForm(forms.Form):
     """

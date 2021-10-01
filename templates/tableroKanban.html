@@ -1,5 +1,6 @@
 {% include 'material/includes/material_css.html' %}
 {% include 'material/includes/material_js.html' %}
+{% load material_form %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -155,6 +156,9 @@
                                                 </a>
 
                                                 <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item modal-trigger"
+                                                       data-target="modal_cargarHorasUS{{ historia.id_historia }}">cargar
+                                                        Horas </a>
                                                     <a class="dropdown-item"
                                                        href="/tableroKanban/{{ historia.id_historia }}/{{ 3 }}">Pasar a
                                                         'Finalizado' </a>
@@ -213,6 +217,28 @@
                                     </div>
                                 </div>
 
+                            </div>
+
+                            <!-- Trigger para desplegar formulario -->
+                            <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
+                                 style="width: 30% !important;
+                                    height: 40% !important;">
+                                <div class="modal-content">
+                                    <h4>Cargar Horas de trabajo</h4>
+
+                                    <div class="row">
+                                        <form action="" method="POST" class="col s12">
+                                            {% csrf_token %}
+                                                <div class="input-field col s12">
+                                                    <tr><th><label for="register-form-horas">Horas:</label></th><td><input type="number" name="horas" value="0" id="register-form-horas" name="register-form-horas" value="0" class="form-control" required></td></tr>
+                                                </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="/tableroKanban/{{ historia.id_historia }}/{{ 5 }}" type="submit"
+                                                   class="modal-close waves-effect waves-green btn blue">Cargar</a>
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -542,12 +568,10 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
-  });
-
-
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+    });
 
 
 </script>

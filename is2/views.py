@@ -449,6 +449,7 @@ def crearSprint(request):
                 mensaje = "No puede crear un nuevo sprint hasta que el actual finalize"
                 return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
 
+    return render(request, "crearSprint.html", {"form": formulario})
 
 #MODIFICAR SPRINT
 @login_required

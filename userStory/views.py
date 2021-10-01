@@ -10,7 +10,7 @@ def nuevaHistoria(datosHistoria):
                   prioridad=datosHistoria["prioridad"],
                   fecha_creacion=datosHistoria["fecha_creacion"],#sera que se le asigna correctamente?
                   horasEstimadas=datosHistoria["horasEstimadas"],
-                  estados=datosHistoria["estados"],
+                  estados='',
                   horas_dedicadas=datosHistoria["horas_dedicadas"],
                   proyecto=datosHistoria['proyecto'])
     newH.save()
@@ -23,7 +23,7 @@ def updateHistoria(datosHistoria):
     oldH.prioridad=datosHistoria["prioridad"]
     #oldH.fecha_creacion = datosHistoria["fecha_creacion"]
     oldH.horasEstimadas=datosHistoria["horasEstimadas"]
-    oldH.estados=datosHistoria["estados"]
+
     oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]
     oldH.save()
 

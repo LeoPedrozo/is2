@@ -38,7 +38,6 @@ class crearHistoriaForm(forms.Form):
     prioridad = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     horasEstimadas = forms.IntegerField(initial=0)
-    estados = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=ESTADOS_CHOICES, initial=None)
     horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 
@@ -67,7 +66,7 @@ class modificarHistoriaForm(forms.Form):
         self.fields['prioridad'].initial = self.datosHistoria['prioridad']
         #self.fields['fecha_creacion'].initial=self.datosHistoria['fecha_creacion']#este crea problema
         self.fields['horasEstimadas'].initial = self.datosHistoria['horasEstimadas']
-        self.fields['estados'].initial = self.datosHistoria['estados']#este es especial
+
         self.fields['horas_dedicadas'].initial = self.datosHistoria['horas_dedicadas']
         self.fields['proyecto'].initial = self.datosHistoria['proyecto']
 
@@ -92,7 +91,7 @@ class modificarHistoriaForm(forms.Form):
     prioridad = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     #fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     horasEstimadas = forms.IntegerField(initial=0)
-    estados = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=ESTADOS_CHOICES)
+
     horas_dedicadas = forms.IntegerField(initial=0)
 
 

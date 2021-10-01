@@ -21,10 +21,11 @@ class crearSprintForm(forms.Form):
         self.fields['historias'].queryset = Historia.objects.filter(proyecto=self.request['proyecto'],estados="")
 
     idproyecto = forms.IntegerField(label="Proyecto Propietario",disabled=True)
-    sprintNumber = forms.IntegerField(label="Numero de Sprint")
+    sprintNumber = forms.IntegerField(label="Numero de Sprint",required=True)
+
     fecha_inicio =forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
     fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha fin")
-    historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True)
+    historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
 
 class modificarSprintForm(forms.Form):
         """

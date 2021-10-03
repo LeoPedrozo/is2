@@ -723,16 +723,19 @@ def productBacklog(request):
 @login_required
 def moverHistoria(request,id,opcion):
     h=Historia.objects.get(id_historia=id)
-
-    #print(f"Datos del formulario : {request.POST}")
+    #print(f"Horas POST : {request.POST['horas']}")
     if request.method == 'POST':
         form = cargarHorasHistoriaForm(request.POST)
         print(f"form : {form}")
         if (form.is_valid()):
             horas = form.cleaned_data['horas']
-            if (opcion == 5):
-                print(f"Historia con id {id} horas: {horas}")
-                h.horas_dedicadas = h.horas_dedicadas + horas
+            if horas > 0 :
+                if (opcion == 5):
+                    print(f"Historia con id {id} horas: {horas}")
+                    h.horas_dedicadas = h.horas_dedicadas + horas
+                    messages.success(request,"Horas registradas")
+            else:
+                messages.error(request, 'Ingrese una hora valida')
         else:
             print("formulario invalido")
 

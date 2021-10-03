@@ -78,34 +78,12 @@
                                         <!-- Modal Structure -->
                                         <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
                                             <div class="modal-content">
-                                                <p></p>
-                                                <p></p>
-                                                <p></p>
                                                 <h4>{{ historia.nombre }}.</h4>
-
-                                                <h6> Descripcion </h6>
-                                                <p>{{ historia.descripcion }}</p>
-
+                                                <br><b>Descripcion</b>
+                                                <p>{{ historia.descripcion }}.</p>
+                                                <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
                                                 <p>Prioridad : {{ historia.prioridad }}.</p>
-                                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                                    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-                                                    quae ab illo inventore veritatis et quasi architecto beatae vitae
-                                                    dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-                                                    aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-                                                    eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                                                    qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-                                                    sed quia non numquam eius modi tempora incidunt ut labore et dolore
-                                                    magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-                                                    nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut
-                                                    aliquid ex ea commodi consequatur? Quis autem vel eum iure
-                                                    reprehenderit qui in ea voluptate velit esse quam nihil molestiae
-                                                    consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-                                                    pariatur?</p>
-                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
-                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
-                                                <p></p>
-                                                <p></p>
-                                                <p></p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}.</p>
                                             </div>
 
                                             <div class="modal-footer">
@@ -188,24 +166,9 @@
 
                                                 <h6> Descripcion </h6>
                                                 <p>{{ historia.descripcion }}</p>
-
-                                                <p>Prioridad : {{ historia.prioridad }}.</p>
-                                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                                    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-                                                    quae ab illo inventore veritatis et quasi architecto beatae vitae
-                                                    dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-                                                    aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-                                                    eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                                                    qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-                                                    sed quia non numquam eius modi tempora incidunt ut labore et dolore
-                                                    magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-                                                    nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut
-                                                    aliquid ex ea commodi consequatur? Quis autem vel eum iure
-                                                    reprehenderit qui in ea voluptate velit esse quam nihil molestiae
-                                                    consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-                                                    pariatur?</p>
                                                 <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
                                                 <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
 
                                             </div>
 
@@ -221,25 +184,27 @@
 
                             <!-- Trigger para desplegar formulario -->
                             <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
-                                 style="width: 30% !important;
+                                   style="width: 30% !important;
                                     height: 40% !important;">
                                 <div class="modal-content">
-                                    <h4>Cargar Horas de trabajo</h4>
+                                  <h2>Cargar Horas de trabajo</h2>
 
-                                    <div class="row">
-                                        <form action="" method="POST" class="col s12">
-                                            {% csrf_token %}
-                                                <div class="input-field col s12">
-                                                    <tr><th><label for="register-form-horas">Horas:</label></th><td><input type="number" name="horas" value="0" id="register-form-horas" name="register-form-horas" value="0" class="form-control" required></td></tr>
-                                                </div>
-                                        </form>
-                                    </div>
+                                  <div class="row">
+                                    <form action="/tableroKanban/{{ historia.id_historia }}/{{ 5 }}/" method="POST" class="col s12">
+                                        {% csrf_token %}
+                                      <div class="row">
+                                        <div class="input-field col s12">
+                                          <label for="horas-register">Horas dedicadas</label>
+                                          <input id="horas-register" name="horas" type="number" class="active validate">
+                                        </div>
+                                      </div>
+                                        <button value="Cargar" type="submit"  class="modal-close btn blue">Cargar</button>
+                                    </form>
+                                  </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <a href="/tableroKanban/{{ historia.id_historia }}/{{ 5 }}" type="submit"
-                                                   class="modal-close waves-effect waves-green btn blue">Cargar</a>
-                                </div>
-                            </div>
+                                 <div class="modal-footer">
+                                 </div>
+                              </div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -303,24 +268,9 @@
 
                                                 <h6> Descripcion </h6>
                                                 <p>{{ historia.descripcion }}</p>
-
-                                                <p>Prioridad : {{ historia.prioridad }}.</p>
-                                                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                                                    accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
-                                                    quae ab illo inventore veritatis et quasi architecto beatae vitae
-                                                    dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-                                                    aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
-                                                    eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                                                    qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-                                                    sed quia non numquam eius modi tempora incidunt ut labore et dolore
-                                                    magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
-                                                    nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut
-                                                    aliquid ex ea commodi consequatur? Quis autem vel eum iure
-                                                    reprehenderit qui in ea voluptate velit esse quam nihil molestiae
-                                                    consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-                                                    pariatur?</p>
                                                 <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
                                                 <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
 
                                             </div>
 
@@ -565,6 +515,22 @@
         height: 40% !important;
     }
 </style>
+
+    {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success'%}
+                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength:5000});</script>
+            {% elif message.tags == 'info' %}
+                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:5000});</script>
+            {% elif message.tags == 'warning' %}
+                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength:5000});</script>
+            {% elif message.tags == 'error' %}
+                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:5000});</script>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 
 <script>

@@ -30,15 +30,26 @@ class TestViews(TestCase):
         self.modificar_historia_url = reverse(crearHistoria)
         self.ver_historias_url = reverse(verHistorias)
         User = get_user_model()
-        user = User.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
+        #self.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+        #self.user = User.objects.create_user('temporary', 'temporary@gmail.com', 'temporary')
+        User.objects.create_superuser(
+            'user1',
+            'user1@example.com',
+            'pswd',
+            proyecto_id = 1,
+        )
+        self.client.login(username="user1", password="pswd")
+
+    def tearDown(self):
+        self.client.logout()
 
     def test_inicio(self):
 
         User = get_user_model()
-        self.client.login(username='temporary', password='temporary')
+        #self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.inicio_url)
-        user = User.objects.get(username='temporary')
-        self.assertEqual(response.context['mail'], 'temporary@gmail.com')
+        #user = User.objects.get(username='temporary')
+        self.assertEqual(response.context['mail'], 'user1@example.com')
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'registroRequerido.html')
@@ -48,7 +59,10 @@ class TestViews(TestCase):
 
     def test_crearRol(self):
 
+        User = get_user_model()
+        #self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.crear_rol_url)
+        #user = User.objects.get(username='temporary')
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'crearRol.html')
@@ -57,6 +71,8 @@ class TestViews(TestCase):
 
     def test_asignarRol(self):
 
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
         response = self.client.get(self.asignar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -111,7 +127,7 @@ class TestViews(TestCase):
 
     def test_modificarProyecto(self):
 
-        response = self.client.get(self.modificar_proyecto_url,follow=True)
+        response = self.client.get(self.modificar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
         #self.assertTemplateUsed(response, 'outputmodificarProyecto.html')
@@ -153,9 +169,8 @@ class TestViews(TestCase):
     def test_modificarHistoria(self):
 
         User = get_user_model()
-        self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.modificar_historia_url)
-        user = User.objects.get(username='temporary')
+        #user = User.objects.get(username='temporary')
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'crearUserStory.html')

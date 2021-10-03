@@ -345,8 +345,32 @@ def eliminarProyecto(request):
         if (formulario.is_valid()):
             ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
 
-            # Acciones a realizar con el form
+            #eliminamos todas las historias asociadas a este proyecto
+            id_proyecto=ProyectoSeleccionado.id
+            Historia.objects.filter(proyecto=id_proyecto).delete()
+
+            #eliminamos los sprints
+
+            proyecto=model_to_dict(ProyectoSeleccionado)
+            sprints = proyecto["id_sprints"]
+            for s in sprints:
+                s.delete()
+
+
+            historias=Historia.objects.filter(proyecto=id_proyecto)
+            for h in historias:
+                h.delete()
+
+            #desasociamos los ususarios del proyecto
+            miembros=User.objects.filter(proyecto_id=id_proyecto).exclude(
+            username='admin')
+
+            #desasociamos proyecto con ususario
+            desasociarUsuariodeProyecto(miembros)
+
+            # Eliminamos proyecto
             ProyectoSeleccionado.delete()
+
             # Retornar mensaje de exito
             return render(request, "outputEliminarProyecto.html", {"Proyectoeliminado": ProyectoSeleccionado})
     else:
@@ -423,17 +447,9 @@ def crearSprint(request):
             # Acciones a realizar con el form
             datosSprint=formulario.cleaned_data
             newSprint=nuevoSprint(datosSprint)
-
             return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
     else:
         usuarioActual = User.objects.get(username=request.user.username)
-
-        #Si no pertence a un proyecto
-
-        print("usuarioActual.proyecto_id = ",usuarioActual.proyecto_id)
-        print("usuarioActual.proyecto = ", usuarioActual.proyecto)
-
-
         if usuarioActual.proyecto_id is None:
             mensaje="Ustede no forma parte de ningun proyecto"
             return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
@@ -448,7 +464,6 @@ def crearSprint(request):
             else:
                 mensaje = "No puede crear un nuevo sprint hasta que el actual finalize"
                 return render(request, "Condicion_requerida.html",{"mensaje":mensaje})
-
     return render(request, "crearSprint.html", {"form": formulario})
 
 #MODIFICAR SPRINT
@@ -723,6 +738,8 @@ def productBacklog(request):
 @login_required
 def moverHistoria(request,id,opcion):
     h=Historia.objects.get(id_historia=id)
+
+    #print(f"Datos del formulario : {request.POST}")
     #print(f"Horas POST : {request.POST['horas']}")
     if request.method == 'POST':
         form = cargarHorasHistoriaForm(request.POST)
@@ -743,6 +760,7 @@ def moverHistoria(request,id,opcion):
         h.estados='PENDIENTE'
     if (opcion==2):
         h.estados='EN_CURSO'
+        #Aca se debe agregar logica para asociar la histaria con el usuario.
     if (opcion==3):
         h.estados='FINALIZADO'
     if (opcion==4):

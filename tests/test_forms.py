@@ -1,4 +1,4 @@
-
+from django.test import TestCase
 import unittest
 from random import randrange
 
@@ -21,14 +21,14 @@ class TestForms(unittest.TestCase):
             nombre='Primer Proyecto',
             descripcion='Proyecto de prueba',
             estado='PENDIENTE',
-            fecha='25/07/2021',
+            fecha='2021-07-25',
             fecha_entrega='2021-07-26'
         )
 
         self.sprints = Sprint.objects.create(
             sprintNumber=5,
-            fecha_inicio='16/09/2021',
-            fecha_fin='20/09/2021'
+            fecha_inicio='2021-09-16',
+            fecha_fin='2021-09-20'
         )
 
 

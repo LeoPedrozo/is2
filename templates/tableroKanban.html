@@ -181,30 +181,38 @@
                                 </div>
 
                             </div>
-
-                            <!-- Trigger para desplegar formulario -->
+                            <!--Modal-->
                             <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
-                                   style="width: 30% !important;
-                                    height: 40% !important;">
-                                <div class="modal-content">
-                                  <h2>Cargar Horas de trabajo</h2>
+                                 style="width: 30% !important;
+                                    height: 20% !important;">
 
-                                  <div class="row">
-                                    <form action="/tableroKanban/{{ historia.id_historia }}/{{ 5 }}/" method="POST" class="col s12">
-                                        {% csrf_token %}
-                                      <div class="row">
-                                        <div class="input-field col s12">
-                                          <label for="horas-register">Horas dedicadas</label>
-                                          <input id="horas-register" name="horas" type="number" class="active validate">
-                                        </div>
-                                      </div>
-                                        <button value="Cargar" type="submit"  class="modal-close btn blue">Cargar</button>
-                                    </form>
-                                  </div>
+                                <div class="modal-content">
+                                    <h2>Cargar Horas de trabajo</h2>
+
+                                    <div class="row">
+                                        <form action="/tableroKanban/{{ historia.id_historia }}/{{ 5 }}/" method="POST"
+                                              class="col s12">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="input-field col s12">
+                                                    <label for="horas-register">Horas dedicadas</label>
+                                                    <input id="horas-register" name="horas" type="number"
+                                                           class="active validate">
+                                                </div>
+                                            </div>
+                                            <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
+                                            </button>
+                                        </form>
+                                    </div>
+
                                 </div>
-                                 <div class="modal-footer">
-                                 </div>
-                              </div>
+                                <div class="modal-footer" style=" width: 0 !important;
+        max-height: 100% !important;
+        height: 0 !important;">
+                                    <!--<button value="Cargar" type="submit" class="modal-close btn blue">Cargar
+                                            </button>-->
+                                </div>
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -516,21 +524,21 @@
     }
 </style>
 
-    {% if messages %}
-        <ul class="messages">
+{% if messages %}
+    <ul class="messages">
         {% for message in messages %}
-            {% if message.tags == 'success'%}
-                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength:5000});</script>
+            {% if message.tags == 'success' %}
+                <script>M.toast({html: "{{ message }}", classes: 'green rounded', displayLength:5000});</script>
             {% elif message.tags == 'info' %}
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:5000});</script>
+                <script>M.toast({html: "{{ message }}", classes: 'blue rounded', displayLength:5000});</script>
             {% elif message.tags == 'warning' %}
-                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength:5000});</script>
+                <script>M.toast({html: "{{ message }}", classes: 'yellow rounded', displayLength:5000});</script>
             {% elif message.tags == 'error' %}
-                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:5000});</script>
+                <script>M.toast({html: "{{ message }}", classes: 'red rounded', displayLength:5000});</script>
             {% endif %}
         {% endfor %}
-        </ul>
-    {% endif %}
+    </ul>
+{% endif %}
 
 
 <script>
@@ -538,6 +546,7 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
     });
+
 
 
 </script>

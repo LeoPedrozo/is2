@@ -22,7 +22,7 @@ from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, as
     registrarUsuario, \
     modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol, crearHistoria, verHistorias, \
     seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
-    tableroKanban, moverHistoria, visualizarSprint2
+    tableroKanban, moverHistoria, visualizarSprint2, lineChart
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -68,6 +68,8 @@ urlpatterns = [
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
 
     path('listarMiembros/',verMiembros),
+
+    path('lineChart/',lineChart),
 
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)

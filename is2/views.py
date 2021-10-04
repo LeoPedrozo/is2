@@ -4,7 +4,8 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
-
+from datetime import date, datetime, timedelta
+from workalendar.america import Paraguay
 
 from django.http import HttpResponse
 from django.db import models
@@ -776,3 +777,45 @@ def moverHistoria(request,id,opcion):
 
 
 #vista que cambia el tiempo trabajado de un usuario
+
+def lineChart(request):
+
+    cal = Paraguay()
+    #formatear fecha print(x.strftime("%b %d %Y %H:%M:%S"))
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+    else:
+        proyectoActual = model_to_dict(usuarioActual.proyecto)
+        listaSprint = proyectoActual['id_sprints']
+        sprintActual=listaSprint[-1]
+        sprintActual2=model_to_dict(sprintActual)
+        listaHistorias=sprintActual2['historias']
+        cantidaddehistorias = len(listaHistorias)
+
+        #Obtener los dias laborales
+        fechaInicio = sprintActual2['fecha_inicio']
+        fechaFin = sprintActual2['fecha_fin']
+        cantidadDias = cal.get_working_days_delta(fechaInicio, fechaFin)
+        diasLaborales = []
+        dias = []
+        horasLaborales = []
+        pasos = timedelta(days=1)
+        print("calculando fechas")
+        while fechaInicio <= fechaFin:
+            if cal.is_working_day(fechaInicio):
+                diasLaborales.append(fechaInicio)
+                dias.append( fechaInicio.strftime("%d-%b"))
+                print(fechaInicio)
+            fechaInicio += pasos
+
+        for i in range(cantidadDias):
+            horasLaborales.append(5)
+
+        print(diasLaborales)
+
+        print("dias =",dias)
+        print(cantidadDias)
+        return render(request, "lineChart.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias,"diasLaborales":dias, "horasLaborales":horasLaborales, "cantidadDias":cantidadDias})
+

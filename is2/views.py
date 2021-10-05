@@ -797,7 +797,7 @@ def lineChart(request):
         #Obtener los dias laborales
         fechaInicio = sprintActual2['fecha_inicio']
         fechaFin = sprintActual2['fecha_fin']
-        cantidadDias = cal.get_working_days_delta(fechaInicio, fechaFin)
+        cantidadDias = cal.get_working_days_delta(fechaInicio, fechaFin)+1
         diasLaborales = []
         dias = []
         horasLaborales = []

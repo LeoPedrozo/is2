@@ -810,8 +810,11 @@ def lineChart(request):
                 print(fechaInicio)
             fechaInicio += pasos
 
+        #suponiendo que se trabaja 8 horas al dia
+        totalHorasLaborales = cantidadDias * 8;
         for i in range(cantidadDias):
-            horasLaborales.append(str(i+1))
+            horasLaborales.append(str(totalHorasLaborales))
+            totalHorasLaborales = totalHorasLaborales - 8;
 
         print(diasLaborales)
 

@@ -26,44 +26,40 @@
 </div>
     <script>
 
-    $(document).ready(function () {
+  $(document).ready(function() {
 
-    function generateLabels() {
-        var dias = "{{ diasLaborales }}"
-        document.write(dias);
-        var chartLabels = [];
-        var n = parseInt("{{cantidadDias}}");
-        for (x = 0; x < n; x++) {
-            chartLabels.push(dias[x]);
-        }
-        return chartLabels;
+  function generateLabels(){
+
+    var chartLabels = [];
+    var array = "{{ diasLaborales }}".split(',');
+    for (x = 0; x < {{ cantidadDias }}; x++) {
+      chartLabels.push(array[x]);
     }
-
-    function generateData() {
-        var chartData = [];
-        for (x = 0; x < 100; x++) {
-            chartData.push(Math.floor((Math.random() * 100) + 1));
-        }
-        return chartData;
-    }
-
-    function addData(numData, chart) {
+    return chartLabels;
+  }
+        function addData(numData, chart) {
         for (var i = 0; i < numData; i++) {
-            chart.data.datasets[0].data.push(Math.random() * 100);
-            chart.data.labels.push("Label" + i);
+            //chart.data.datasets[0].data.push(Math.random() * 100);
+           // chart.data.labels.push("Label" + i);
             var newwidth = $('.chartAreaWrapper2').width() + 60;
             $('.chartAreaWrapper2').width(newwidth);
         }
     }
-
-    var chartData = {
-        labels: "{{ diasLaborales }}",
-        datasets: [{
-            label: "Test Data Set",
-            data: "{{ horasLaborales }}"
-        }]
-    };
-
+   function generateData() {
+    var chartData = [];
+    var array = "{{ horasLaborales }}".split(',');
+    for (x = 0; x < {{ cantidadDias }}; x++) {
+      chartData.push(array[x]);
+    }
+    return chartData;
+  }
+  var chartData = {
+    labels:generateLabels(),
+    datasets: [{
+      label: "Test Data Set",
+      data: generateData()
+    }]
+  };
 
 
     $(function () {
@@ -89,7 +85,7 @@
                         ticks: {
                             fontSize: 12,
                             display: true,
-                            autoSkip: false
+                            autoSkip: true
                         }
                     }],
                     yAxes: [{
@@ -138,9 +134,10 @@
                 }
             }
         });
-        //addData(5, chartTest);
+         addData(5, chartTest);
     });
 });
+
 
 
     </script>

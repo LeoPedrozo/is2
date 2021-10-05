@@ -28,7 +28,7 @@ from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprint
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, cargarHorasHistoriaForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria
-
+import json
 
 # Hola mundo para probar django
 @login_required
@@ -811,11 +811,14 @@ def lineChart(request):
             fechaInicio += pasos
 
         for i in range(cantidadDias):
-            horasLaborales.append(5)
+            horasLaborales.append(str(i+1))
 
         print(diasLaborales)
 
+
         print("dias =",dias)
+        print("horas =",horasLaborales)
         print(cantidadDias)
-        return render(request, "lineChart.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias,"diasLaborales":dias, "horasLaborales":horasLaborales, "cantidadDias":cantidadDias})
+
+        return render(request, "lineChart.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias,"diasLaborales":','.join(dias), "horasLaborales":','.join(horasLaborales), "cantidadDias":cantidadDias})
 

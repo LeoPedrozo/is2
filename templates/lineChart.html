@@ -47,18 +47,17 @@
                 return chartLabels;
             }
 
-            function addData(numData, chart) {
-                for (var i = 0; i < numData; i++) {
-                    //chart.data.datasets[0].data.push(Math.random() * 100);
-                    // chart.data.labels.push("Label" + i);
-                    var newwidth = $('.chartAreaWrapper2').width() + 60;
-                    $('.chartAreaWrapper2').width(newwidth);
-                }
-            }
-
-            function generateData() {
+            function generateDataIdeal() {
                 var chartData = [];
-                var array = "{{ horasLaborales }}".split(',');
+                var array = "{{ horasLaboralesIdeal }}".split(',');
+                for (x = 0; x < {{ cantidadDias }}; x++) {
+                    chartData.push(array[x]);
+                }
+                return chartData;
+            }
+            function generateDataReal() {
+                var chartData = [];
+                var array = "{{ horasLaboralesReal }}".split(',');
                 for (x = 0; x < {{ cantidadDias }}; x++) {
                     chartData.push(array[x]);
                 }
@@ -67,10 +66,19 @@
 
             var chartData = {
                 labels: generateLabels(),
-                datasets: [{
-                    label: "Trabajo Ideal",
-                    data: generateData()
-                }]
+                datasets: [
+                    {
+                        label: "Trabajo Ideal",
+                        data: generateDataIdeal(),
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(86,225,93,0.5)'
+                    },{
+                        label: "Trabajo Real",
+                        data: generateDataReal(),
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(67,71,147,0.52)'}
+
+                ]
             };
 
 
@@ -146,7 +154,6 @@
                         }
                     }
                 });
-                //addData(5, chartTest);
             });
         });
 

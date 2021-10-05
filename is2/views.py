@@ -800,7 +800,8 @@ def lineChart(request):
         cantidadDias = cal.get_working_days_delta(fechaInicio, fechaFin)+1
         diasLaborales = []
         dias = []
-        horasLaborales = []
+        horasLaboralesIdeal = []
+        horasLaboralesReal=[]
         pasos = timedelta(days=1)
         print("calculando fechas")
         while fechaInicio <= fechaFin:
@@ -813,15 +814,16 @@ def lineChart(request):
         #suponiendo que se trabaja 8 horas al dia
         totalHorasLaborales = cantidadDias * 8;
         for i in range(cantidadDias):
-            horasLaborales.append(str(totalHorasLaborales))
+            horasLaboralesIdeal.append(str(totalHorasLaborales))
+            horasLaboralesReal.append(str(i))
             totalHorasLaborales = totalHorasLaborales - 8;
 
         print(diasLaborales)
 
 
         print("dias =",dias)
-        print("horas =",horasLaborales)
+        print("horas =",horasLaboralesIdeal)
         print(cantidadDias)
 
-        return render(request, "lineChart.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias,"diasLaborales":','.join(dias), "horasLaborales":','.join(horasLaborales), "cantidadDias":cantidadDias})
+        return render(request, "lineChart.html", {"Sprint": sprintActual,"Historias": listaHistorias,"Total":cantidaddehistorias,"diasLaborales":','.join(dias), "horasLaboralesIdeal":','.join(horasLaboralesIdeal),"horasLaboralesReal": ','.join(horasLaboralesReal),"cantidadDias":cantidadDias})
 

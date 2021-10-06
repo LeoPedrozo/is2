@@ -9,8 +9,8 @@ Definimos los estados de un Proyecto
 ESTADOS_CHOICES = [
     ('PENDIENTE','Pendiente'),
     ('INICIADO','Iniciado'),
-    ('FINALIZADO','Finalizado'),
-    ('CANCELADO','Cancelado'),
+    #('FINALIZADO','Finalizado'),
+    #('CANCELADO','Cancelado'),
 ]
 
 class Proyecto(models.Model):
@@ -19,12 +19,12 @@ class Proyecto(models.Model):
     nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints
     """
     nombre = models.CharField(max_length=100)
-    descripcion=models.TextField(null=True,blank=True)
-    estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES, default='PENDIENTE')
-    fecha = models.DateField(blank=True)
-    fecha_entrega = models.DateField(blank=True)
-    fecha_finalizacion = models.DateField(null=True)
-    id_sprints = models.ManyToManyField(Sprint)
+    descripcion=models.TextField(null=True,blank=False)
+    estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES)
+    fecha = models.DateField(blank=False)
+    fecha_entrega = models.DateField(blank=False)
+    fecha_finalizacion = models.DateField(null=True, blank=True)
+    id_sprints = models.ManyToManyField(Sprint, blank=True)
 
     class Meta:
         verbose_name = 'Proyecto'
@@ -38,3 +38,20 @@ class Proyecto(models.Model):
         """
         return self.nombre
 
+    def validate_test(self):
+        """
+        Metodo del modelo de Proyecto que retorna un booleano en caso
+        que no se hayan completado todos los campos obligatorios en el proyecto.
+        """
+
+        if not self.nombre:
+            return False
+        if not self.descripcion:
+            return False
+        if not self.estado:
+            return False
+        if not self.fecha:
+            return False
+        if not self.fecha_entrega:
+            return False
+        return True

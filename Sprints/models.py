@@ -1,4 +1,6 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+
 
 # Create your models here.
 from userStory.models import Historia
@@ -15,4 +17,6 @@ class Sprint(models.Model):
     fecha_fin = models.DateField(blank=True)
     historias = models.ManyToManyField(Historia,blank=True)
 
-
+   ##Esto lo agrege yo por que estoy re loco
+    horasLaboralesReal= ArrayField(models.IntegerField(),default=list)
+    horasLaboralesIdeal = ArrayField(models.IntegerField(),default=list)

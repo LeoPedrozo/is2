@@ -11,7 +11,7 @@ def nuevaHistoria(datosHistoria):
                   fecha_creacion=datosHistoria["fecha_creacion"],#sera que se le asigna correctamente?
                   horasEstimadas=datosHistoria["horasEstimadas"],
                   estados='',
-                  horas_dedicadas=datosHistoria["horas_dedicadas"],
+                  horas_dedicadas=0,
                   proyecto=datosHistoria['proyecto'])
     newH.save()
 

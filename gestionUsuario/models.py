@@ -10,7 +10,8 @@ class User(AbstractUser):
     """
 
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
-    stories = models.ManyToManyField(Historia)
+    #Comente esto por que se cambio ya.
+    #stories = models.ManyToManyField(Historia)
 
     class Meta:
         verbose_name = 'Usuario'

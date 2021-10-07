@@ -759,6 +759,8 @@ def moverHistoria(request, id, opcion):
     if (opcion == 2):
         h.estados = 'EN_CURSO'
         # Aca se debe agregar logica para asociar la histaria con el usuario.
+        encargado=User.objects.get(username=request.user.username)
+        h.encargado=encargado
     if (opcion == 3):
         h.estados = 'FINALIZADO'
     if (opcion == 4):

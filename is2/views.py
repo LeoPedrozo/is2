@@ -812,7 +812,7 @@ def lineChart(request):
             fechaInicio += pasos
 
 
-        # ESto lo agregue por que estoy re loco
+        # Esto lo agregue por que estoy re loco
         ideal = sprintActual2["horasLaboralesIdeal"]
         # real = sprintActual2["horasLaboralesReal"]
 

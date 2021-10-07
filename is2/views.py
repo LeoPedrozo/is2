@@ -848,14 +848,29 @@ def calcularEsfuerzoDiario(Historias, sprint,Dias):
 
     #FASE 2
     #Se agrega a el esfuerzo a la lista
-    hoy=datetime.today().strftime("%d-%b")
+    hoy=datetime.today()
+    hoy = hoy + timedelta(days=2)
+    hoy=hoy.strftime("%d-%b")
     if(hoy in Dias):
         posicionEquivalenteDia=Dias.index(hoy)
+
+        print("Posicion : ",posicionEquivalenteDia)
+        print("Longitud : ",len(sprint.horasLaboralesReal))
+
         if(len(sprint.horasLaboralesReal)==0):
             sprint.horasLaboralesReal.insert(posicionEquivalenteDia, esfuerzoDiario)
         else:
-            sprint.horasLaboralesReal.insert(posicionEquivalenteDia,esfuerzoDiario)
-            sprint.horasLaboralesReal.pop(posicionEquivalenteDia+1)
+            try:
+                sprint.horasLaboralesReal.insert(posicionEquivalenteDia,esfuerzoDiario)
+                sprint.horasLaboralesReal.pop(posicionEquivalenteDia+1)
+            except IndexError:
+                print("posicionEquivalenteDia+1 no existia")
+                #sprint.horasLaboralesReal.insert(posicionEquivalenteDia, esfuerzoDiario)
+                #sprint.horasLaboralesReal.pop(posicionEquivalenteDia + 1)
+
+
+
+
 
         sprint.save()
 

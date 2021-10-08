@@ -472,7 +472,7 @@ def crearSprint(request):
 @permission_required('Sprints.change_sprint', raise_exception=True)
 def modificarSprint(request):
     """
-    Metodo para la modificacion de proyectos
+    Metodo para la modificacion de sprints
 
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR PROYECTO

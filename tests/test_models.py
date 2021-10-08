@@ -182,6 +182,8 @@ class TestModels(TestCase):
         fechFin = time.strptime(sprint1.fecha_fin, "%d/%m/%Y")
         self.assertLessEqual(fechIni, fechFin, "Fecha no valida. fecha inicio debe ser menor a fecha fin")
 
+
+
     def test_crearRol(self):
         """
         Test de creacion de Rol llamado rolNuevo con permiso para agregar proyecto
@@ -196,6 +198,8 @@ class TestModels(TestCase):
             rol1.permissions.add(permission)
 
         self.assertIsNotNone(rol1)
+
+
 
     def test_crearUserStory(self):
         nuevoUS = Historia(id_historia=3,nombre='Historia 1',descripcion='Historia de prueba',prioridad='ALTA',

@@ -58,6 +58,14 @@ class seleccionarHistoriaForm(forms.Form):
 
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(),initial=0,label="Selecciona la historia")
 
+class asignarEncargadoForm(forms.Form):
+    """
+         Implementa la clase para ejecutar un formulario de solicitud para asignar una historia a un usuario
+    """
+    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario", required=True)
+    Historia = forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),initial=0,label="Selecciona la historia", required=True)
+
+
 class modificarHistoriaForm(forms.Form):
     """
       Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto

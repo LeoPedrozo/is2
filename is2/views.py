@@ -26,9 +26,9 @@ from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarPr
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
-    cargarHorasHistoriaForm
+    cargarHorasHistoriaForm, asignarEncargadoForm
 from userStory.models import Historia
-from userStory.views import nuevaHistoria, updateHistoria
+from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 import json
 
 
@@ -515,10 +515,10 @@ def modificarSprint(request):
 @permission_required('Sprints.view_sprint', raise_exception=True)
 def visualizarSprint(request):
     """
-    Metodo para la visualizacion de proyectos
+    Metodo para la visualizacion de Sprints
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de VISUALIZAR PROYECTO
+    :return: respuesta a la solicitud de VISUALIZAR SPRINT
     """
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
@@ -619,10 +619,10 @@ def crearHistoria(request):
 @permission_required('userStory.add_historia', raise_exception=True)
 def seleccionarHistoria(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+        Metodo para la modificacion de historia, primeramente es necesario seleccionar la historia a ser modificada
 
         :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+        :return: respuesta: a la solicitud de SELECCIONAR HISTORIA
     """
     if request.method == "POST":
         formulario = seleccionarHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
@@ -640,6 +640,30 @@ def seleccionarHistoria(request):
         request.session['idproyecto'] = usu['proyecto']
         formulario = seleccionarHistoriaForm(proyecto=request.session['idproyecto'])
     return render(request, "seleccionarHistoria.html", {"form": formulario})
+
+# Seleccionar historia 1
+@login_required
+@permission_required('Sprints.add_sprint', raise_exception=True)
+def asignarHistoriaEncargado(request):
+    """
+        Metodo para la asignacion de una historia a un usuario como encargado
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de Asignar Encargado
+    """
+    if request.method == "POST":
+        formulario = asignarEncargadoForm(request.POST)
+        if (formulario.is_valid()):
+            Historias = formulario.cleaned_data['Historia']
+            usuarioEncargado =  formulario.cleaned_data['Usuario']
+            print("el modelo de historia es:")
+            print(Historias)
+            print("El encargado de la historia : ",usuarioEncargado)
+            asignarEncargado(Historias, usuarioEncargado)
+            return render(request, "outputasignarEncargado.html", {"historias": Historias, "encargado":usuarioEncargado})
+    else:
+        formulario = asignarEncargadoForm(request.POST)
+    return render(request, "asignarEncargado.html", {"form": formulario})
 
 
 # modificar historia 2
@@ -745,10 +769,16 @@ def moverHistoria(request, id, opcion):
         if (form.is_valid()):
             horas = form.cleaned_data['horas']
             if horas > 0:
-                if (opcion == 5):
-                    print(f"Historia con id {id} horas: {horas}")
-                    h.horas_dedicadas = h.horas_dedicadas + horas
-                    messages.success(request, "Horas registradas")
+                print("Usuario que solicita : ",request.user)
+                print("Encargado : ",h.encargado)
+                if request.user == h.encargado:
+                    if (opcion == 5):
+                        print(f"Historia con id {id} horas: {horas}")
+                        h.horas_dedicadas = h.horas_dedicadas + horas
+                        messages.success(request, "Horas registradas")
+                else:
+                    messages.error(request, "No eres el encargado de la historia")
+                    messages.info(request,f"El encargado es {h.encargado}")
             else:
                 messages.error(request, 'Ingrese una hora valida')
         else:

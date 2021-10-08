@@ -35,6 +35,14 @@
             <div class="col s9 l3 offset-s9">
                 <div class="card blue white-text">
                     <div class="card-content">
+                        <p>Miembros</p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col s9 l3 offset-s9">
+                <div class="card blue white-text">
+                    <div class="card-content">
                         <p>Sprint : &nbsp; {{ Sprint.sprintNumber }}</p>
                         Inicio : {{ Sprint.fecha_inicio }}
                         <br>Fin : &nbsp;&nbsp;&nbsp; {{ Sprint.fecha_fin }}
@@ -56,6 +64,7 @@
                             </div>
                             <div class="collapsible-body">
                                 Descripcion : {{ historia.descripcion }}
+                                <br>Encargado : {{ historia.encargado }}
                                 <br>Prioridad : {{ historia.prioridad }}
                                 <br>Estado : {{ historia.estados }}
                                 <br>Horas estimadas : {{ historia.horasEstimadas }}

@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 # Create your models here.
@@ -15,13 +16,15 @@ class Sprint(models.Model):
     fecha_fin = models.DateField(blank=False)
     historias = models.ManyToManyField(Historia,blank=True)
 
+    ##Esto lo agrege yo por que estoy re loco
+    horasLaboralesReal = ArrayField(models.IntegerField(), default=list)
+    horasLaboralesIdeal = ArrayField(models.IntegerField(), default=list)
 
     def validate_test(self):
         """
         Metodo del modelo de Sprint que retorna un booleano en caso
         que no se hayan completado todos los campos obligatorios en el sprint.
         """
-
         if not self.sprintNumber:
             return False
         if not self.fecha_inicio:

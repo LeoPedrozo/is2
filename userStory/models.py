@@ -37,6 +37,8 @@ class Historia(models.Model):
     horas_dedicadas=models.IntegerField(default=0)
     proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
 
+    #Jose= esto lo agrego por que estoy re loco
+    encargado=models.ForeignKey(to='gestionUsuario.user', on_delete=models.SET_NULL,null=True,blank=True)
     class Meta:
         verbose_name = 'Historia'
         verbose_name_plural = 'Historias'

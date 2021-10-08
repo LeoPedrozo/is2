@@ -11,7 +11,7 @@ def nuevaHistoria(datosHistoria):
                   fecha_creacion=datosHistoria["fecha_creacion"],#sera que se le asigna correctamente?
                   horasEstimadas=datosHistoria["horasEstimadas"],
                   estados='',
-                  horas_dedicadas=datosHistoria["horas_dedicadas"],
+                  horas_dedicadas=0,
                   proyecto=datosHistoria['proyecto'])
     newH.save()
 
@@ -26,5 +26,16 @@ def updateHistoria(datosHistoria):
 
     oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]
     oldH.save()
+
+def asignarEncargado(Historia, encargado ):
+    for historia in Historia:
+        if historia.encargado is None:
+            historia.encargado = encargado
+            historia.save()
+        else:
+            print("La historia ya posee como encargado a : ",historia.encargado)
+            print("Asignando de todas formas...")
+            historia.encargado = encargado
+            historia.save()
 
 

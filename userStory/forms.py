@@ -38,7 +38,7 @@ class crearHistoriaForm(forms.Form):
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     horasEstimadas = forms.IntegerField(initial=0, label="Horas Estimadas")
-    horas_dedicadas = forms.IntegerField(initial=0)
+    #horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 
 class cargarHorasHistoriaForm(forms.Form):
@@ -57,6 +57,14 @@ class seleccionarHistoriaForm(forms.Form):
         self.fields['Historia'].queryset=Historia.objects.filter(proyecto_id=self.proyecto)
 
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(),initial=0,label="Selecciona la historia")
+
+class asignarEncargadoForm(forms.Form):
+    """
+         Implementa la clase para ejecutar un formulario de solicitud para asignar una historia a un usuario
+    """
+    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario", required=True)
+    Historia = forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),initial=0,label="Selecciona la historia", required=True)
+
 
 class modificarHistoriaForm(forms.Form):
     """

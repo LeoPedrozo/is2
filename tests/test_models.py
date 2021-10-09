@@ -202,10 +202,89 @@ class TestModels(TestCase):
 
 
     def test_crearUserStory(self):
-        nuevoUS = Historia(id_historia=3,nombre='Historia 1',descripcion='Historia de prueba',prioridad='ALTA',
-                           fecha_creacion='2021/09/02',horasEstimadas=20,estados='PENDIENTE',horas_dedicadas=50)
+        nuevoUS = Historia(
+            nombre='Story test',
+            descripcion='testing',
+            prioridad='ALTA',
+            fecha_creacion='2021/09/02',
+            horasEstimadas=20,
+        )
         self.assertIsNotNone(nuevoUS)
 
+
+    def test_validacion_nombre_US(self):
+        """
+        Verifica que la validacion de obligatoriedad del campo nombre se ejecute correctamente
+        """
+        US = Historia(
+            #nombre='Story test',
+            descripcion='testing',
+            prioridad='ALTA',
+            fecha_creacion='2021/09/02',
+            horasEstimadas=20,
+        )
+
+        self.assertTrue(US.validate_test(), "Debe ingresar el nombre de la historia")
+
+
+    def test_validacion_descripcion_US(self):
+        """
+        Verifica que la validacion de obligatoriedad del campo descripcion se ejecute correctamente
+        """
+        US = Historia(
+            nombre='Story test',
+            #descripcion='testing',
+            prioridad='ALTA',
+            fecha_creacion='2021/09/02',
+            horasEstimadas=20,
+        )
+
+        self.assertTrue(US.validate_test(), "Debe ingresar la descripcion de la historia")
+
+
+    def test_validacion_prioridad_US(self):
+        """
+        Verifica que la validacion de obligatoriedad del campo prioridad se ejecute correctamente
+        """
+        US = Historia(
+            nombre='Story test',
+            descripcion='testing',
+            #prioridad='ALTA',
+            fecha_creacion='2021/09/02',
+            horasEstimadas=20,
+        )
+
+        self.assertTrue(US.validate_test(), "Debe seleccionar el estado de la historia")
+
+
+    def test_validacion_fecha_creacion_US(self):
+        """
+        Verifica que la validacion de obligatoriedad del campo fecha_creacion se ejecute correctamente
+        """
+        US = Historia(
+            nombre='Story test',
+            descripcion='testing',
+            prioridad='ALTA',
+            #fecha_creacion='2021/09/02',
+            horasEstimadas=20,
+        )
+
+        self.assertTrue(US.validate_test(), "Debe ingresar la fecha de creacion de la historia")
+
+
+    def test_validacion_horasEstimadas_US(self):
+        """
+        Verifica que la validacion de obligatoriedad del campo horasEstimada se ejecute correctamente
+        """
+        US = Historia(
+            nombre='Story test',
+            descripcion='testing',
+            prioridad='ALTA',
+            fecha_creacion='2021/09/02',
+            #horasEstimadas=20,
+        )
+
+        self.assertTrue(US.validate_test(), "Debe ingresar las horas de trabajo estimadas para la historia")
 
 print(__name__)
 if __name__ == '__main__':

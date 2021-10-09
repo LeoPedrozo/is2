@@ -33,12 +33,13 @@ class Historia(models.Model):
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES)
     fecha_creacion = models.DateField(auto_now_add=True)
     horasEstimadas = models.IntegerField(default=0)
-    estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES)
-    horas_dedicadas=models.IntegerField(default=0)
+    estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES, blank=True)
+    horas_dedicadas=models.IntegerField(default=0, blank=True)
     proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
 
     #Jose= esto lo agrego por que estoy re loco
     encargado=models.ForeignKey(to='gestionUsuario.user', on_delete=models.SET_NULL,null=True,blank=True)
+
     class Meta:
         verbose_name = 'Historia'
         verbose_name_plural = 'Historias'
@@ -51,3 +52,19 @@ class Historia(models.Model):
         """
         return self.nombre
 
+    def validate_test(self):
+        """
+        Metodo del modelo de Sprint que retorna un booleano en caso
+        que se hayan completado o no todos los campos obligatorios en el User Story.
+        """
+        if not self.nombre:
+            return False
+        if not self.descripcion:
+            return False
+        if not self.prioridad:
+            return False
+        if not self.fecha_creacion:
+            return False
+        if not self.horasEstimadas:
+            return False
+        return True

@@ -12,18 +12,18 @@ class Sprint(models.Model):
     """
     id = models.AutoField(primary_key=True)
     sprintNumber = models.IntegerField()
-    fecha_inicio = models.DateField(blank=False)
-    fecha_fin = models.DateField(blank=False)
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
     historias = models.ManyToManyField(Historia,blank=True)
 
     ##Esto lo agrege yo por que estoy re loco
-    horasLaboralesReal = ArrayField(models.IntegerField(), default=list)
-    horasLaboralesIdeal = ArrayField(models.IntegerField(), default=list)
+    horasLaboralesReal = ArrayField(models.IntegerField(), default=list, blank=True)
+    horasLaboralesIdeal = ArrayField(models.IntegerField(), default=list, blank=True)
 
     def validate_test(self):
         """
         Metodo del modelo de Sprint que retorna un booleano en caso
-        que no se hayan completado todos los campos obligatorios en el sprint.
+        que se hayan completado o no todos los campos obligatorios en el sprint.
         """
         if not self.sprintNumber:
             return False

@@ -69,7 +69,7 @@ urlpatterns = [
 
     path('listarMiembros/',verMiembros),
 
-    path('lineChart/',lineChart),
+    path('burndownChart/',lineChart),
 
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)

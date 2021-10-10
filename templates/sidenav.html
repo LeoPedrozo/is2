@@ -45,7 +45,8 @@
                             <!-- Foto de perfil en blanco-->
                             <!--  [https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png]    -->
                             {% if user.is_superuser %}
-                                <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="circle" style='filter: invert(100%);'>
+                                <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="circle"
+                                     style='filter: invert(100%);'>
                             {% else %}
                                 <img src="{{ avatar }}" alt="" class="circle">
                             {% endif %}
@@ -219,6 +220,30 @@
                                 Visualizar Sprint
                             </a>
                         {% endif %}
+
+                        {% if perms.userStory.view_historia %}
+                            <a href="http://127.0.0.1:8000/burndownChart/">
+                                <i class="material-icons">show_chart</i>
+                                Burndown Chart
+                            </a>
+                        {% else %}
+                            <a href="#" onclick="toast_permisos()">
+                                <i class="material-icons">show_chart</i>
+                                Burndown Chart
+                            </a>
+                        {% endif %}
+
+                        {% if perms.Sprints.view_sprint %}
+                            <a href="http://127.0.0.1:8000/tableroKanban/">
+                                <i class="material-icons">work</i>
+                                Kanban
+                            </a>
+                        {% else %}
+                            <a href="#" onclick="toast_permisos()">
+                                <i class="material-icons">work</i>
+                                Kanban
+                            </a>
+                        {% endif %}
                     </li>
                 </ul>
             </li>
@@ -269,15 +294,27 @@
                         {% endif %}
 
                         {% if perms.userStory.view_historia %}
-                                <a href="http://127.0.0.1:8000/verHistorias/">
-                                    <i class="material-icons">remove_red_eye</i>
-                                    Ver historias
-                                </a>
+                            <a href="http://127.0.0.1:8000/verHistorias/">
+                                <i class="material-icons">remove_red_eye</i>
+                                Ver historias
+                            </a>
                         {% else %}
-                                <a href="#" onclick="toast_permisos()">
-                                    <i class="material-icons">remove_red_eye</i>
-                                    Ver historias
-                                </a>
+                            <a href="#" onclick="toast_permisos()">
+                                <i class="material-icons">remove_red_eye</i>
+                                Ver historias
+                            </a>
+                        {% endif %}
+
+                        {% if perms.userStory.view_historia %}
+                            <a href="http://127.0.0.1:8000/asignarEncargado/">
+                                <i class="material-icons">person_add</i>
+                                Encargado Historia
+                            </a>
+                        {% else %}
+                            <a href="#" onclick="toast_permisos()">
+                                <i class="material-icons">person_add</i>
+                                Encargado Historia
+                            </a>
                         {% endif %}
                     </li>
                 </ul>
@@ -313,17 +350,17 @@
 
     {% if messages %}
         <ul class="messages">
-        {% for message in messages %}
-            {% if message.tags == 'success'%}
-                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength:5000});</script>
-            {% elif message.tags == 'info' %}
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:5000});</script>
-            {% elif message.tags == 'warning' %}
-                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength:5000});</script>
-            {% elif message.tags == 'error' %}
-                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:5000});</script>
-            {% endif %}
-        {% endfor %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'info' %}
+                    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'warning' %}
+                    <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'error' %}
+                    <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+                {% endif %}
+            {% endfor %}
         </ul>
     {% endif %}
 

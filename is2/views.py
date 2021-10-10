@@ -784,12 +784,14 @@ def moverHistoria(request, id, opcion):
             print("formulario invalido")
 
     if (opcion == 1):
-            h.estados = 'PENDIENTE'
-            h.encargado=None
+        h.estados = 'PENDIENTE'
+        h.encargado=None
     if (opcion == 2):
-            h.estados = 'EN_CURSO'
-            h.encargado=encargado
-            messages.success(request, "Ya eres propiertario")
+        h.estados = 'EN_CURSO'
+        h.encargado=encargado
+        messages.success(request, "Ya eres propiertario")
+
+
     if (opcion == 3):
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
@@ -829,6 +831,11 @@ def lineChart(request):
         listaHistorias = sprintActual2['historias']
         cantidaddehistorias = len(listaHistorias)
 
+        #Los miembros en forma de cadena para saber su estado
+        miembrosSprint = []
+        for hist in listaHistorias:
+            lastlog = hist.encargado.last_login.strftime("%d-%b")
+            miembrosSprint.append(f"{hist.encargado.email}\n{lastlog}")
 
 
         fechaInicio = sprintActual2['fecha_inicio']
@@ -874,7 +881,7 @@ def lineChart(request):
         return render(request, "lineChart.html",
                       {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
                        "diasLaborales": ','.join(dias), "horasLaboralesIdeal": ','.join(horasLaboralesIdeal),
-                       "horasLaboralesReal": ','.join(real), "cantidadDias": cantidadDias})
+                       "horasLaboralesReal": ','.join(real), "cantidadDias": cantidadDias, "miembros":miembrosSprint})
 
 
 def calcularEsfuerzoDiario(Historias, sprint,Dias):

@@ -35,8 +35,10 @@
             <div class="col s9 l3 offset-s9">
                 <div class="card blue white-text">
                     <div class="card-content">
-                        <p>Miembros</p>
-
+                        <p><b>Miembros:</b></p>
+                        {% for miembro in miembros %}
+                            <p><i class="material-icons" style="vertical-align: bottom;">person</i> {{ miembro }} </p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

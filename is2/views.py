@@ -760,9 +760,8 @@ def productBacklog(request):
 @login_required
 def moverHistoria(request, id, opcion):
     h = Historia.objects.get(id_historia=id)
-
-    # print(f"Datos del formulario : {request.POST}")
-    # print(f"Horas POST : {request.POST['horas']}")
+    encargado=User.objects.get(username=request.user.username)
+    # Agregar Tiempo
     if request.method == 'POST':
         form = cargarHorasHistoriaForm(request.POST)
         print(f"form : {form}")
@@ -785,16 +784,24 @@ def moverHistoria(request, id, opcion):
             print("formulario invalido")
 
     if (opcion == 1):
-        h.estados = 'PENDIENTE'
+            h.estados = 'PENDIENTE'
+            h.encargado=None
     if (opcion == 2):
-        h.estados = 'EN_CURSO'
-        # Aca se debe agregar logica para asociar la histaria con el usuario.
-        encargado=User.objects.get(username=request.user.username)
-        h.encargado=encargado
+            h.estados = 'EN_CURSO'
+            h.encargado=encargado
+            messages.success(request, "Ya eres propiertario")
     if (opcion == 3):
-        h.estados = 'FINALIZADO'
+        if (h.encargado == encargado):
+            h.estados = 'FINALIZADO'
+            messages.success(request, "Operacion realizada con exito")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
     if (opcion == 4):
-        h.estados = 'QUALITY_ASSURANCE'
+        if (h.encargado == encargado):
+            h.estados = 'QUALITY_ASSURANCE'
+            messages.success(request, "Operacion realizada con exito")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
 
     h.save()
     # aca se puede asociar una historia a un usuario

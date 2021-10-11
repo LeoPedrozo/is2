@@ -5,6 +5,12 @@ from userStory.models import Historia
 
 
 def nuevaHistoria(datosHistoria):
+    """
+    Metodo que se ejecuta para visualizar los datos de una nueva historia creada
+
+    :param datos: informaciones referentes a los campos de datos de una historia
+    :return: info de la nueva historia
+    """
     newH=Historia(nombre=datosHistoria["nombre"],
                   descripcion=datosHistoria["descripcion"],
                   prioridad=datosHistoria["prioridad"],
@@ -17,6 +23,12 @@ def nuevaHistoria(datosHistoria):
 
 #modificacion en general
 def updateHistoria(datosHistoria):
+    """
+    Metodo que se ejecuta para actualizar los datos de una nueva historia creada
+
+    :param datos: informaciones referentes a los compos de datos de una historia
+    :return: info de la historia actualizada
+    """
     oldH = Historia.objects.get(id_historia=datosHistoria['id_historia'])
     oldH.nombre=datosHistoria["nombre"]
     oldH.descripcion=datosHistoria["descripcion"]
@@ -28,6 +40,13 @@ def updateHistoria(datosHistoria):
     oldH.save()
 
 def asignarEncargado(Historia, encargado ):
+    """
+    Metodo para la asignacion de encargado a una historia
+
+    :param Historia: Historia
+    :param encargado: Encargado a ser asignado a la historia
+    :return: void
+    """
     for historia in Historia:
         if historia.encargado is None:
             historia.encargado = encargado

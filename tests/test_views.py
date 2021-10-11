@@ -33,8 +33,9 @@ class TestViews(TestCase):
         self.seleccionar_historia_url = reverse(seleccionarHistoria)
         self.modificar_historia_url = reverse(crearHistoria)
         self.eliminar_historia_url = reverse(eliminarHistoria)
-        self.ver_historias_url = reverse(verHistorias)
-        #self.product_Backlog_url = reverse(productBacklog)
+        self.ver_historias_url = reverse(productBacklog)
+        self.product_Backlog_url = reverse(productBacklog)
+        self.line_chart_url = reverse(lineChart)
         #self.mover_Historia_url = reverse(moverHistoria, args={1,1})
         User = get_user_model()
         User.objects.create_superuser(
@@ -192,14 +193,12 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'tableroKanbanSprintAnterior.html')
 
-
+    """
     def test_tableroKanban(self):
-
         response = self.client.get(self.tablero_kanban_url)
-
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'tableroKanban.html')
-
+    """
 
     def test_crearHistoria(self):
 
@@ -243,13 +242,20 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'HistoriaContent.html')
 
 
-    """def test_productBacklog(self):
+    def test_productBacklog(self):
 
         response = self.client.get(self.product_Backlog_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'HistoriaContent.html')
+
     """
+    def test_lineChart(self):
+        response = self.client.get(self.line_chart_url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'lineChart.html')
+    """
+
     #def test_moverHistoria(self):
 
 

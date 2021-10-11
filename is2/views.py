@@ -343,10 +343,10 @@ def modificarProyecto(request):
 @permission_required('proyectos.delete_proyecto', raise_exception=True)
 def eliminarProyecto(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+        Metodo para la eliminacion de proyectos
 
         :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+        :return: respuesta: a la solicitud de ELIMINAR PROYECTO
     """
     if request.method == "POST":
         formulario = eliminarProyectoForm(request.POST)
@@ -478,10 +478,10 @@ def crearSprint(request):
 @permission_required('Sprints.change_sprint', raise_exception=True)
 def modificarSprint(request):
     """
-    Metodo para la modificacion de proyectos
+    Metodo para la modificacion de sprint
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de MODIFICAR SPRINT
     """
     if request.method == "POST":
         formulario = modificarSprintForm(request.POST, request=request.session)
@@ -544,6 +544,12 @@ def visualizarSprint2(request, id):
 ##Esta vista es para mostrar el tablero kanban actual.
 @login_required
 def tableroKanban(request):
+    """
+    Metodo para visualizar el tablero kanban
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de TABLERO KANBAN
+    """
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
@@ -619,10 +625,10 @@ def crearHistoria(request):
 @permission_required('userStory.add_historia', raise_exception=True)
 def seleccionarHistoria(request):
     """
-        Metodo para la modificacion de historia, primeramente es necesario seleccionar la historia a ser modificada
+    Metodo para la modificacion de historia, primeramente es necesario seleccionar la historia a ser modificada
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de SELECCIONAR HISTORIA
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de SELECCIONAR HISTORIA
     """
     if request.method == "POST":
         formulario = seleccionarHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
@@ -646,10 +652,10 @@ def seleccionarHistoria(request):
 @permission_required('Sprints.add_sprint', raise_exception=True)
 def asignarHistoriaEncargado(request):
     """
-        Metodo para la asignacion de una historia a un usuario como encargado
+    Metodo para la asignacion de una historia a un usuario como encargado
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de Asignar Encargado
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de Asignar Encargado
     """
     if request.method == "POST":
         formulario = asignarEncargadoForm(request.POST)
@@ -671,10 +677,10 @@ def asignarHistoriaEncargado(request):
 @permission_required('userStory.change_historia', raise_exception=True)
 def modificarHistoria(request):
     """
-        Metodo para la modificacion de proyectos
+    Metodo para la modificacion de historias
 
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR PROYECTO
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de MODIFICAR HISTORIA
     """
     if request.method == "POST":
 
@@ -701,10 +707,10 @@ def modificarHistoria(request):
 @permission_required('userStory.delete_historia', raise_exception=True)
 def eliminarHistoria(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+    Metodo para eliminar historias
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de ELIMINAR HISTORIA
     """
     if request.method == "POST":
         formulario = eliminarHistoriaForm(request.POST)
@@ -726,10 +732,10 @@ def eliminarHistoria(request):
 @permission_required('userStory.view_historia', raise_exception=True)
 def verHistorias(request):
     """
-    Metodo que es ejecutado para mostrar los miembros de un proyecto
+    Metodo que es ejecutado para mostrar las historias de usuario
 
     :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de verMiembros
+    :return: respuesta a la solicitud de ejecucion de verHistorias
     """
     id_proyectoActual = User.objects.get(username=request.user.username)
     id_proyectoActual = id_proyectoActual.proyecto_id
@@ -744,10 +750,10 @@ def verHistorias(request):
 @permission_required('userStory.view_historia', raise_exception=True)
 def productBacklog(request):
     """
-    Metodo que es ejecutado para mostrar las historias del proyecto actual
+    Metodo que es ejecutado para mostrar el Product Backlog
 
     :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de verMiembros
+    :return: respuesta a la solicitud de ejecucion de PRODUCT BACKLOG
     """
     id_proyectoActual = User.objects.get(username=request.user.username)
     id_proyectoActual = id_proyectoActual.proyecto_id
@@ -759,6 +765,14 @@ def productBacklog(request):
 # Vista que hace la logica de cambio de estado en el kanban
 @login_required
 def moverHistoria(request, id, opcion):
+    """
+    Metodo para administrar el cambio de estado de historias en el tablero kanban
+
+    :param request: solicitud recibida
+    :param id: identificador de la historia a mover
+    :param opcion: estado de la historia
+    :return: tablero kanban actualizado
+    """
     h = Historia.objects.get(id_historia=id)
     encargado=User.objects.get(username=request.user.username)
     # Agregar Tiempo
@@ -788,6 +802,8 @@ def moverHistoria(request, id, opcion):
         h.encargado=None
     if (opcion == 2):
         h.estados = 'EN_CURSO'
+        # Aca se debe agregar logica para asociar la histaria con el usuario.
+        encargado=User.objects.get(username=request.user.username)
         h.encargado=encargado
         messages.success(request, "Ya eres propiertario")
 
@@ -817,7 +833,14 @@ def moverHistoria(request, id, opcion):
 
 
 def asignarSprint(request,id):
-    # 1 cambiamos el estado de la historia a agregar a pendiente
+    # 1 cambiamos el estado de la historia a agregar a
+    """
+    Metodo para asignar Sprint a una historia
+
+    :param request: solicitud recibida
+    :param id: identificador de la historia
+    :return: sprint agregado a la historia
+    """
     h = Historia.objects.get(id_historia=id)
     h.estados = 'PENDIENTE'
     h.save()
@@ -841,6 +864,12 @@ def asignarSprint(request,id):
 # vista que cambia el tiempo trabajado de un usuario
 
 def lineChart(request):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
     cal = Paraguay()
     # formatear fecha print(x.strftime("%b %d %Y %H:%M:%S"))
     usuarioActual = User.objects.get(username=request.user.username)
@@ -911,6 +940,14 @@ def lineChart(request):
 
 
 def calcularEsfuerzoDiario(Historias, sprint,Dias):
+    """
+    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
+
+    :param Historias: Lista de Historias
+    :param sprint: Sprint actual
+    :param Dias: Dia actual
+    :return: void
+    """
     #FASE 1
     #Calcula el esfuerzo total del dia
     esfuerzoDiario = 0

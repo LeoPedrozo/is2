@@ -35,9 +35,9 @@ class crearHistoriaForm(forms.Form):
     #id_historia = forms.IntegerField(disabled=True, label="ID de Historia")
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
-    prioridad = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
+    prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
-    horasEstimadas = forms.IntegerField(initial=0)
+    horasEstimadas = forms.IntegerField(initial=0, label="Horas Estimadas")
     #horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 
@@ -101,7 +101,7 @@ class modificarHistoriaForm(forms.Form):
     proyecto = forms.IntegerField(disabled=True, label="Proyecto Propietario")
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
-    prioridad = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
+    prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     #fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     horasEstimadas = forms.IntegerField(initial=0)
 
@@ -109,6 +109,9 @@ class modificarHistoriaForm(forms.Form):
 
 
 class eliminarHistoriaForm(forms.Form):
+    """
+    Implementa la clase para eliminar historia de usuario
+    """
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(), initial=0,label="Seleccione Una Historia")
 
 

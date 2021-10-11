@@ -59,6 +59,12 @@ def getProyecto(project_id):
 
 
 def deleteProyecto(proyecto):
+    """
+    Metodo para la eliminacion de proyecto
+
+    :param proyecto: proyecto a eliminar
+    :return:
+    """
     proyecto.delete()
 
 

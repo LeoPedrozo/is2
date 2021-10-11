@@ -109,6 +109,9 @@ class modificarHistoriaForm(forms.Form):
 
 
 class eliminarHistoriaForm(forms.Form):
+    """
+    Implementa la clase para eliminar historia de usuario
+    """
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(), initial=0,label="Seleccione Una Historia")
 
 

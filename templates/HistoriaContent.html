@@ -16,7 +16,7 @@
 </head>
 <body>
 
-        <h3 style = "position:relative; left:10px;">HISTORIAS DEL PROYECTO</h3>
+        <h3 style = "position:relative; left:10px;">PRODUCT BACKLOG</h3>
     {% if not historias %}
         <div class="card-action" style = "position:relative; left:10px;" >
             <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay historias creadas</p>
@@ -44,12 +44,9 @@
                 <span class="title">Horas Estimadas: {{ historia.horasEstimadas }}</span>
             </p>
             <p>
-                <span class="title">Estado: {{ historia.estados }}</span>
-            </p>
-            <p>
                 <span class="title">Hora Dedicadas: {{ historia.horas_dedicadas }}</span>
             </p>
-          <a href="#" class="secondary-content"><i class="material-icons">description</i></a>
+
             <a class="btn btn-outline-primary btn-sm" href="/verHistorias/{{ historia.id_historia }}">Agregar a Sprint</a>
         </li>
     </ul>

@@ -834,8 +834,8 @@ def lineChart(request):
         #Los miembros en forma de cadena para saber su estado
         miembrosSprint = []
         for hist in listaHistorias:
-            lastlog = hist.encargado.last_login.strftime("%d-%b")
-            miembrosSprint.append(f"{hist.encargado.email}\n{lastlog}")
+            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+            miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
 
 
         fechaInicio = sprintActual2['fecha_inicio']

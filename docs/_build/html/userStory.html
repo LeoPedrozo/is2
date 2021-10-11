@@ -111,6 +111,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="oauth_app.html">oauth_app package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Sprints.html">Sprints package</a></li>
 </ul>
 </li>
 </ul>
@@ -256,6 +257,7 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <li><p><strong>estados</strong> (<em>CharField</em>) – Estados</p></li>
 <li><p><strong>horas_dedicadas</strong> (<em>IntegerField</em>) – Horas dedicadas</p></li>
 <li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
+<li><p><strong>encargado</strong> (ForeignKey to <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>) – Encargado</p></li>
 </ul>
 </dd>
 </dl>
@@ -275,6 +277,18 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <dt class="sig sig-object py" id="userStory.models.Historia.descripcion">
 <span class="sig-name descname"><span class="pre">descripcion</span></span><a class="headerlink" href="#userStory.models.Historia.descripcion" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> descripcion</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.encargado">
+<span class="sig-name descname"><span class="pre">encargado</span></span><a class="headerlink" href="#userStory.models.Historia.encargado" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> encargado, accesses the <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.encargado_id">
+<span class="sig-name descname"><span class="pre">encargado_id</span></span><a class="headerlink" href="#userStory.models.Historia.encargado_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> encargado</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -366,10 +380,11 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <dd><p><strong>Model field:</strong> historias, accesses the M2M <a class="reference internal" href="Sprints.html#Sprints.models.Sprint" title="Sprints.models.Sprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sprint</span></code></a> model.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="userStory.models.Historia.user_set">
-<span class="sig-name descname"><span class="pre">user_set</span></span><a class="headerlink" href="#userStory.models.Historia.user_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> stories, accesses the M2M <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.Historia.validate_test">
+<span class="sig-name descname"><span class="pre">validate_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.Historia.validate_test" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo del modelo de Sprint que retorna un booleano en caso
+que se hayan completado o no todos los campos obligatorios en el User Story.</p>
 </dd></dl>
 
 </dd></dl>
@@ -381,14 +396,49 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <div class="section" id="module-userStory.views">
 <span id="userstory-views-module"></span><h2>userStory.views module<a class="headerlink" href="#module-userStory.views" title="Enlazar permanentemente con este título">¶</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="userStory.views.asignarEncargado">
+<span class="sig-prename descclassname"><span class="pre">userStory.views.</span></span><span class="sig-name descname"><span class="pre">asignarEncargado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Historia</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encargado</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.views.asignarEncargado" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la asignacion de encargado a una historia</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Historia</strong> – Historia</p></li>
+<li><p><strong>encargado</strong> – Encargado a ser asignado a la historia</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="userStory.views.nuevaHistoria">
 <span class="sig-prename descclassname"><span class="pre">userStory.views.</span></span><span class="sig-name descname"><span class="pre">nuevaHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datosHistoria</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.views.nuevaHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Metodo que se ejecuta para visualizar los datos de una nueva historia creada</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>datos</strong> – informaciones referentes a los campos de datos de una historia</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>info de la nueva historia</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="userStory.views.updateHistoria">
 <span class="sig-prename descclassname"><span class="pre">userStory.views.</span></span><span class="sig-name descname"><span class="pre">updateHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datosHistoria</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.views.updateHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Metodo que se ejecuta para actualizar los datos de una nueva historia creada</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>datos</strong> – informaciones referentes a los compos de datos de una historia</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>info de la historia actualizada</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-userStory">

@@ -751,7 +751,7 @@ def productBacklog(request):
     """
     id_proyectoActual = User.objects.get(username=request.user.username)
     id_proyectoActual = id_proyectoActual.proyecto_id
-    historias = Historia.objects.filter(proyecto=id_proyectoActual, estados=None)
+    historias = Historia.objects.filter(proyecto=id_proyectoActual, estados="")
 
     return render(request, "HistoriaContent.html", {"historias": historias})
 
@@ -811,6 +811,31 @@ def moverHistoria(request, id, opcion):
     # usuario.stories.add(h)
 
     return tableroKanban(request)
+
+
+
+
+
+def asignarSprint(request,id):
+    # 1 cambiamos el estado de la historia a agregar a pendiente
+    h = Historia.objects.get(id_historia=id)
+    h.estados = 'PENDIENTE'
+    h.save()
+    # 2 tenemos que agregar la historia al sprint
+    id_proyectoActual = User.objects.get(username=request.user.username)
+    proyecto = id_proyectoActual.proyecto
+    sprintActual=proyecto.id_sprints.last()
+
+
+    sprintActual.historias.add(h)
+    proyecto.save()
+
+
+
+    messages.success(request, "Operacion realizada con exito")
+    return  productBacklog(request)
+
+
 
 
 # vista que cambia el tiempo trabajado de un usuario

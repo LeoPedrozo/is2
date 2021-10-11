@@ -1,9 +1,10 @@
+
 from django.db import models
-#from gestionUsuario.models import User
 
 # Create your models here.
+
 """
-Definimos los estados de un UserStory
+Definimos los estados de un userStory
 """
 ESTADOS_CHOICES=[
     ('FINALIZADO','Finalizado'),
@@ -13,7 +14,7 @@ ESTADOS_CHOICES=[
 ]
 
 """
-Definimos la prioridad de un UserStory
+Definimos la prioridad de un userStory
 """
 PRIORIDAD_CHOICES=[
     ('ALTA','Alta'),
@@ -23,7 +24,7 @@ PRIORIDAD_CHOICES=[
 
 class Historia(models.Model):
     """
-    Implementa la clase de Historias de Usuario, almacena datos generales acerca del UserStory:
+    Implementa la clase de Historias de Usuario, almacena datos generales acerca del userStory:
     identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
     """
     id_historia = models.AutoField(primary_key = True)
@@ -34,15 +35,17 @@ class Historia(models.Model):
     horasEstimadas = models.IntegerField(default=0)
     estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES)
     horas_dedicadas=models.IntegerField(default=0)
-    #encargado = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
 
+    #Jose= esto lo agrego por que estoy re loco
+    encargado=models.ForeignKey(to='gestionUsuario.user', on_delete=models.SET_NULL,null=True,blank=True)
     class Meta:
         verbose_name = 'Historia'
         verbose_name_plural = 'Historias'
 
     def __str__(self):
         """
-        Metodo que retorna el nombre del UserStory actual
+        Metodo que retorna el nombre del userStory actual
 
         :return: retorna el valor del campo nombre del objeto actual
         """

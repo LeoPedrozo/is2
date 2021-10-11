@@ -43,7 +43,7 @@
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="manage module" href="manage.html" />
-    <link rel="prev" title="holamundo module" href="holamundo.html" /> 
+    <link rel="prev" title="is2" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,14 +91,12 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">is2</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="helloworld.html">helloworld module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="holamundo.html">holamundo module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">is2 package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.asgi">is2.asgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.settings">is2.settings module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-is2.urls">is2.urls module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-is2.views">is2.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#is2-urls-module">is2.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#is2-views-module">is2.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.wsgi">is2.wsgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2">Module contents</a></li>
 </ul>
@@ -201,132 +199,11 @@
 <p>For the full list of settings and their values, see
 <a class="reference external" href="https://docs.djangoproject.com/en/3.2/ref/settings/">https://docs.djangoproject.com/en/3.2/ref/settings/</a></p>
 </div>
-<div class="section" id="module-is2.urls">
-<span id="is2-urls-module"></span><h2>is2.urls module<a class="headerlink" href="#module-is2.urls" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>is2 URL Configuration</p>
-<dl class="simple">
-<dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/3.2/topics/http/urls/">https://docs.djangoproject.com/en/3.2/topics/http/urls/</a></p>
-</dd>
-</dl>
-<p>Examples:</p>
-<dl class="simple">
-<dt>Function views</dt><dd><ol class="arabic simple">
-<li><p>Add an import:  from my_app import views</p></li>
-<li><p>Add a URL to urlpatterns:  path(“”, views.home, name=”home”)</p></li>
-</ol>
-</dd>
-<dt>Class-based views</dt><dd><ol class="arabic simple">
-<li><p>Add an import:  from other_app.views import Home</p></li>
-<li><p>Add a URL to urlpatterns:  path(“”, Home.as_view(), name=”home”)</p></li>
-</ol>
-</dd>
-<dt>Including another URLconf</dt><dd><ol class="arabic simple">
-<li><p>Import the include() function: from django.urls import include, path</p></li>
-<li><p>Add a URL to urlpatterns:  path(“blog/”, include(“blog.urls”))</p></li>
-</ol>
-</dd>
-</dl>
+<div class="section" id="is2-urls-module">
+<h2>is2.urls module<a class="headerlink" href="#is2-urls-module" title="Enlazar permanentemente con este título">¶</a></h2>
 </div>
-<div class="section" id="module-is2.views">
-<span id="is2-views-module"></span><h2>is2.views module<a class="headerlink" href="#module-is2.views" title="Enlazar permanentemente con este título">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.asignarRol">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">asignarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.asignarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para la asignacion de roles a los usuarios del sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta: a la solicitud de ASIGNAR ROL</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.crearProyecto">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para la creacion de proyectos</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta a la solicitud de CREAR PROYECTO</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.crearRol">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para la creacion de roles del sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta a la solicitud de CREAR ROL</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.documentaciones">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">documentaciones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.documentaciones" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para acceder directamente a los archivos referentes a la documentacion del sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta: de redireccionamiento</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.inicio">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">inicio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.inicio" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo que es ejecutado para mostrar la pagina de inicio del sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta a la solicitud de ejecucion de INICIO</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.registrarUsuario">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">registrarUsuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.registrarUsuario" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para registrar usuarios al sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta: a la solicitud de REGISTRAR USUARIO</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="is2.views.saludo">
-<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">saludo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.saludo" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo que es ejecutado para mostrar un mensaje de saludo al usuario loggeado en el sistema</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
-</dd>
-<dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>respuesta</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="is2-views-module">
+<h2>is2.views module<a class="headerlink" href="#is2-views-module" title="Enlazar permanentemente con este título">¶</a></h2>
 </div>
 <div class="section" id="module-is2.wsgi">
 <span id="is2-wsgi-module"></span><h2>is2.wsgi module<a class="headerlink" href="#module-is2.wsgi" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -347,7 +224,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="manage.html" class="btn btn-neutral float-right" title="manage module" accesskey="n" rel="next">Siguiente <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="holamundo.html" class="btn btn-neutral float-left" title="holamundo module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="is2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
     </div>
 
   <hr/>

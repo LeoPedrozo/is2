@@ -28,13 +28,16 @@
       <div class="card light-blue darken-3">
         <div class="card-content white-text">
           <span class="card-title">Creacion de rol exitosa!</span>
-            <p>Usuario: {{ asignaciondeRol.Nom }}
-            <br>Rol: {{ asignaciondeRol.Roles }}
+            <p>Nombre del Rol: {{ nombreRol}}
+            <br>Permisos:
+                <br>Proyecto:  {{ proyecto }}
+                <br>Historia:  {{ historia }}
+                <br>Sprints:   {{ sprint }}
             </p>
         </div>
         <div class="card-action">
-          <a href="javascript:history.back()" style="color:#bcdbe3;">Asignar otro Rol</a>
-          <a href="http://127.0.0.1:8000/accounts/google/login/callback/inicio/" style="color:#bcdbe3;">Inicio</a>
+          <a href="javascript:history.back()" style="color:#bcdbe3;">Crear otro Rol</a>
+          <a href="http://127.0.0.1:8000/inicio/" style="color:#bcdbe3;">Inicio</a>
         </div>
       </div>
     </div>

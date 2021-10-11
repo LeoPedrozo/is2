@@ -1,0 +1,87 @@
+{% extends "tableroKanban.html" %}
+{% include 'material/includes/material_css.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- nombre de la pestanha e informaciones de la pagina -->
+<!--
+<head>
+
+
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+
+</head>
+-->
+<!-- Aqui va el codigo de la pagina -->
+
+<body>
+{% block content %}
+
+    <div class="container section">
+        <!-- Menu desplegable del programa -->
+        <a href="#" class="sidenav-trigger" data-target="menu-side">
+            <i class="material-icons">menu</i>
+        </a>
+
+        <ul class="sidenav" id="menu-side">
+            <!--perfil-->
+
+            <li>
+                <H6>HISTORIA</H6>
+            </li>
+
+            <li>
+                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
+                <a >
+                    <!-- el campo de descripcion-->
+                </a>
+
+            </li>
+
+        </ul>
+    </div>
+
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            //Barra lateral
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+            //Dropdown menu
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = M.Dropdown.init(elems);
+        });
+    </script>
+    <!-- Alertar al usuario que no posee los permisos suficientes -->
+    <script>
+        function toast_permisos() {
+            M.toast({
+                html: 'Permisos requeridos',
+                classes: "red"
+            })
+        }
+    </script>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags %}
+                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength:5000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+</body>
+
+</html>

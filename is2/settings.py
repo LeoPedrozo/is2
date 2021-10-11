@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'oauth_app',
     'allauth',
+    'docs',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'proyectos',
     'userStory',
     'material',
+    'Sprints',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'is2.urls'
@@ -163,8 +166,8 @@ SOCIALACCOUNT_PROVIDERS = {
 SITE_ID = 7
 
 # Si el loggeo es exitoso dirigirse a:
-LOGIN_REDIRECT_URL = 'inicio/'
-
+LOGIN_REDIRECT_URL = '/inicio/'
+LOGIN_URL = '/'
 # Si se deslogea exitosamente dirigir a:
 LOGOUT_REDIRECT_URL = '/'
 
@@ -172,3 +175,15 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 VENV_PATH = os.path.dirname(BASE_DIR)
 STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+#Para acceder a la documentacion
+DOCS_ROOT = os.path.join(BASE_DIR, './docs/_build/html')
+DOCS_ACCESS = 'public'
+# tipos de acceso
+#public - (default) docs are visible to everyone
+#login_required - docs are visible only to authenticated users
+#staff - docs are visible only to staff users (user.is_staff == True)
+#superuser - docs are visible only to superusers (user.is_superuser == True)

@@ -18,12 +18,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from is2.views import inicio, saludo, documentaciones, crearRol, asignarRol, crearProyecto, registrarUsuario
+from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
+    registrarUsuario, \
+    modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol, crearHistoria, verHistorias, \
+    seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
+    tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog
 
 #Librerias importadas del autenticador
 from django.urls import path, include
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
+from django.urls import path
+from django.urls import include, re_path
+
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
@@ -32,14 +39,49 @@ urlpatterns = [
 
     path('crearRol/',crearRol),
     path('asignarRol/',asignarRol),
-path('registrarUsuario/',registrarUsuario),
-    path('crearProyecto/',crearProyecto),
-    
+    path('eliminarRol/',eliminarRol),
+    path('registrarUsuario/',registrarUsuario),
 
-    path('accounts/google/login/callback/inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
+    path('crearProyecto/',crearProyecto),
+    path('modificarProyecto/',modificarProyecto),
+    path('eliminarProyecto/',eliminarProyecto),
+
+    path('crearSprint/',crearSprint),
+    path('modificarSprint/',modificarSprint),
+    path('visualizarSprint/',visualizarSprint),
+
+    path('visualizarSprint/<int:id>/',visualizarSprint2),
+
+    path('crearHistoria/',crearHistoria),
+    path('verHistorias/',productBacklog),
+    path('verHistorias/<int:id>/',asignarSprint),
+
+    path('modificarRol/1/',seleccionarRol),
+    path('modificarRol/2/',modificarRol),
+
+    path('modificarHistoria/1/',seleccionarHistoria),
+    path('modificarHistoria/2/',modificarHistoria),
+    path('eliminarHistoria/',eliminarHistoria),
+    path('asignarEncargado/',asignarHistoriaEncargado),
+
+    path('tableroKanban/',tableroKanban),
+
+    path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
+
+    path('listarMiembros/',verMiembros),
+
+    path('burndownChart/',lineChart),
+
+    re_path(r'^docs/', include('docs.urls')),
+    path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)
     path('accounts/', include('allauth.urls')), #Pagina SSO de Google mediante OAuth2
-    path('logout', LogoutView.as_view()), #Funcion para deslogear del sistema
-    path('accounts/google/login/callback/inicio/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
+    #path('logout/', LogoutView.as_view(
+    #next_page=reverse_lazy('Userauth:login') # you can use your named URL here just like you use the **url** tag in your django template
+    #), name='logout'),
+    path('inicio/logout', LogoutView.as_view()), #Funcion para deslogear del sistema
+    path('logout/', LogoutView.as_view()),  # Funcion para deslogear del sistema
+    path('accounts/google/login/callback/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
+
 ]

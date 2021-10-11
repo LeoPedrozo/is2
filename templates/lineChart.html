@@ -1,0 +1,258 @@
+{% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Burndown</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+<body>
+{% block content %}
+    <div class="container">
+        <div class="row">
+
+        <div class="col s12">
+            <div class="card-action">
+            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+                <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
+            </a>
+            </div>
+        </div>
+
+            <div class="col s12">
+                <div class="card white-text lighten-2 blue">
+                    <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
+                </div>
+            </div>
+            <div class="col s9 l9">
+                <div class="chartWrapper">
+                    <div class="chartAreaWrapper">
+                        <div class="chartAreaWrapper2">
+                            <canvas id="chart-Test" height="600" width="1200"></canvas>
+                        </div>
+                    </div>
+                    <canvas id="axis-Test" height="600" width="0"></canvas>
+                </div>
+            </div>
+            <div class="col s9 l3 offset-s9">
+                <div class="card blue white-text">
+                    <div class="card-content">
+                        <p><b>Miembros:</b></p>
+                        {% for miembro in miembros %}
+                            <p><i class="material-icons" style="vertical-align: bottom;">person</i> {{ miembro }} </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col s9 l3 offset-s9">
+                <div class="card blue white-text">
+                    <div class="card-content">
+                        <p>Sprint : &nbsp; {{ Sprint.sprintNumber }}</p>
+                        Inicio : {{ Sprint.fecha_inicio }}
+                        <br>Fin : &nbsp;&nbsp;&nbsp; {{ Sprint.fecha_fin }}
+                    </div>
+                </div>
+            </div>
+            <div class="col s9 l3 offset-s9">
+                <ul class="collapsible">
+                    <div class="collapsible-header blue white-text">
+                        <i class="material-icons">assignment</i>
+                        Historias
+                        <span class="new badge grey darken-3 white-text">{{ Total }}</span>
+                    </div>
+                    {% for historia in Historias %}
+                        <li>
+                            <div class="collapsible-header">
+                                <i class="material-icons">expand_more</i>
+                                {{ historia.nombre }}
+                            </div>
+                            <div class="collapsible-body">
+                                Descripcion : {{ historia.descripcion }}
+                                <br>Encargado : {{ historia.encargado }}
+                                <br>Prioridad : {{ historia.prioridad }}
+                                <br>Estado : {{ historia.estados }}
+                                <br>Horas estimadas : {{ historia.horasEstimadas }}
+                                <br>Horas dedicadas : {{ historia.horas_dedicadas }}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.collapsible');
+            var instances = M.Collapsible.init(elems, {accordion: false});
+        });
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            function generateLabels() {
+
+                var chartLabels = [];
+                var array = "{{ diasLaborales }}".split(',');
+                for (x = 0; x < {{ cantidadDias }}; x++) {
+                    chartLabels.push(array[x]);
+                }
+                return chartLabels;
+            }
+
+            function generateDataIdeal() {
+                var chartData = [];
+                var array = "{{ horasLaboralesIdeal }}".split(',');
+                for (x = 0; x < {{ cantidadDias }}; x++) {
+                    chartData.push(array[x]);
+                }
+                return chartData;
+            }
+
+            function generateDataReal() {
+                var chartData = [];
+                var array = "{{ horasLaboralesReal }}".split(',');
+                for (x = 0; x < {{ cantidadDias }}; x++) {
+                    chartData.push(array[x]);
+                }
+                return chartData;
+            }
+
+            var chartData = {
+                labels: generateLabels(),
+                datasets: [
+                    {
+                        label: "Trabajo Ideal",
+                        data: generateDataIdeal(),
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(86,225,93,0.5)'
+                    }, {
+                        label: "Trabajo Real",
+                        data: generateDataReal(),
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(67,71,147,0.52)'
+                    }
+
+                ]
+            };
+
+
+            $(function () {
+                var rectangleSet = false;
+
+                var canvasTest = $('#chart-Test');
+                var chartTest = new Chart(canvasTest, {
+                    type: 'line',
+                    data: chartData,
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    options: {
+                        tooltips: {
+                            titleFontSize: 0,
+                            titleMarginBottom: 0,
+                            bodyFontSize: 12
+                        },
+                        legend: {
+                            display: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                ticks: {
+                                    fontSize: 12,
+                                    display: true,
+                                    autoSkip: true
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontSize: 12,
+                                    beginAtZero: true
+                                }
+                            }]
+                        },
+                        animation: {
+                            onComplete: function () {
+                                if (!rectangleSet) {
+                                    var scale = window.devicePixelRatio;
+
+                                    var sourceCanvas = chartTest.chart.canvas;
+                                    var copyWidth = chartTest.scales['y-axis-0'].width - 10;
+                                    var copyHeight = chartTest.scales['y-axis-0'].height + chartTest.scales['y-axis-0'].top + 10;
+
+                                    var targetCtx = document.getElementById("axis-Test").getContext("2d");
+
+                                    targetCtx.scale(scale, scale);
+                                    targetCtx.canvas.width = copyWidth * scale;
+                                    targetCtx.canvas.height = copyHeight * scale;
+
+                                    targetCtx.canvas.style.width = `${copyWidth}px`;
+                                    targetCtx.canvas.style.height = `${copyHeight}px`;
+                                    targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth * scale, copyHeight * scale, 0, 0, copyWidth * scale, copyHeight * scale);
+
+                                    var sourceCtx = sourceCanvas.getContext('2d');
+
+                                    // Normalize coordinate system to use css pixels.
+
+                                    sourceCtx.clearRect(0, 0, copyWidth * scale, copyHeight * scale);
+                                    rectangleSet = true;
+                                }
+                            },
+                            onProgress: function () {
+                                if (rectangleSet === true) {
+                                    var copyWidth = chartTest.scales['y-axis-0'].width;
+                                    var copyHeight = chartTest.scales['y-axis-0'].height + chartTest.scales['y-axis-0'].top + 10;
+
+                                    var sourceCtx = chartTest.chart.canvas.getContext('2d');
+                                    sourceCtx.clearRect(0, 0, copyWidth, copyHeight);
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+
+    </script>
+
+{% endblock %}
+
+<style type="text/css">
+    .chartWrapper {
+        position: relative;
+    }
+
+    .chartWrapper > canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+    }
+
+    /*
+    .chartAreaWrapper {
+        width: 700px;
+        overflow-x: scroll;
+    }
+    */
+    .container {
+        margin: 0 auto;
+        width: 98%;
+        max-width: available;
+    }
+
+
+</style>
+
+</body>
+</html>

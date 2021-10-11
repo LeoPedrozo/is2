@@ -7,13 +7,15 @@ class crearRolForm(forms.Form):
     """
     Formulario de creacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
     """
-    Rol = forms.CharField()
+
+
     OPTIONS = (
         ("add", "Agregar"),
         ("delete", "Borrar"),
         ("change","Modificar"),
         ("view","Ver"),
     )
+    RolName = forms.CharField(required=True,label="Nombre del Rol")
     Historia = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
     Proyecto = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
     Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
@@ -26,7 +28,50 @@ class asignarRolForm(forms.Form):
     ##Aca debe hacerse una cosulta para filtrar a los usuarios
     ##estos usuarios se cargaran en un choice diccionary para poder ser usado en el campo usuario
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0)
-    Roles = forms.ModelChoiceField(queryset=Group.objects.all(),initial=0)
+    Roles = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"),initial=0)
+
+
+
+class seleccionarRolForm(forms.Form):
+    Rol = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"), initial=0,label="Seleccione Rol")
+
+
+
+
+
+class modificarRolForm(forms.Form):
+    """
+    Formulario de modificacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
+    """
+    # overwrite __init__
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("datosdelRol")  # store value of request
+
+        super(modificarRolForm, self).__init__(*args, **kwargs)
+        self.fields['RolName'].initial = self.datos['nombreRol']
+        self.fields['Proyecto'].initial=self.datos['Proyecto']
+        self.fields['Historia'].initial = self.datos['Historia']
+        self.fields['Sprint'].initial = self.datos['Sprint']
+
+
+
+    OPTIONS = (
+        ("add", "Agregar"),
+        ("delete", "Borrar"),
+        ("change","Modificar"),
+        ("view","Ver"),
+    )
+    RolName = forms.CharField(required=True,label="Nombre del Rol")
+    Historia = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+    Proyecto = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+    Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+
+
+
+
+
+
+
 
 class crearUsuarioForm(forms.Form):
     """
@@ -37,8 +82,8 @@ class crearUsuarioForm(forms.Form):
 
 
 class registroDeUsuariosForm(forms.Form):
-    """Formulario para habilitacion de usuarios dentro del sistema
-
+    """
+    Formulario para habilitacion de usuarios dentro del sistema
     """
     estados=(
         (True,"Habilitar acceso al sistema"),
@@ -46,6 +91,7 @@ class registroDeUsuariosForm(forms.Form):
     )
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario")
     Habilitado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados,label="Usted desea?")
+
 
 
 

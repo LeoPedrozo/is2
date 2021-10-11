@@ -1,0 +1,53 @@
+{% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- nombre de la pestanha e informaciones de la pagina -->
+
+
+<head>
+
+    <title>Historia Modificada</title>
+    <meta charset="utf-8"/>
+    <!-- Debe mostrarse en la version de edge -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+</head>
+
+
+<body>
+
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card light-blue darken-3">
+        <div class="card-content white-text">
+          <span class="card-title">Modificacion de historia exitosa!</span>
+
+
+            <p> Id Historia : {{ historiaModificada.id_historia }}
+                <br>Nombre : {{ historiaModificada.nombre }}
+                <br>Descripcion: {{ historiaModificada.descripcion }}
+                <br>Prioridad: {{ historiaModificada.prioridad }}
+                <br>Fecha de creacion: {{ historiaModificada.fecha_creacion }}
+                <br>Horas estimadas: {{ historiaModificada.horasEstimadas }}
+                <br>Estado: {{ historiaModificada.estados }}
+                <br>Horas dedicadas: {{ historiaModificada.horas_dedicadas }}
+            </p>
+
+        </div>
+        <div class="card-action">
+          <a href="javascript:history.back()" style="color:#bcdbe3;">Volver a modificar Historia</a>
+          <a href="http://127.0.0.1:8000/inicio/" style="color:#bcdbe3;">Inicio</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

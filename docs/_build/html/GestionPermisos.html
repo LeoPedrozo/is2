@@ -256,7 +256,7 @@
 <p>Formulario de creacion de roles con las opciones de “agregar”, “borrar”,”modificar” y “ver”</p>
 <p><strong>Form fields:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Rol</span></code>: Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RolName</span></code>: Nombre del Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Historia</span></code>: Historia (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Sprint</span></code>: Sprint (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
@@ -293,6 +293,36 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.modificarRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">modificarRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.modificarRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Formulario de modificacion de roles con las opciones de “agregar”, “borrar”,”modificar” y “ver”</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RolName</span></code>: Nombre del Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Historia</span></code>: Historia (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Sprint</span></code>: Sprint (<code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="GestionPermisos.forms.modificarRolForm.OPTIONS">
+<span class="sig-name descname"><span class="pre">OPTIONS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">(('add',</span> <span class="pre">'Agregar'),</span> <span class="pre">('delete',</span> <span class="pre">'Borrar'),</span> <span class="pre">('change',</span> <span class="pre">'Modificar'),</span> <span class="pre">('view',</span> <span class="pre">'Ver'))</span></em><a class="headerlink" href="#GestionPermisos.forms.modificarRolForm.OPTIONS" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="GestionPermisos.forms.modificarRolForm.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.modificarRolForm.__init__" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.modificarRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.modificarRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="GestionPermisos.forms.registroDeUsuariosForm">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">registroDeUsuariosForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.registroDeUsuariosForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
@@ -310,6 +340,22 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="GestionPermisos.forms.registroDeUsuariosForm.media">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.registroDeUsuariosForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="GestionPermisos.forms.seleccionarRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">GestionPermisos.forms.</span></span><span class="sig-name descname"><span class="pre">seleccionarRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.forms.seleccionarRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Rol</span></code>: Seleccione Rol (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py property">
+<dt class="sig sig-object py" id="GestionPermisos.forms.seleccionarRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#GestionPermisos.forms.seleccionarRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Return all media required to render the widgets on this form.</p>
 </dd></dl>
 
@@ -358,7 +404,33 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="GestionPermisos.views.registrar_usuario">
 <span class="sig-prename descclassname"><span class="pre">GestionPermisos.views.</span></span><span class="sig-name descname"><span class="pre">registrar_usuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.views.registrar_usuario" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Metodo para registrar un usuario en el sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – usuario que va ser registrado</p></li>
+<li><p><strong>state</strong> – estado que se encuentra</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>Mensaje de confirmacion del registro</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GestionPermisos.views.removerRol">
+<span class="sig-prename descclassname"><span class="pre">GestionPermisos.views.</span></span><span class="sig-name descname"><span class="pre">removerRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">RolSeleccionado</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GestionPermisos.views.removerRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para eliminar rol</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>RolSeleccionado</strong> – rol a ser eliminado</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-GestionPermisos">

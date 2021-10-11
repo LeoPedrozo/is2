@@ -442,10 +442,10 @@ def getPermisos(request, listaPermisos):
 @permission_required('Sprints.add_sprint', raise_exception=True)
 def crearSprint(request):
     """
-    Metodo para la creacion de sprint
+    Metodo para la creacion de proyectos
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR SPRINT
+    :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
         formulario = crearSprintForm(request.POST, request=request.session)
@@ -802,6 +802,8 @@ def moverHistoria(request, id, opcion):
         h.encargado=None
     if (opcion == 2):
         h.estados = 'EN_CURSO'
+        # Aca se debe agregar logica para asociar la histaria con el usuario.
+        encargado=User.objects.get(username=request.user.username)
         h.encargado=encargado
         messages.success(request, "Ya eres propiertario")
 

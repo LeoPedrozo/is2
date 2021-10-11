@@ -21,14 +21,14 @@ class crearproyectoForm(forms.Form):
     estados = (
         ('PENDIENTE', 'Pendiente'),
         ('INICIADO', 'Iniciado'),
-        ('FINALIZADO', 'Finalizado'),
-        ('CANCELADO', 'Cancelado'),
+        #('FINALIZADO', 'Finalizado'),
+        #('CANCELADO', 'Cancelado'),
     )
 
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
     creador = forms.CharField(disabled=True)
-    estado = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=estados)
+    estado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados)
 
     fecha = forms.DateField(initial=datetime.date.today,disabled=True,label="Fecha de Creacion")
     fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha de Entrega")

@@ -41,7 +41,7 @@ class crearproyectoForm(forms.Form):
 class modificarproyectoForm(forms.Form):
     """
       Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto
-      """
+    """
 
     # overwrite __init__
     def __init__(self, *args, **kwargs):

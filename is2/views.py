@@ -20,7 +20,6 @@ from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamp
 from gestionUsuario.models import User
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
 from django.contrib.auth.decorators import user_passes_test

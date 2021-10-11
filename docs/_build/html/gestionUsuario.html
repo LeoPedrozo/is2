@@ -112,6 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="proyectos.html">proyectos package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="userStory.html">userStory package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth_app.html">oauth_app package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Sprints.html">Sprints package</a></li>
 </ul>
 </li>
 </ul>
@@ -302,7 +303,6 @@ En esta:</p>
 <li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
 <li><p><strong>groups</strong> (<em>ManyToManyField</em>) – Groups. The groups this user belongs to. A user will get all permissions granted to each of their groups.</p></li>
 <li><p><strong>user_permissions</strong> (<em>ManyToManyField</em>) – User permissions. Specific permissions for this user.</p></li>
-<li><p><strong>stories</strong> (<em>ManyToManyField</em>) – Stories</p></li>
 </ul>
 </dd>
 </dl>
@@ -343,6 +343,12 @@ En esta:</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="gestionUsuario.models.User.historia_set">
+<span class="sig-name descname"><span class="pre">historia_set</span></span><a class="headerlink" href="#gestionUsuario.models.User.historia_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> encargado, accesses the M2M <a class="reference internal" href="userStory.html#userStory.models.Historia" title="userStory.models.Historia"><code class="xref py py-class docutils literal notranslate"><span class="pre">Historia</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="gestionUsuario.models.User.id">
 <span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#gestionUsuario.models.User.id" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> ID</p>
@@ -370,12 +376,6 @@ En esta:</p>
 <dt class="sig sig-object py" id="gestionUsuario.models.User.socialaccount_set">
 <span class="sig-name descname"><span class="pre">socialaccount_set</span></span><a class="headerlink" href="#gestionUsuario.models.User.socialaccount_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> user, accesses the M2M <code class="xref py py-class docutils literal notranslate"><span class="pre">SocialAccount</span></code> model.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="gestionUsuario.models.User.stories">
-<span class="sig-name descname"><span class="pre">stories</span></span><a class="headerlink" href="#gestionUsuario.models.User.stories" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p><strong>Model field:</strong> stories, accesses the M2M <a class="reference internal" href="#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
 </dd></dl>
 
 <dl class="py attribute">

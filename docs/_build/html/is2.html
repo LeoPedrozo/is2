@@ -95,8 +95,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.asgi">is2.asgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.settings">is2.settings module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#is2-urls-module">is2.urls module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#is2-views-module">is2.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-is2.urls">is2.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-is2.views">is2.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2.wsgi">is2.wsgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-is2">Module contents</a></li>
 </ul>
@@ -107,6 +107,7 @@
 <li class="toctree-l2"><a class="reference internal" href="proyectos.html">proyectos package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="userStory.html">userStory package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth_app.html">oauth_app package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Sprints.html">Sprints package</a></li>
 </ul>
 </li>
 </ul>
@@ -199,11 +200,464 @@
 <p>For the full list of settings and their values, see
 <a class="reference external" href="https://docs.djangoproject.com/en/3.2/ref/settings/">https://docs.djangoproject.com/en/3.2/ref/settings/</a></p>
 </div>
-<div class="section" id="is2-urls-module">
-<h2>is2.urls module<a class="headerlink" href="#is2-urls-module" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="module-is2.urls">
+<span id="is2-urls-module"></span><h2>is2.urls module<a class="headerlink" href="#module-is2.urls" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>is2 URL Configuration</p>
+<dl class="simple">
+<dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/3.2/topics/http/urls/">https://docs.djangoproject.com/en/3.2/topics/http/urls/</a></p>
+</dd>
+</dl>
+<p>Examples:</p>
+<dl class="simple">
+<dt>Function views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from my_app import views</p></li>
+<li><p>Add a URL to urlpatterns:  path(“”, views.home, name=”home”)</p></li>
+</ol>
+</dd>
+<dt>Class-based views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from other_app.views import Home</p></li>
+<li><p>Add a URL to urlpatterns:  path(“”, Home.as_view(), name=”home”)</p></li>
+</ol>
+</dd>
+<dt>Including another URLconf</dt><dd><ol class="arabic simple">
+<li><p>Import the include() function: from django.urls import include, path</p></li>
+<li><p>Add a URL to urlpatterns:  path(“blog/”, include(“blog.urls”))</p></li>
+</ol>
+</dd>
+</dl>
 </div>
-<div class="section" id="is2-views-module">
-<h2>is2.views module<a class="headerlink" href="#is2-views-module" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="module-is2.views">
+<span id="is2-views-module"></span><h2>is2.views module<a class="headerlink" href="#module-is2.views" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.asignarHistoriaEncargado">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">asignarHistoriaEncargado</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.asignarHistoriaEncargado" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la asignacion de una historia a un usuario como encargado</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de Asignar Encargado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.asignarRol">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">asignarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.asignarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la asignacion de roles a los usuarios del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de ASIGNAR ROL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.asignarSprint">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">asignarSprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.asignarSprint" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para asignar Sprint a una historia</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – solicitud recibida</p></li>
+<li><p><strong>id</strong> – identificador de la historia</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>sprint agregado a la historia</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.calcularEsfuerzoDiario">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">calcularEsfuerzoDiario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Historias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sprint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dias</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.calcularEsfuerzoDiario" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Historias</strong> – Lista de Historias</p></li>
+<li><p><strong>sprint</strong> – Sprint actual</p></li>
+<li><p><strong>Dias</strong> – Dia actual</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.crearHistoria">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para crear un user story</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion de crearHistoria</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.crearProyecto">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la creacion de proyectos</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de CREAR PROYECTO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.crearRol">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la creacion de roles del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de CREAR ROL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.crearSprint">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">crearSprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.crearSprint" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la creacion de proyectos</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de CREAR PROYECTO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.documentaciones">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">documentaciones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.documentaciones" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para acceder directamente a los archivos referentes a la documentacion del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: de redireccionamiento</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.eliminarHistoria">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">eliminarHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.eliminarHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para eliminar historias</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de ELIMINAR HISTORIA</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.eliminarProyecto">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">eliminarProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.eliminarProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la eliminacion de proyectos</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de ELIMINAR PROYECTO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.eliminarRol">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">eliminarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.eliminarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la asignacion de roles a los usuarios del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de ASIGNAR ROL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.formatearlista">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">formatearlista</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lista</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.formatearlista" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.getPermisos">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">getPermisos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listaPermisos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.getPermisos" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo de gestion y asignacion de permisos para los usuarios del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – solicitud recibida</p></li>
+<li><p><strong>listaPermisos</strong> – lista de permisos a ser distribuidos</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion recibida para el metodo GETPERMISOS</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.inicio">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">inicio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.inicio" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para mostrar la pagina de inicio del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion de INICIO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.lineChart">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">lineChart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.lineChart" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para Graficar el burndown chart en un gráfico de linea</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>grafico de burndown chart</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.modificarHistoria">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">modificarHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.modificarHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la modificacion de historias</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de MODIFICAR HISTORIA</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.modificarProyecto">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">modificarProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.modificarProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la modificacion de proyectos</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de CREAR PROYECTO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.modificarRol">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">modificarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.modificarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la modificacion de roles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de MODIFICAR ROL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.modificarSprint">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">modificarSprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.modificarSprint" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la modificacion de sprint</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de MODIFICAR SPRINT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.moverHistoria">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">moverHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opcion</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.moverHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para administrar el cambio de estado de historias en el tablero kanban</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – solicitud recibida</p></li>
+<li><p><strong>id</strong> – identificador de la historia a mover</p></li>
+<li><p><strong>opcion</strong> – estado de la historia</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>tablero kanban actualizado</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.productBacklog">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">productBacklog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.productBacklog" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para mostrar el Product Backlog</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion de PRODUCT BACKLOG</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.registrarUsuario">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">registrarUsuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.registrarUsuario" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para registrar usuarios al sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de REGISTRAR USUARIO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.saludo">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">saludo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.saludo" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para mostrar un mensaje de saludo al usuario loggeado en el sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.seleccionarHistoria">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">seleccionarHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.seleccionarHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la modificacion de historia, primeramente es necesario seleccionar la historia a ser modificada</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de SELECCIONAR HISTORIA</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.seleccionarRol">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">seleccionarRol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.seleccionarRol" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la asignacion de roles a los usuarios del sistema</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta: a la solicitud de ASIGNAR ROL</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.tableroKanban">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">tableroKanban</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.tableroKanban" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para visualizar el tablero kanban</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de TABLERO KANBAN</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.verHistorias">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">verHistorias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.verHistorias" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para mostrar las historias de usuario</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion de verHistorias</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.verMiembros">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">verMiembros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.verMiembros" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo que es ejecutado para mostrar los miembros de un proyecto</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – consulta recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de ejecucion de verMiembros</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.visualizarSprint">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">visualizarSprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.visualizarSprint" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Metodo para la visualizacion de Sprints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><p><strong>request</strong> – solicitud recibida</p>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>respuesta a la solicitud de VISUALIZAR SPRINT</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="is2.views.visualizarSprint2">
+<span class="sig-prename descclassname"><span class="pre">is2.views.</span></span><span class="sig-name descname"><span class="pre">visualizarSprint2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#is2.views.visualizarSprint2" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-is2.wsgi">
 <span id="is2-wsgi-module"></span><h2>is2.wsgi module<a class="headerlink" href="#module-is2.wsgi" title="Enlazar permanentemente con este título">¶</a></h2>

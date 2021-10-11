@@ -834,10 +834,11 @@ def lineChart(request):
         #Los miembros en forma de cadena para saber su estado
         miembrosSprint = []
         for hist in listaHistorias:
-            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
-            miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
-
-
+            try:
+                lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+                miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
+            except AttributeError:
+                print(f"la historia {hist} aun no tiene encargado")
         fechaInicio = sprintActual2['fecha_inicio']
         fechaFin = sprintActual2['fecha_fin']
         cantidadDias = cal.get_working_days_delta(fechaInicio, fechaFin) + 1

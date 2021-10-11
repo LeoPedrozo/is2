@@ -49,10 +49,8 @@
             <p>
                 <span class="title">Hora Dedicadas: {{ historia.horas_dedicadas }}</span>
             </p>
-            <p>
-                <span class="title">Encargado: {{ historia.encargado }}</span>
-            </p>
           <a href="#" class="secondary-content"><i class="material-icons">description</i></a>
+            <a class="btn btn-outline-primary btn-sm" href="/verHistorias/{{ historia.id_historia }}">Agregar a Sprint</a>
         </li>
     </ul>
 {% endfor %}

@@ -42,7 +42,7 @@ class TestModels(TestCase):
         Verifica que la validacion de obligatoriedad del campo nombre se ejecute correctamente
         """
         nuevoProyecto = Proyecto(
-            #nombre='Primer Proyecto',
+            nombre='Primer Proyecto',
             descripcion='Proyecto de prueba',
             estado='PENDIENTE',
             fecha='2021-07-25',
@@ -58,7 +58,7 @@ class TestModels(TestCase):
         """
         nuevoProyecto = Proyecto(
             nombre='Primer Proyecto',
-            #descripcion='Proyecto de prueba',
+            descripcion='Proyecto de prueba',
             estado='PENDIENTE',
             fecha='2021-07-25',
             fecha_entrega='2021-07-26',
@@ -74,7 +74,7 @@ class TestModels(TestCase):
         P = Proyecto(
             nombre='Primer Proyecto',
             descripcion='Proyecto de prueba',
-            #estado='PENDIENTE',
+            estado='PENDIENTE',
             fecha='2021-07-25',
             fecha_entrega='2021-07-26',
         )
@@ -90,7 +90,7 @@ class TestModels(TestCase):
             nombre='Primer Proyecto',
             descripcion='Proyecto de prueba',
             estado='PENDIENTE',
-            #fecha='2021-07-25',
+            fecha='2021-07-25',
             fecha_entrega='2021-07-26',
         )
 
@@ -106,7 +106,7 @@ class TestModels(TestCase):
             descripcion='Proyecto de prueba',
             estado='PENDIENTE',
             fecha='2021-07-25',
-            #fecha_entrega='2021-07-26',
+            fecha_entrega='2021-07-26',
         )
 
         self.assertTrue(nuevoProyecto.validate_test(), "Debe ingresar la fecha de entrega estimada del proyecto")
@@ -139,7 +139,7 @@ class TestModels(TestCase):
         Verifica que la validacion de obligatoriedad del campo sprintNumber se ejecute correctamente
         """
         s = Sprint(
-            #sprintNumber=9,
+            sprintNumber=9,
             fecha_inicio='2021-07-25',
             fecha_fin='2021-07-26'
         )
@@ -153,7 +153,7 @@ class TestModels(TestCase):
         """
         s = Sprint(
             sprintNumber=9,
-            #fecha_inicio='2021-07-25',
+            fecha_inicio='2021-07-25',
             fecha_fin='2021-07-26'
         )
         self.assertTrue(s.validate_test(),"Debe ingresar la fecha de inicio del sprint")
@@ -167,7 +167,7 @@ class TestModels(TestCase):
         s = Sprint(
             sprintNumber=9,
             fecha_inicio='2021-07-25',
-            #fecha_fin='2021-07-26'
+            fecha_fin='2021-07-26'
         )
         self.assertTrue(s.validate_test(),"Debe ingresar la fecha fin del sprint")
 
@@ -217,7 +217,7 @@ class TestModels(TestCase):
         Verifica que la validacion de obligatoriedad del campo nombre se ejecute correctamente
         """
         US = Historia(
-            #nombre='Story test',
+            nombre='Story test',
             descripcion='testing',
             prioridad='ALTA',
             fecha_creacion='2021/09/02',
@@ -233,7 +233,7 @@ class TestModels(TestCase):
         """
         US = Historia(
             nombre='Story test',
-            #descripcion='testing',
+            descripcion='testing',
             prioridad='ALTA',
             fecha_creacion='2021/09/02',
             horasEstimadas=20,
@@ -249,7 +249,7 @@ class TestModels(TestCase):
         US = Historia(
             nombre='Story test',
             descripcion='testing',
-            #prioridad='ALTA',
+            prioridad='ALTA',
             fecha_creacion='2021/09/02',
             horasEstimadas=20,
         )
@@ -265,7 +265,7 @@ class TestModels(TestCase):
             nombre='Story test',
             descripcion='testing',
             prioridad='ALTA',
-            #fecha_creacion='2021/09/02',
+            fecha_creacion='2021/09/02',
             horasEstimadas=20,
         )
 
@@ -281,7 +281,7 @@ class TestModels(TestCase):
             descripcion='testing',
             prioridad='ALTA',
             fecha_creacion='2021/09/02',
-            #horasEstimadas=20,
+            horasEstimadas=20,
         )
 
         self.assertTrue(US.validate_test(), "Debe ingresar las horas de trabajo estimadas para la historia")

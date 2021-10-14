@@ -31,3 +31,10 @@ class User(AbstractUser):
 #
  #   def __str__(self):
 #            return f"El equipo {self.nombre} esta asignado al proyecto {self.proyecto}"
+
+
+class UserProyecto(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
+    #Esta lista representa el rol del usuario_id en el proyecto_id
+    rol_name = models.CharField(blank=True, max_length=30)

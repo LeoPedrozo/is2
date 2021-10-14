@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from proyectos.models import Proyecto
@@ -9,9 +10,10 @@ class User(AbstractUser):
     Usuario que tiene admitido realizar loggeo en el sistema
     """
 
+    #Proyecto actual del usuario
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
-    #Comente esto por que se cambio ya.
-    #stories = models.ManyToManyField(Historia)
+    #Todos los proyectos a los que esta asociado el usuario
+    proyectos_asociados=models.ManyToManyField(Proyecto,blank=True, related_name='proyectos')
 
     class Meta:
         verbose_name = 'Usuario'

@@ -31,7 +31,6 @@ class asignarRolForm(forms.Form):
     Roles = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"),initial=0)
 
 
-
 class seleccionarRolForm(forms.Form):
     Rol = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"), initial=0,label="Seleccione Rol")
 

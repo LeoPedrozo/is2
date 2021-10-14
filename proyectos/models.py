@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from Sprints.models import Sprint
@@ -25,6 +26,8 @@ class Proyecto(models.Model):
     fecha_entrega = models.DateField(blank=False)
     fecha_finalizacion = models.DateField(null=True, blank=True)
     id_sprints = models.ManyToManyField(Sprint, blank=True)
+    #Los roles del proyecto.
+    roles_name = ArrayField(models.CharField(max_length=30), default=list, blank=True)
 
     class Meta:
         verbose_name = 'Proyecto'

@@ -55,8 +55,10 @@ def inicio(request):
         if request.user.is_superuser:
             return render(request, "sidenav.html", {"avatar": None})
         else:
+            usuario = User.objects.get(username=request.user.username)
             fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-            return render(request, "sidenav.html", {"avatar": fotodeususario})
+            proyectos = usuario.proyectos_asociados.all()
+            return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 

@@ -15,8 +15,8 @@ def asociarProyectoaUsuario( proyecto,miembros):
     for miembro in miembros:
         u= User.objects.get(username=miembro)
         u.proyecto=proyecto
+        u.proyectos_asociados.add(proyecto)
         u.save()
-
 
 ##No se si funca como deberia
 def desasociarUsuariodeProyecto(miembros):

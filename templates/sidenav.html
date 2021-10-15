@@ -57,12 +57,38 @@
                         <a href="">
                             <span class="email white-text">{{ user.email }}</span>
                         </a>
+                        {% if not user.is_superuser %}
+                        <a href="">
+                            <span class="email white-text">En Proyecto : {{ proyectoActual }}</span>
+                        </a>
+                        {% endif %}
+
                     {% endif %}
                 </div>
             </li>
             <!--menu-->
-            <!--primer elemento-->
 
+            <!--primer elemento-->
+            <li>
+                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
+            {% if perms.proyectos.view_proyecto %}
+                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdownProyectos'>
+                    <p>Mis proyectos</p>
+                </a>
+                <ul id='dropdownProyectos' class='dropdown-content'>
+                    {% for proyecto in proyectos %}
+                        <a href="http://127.0.0.1:8000/{{ proyecto.proyecto_id }}/">
+                            <li>{{ proyecto.nombre }}</li>
+                        </a>
+                    {% empty %}
+                        <li>
+                        <i class="material-icons" style="vertical-align: -3px">mood_bad</i>
+                            No tienes proyectos
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            </li>
             <li>
                 <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
                 <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown1'>

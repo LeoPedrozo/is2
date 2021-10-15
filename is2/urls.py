@@ -18,11 +18,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from is2.views import inicio, saludo, documentaciones, crearRol, crearSprint, asignarRol, crearProyecto, \
+from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_CrearRol, crearSprint, step1_asignarRol, \
+    step2_asignarRol, crearProyecto, \
     registrarUsuario, \
-    modificarProyecto, verMiembros, eliminarRol, seleccionarRol, modificarRol, crearHistoria, verHistorias, \
+    modificarProyecto, verMiembros, eliminarRol, step1_modificarRol, step2_modificarRol,step3_modificarRol, crearHistoria, verHistorias, \
     seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
-    tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog
+    tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
+    swichProyecto
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -37,14 +39,20 @@ urlpatterns = [
     path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
     path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
 
-    path('crearRol/',crearRol),
-    path('asignarRol/',asignarRol),
+    path('crearRol/1/',step1_CrearRol),
+    path('crearRol/2/',step2_CrearRol),
+
+    path('asignarRol/1/', step1_asignarRol),
+    path('asignarRol/2/', step2_asignarRol),
+
+
     path('eliminarRol/',eliminarRol),
     path('registrarUsuario/',registrarUsuario),
 
     path('crearProyecto/',crearProyecto),
     path('modificarProyecto/',modificarProyecto),
     path('eliminarProyecto/',eliminarProyecto),
+    path('inicio/<int:id>/',swichProyecto),
 
     path('crearSprint/',crearSprint),
     path('modificarSprint/',modificarSprint),
@@ -56,8 +64,9 @@ urlpatterns = [
     path('verHistorias/',productBacklog),
     path('verHistorias/<int:id>/',asignarSprint),
 
-    path('modificarRol/1/',seleccionarRol),
-    path('modificarRol/2/',modificarRol),
+    path('modificarRol/1/',step1_modificarRol),
+    path('modificarRol/2/',step2_modificarRol),
+    path('modificarRol/3/',step3_modificarRol),
 
     path('modificarHistoria/1/',seleccionarHistoria),
     path('modificarHistoria/2/',modificarHistoria),
@@ -80,6 +89,7 @@ urlpatterns = [
     #path('logout/', LogoutView.as_view(
     #next_page=reverse_lazy('Userauth:login') # you can use your named URL here just like you use the **url** tag in your django template
     #), name='logout'),
+
     path('inicio/logout', LogoutView.as_view()), #Funcion para deslogear del sistema
     path('logout/', LogoutView.as_view()),  # Funcion para deslogear del sistema
     path('accounts/google/login/callback/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar

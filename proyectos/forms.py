@@ -54,6 +54,7 @@ class modificarproyectoForm(forms.Form):
         self.fields['fecha'].initial = datetime.datetime.strptime(self.request['fecha'], "%Y/%m/%d")
         self.fields['fecha_entrega'].initial = datetime.datetime.strptime(self.request['fecha_entrega'], "%Y/%m/%d")
         self.fields['id'].initial = self.request['Proyecto_id']
+        #Esto debe cambiar
         self.fields['miembros'].queryset = User.objects.filter(proyecto_id=self.request['Proyecto_id']).exclude(
             username='admin')
         #self.fields['fecha_finalizacion'].initial = datetime.datetime.strptime(self.request['fecha_finalizacion'], "%Y/%m/%d")
@@ -75,10 +76,10 @@ class modificarproyectoForm(forms.Form):
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
     fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Entrega")
     miembros = forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
-    usuarios= forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter(proyecto_id__isnull=True).exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
+    usuarios= forms.ModelMultipleChoiceField(required=False,queryset=User.objects.all().exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 
 
-class eliminarProyectoForm(forms.Form):
+class seleccionarProyectoForm(forms.Form):
     Proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0,label="Seleccione algun proyecto")
 
 

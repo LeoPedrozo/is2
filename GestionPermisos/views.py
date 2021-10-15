@@ -34,7 +34,7 @@ def fabricarRol(Modelos):
     for modelo in Modelos:
         for app_model in Modelos[modelo]:
             name = "Can {} {}".format(app_model, modelo)
-            print("Creando {}".format(name))
+            #print("Creando {}".format(name))
 
             try:
                 model_add_perm = Permission.objects.get(name=name)
@@ -43,7 +43,7 @@ def fabricarRol(Modelos):
                 logging.warning("Permiso no encontrado con el nombre '{}'.".format(name))
                 try:
                     lower_name = "Can {} {}".format(app_model, modelo.lower())
-                    print("Creando {}".format(lower_name))
+                    #print("Creando {}".format(lower_name))
                     model_add_perm = Permission.objects.get(name=lower_name)
                 except Permission.DoesNotExist:
                     logging.warning("Permiso no encontrado con el nombre '{}'.".format(lower_name))
@@ -51,7 +51,7 @@ def fabricarRol(Modelos):
                         #Sacarle la palabra can
                         name2 = name.replace("Can ","").lower()
                         codename = name2.replace(" ","_")
-                        print("Buscar usando el codename={}".format(codename))
+                        #print("Buscar usando el codename={}".format(codename))
                         model_add_perm = Permission.objects.get(codename=codename)
                     except Permission.DoesNotExist:
                         logging.warning("Permiso no encontrado con el codename '{}'.".format(codename))
@@ -63,10 +63,10 @@ def fabricarRol(Modelos):
                 model_add_perm = Permission.objects.filter(name=name).first()
 
             # Si pudo asignar, el carga ese permiso al grupo
-            print("Permiso a agregar : ",model_add_perm)
+            #print("Permiso a agregar : ",model_add_perm)
             new_group.permissions.add(model_add_perm)
 
-    print("creado con exito")
+    #print("creado con exito")
     return new_group
 
 def removerRol(RolSeleccionado):
@@ -87,7 +87,6 @@ def enlazar_Usuario_con_Rol(user, grupo):
     :param grupo: grupo con sus permisos correspondientes
     """
     grupo.user_set.add(user)
-    print("Adding {} to {}".format(user, grupo))
 
 
 def registrar_usuario(user, state):

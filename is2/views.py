@@ -17,11 +17,11 @@ from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuari
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
 from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamposdeSprint, getSprint
-from gestionUsuario.models import User
+from gestionUsuario.models import User,UserProyecto
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm, eliminarProyectoForm
+from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
@@ -53,14 +53,23 @@ def inicio(request):
     if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
         if request.user.is_superuser:
-            return render(request, "sidenav.html", {"avatar": None})
+            usuario = User.objects.get(username=request.user.username)
+            proyectos = usuario.proyectos_asociados.all()
+            #proyecto=usuario.proyectos_asociados.first()
+            #proyecto.
+            return render(request, "sidenav.html", {"avatar": None, "proyectoActual": usuario.proyecto, "proyectos":proyectos})
         else:
             usuario = User.objects.get(username=request.user.username)
             fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+            #u=model_to_dict(usuario)
+            #proyectos = u['proyectos_asociados']
+            #print("Diccionario :", u)
             proyectos = usuario.proyectos_asociados.all()
             return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
+
+
 
 
 # Para acceder directamente a los archivos guardados en el directorio docs
@@ -76,9 +85,31 @@ def documentaciones(request):
 
 
 ##VISTAS RELACIONADAS AL MANEJO DE ROL
+
+
+def step1_CrearRol(request):
+    """
+        Metodo para la creacion de roles del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de CREAR ROL
+        """
+    if request.method == "POST":
+        formulario = seleccionarProyectoForm(request.POST)
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
+            ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
+            request.session['ProyectoSeleccionado_id']=ProyectoSeleccionado.id
+            return redirect(step2_CrearRol)
+    else:
+        formulario = seleccionarProyectoForm()
+
+    return render(request, "seleccionarProyecto.html", {"form": formulario})
+
+
 @login_required
 @permission_required('auth.add_group', raise_exception=True)
-def crearRol(request):
+def step2_CrearRol(request):
     """
     Metodo para la creacion de roles del sistema
 
@@ -89,16 +120,22 @@ def crearRol(request):
         formulario = crearRolForm(request.POST)
         if (formulario.is_valid()):
             datosRol = formulario.cleaned_data
-
             print(formulario.cleaned_data)
-
             nombreRol = formulario.cleaned_data["RolName"]
             historia = formulario.cleaned_data["Historia"]
             proyecto = formulario.cleaned_data["Proyecto"]
             sprint = formulario.cleaned_data["Sprint"]
 
-            # Acciones a realizar con el form
+            #Paso 1 Creamos el rol.
+
             fabricarRol(datosRol)
+
+            #Paso 2 agregamos a la lista de proyecto
+            idProyecto=request.session['ProyectoSeleccionado_id']
+            proyectoseleccionado=Proyecto.objects.get(id=idProyecto)
+            proyectoseleccionado.roles_name.append(nombreRol)
+            proyectoseleccionado.save()
+
             # Retornar mensaje de exito
             return render(request, "rolCreado.html",
                           {"nombreRol": nombreRol, "historia": historia, "proyecto": proyecto, "sprint": sprint})
@@ -108,9 +145,31 @@ def crearRol(request):
     return render(request, "crearRol.html", {"form": formulario})
 
 
+def step1_asignarRol(request):
+    """
+        Metodo para la creacion de roles del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de CREAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarProyectoForm(request.POST)
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
+            ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
+            proyecto_dictionary = model_to_dict(ProyectoSeleccionado)
+            request.session['id_proyecto'] = proyecto_dictionary['id']
+            request.session['roles'] = proyecto_dictionary['roles_name']
+            return redirect(step2_asignarRol)
+    else:
+        formulario = seleccionarProyectoForm()
+
+    return render(request, "seleccionarProyecto.html", {"form": formulario})
+
+
 @login_required
 @permission_required('auth.add_group', raise_exception=True)
-def asignarRol(request):
+def step2_asignarRol(request):
     """
     Metodo para la asignacion de roles a los usuarios del sistema
 
@@ -118,21 +177,61 @@ def asignarRol(request):
     :return: respuesta: a la solicitud de ASIGNAR ROL
     """
     if request.method == "POST":
-        formulario = asignarRolForm(request.POST)
+        formulario = asignarRolForm(request.POST,proyecto=request.session)
         if (formulario.is_valid()):
+            #Se estiran los datos del formulario
             datosRol = formulario.cleaned_data
-            userdata = formulario.cleaned_data['Usuario']
-            rol = formulario.cleaned_data['Roles']
-            # Acciones a realizar con el form
 
-            enlazar_Usuario_con_Rol(userdata, rol)
+            #user_object = formulario.cleaned_data['Usuario']
+            user_name = formulario.cleaned_data['Usuario']
+            rol_name = formulario.cleaned_data['Roles']
+
+            #Realizo las consultas para tener el objeto Rol y el objeto proyecto para poder agregar en la tabla UserProy
+            user_object=User.objects.get(username=user_name)
+            rol_object=Group.objects.get(name=rol_name)
+            proyecto_object=Proyecto.objects.get(id=request.session['id_proyecto'])
+
+            #Teniendo los datos agrego el nuevo elemento a la tabla userproyecto
+            #este if es para que no se agregue varios roles de un usuario para un mismo proyecto.
+            a=UserProyecto.objects.get(usuario=user_object,proyecto=proyecto_object)
+            if(a != None):
+                a.rol_name=rol_name
+                a.save()
+            else:
+                nuevo=UserProyecto(usuario=user_object,proyecto=proyecto_object,rol_name=rol_name)
+                nuevo.save()
+
+            #Agrego al usuario al rol
+            enlazar_Usuario_con_Rol(user_object, rol_object)
 
             # Retornar mensaje de exito
             return render(request, "outputAsignarRol.html", {"asignaciondeRol": datosRol})
     else:
-        formulario = asignarRolForm()
+        procesoAsignarRol(request)
+        formulario = asignarRolForm(proyecto=request.session)
 
     return render(request, "asignarRol.html", {"form": formulario})
+
+#funcion que realiza la logica de preparar los datos para el formulario de asignar Rol
+def procesoAsignarRol(request):
+    # esto genera el formato adecuado para las opciones del formulario
+    roles = []
+    for rol in request.session['roles']:
+        roles.append((rol, rol))
+    # ----------------------------------------------------------------
+    # Procedimiento para generar el queryset correcto para los usuarios.
+    usuarios_names = []
+
+    # users=UserProyecto.objects.filter(proyecto_id=request.session['id_proyecto'])
+    p = Proyecto.objects.get(id=request.session['id_proyecto'])
+    users = User.objects.filter(proyectos_asociados=p)
+    for u in users:
+        # usuarios_names.append( (u.usuario.username,u.usuario.username) )
+        usuarios_names.append((u.username, u.username))
+
+    request.session['usuario_names'] = usuarios_names
+    request.session['roles_name'] = roles
+
 
 
 @login_required
@@ -161,10 +260,33 @@ def eliminarRol(request):
     return render(request, "eliminarRol.html", {"form": formulario})
 
 
-# modificar Rol 1
+
+
+def step1_modificarRol(request):
+    """
+         Metodo para la creacion de roles del sistema
+
+         :param request: solicitud recibida
+         :return: respuesta a la solicitud de CREAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarProyectoForm(request.POST)
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
+            ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
+            proyecto_dictionary = model_to_dict(ProyectoSeleccionado)
+            request.session['id_proyecto'] = proyecto_dictionary['id']
+            request.session['roles'] = proyecto_dictionary['roles_name']
+            return redirect(step2_modificarRol)
+    else:
+        formulario = seleccionarProyectoForm()
+    return render(request, "seleccionarProyecto.html", {"form": formulario})
+
+
+
 @login_required
 @permission_required('auth.add_group', raise_exception=True)
-def seleccionarRol(request):
+def step2_modificarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
 
@@ -172,30 +294,40 @@ def seleccionarRol(request):
         :return: respuesta: a la solicitud de ASIGNAR ROL
         """
     if request.method == "POST":
-        formulario = seleccionarRolForm(request.POST)
+        formulario = seleccionarRolForm(request.POST,proyecto=request.session)
         if (formulario.is_valid()):
+            #1 Se estira el dato del formulario
             RolSeleccionado = formulario.cleaned_data['Rol']
-            modeloRol = model_to_dict(RolSeleccionado)
-            print("Modelo Rol: ")
-            print(modeloRol)
+            #2 Se consulta el objeto grupo
+            rol_object = Group.objects.get(name=RolSeleccionado)
+            #3 Pasamos el objeto a diccionario
+
+            modeloRol = model_to_dict(rol_object)
 
             request.session['RolSeleccionado_id'] = modeloRol['id']
             request.session['nombreRol'] = modeloRol['name']
 
             getPermisos(request, modeloRol['permissions'])
-            print("Permisos obtenidos")
 
-            return redirect(modificarRol)
+            return redirect(step3_modificarRol)
     else:
-        formulario = seleccionarRolForm()
+        # esto genera el formato adecuado para las opciones del formulario
+        roles = []
+        for rol in request.session['roles']:
+            roles.append((rol, rol))
+        #---------------------------------------------------------------
+
+        request.session['roles_name'] = roles
+        formulario = seleccionarRolForm(proyecto=request.session)
 
     return render(request, "seleccionarRol.html", {"form": formulario})
 
 
-# modificar Rol 2
+# ESTE TIENE UN PROBLEMA, LA LISTA DE USUARIO SE MANTEIENE VACIA
+#La linea 359 no funca. no da errores pero no hace lo que pienso.
 @login_required
 @permission_required('auth.change_group', raise_exception=True)
-def modificarRol(request):
+def step3_modificarRol(request):
     """
     Metodo para la modificacion de roles
 
@@ -209,18 +341,44 @@ def modificarRol(request):
             # Acciones a realizar con el form
             datosNuevos = formulario.cleaned_data
             print("cleaned data de los datos de Rol cambiados ", datosNuevos)
+
             # Obtener los usuarios que pertenecen al viejo rol, buscando por la id del rol
             viejoRol_id = request.session['RolSeleccionado_id']
+
             # Se estira los usuarios que forman parte al viejo Rol
             usuarios = User.objects.filter(groups__id=viejoRol_id)
 
+
+            #Objeto PRoyecto
+            proyectoseleccionado = Proyecto.objects.get(id=request.session['id_proyecto'])
             # Se elimina el viejo Rol
             modeloViejoRol = Group.objects.filter(id=viejoRol_id)
             modeloViejoRol.delete()
 
+
             # Se crea el nuevo Rol con sus respectivos permisos
             nombreRol = datosNuevos['RolName']
             nuevoRol = fabricarRol(datosNuevos)
+
+            # Objeto PRoyecto
+            proyectoseleccionado = Proyecto.objects.get(id=request.session['id_proyecto'])
+            #Este For es para actualizar la tabla de UserProyecto
+            for usuario in usuarios:
+                a = UserProyecto.objects.get(usuario=usuario, proyecto=proyectoseleccionado)
+                if (a != None):
+                    a.rol_name = nombreRol
+                    a.save()
+
+
+
+            # Se debe eliminar el nombre del Rol de la lista de la tabla Proyecto.
+            proyectoseleccionado.roles_name.remove(request.session['nombreRol'])
+
+            # Se debe agregar el nuevo rol al proyecto
+            proyectoseleccionado.roles_name.append(nombreRol)
+            proyectoseleccionado.save()
+
+
 
             # Se enlazan los usuarios del viejo Rol al nuevo Rol
             for usuario in usuarios:
@@ -233,6 +391,10 @@ def modificarRol(request):
         formulario = modificarRolForm(datosdelRol=request.session)
 
     return render(request, "modificarRol.html", {"form": formulario})
+
+
+
+
 
 
 @login_required
@@ -272,8 +434,6 @@ def crearProyecto(request):
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
     if request.method == "POST":
-        ##instance = User.objects.filter(user=request.user).first()
-
         formulario = crearproyectoForm(request.POST, request=request)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
@@ -286,7 +446,6 @@ def crearProyecto(request):
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
         formulario = crearproyectoForm(request=request)
-
     return render(request, "crearProyecto.html", {"form": formulario})
 
 
@@ -299,7 +458,6 @@ def modificarProyecto(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
-    print("request modificar proyecto")
 
     try:
         if request.method == "POST":
@@ -350,7 +508,7 @@ def eliminarProyecto(request):
         :return: respuesta: a la solicitud de ELIMINAR PROYECTO
     """
     if request.method == "POST":
-        formulario = eliminarProyectoForm(request.POST)
+        formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
             ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
 
@@ -382,11 +540,22 @@ def eliminarProyecto(request):
             # Retornar mensaje de exito
             return render(request, "outputEliminarProyecto.html", {"Proyectoeliminado": ProyectoSeleccionado})
     else:
-        formulario = eliminarProyectoForm()
+        formulario = seleccionarProyectoForm()
 
     return render(request, "eliminarProyecto.html", {"form": formulario})
 
 
+
+#La logica de Roles aun no revisado.
+def swichProyecto(request,id):
+    u = User.objects.get(username=request.user.username)
+    p= Proyecto.objects.get(id=id)
+    u.proyecto=p
+    u.save()
+    return redirect(inicio)
+
+
+#----------------------------------------------------
 @login_required
 def getPermisos(request, listaPermisos):
     """
@@ -863,7 +1032,6 @@ def asignarSprint(request,id):
 
 
 # vista que cambia el tiempo trabajado de un usuario
-
 def lineChart(request):
     """
     Metodo para Graficar el burndown chart en un gráfico de linea

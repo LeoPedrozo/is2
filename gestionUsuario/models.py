@@ -33,6 +33,8 @@ class User(AbstractUser):
 #            return f"El equipo {self.nombre} esta asignado al proyecto {self.proyecto}"
 
 
+
+
 class UserProyecto(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)

@@ -205,13 +205,13 @@ def step2_asignarRol(request):
 
             #Agrego al usuario al rol
             #Limpiar antiguo rol del usuario para el cambio
-            print("Limpiando antiguos roles")
-            user_object.groups.clear()
+            #print("Limpiando antiguos roles")
+            #user_object.groups.clear()
             #enlazar con el rol asignado para el proyecto
             enlazar_Usuario_con_Rol(user_object, rol_object)
-            registrar_usuario(user_object, 'True')
-            user_object.save()
-            # Retornar mensaje de exito
+            #registrar_usuario(user_object, 'True')
+            #user_object.save()
+            #Retornar mensaje de exito
             return render(request, "outputAsignarRol.html", {"asignaciondeRol": datosRol})
     else:
         procesoAsignarRol(request)
@@ -307,11 +307,16 @@ def step2_modificarRol(request):
             RolSeleccionado = formulario.cleaned_data['Rol']
             #2 Se consulta el objeto grupo
             rol_object = Group.objects.get(name=RolSeleccionado)
+
+
             #3 Pasamos el objeto a diccionario
 
             modeloRol = model_to_dict(rol_object)
 
             request.session['RolSeleccionado_id'] = modeloRol['id']
+
+            print("En el paso 2 el id del rol es = ",modeloRol['id'])
+
             request.session['nombreRol'] = modeloRol['name']
 
             getPermisos(request, modeloRol['permissions'])
@@ -337,7 +342,6 @@ def step2_modificarRol(request):
 def step3_modificarRol(request):
     """
     Metodo para la modificacion de roles
-
     :param request: solicitud recibida
     :return: respuesta a la solicitud de MODIFICAR ROL
     """
@@ -345,51 +349,56 @@ def step3_modificarRol(request):
 
         formulario = modificarRolForm(request.POST, datosdelRol=request.session)
         if (formulario.is_valid()):
-            # Acciones a realizar con el form
+            #este dato es importante para la construccion del nuevor Rol con los nuevos permisos.
             datosNuevos = formulario.cleaned_data
-            print("cleaned data de los datos de Rol cambiados ", datosNuevos)
+
+            print("Los ajustes del nuevo Rol son = ", datosNuevos)
 
             # Obtener los usuarios que pertenecen al viejo rol, buscando por la id del rol
             viejoRol_id = request.session['RolSeleccionado_id']
+            viejoRol_name= request.session['nombreRol']
+
+            print("El id del Rol actualmente activo es = ",viejoRol_id, "y su nombre es = ", viejoRol_name)
 
             # Se estira los usuarios que forman parte al viejo Rol
             usuarios = User.objects.filter(groups__id=viejoRol_id)
+            print("La lista de usuarios del rol viejo es = ", usuarios)
 
-
-            #Objeto PRoyecto
+            #Objeto PRoyecto ok
             proyectoseleccionado = Proyecto.objects.get(id=request.session['id_proyecto'])
             # Se elimina el viejo Rol
-            modeloViejoRol = Group.objects.filter(id=viejoRol_id)
-            modeloViejoRol.delete()
+            Group.objects.get(id=viejoRol_id).delete()
+
 
 
             # Se crea el nuevo Rol con sus respectivos permisos
             nombreRol = datosNuevos['RolName']
-            nuevoRol = fabricarRol(datosNuevos)
+            #nuevoRol = fabricarRol(datosNuevos)
+            fabricarRol(datosNuevos)
 
+            nuevoRol = Group.objects.get(name=nombreRol)
             # Objeto PRoyecto
-            proyectoseleccionado = Proyecto.objects.get(id=request.session['id_proyecto'])
+            #proyectoseleccionado = Proyecto.objects.get(id=request.session['id_proyecto'])
             #Este For es para actualizar la tabla de UserProyecto
-            for usuario in usuarios:
-                a = UserProyecto.objects.get(usuario=usuario, proyecto=proyectoseleccionado)
-                if (a != None):
-                    a.rol_name = nombreRol
-                    a.save()
 
+
+            for usuario in usuarios:
+
+                enlazar_Usuario_con_Rol(usuario, nuevoRol)
+                print("Enlaza el usuario :",usuario ," con el nuevo rol ",nuevoRol)
+                usuario_que_tieneRol = UserProyecto.objects.get(usuario=usuario, proyecto=proyectoseleccionado)
+                if (usuario_que_tieneRol != None):#si existe entra
+
+                    usuario_que_tieneRol.rol_name = nombreRol
+                    usuario_que_tieneRol.save()
 
 
             # Se debe eliminar el nombre del Rol de la lista de la tabla Proyecto.
-            proyectoseleccionado.roles_name.remove(request.session['nombreRol'])
+            proyectoseleccionado.roles_name.remove(viejoRol_name)
 
             # Se debe agregar el nuevo rol al proyecto
             proyectoseleccionado.roles_name.append(nombreRol)
             proyectoseleccionado.save()
-
-
-
-            # Se enlazan los usuarios del viejo Rol al nuevo Rol
-            for usuario in usuarios:
-                enlazar_Usuario_con_Rol(usuario, nuevoRol)
 
             # Retornar mensaje de exito
             return render(request, "outputmodificarRol.html", {"rolModificado": datosNuevos, "nombreRol": nombreRol})

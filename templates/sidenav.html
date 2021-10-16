@@ -60,7 +60,11 @@
                         {% if not user.is_superuser %}
                         <a href="">
                             <span class="email white-text">En Proyecto : {{ proyectoActual }}</span>
+                            <span class="email white-text">Rol : {{ roles }}</span>
                         </a>
+                            {% else %}
+                            <span class="email white-text">En Proyecto : {{ proyectoActual }}</span>
+                            <span class="email white-text">Rol : {{ roles }}</span>
                         {% endif %}
 
                     {% endif %}

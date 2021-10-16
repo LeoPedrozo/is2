@@ -65,7 +65,8 @@ def inicio(request):
             #proyectos = u['proyectos_asociados']
             #print("Diccionario :", u)
             proyectos = usuario.proyectos_asociados.all()
-            return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos})
+            roles = ', '.join(map(str, usuario.groups.all()))
+            return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos, "roles":roles})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 
@@ -193,8 +194,9 @@ def step2_asignarRol(request):
 
             #Teniendo los datos agrego el nuevo elemento a la tabla userproyecto
             #este if es para que no se agregue varios roles de un usuario para un mismo proyecto.
-            a=UserProyecto.objects.get(usuario=user_object,proyecto=proyecto_object)
-            if(a != None):
+
+            if UserProyecto.objects.filter(usuario=user_object,proyecto=proyecto_object).exists() :
+                a = UserProyecto.objects.get(usuario=user_object,proyecto=proyecto_object)
                 a.rol_name=rol_name
                 a.save()
             else:
@@ -202,8 +204,13 @@ def step2_asignarRol(request):
                 nuevo.save()
 
             #Agrego al usuario al rol
+            #Limpiar antiguo rol del usuario para el cambio
+            print("Limpiando antiguos roles")
+            user_object.groups.clear()
+            #enlazar con el rol asignado para el proyecto
             enlazar_Usuario_con_Rol(user_object, rol_object)
-
+            registrar_usuario(user_object, 'True')
+            user_object.save()
             # Retornar mensaje de exito
             return render(request, "outputAsignarRol.html", {"asignaciondeRol": datosRol})
     else:
@@ -551,6 +558,21 @@ def swichProyecto(request,id):
     u = User.objects.get(username=request.user.username)
     p= Proyecto.objects.get(id=id)
     u.proyecto=p
+
+    if UserProyecto.objects.filter(usuario=u, proyecto=p).exists():
+        print("Esta asociado al proyecto, reasignando rol...")
+        proy = UserProyecto.objects.get(usuario=u, proyecto=p)
+        rol_object = Group.objects.get(name=proy.rol_name)
+
+        # Agrego al usuario al rol
+        # Limpiar antiguo rol del usuario para el cambio
+        print("Limpiando antiguos roles")
+        u.groups.clear()
+        # enlazar con el rol asignado para el proyecto
+        enlazar_Usuario_con_Rol(u,rol_object )
+        registrar_usuario(u, 'True')
+
+
     u.save()
     return redirect(inicio)
 

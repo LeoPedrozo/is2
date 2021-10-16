@@ -84,3 +84,6 @@ class seleccionarProyectoForm(forms.Form):
     Proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0,label="Seleccione algun proyecto")
 
 
+class importarRolForm(forms.Form):
+    ProyectoA = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0, label="Importar Roles del proyecto")
+    ProyectoB = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0, label="al proyecto")

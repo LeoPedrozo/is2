@@ -21,7 +21,7 @@ from gestionUsuario.models import User,UserProyecto
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm
+from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm,importarRolForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
@@ -410,6 +410,33 @@ def step3_modificarRol(request):
 
 
 
+def importarRol(request):
+    """
+        Metodo para la creacion de roles del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de CREAR ROL
+    """
+    if request.method == "POST":
+        formulario = importarRolForm(request.POST)
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
+            ProyectoOrigen = formulario.cleaned_data['ProyectoA']
+            ProyectoDestino = formulario.cleaned_data['ProyectoB']
+
+            diccionarioProyecto=model_to_dict(ProyectoOrigen)
+
+            roles=ProyectoOrigen.roles_name
+            #roles=diccionarioProyecto['roles_name']
+            for rol in roles:
+                ProyectoDestino.roles_name.append(rol)
+
+            ProyectoDestino.save()
+            return redirect(inicio)
+    else:
+        formulario = importarRolForm()
+    #cambiar html
+    return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
 

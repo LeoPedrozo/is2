@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.forms import model_to_dict
+
+from GestionPermisos.views import fabricarRol
 from proyectos.models import Proyecto
+from django.contrib.auth.models import Group
+
 # Create your views here.
 
 
@@ -17,6 +21,26 @@ def nuevoProyecto(datos):
     newP= Proyecto(nombre = datos['nombre'],estado = datos['estado'],
                    descripcion = datos['descripcion'],fecha = datos['fecha'],
                    fecha_entrega =datos['fecha_entrega'],fecha_finalizacion=None)
+    scrum = {
+        "RolName": "Scrum Master",
+        "Proyecto": ["change","view"],
+        "Historia": ["add","change","view","delete"],
+        "Sprint" : ["add","change","view","delete"]
+    }
+    fabricarRol(scrum)
+
+    desarrollador = {
+        "RolName": "Desarrollador",
+        "Historia": ["add", "change","view"],
+        "Proyecto": ["view"],
+        "Sprint": ["change", "view"]
+    }
+    fabricarRol(desarrollador)
+    print("Asignando al proyecto")
+    newP.roles_name.append('Scrum Master')
+    newP.roles_name.append('Desarrollador')
+
+
     newP.save()
     return newP
 

@@ -28,6 +28,7 @@ class crearproyectoForm(forms.Form):
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
     creador = forms.CharField(disabled=True)
+    #creador = forms.ModelChoiceField(queryset=User.objects.all().exclude(username='admin'),label="Selecciona el encargado",initial=0)
     estado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados)
 
     fecha = forms.DateField(initial=datetime.date.today,disabled=True,label="Fecha de Creacion")

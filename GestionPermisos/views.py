@@ -13,7 +13,7 @@ from proyectos.models import Sprint, Proyecto
 
 
 # Modelos = {
-#    "Rol": "Scrum master",
+#    "RolName": "Scrum master",
 #    "Historia": ["add", "delete"],
 #    "Sprint" : ["change","view"]
 # }

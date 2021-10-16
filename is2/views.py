@@ -991,6 +991,19 @@ def moverHistoria(request, id, opcion):
         else:
             messages.error(request, "No eres el encargado de la historia")
 
+    #aceptar en quality assurance la historia, entonces va a pasar a Release
+    if (opcion == 6):
+        h.estados = 'RELEASE'
+        messages.info(request, "Historia enviada a Release")
+    #Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
+    if (opcion == 7):
+        h.estados = ""
+        if h.prioridad == 'BAJA':
+            h.prioridad = 'MEDIA'
+        else:
+            h.prioridad = 'ALTA'
+        messages.info(request, "Historia rechazada")
+        messages.info(request, f"Nueva prioridad {h.prioridad}")
     h.save()
     # aca se puede asociar una historia a un usuario
     # usuario = User.objects.get(username=request.user.username)

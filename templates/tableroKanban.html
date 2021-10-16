@@ -347,8 +347,14 @@
                                                  height="32" class="rounded-circle" alt="Avatar">
                                         </div>
                                         <!-- Modal Trigger -->
-                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                        <a class="btn btn-outline-primary btn-small modal-trigger"
                                            href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Aceptar y rechazar historias de Quality assurance-->
+                                        <!--  Opcion 6 aceptar historia y pasar a release-->
+                                        <a class="btn btn-outline-primary btn-small" href="/tableroKanban/{{ historia.id_historia }}/{{ 6 }}"><i class="material-icons">done</i></a>
+                                        <!--  Opcion 7 rechazar historia y devolver al Product backlog-->
+                                        <a class="btn btn-outline-primary btn-small" href="/tableroKanban/{{ historia.id_historia }}/{{ 7 }}"><i class="material-icons">clear</i></a>
+
                                         <!-- Modal Structure -->
                                         <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
                                             <div class="modal-content">

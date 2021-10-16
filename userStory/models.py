@@ -11,6 +11,7 @@ ESTADOS_CHOICES=[
     ('PENDIENTE','Pendiente'),
     ('EN_CURSO','En Curso'),
     ('QUALITY_ASSURANCE','Quality Assurance'),
+    ('RELEASE','Release')
 ]
 
 """

@@ -14,11 +14,15 @@ class TestViews(TestCase):
         self.saludo_url = reverse(saludo)
         self.inicio_url = reverse(inicio)
         self.documentaciones_url = reverse(documentaciones)
-        self.crear_rol_url = reverse(crearRol)
-        self.asignar_rol_url = reverse(asignarRol)
+        self.step1_crear_rol_url = reverse(step1_CrearRol)
+        self.step2_crear_rol_url = reverse(step2_CrearRol)
+        self.step1_asignar_rol_url = reverse(step1_asignarRol)
+        self.step2_asignar_rol_url = reverse(step2_asignarRol)
         self.eliminar_rol_url = reverse(eliminarRol)
-        self.seleccionar_rol_url = reverse(seleccionarRol)
-        self.modificar_rol_url = reverse(crearRol)
+        self.step1_modificar_rol_url = reverse(step1_modificarRol)
+        self.step2_modificar_rol_url = reverse(step1_modificarRol)
+        self.step3_modificar_rol_url = reverse(step1_modificarRol)
+        self.importar_rol_url = reverse(importarRol)
         self.registrar_usuario_url = reverse(registrarUsuario)
         self.crear_proyecto_url = reverse(crearProyecto)
         self.modificar_proyecto_url = reverse(modificarProyecto)
@@ -74,55 +78,90 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'index.html')
     """
 
-    def test_crearRol(self):
+    def test_step1_crearRol(self):
 
         User = get_user_model()
         #self.client.login(username='temporary', password='temporary')
-        response = self.client.get(self.crear_rol_url)
+        response = self.client.get(self.step1_crear_rol_url)
+        #user = User.objects.get(username='temporary')
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2_crearRol(self):
+
+        User = get_user_model()
+        #self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.step2_crear_rol_url)
         #user = User.objects.get(username='temporary')
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'crearRol.html')
 
-
-
-    def test_asignarRol(self):
+    """
+    def test_step1_asignarRol(self):
 
         User = get_user_model()
         self.client.login(username='temporary2', password='temporary2')
-        response = self.client.get(self.asignar_rol_url)
+        response = self.client.get(self.step2_asignar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2_asignarRol(self):
+
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
+        response = self.client.get(self.step2_asignar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'asignarRol.html')
 
 
-
     def test_eliminarRol(self):
 
+        self.client.login(username='temporary2', password='temporary2', proyecto=1)
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'eliminarRol.html')
+    """
 
+    def test_step1_modificarRol(self):
 
-
-    def test_seleccionarRol(self):
-
-        response = self.client.get(self.seleccionar_rol_url)
+        response = self.client.get(self.step1_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
+    def test_step2_modificarRol(self):
 
-    def test_modificarRol(self):
-
-        response = self.client.get(self.modificar_rol_url)
+        response = self.client.get(self.step2_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         #self.assertTemplateUsed(response, 'outputmodificarRol.html')
-        self.assertTemplateUsed(response, 'crearRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
+
+    def test_step3_modificarRol(self):
+
+        response = self.client.get(self.step3_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_importarRol(self):
+
+        response = self.client.get(self.importar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_registrarUsuario(self):
@@ -131,7 +170,6 @@ class TestViews(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'RegistrarUsuario.html')
-
 
 
     def test_crearProyecto(self):
@@ -190,12 +228,14 @@ class TestViews(TestCase):
     #     self.assertEquals(response.status_code, 200)
     #     self.assertTemplateUsed(response, 'tableroKanbanSprintAnterior.html')
 
-    """
+
     def test_tableroKanban(self):
+
         response = self.client.get(self.tablero_kanban_url)
+
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'tableroKanban.html')
-    """
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     def test_crearHistoria(self):
 
@@ -246,11 +286,13 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'HistoriaContent.html')
 
-    """
+
     def test_lineChart(self):
+
         response = self.client.get(self.line_chart_url)
+
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'lineChart.html')
-    """
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     #def test_moverHistoria(self):

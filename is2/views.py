@@ -61,9 +61,7 @@ def inicio(request):
         else:
             usuario = User.objects.get(username=request.user.username)
             fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-            #u=model_to_dict(usuario)
-            #proyectos = u['proyectos_asociados']
-            #print("Diccionario :", u)
+
             proyectos = usuario.proyectos_asociados.all()
             roles = ', '.join(map(str, usuario.groups.all()))
             return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos, "roles":roles})
@@ -241,8 +239,8 @@ def procesoAsignarRol(request):
 
 
 
-@login_required
-@permission_required('auth.delete_group', raise_exception=True)
+#@login_required
+#@permission_required('auth.delete_group', raise_exception=True)
 def eliminarRol(request):
     """
         Metodo para la asignacion de roles a los usuarios del sistema
@@ -267,6 +265,61 @@ def eliminarRol(request):
     return render(request, "eliminarRol.html", {"form": formulario})
 
 
+def step1_eliminarRol(request):
+    """
+         Metodo para la creacion de roles del sistema
+
+         :param request: solicitud recibida
+         :return: respuesta a la solicitud de CREAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarProyectoForm(request.POST)
+        if (formulario.is_valid()):
+            datosRol = formulario.cleaned_data
+            ProyectoSeleccionado = formulario.cleaned_data['Proyecto']
+            proyecto_dictionary = model_to_dict(ProyectoSeleccionado)
+            request.session['id_proyecto'] = proyecto_dictionary['id']
+            request.session['roles'] = proyecto_dictionary['roles_name']
+            return redirect(step2_eliminarRol)
+    else:
+        formulario = seleccionarProyectoForm()
+    return render(request, "seleccionarProyecto.html", {"form": formulario})
+
+
+
+@login_required
+@permission_required('auth.add_group', raise_exception=True)
+def step2_eliminarRol(request):
+    """
+        Metodo para la asignacion de roles a los usuarios del sistema
+
+        :param request: solicitud recibida
+        :return: respuesta: a la solicitud de ASIGNAR ROL
+    """
+    if request.method == "POST":
+        formulario = seleccionarRolForm(request.POST,proyecto=request.session)
+        if (formulario.is_valid()):
+            #1 Se estira el dato del formulario
+            RolSeleccionado = formulario.cleaned_data['Rol']
+            #2 Se consulta el objeto grupo
+
+            #Estiramos el objeto proyecto
+            proyecto=Proyecto.objects.get(id= request.session['id_proyecto'])
+            #eliminamos de su lista el rol
+            proyecto.roles_name.remove(RolSeleccionado)
+            #eliminamos los registros que relacionan el rol con el usuario.
+            UserProyecto.objects.filter(proyecto=proyecto,rol_name=RolSeleccionado).delete()
+    else:
+        # esto genera el formato adecuado para las opciones del formulario
+        roles = []
+        for rol in request.session['roles']:
+            roles.append((rol, rol))
+        #---------------------------------------------------------------
+
+        request.session['roles_name'] = roles
+        formulario = seleccionarRolForm(proyecto=request.session)
+
+    return render(request, "seleccionarRol.html", {"form": formulario})
 
 
 def step1_modificarRol(request):

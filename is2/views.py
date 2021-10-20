@@ -846,24 +846,28 @@ def tableroKanban(request):
     else:
         proyectoActual = model_to_dict(usuarioActual.proyecto)
         listaSprint = proyectoActual['id_sprints']
-        sprintActual = listaSprint[-1]
-        sprintActual2 = model_to_dict(sprintActual)
-        listaHistorias = sprintActual2['historias']
+        try:
+            sprintActual = listaSprint[-1]
+            sprintActual2 = model_to_dict(sprintActual)
+            listaHistorias = sprintActual2['historias']
 
-        versionesDic = {}
-        for hist in listaHistorias:
-            x=hist.history.filter(Q(estados='EN_CURSO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(history_date__lte=sprintActual2['fecha_fin']))
-            listaDeComentarios=[]
-            for z in list(x):
-                fech = z.history_date
-                fechaComentario=fech.strftime("%d-%b-%Y : ")+z.comentarios
-                if not fechaComentario in listaDeComentarios:
-                    listaDeComentarios.append(fechaComentario)
+            versionesDic = {}
+            for hist in listaHistorias:
+                x=hist.history.filter(Q(estados='EN_CURSO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(history_date__lte=sprintActual2['fecha_fin']))
+                listaDeComentarios=[]
+                for z in list(x):
+                    fech = z.history_date
+                    fechaComentario=fech.strftime("%d-%b-%Y : ")+z.comentarios
+                    if not fechaComentario in listaDeComentarios:
+                        listaDeComentarios.append(fechaComentario)
 
-            versionesDic[hist.id_historia] = listaDeComentarios
-           # print(versionesDic)
-        cantidaddehistorias = len(listaHistorias)
-        return render(request, "tableroKanban.html",{"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
+                versionesDic[hist.id_historia] = listaDeComentarios
+               # print(versionesDic)
+            cantidaddehistorias = len(listaHistorias)
+            return render(request, "tableroKanban.html",{"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
+        except IndexError:
+            return render(request, "Condicion_requerida.html", {"mensaje":"NO TIENE NINGUN SPRINT"})
+
 
 
 @login_required

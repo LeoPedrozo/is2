@@ -25,7 +25,9 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     crearHistoria, verHistorias, \
     seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
     tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
-    swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol
+    swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
+    search
+from django.conf.urls import url
 
 #Librerias importadas del autenticador
 from django.urls import path, include
@@ -33,7 +35,6 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 from django.urls import include, re_path
-
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
@@ -84,6 +85,9 @@ urlpatterns = [
     path('listarMiembros/',verMiembros),
 
     path('burndownChart/',lineChart),
+
+    url(r'^productBacklog/$', search, name='search'),
+    path('productBacklog/<int:id>/', asignarSprint),
 
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)

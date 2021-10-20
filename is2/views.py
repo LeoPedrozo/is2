@@ -7,7 +7,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from datetime import date, datetime, timedelta
 from workalendar.america import Paraguay
 from django.db.models import Q
-
 from django.http import HttpResponse
 from django.db import models
 
@@ -20,6 +19,7 @@ from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registra
 from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamposdeSprint, getSprint
 from gestionUsuario.models import User,UserProyecto
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
+from is2.filters import UserFilter, HistoriaFilter
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm,importarRolForm
@@ -1166,17 +1166,15 @@ def asignarSprint(request,id):
     proyecto = id_proyectoActual.proyecto
     sprintActual=proyecto.id_sprints.last()
 
+    try:
+        sprintActual.historias.add(h)
+        proyecto.save()
 
-    sprintActual.historias.add(h)
-    proyecto.save()
-
-
-
-    messages.success(request, "Operacion realizada con exito")
-    return  productBacklog(request)
-
-
-
+        messages.success(request, "Operacion realizada con exito")
+        return search(request)
+    except AttributeError:
+        messages.error(request, "No posee sprints")
+        return search(request)
 
 # vista que cambia el tiempo trabajado de un usuario
 def lineChart(request):
@@ -1307,3 +1305,15 @@ def formatearlista(lista):
         listaStrings.append(str(i))
 
     return listaStrings
+
+
+def search(request):
+    user_list = User.objects.all()
+    user_filter = UserFilter(request.GET, queryset=user_list)
+
+    id_proyectoActual = User.objects.get(username=request.user.username)
+    id_proyectoActual = id_proyectoActual.proyecto_id
+    historias = Historia.objects.filter(proyecto=id_proyectoActual)
+    historia_list = Historia.objects.all()
+    historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
+    return render(request, 'product_backlog.html', {'filter': historia_filter})

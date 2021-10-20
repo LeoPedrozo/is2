@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'Sprints',
     'simple_history',
     'mathfilters',
+    'django_filters',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

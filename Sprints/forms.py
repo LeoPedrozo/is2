@@ -18,14 +18,14 @@ class crearSprintForm(forms.Form):
         self.request = kwargs.pop("request")  # store value of request
         super(crearSprintForm, self).__init__(*args, **kwargs)
         self.fields['idproyecto'].initial = self.request['proyecto']
-        self.fields['historias'].queryset = Historia.objects.filter(proyecto=self.request['proyecto'],estados="")
+        #self.fields['historias'].queryset = Historia.objects.filter(proyecto=self.request['proyecto'],estados="")
 
     idproyecto = forms.IntegerField(label="Proyecto Propietario",disabled=True)
     sprintNumber = forms.IntegerField(label="Numero de Sprint",required=True)
 
     fecha_inicio =forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
     fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha fin")
-    historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
+    #historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
 
 class modificarSprintForm(forms.Form):
         """

@@ -17,17 +17,9 @@ def nuevoSprint(datosSprint):
     newSprint = Sprint(sprintNumber=datosSprint["sprintNumber"], fecha_inicio=datosSprint["fecha_inicio"],
                        fecha_fin=datosSprint["fecha_fin"])
     newSprint.save()
-    if datosSprint["historias"]:
-        for historia in datosSprint["historias"]:
-            #print(historia)
-            #historia.estados="EN CURSO"
-            historia.estados='PENDIENTE'
-            historia.save()
-            newSprint.historias.add(historia)
     proyecto = Proyecto.objects.get(id=datosSprint['idproyecto'])
     proyecto.id_sprints.add(newSprint)
     proyecto.save()
-
     return newSprint
 
 def updateSprint(datosSprint):

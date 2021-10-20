@@ -17,7 +17,7 @@ from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuari
     modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
 from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamposdeSprint, getSprint
-from gestionUsuario.models import User,UserProyecto
+from gestionUsuario.models import User,UserProyecto,UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from is2.filters import UserFilter, HistoriaFilter
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
@@ -25,12 +25,16 @@ from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm,importarRolForm
 from django.contrib.auth.decorators import user_passes_test
 from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
+
+from gestionUsuario.forms import asignarcapacidadForm
+from Sprints.models import Sprint
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
     cargarHorasHistoriaForm, asignarEncargadoForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
 
 # Hola mundo para probar django
 @login_required
@@ -68,7 +72,6 @@ def inicio(request):
             return render(request, "sidenav.html", {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos":proyectos, "roles":roles})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
-
 
 
 
@@ -201,6 +204,8 @@ def step2_asignarRol(request):
             else:
                 nuevo=UserProyecto(usuario=user_object,proyecto=proyecto_object,rol_name=rol_name)
                 nuevo.save()
+
+
 
             #Agrego al usuario al rol
             #Limpiar antiguo rol del usuario para el cambio
@@ -722,7 +727,7 @@ def getPermisos(request, listaPermisos):
 # VISTAS RELACIONADAS A SPRINTS
 @login_required
 @permission_required('Sprints.add_sprint', raise_exception=True)
-def crearSprint(request):
+def step1_SprintPlanning(request):
     """
     Metodo para la creacion de proyectos
 
@@ -735,7 +740,12 @@ def crearSprint(request):
             # Acciones a realizar con el form
             datosSprint = formulario.cleaned_data
             newSprint = nuevoSprint(datosSprint)
-            return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
+
+            #Por practicidad se le pasa el id del sprint
+            request.session['sprint_planning_id']=newSprint.id
+            #return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
+            redirect(step2_SprintPlanning)
+
     else:
         usuarioActual = User.objects.get(username=request.user.username)
         if usuarioActual.proyecto_id is None:
@@ -748,13 +758,146 @@ def crearSprint(request):
             # Si el proyecto no tiene todavia sprint o el sprint actual ya termino
             if (sprintActualenProceso == False):
                 formulario = crearSprintForm(request=request.session)
-                return render(request, "crearSprint.html", {"form": formulario})
+                return render(request, "SprintPlanning_1.html", {"form": formulario})
             else:
                 mensaje = "No puede crear un nuevo sprint hasta que el actual finalize"
                 return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-    return render(request, "crearSprint.html", {"form": formulario})
+    return render(request, "SprintPlanning_1.html", {"form": formulario})
 
 
+
+
+
+def step2_SprintPlanning(request):
+    """
+        Metodo que es ejecutado para mostrar los miembros de un proyecto
+
+        :param request: consulta recibida
+        :return: respuesta a la solicitud de ejecucion de verMiembros
+    """
+    proyecto_actual = Proyecto.objects.get(id=request.session['proyecto'])
+    sprint_actual=Sprint.objects.get(id=request.session['sprint_planning_id'])
+    usuarios=[]
+    #aca en este filter se puede agregar la condicion de que tengan el rol de developer.
+    #tablaparcial tiene la lista de usuarios del proyecto,<sin filtrar>
+    PosiblesIntegrantes=UserProyecto.objects.filter(proyecto=proyecto_actual,rol_name="Desarrollador")
+
+    print("La lista de posibles integrantes son :", PosiblesIntegrantes)
+    #tablaparcial2=UserSprint.objects.filter(proyecto=proyecto_actual,sprint=sprint_actual)
+
+   #este for es para poder generar la lista de usuarios que se pueden seleccionar
+    for elemento in PosiblesIntegrantes:
+
+        u=UserSprint.objects.filter(proyecto=proyecto_actual,usuario=elemento.usuario,sprint=sprint_actual)
+        print("existe -> ",u)
+        #si el usuario ya existe en la tabla entonces no hace falta agregar 2 veces. No entra en el if
+        if(len(u)==0):
+            print("El usuario ", elemento.usuario.username," es agregado a la lista")
+            usuarios.append(elemento.usuario)
+
+    return render(request, "SprintPlanning_2.html", {"miembros": usuarios})
+
+
+
+def asignarCapacidad(request,id):
+    if request.method == 'POST':
+        form = asignarcapacidadForm(request.POST)
+        print(f"form : {form}")
+        if (form.is_valid()):
+            capacidad = form.cleaned_data['capacidad']
+            print("LA CAPACIDAD ES : ", capacidad)
+            if capacidad > 0:
+                print("Entro en el prime if")
+                usuario=User.objects.get(id=id)
+                proyecto_actual=Proyecto.objects.get(id=request.session['proyecto'])
+                sprint_en_planning=Sprint.objects.get(id=request.session['sprint_planning_id'])
+
+                try:
+                    u = UserSprint.objects.get(usuario=usuario,proyecto=proyecto_actual,sprint=sprint_en_planning)
+                except ObjectDoesNotExist:
+                    nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
+                                               capacidad=capacidad)
+                    nuevoElemento.save()
+                else:
+
+                    u.capacidad=capacidad
+                    u.save()
+
+            else:
+                messages.error(request, 'Ingrese una capacidad valida')
+        else:
+            print("formulario invalido")
+
+    return redirect(step2_SprintPlanning)
+
+
+
+def pasar_a_step3(request):
+
+    redirect(step3_SprintPlanning)
+
+
+def step3_SprintPlanning(request):
+    """
+        Metodo para visualizar el tablero kanban
+
+        :param request: solicitud recibida
+        :return: respuesta a la solicitud de TABLERO KANBAN
+    """
+
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+    else:
+        proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
+        sprintActual=Sprint.objects.get(id=request.session['sprint_planning_id'])
+        listaHistorias= Historia.objects.filter(proyecto=proyectoActual, encargado=None)
+        tablatemporal=UserSprint.objects.filter(proyecto=proyectoActual,sprint=sprintActual)
+        developers=[]
+        #aca preparo una lista exclusica de los desarrolladores
+        for elemento in tablatemporal:
+            developers.append(elemento.usuario)
+
+        cantidaddehistorias = len(listaHistorias)
+        return render(request, "SprintPlanning_3.html",
+                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,"Developers":developers})
+
+
+
+def step3_SprintPlanning_logica(request,id_story,id_usuario,opcion):
+    if request.method == 'POST':
+        form = asignarcapacidadForm(request.POST)
+        print(f"form : {form}")
+        if (form.is_valid()):
+            capacidad = form.cleaned_data['capacidad']
+            print("LA CAPACIDAD ES : ", capacidad)
+
+        else:
+            print("formulario invalido")
+
+    return redirect(step2_SprintPlanning)
+
+    h = Historia.objects.get(id_historia=id_story)
+    encargado = User.objects.get(id=id_usuario)
+
+    if(opcion==1):
+        print("Se agrega al encargado")
+        h.encargado=encargado
+        h.save()
+
+    if(opcion==2):
+        h.encargado=None
+        h.save()
+
+
+    redirect(step3_SprintPlanning)
+
+
+
+
+
+#Esta vista va a estar en lista de sprints
 # MODIFICAR SPRINT
 @login_required
 @permission_required('Sprints.change_sprint', raise_exception=True)

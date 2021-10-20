@@ -115,3 +115,5 @@ class eliminarHistoriaForm(forms.Form):
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(), initial=0,label="Seleccione Una Historia")
 
 
+class asignarDesarrollador(forms.Form):
+    encargado=forms.ChoiceField()

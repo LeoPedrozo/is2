@@ -27,7 +27,7 @@ class TestViews(TestCase):
         self.crear_proyecto_url = reverse(crearProyecto)
         self.modificar_proyecto_url = reverse(modificarProyecto)
         self.eliminar_proyecto_url = reverse(eliminarProyecto)
-        self.crear_sprints_url = reverse(crearSprint)
+        self.crear_sprints_url = reverse(step1_SprintPlanning)
         self.modificar_sprint_url = reverse(modificarSprint)
         self.visualizar_sprint_url = reverse(visualizarSprint)
         self.visualizar_sprint2_url = reverse(visualizarSprint2, args=(1,))

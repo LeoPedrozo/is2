@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+from Sprints.models import Sprint
 from proyectos.models import Proyecto
 from userStory.models import Historia
 from simple_history import register
@@ -40,3 +42,12 @@ class UserProyecto(models.Model):
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
     #Esta lista representa el rol del usuario_id en el proyecto_id
     rol_name = models.CharField(blank=True, max_length=30)
+
+class UserSprint(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
+    sprint = models.ForeignKey(Sprint, on_delete=models.SET_NULL, null=True, blank=True)
+    #Esta lista representa el rol del usuario_id en el proyecto_id
+    capacidad = models.IntegerField(blank=True)
+
+

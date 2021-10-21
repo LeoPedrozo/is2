@@ -44,58 +44,43 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
     path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
-
     path('crearRol/1/',step1_CrearRol),
     path('crearRol/2/',step2_CrearRol),
-
     path('asignarRol/1/', step1_asignarRol),
     path('asignarRol/2/', step2_asignarRol),
-
-
     path('eliminarRol/1/',step1_eliminarRol),
     path('eliminarRol/2/',step2_eliminarRol),
-
     path('registrarUsuario/',registrarUsuario),
-
     path('crearProyecto/',crearProyecto),
     path('modificarProyecto/',modificarProyecto),
     path('eliminarProyecto/',eliminarProyecto),
     path('inicio/<int:id>/',swichProyecto),
     path('importarRoles/',importarRol),
-
     path('SprintPlanning/1/', step1_SprintPlanning),
     path('SprintPlanning/2/', step2_SprintPlanning),
     path('SprintPlanning/2/<int:id>/', asignarCapacidad),
-
+    path('SprintPlanning/3/', step3_SprintPlanning),
+    path('SprintPlanning/3/<int:id>/<int:opcion>/', step3_asignarEncargado),
     path('modificarSprint/',modificarSprint),
     path('visualizarSprint/',visualizarSprint),
-
     path('visualizarSprint/<int:id>/',visualizarSprint2),
-
     path('crearHistoria/',crearHistoria),
     path('verHistorias/',productBacklog),
     path('verHistorias/<int:id>/',asignarSprint),
-
     path('modificarRol/1/',step1_modificarRol),
     path('modificarRol/2/',step2_modificarRol),
     path('modificarRol/3/',step3_modificarRol),
-
     path('modificarHistoria/1/',seleccionarHistoria),
     path('modificarHistoria/2/',modificarHistoria),
     path('eliminarHistoria/',eliminarHistoria),
     path('asignarEncargado/',asignarHistoriaEncargado),
-
     path('tableroKanban/',tableroKanban),
-
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
-
     path('listarMiembros/',verMiembros),
-
     path('burndownChart/',lineChart),
-
+    path('qaRelease/', tableroQA_Release),
     url(r'^productBacklog/$', search, name='search'),
     path('productBacklog/<int:id>/', asignarSprint),
-
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
@@ -104,9 +89,7 @@ urlpatterns = [
     #path('logout/', LogoutView.as_view(
     #next_page=reverse_lazy('Userauth:login') # you can use your named URL here just like you use the **url** tag in your django template
     #), name='logout'),
-
     path('inicio/logout', LogoutView.as_view()), #Funcion para deslogear del sistema
     path('logout/', LogoutView.as_view()),  # Funcion para deslogear del sistema
     path('accounts/google/login/callback/logout',LogoutView.as_view()) #Funcion para deslogear del sistema luego de autenticar
-
 ]

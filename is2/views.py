@@ -1487,6 +1487,9 @@ def tableroQA_Release(request):
             if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
                 sprintsNoVerificados.append((sprint,sprint))
 
+        print(sprintsNoVerificados)
+        if not sprint in sprintsNoVerificados:
+            messages.error(request, "No hay ningun sprint finalizado")
         #desplegar selector
         if request.method == "POST":
             formulario = seleccionarSprintForm(request.POST, listaSprint=sprintsNoVerificados)

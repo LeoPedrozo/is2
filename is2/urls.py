@@ -28,7 +28,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
-    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint
+    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, moverHistoriaQA, eliminarSprint
 from django.conf.urls import url
 
 
@@ -79,6 +79,8 @@ urlpatterns = [
     path('asignarEncargado/',asignarHistoriaEncargado),
     path('tableroKanban/',tableroKanban),
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
+    path('qaRelease/<int:id>/<int:opcion>/', moverHistoriaQA),
+    path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
     path('burndownChart/',lineChart),
     path('qaRelease/', tableroQA_Release),

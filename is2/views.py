@@ -7,7 +7,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from datetime import date, datetime, timedelta
 from workalendar.america import Paraguay
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db import models
 
 from django.template import Template, Context
@@ -1324,13 +1324,9 @@ def moverHistoria(request, id, opcion):
 
     if (opcion == 1):
         h.estados = 'PENDIENTE'
-        h.encargado=None
     if (opcion == 2):
         h.estados = 'EN_CURSO'
-        # Aca se debe agregar logica para asociar la histaria con el usuario.
-        encargado=User.objects.get(username=request.user.username)
-        h.encargado=encargado
-        messages.success(request, "Ya eres propiertario")
+
 
 
     if (opcion == 3):
@@ -1368,6 +1364,40 @@ def moverHistoria(request, id, opcion):
     return tableroKanban(request)
 
 
+# Vista que hace la logica de cambio de estado en el kanban
+@login_required
+def moverHistoriaQA(request, id, opcion):
+    """
+    Metodo para administrar el cambio de estado de historias en el tablero kanban
+
+    :param request: solicitud recibida
+    :param id: identificador de la historia a mover
+    :param opcion: estado de la historia
+    :return: tablero kanban actualizado
+    """
+    h = Historia.objects.get(id_historia=id)
+    encargado=User.objects.get(username=request.user.username)
+
+    #aceptar en quality assurance la historia, entonces va a pasar a Release
+    if (opcion == 6):
+        h.estados = 'RELEASE'
+        messages.info(request, "Historia enviada a Release")
+    #Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
+    if (opcion == 7):
+        h.estados = ""
+        if h.prioridad == 'BAJA':
+            h.prioridad = 'MEDIA'
+        else:
+            h.prioridad = 'ALTA'
+        messages.info(request, "Historia rechazada")
+        messages.info(request, f"Nueva prioridad {h.prioridad}")
+    print("Historia : ",h)
+    h.save()
+    # aca se puede asociar una historia a un usuario
+    # usuario = User.objects.get(username=request.user.username)
+    # usuario.stories.add(h)
+
+    return tableroQA_Release(request)
 
 
 
@@ -1541,13 +1571,15 @@ def search(request):
     return render(request, 'product_backlog.html', {'filter': historia_filter})
 
 @login_required
-def tableroQA_Release(request):
+def tableroQA_Release(request, id=''):
     """
     Metodo para visualizar el tablero Quality Assurance Release
 
     :param request: solicitud recibida
     :return: respuesta a la solicitud de TABLERO-QA RELEASE
     """
+    print(f"id={id}")
+
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
@@ -1560,12 +1592,13 @@ def tableroQA_Release(request):
         sprintsNoVerificados = []
         for sprint in listaSprint:
             if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
-                sprintsNoVerificados.append((sprint,sprint))
+                sprintsNoVerificados.append((sprint.id,sprint.sprintNumber))
 
         print(sprintsNoVerificados)
-        if not sprint in sprintsNoVerificados:
+        if not sprintsNoVerificados:
             messages.error(request, "No hay ningun sprint finalizado")
         #desplegar selector
+        messages.info(request,"seleccione un Sprint")
         if request.method == "POST":
             formulario = seleccionarSprintForm(request.POST, listaSprint=sprintsNoVerificados)
             if (formulario.is_valid()):
@@ -1575,7 +1608,9 @@ def tableroQA_Release(request):
             return render(request, "QA_sprint.html", {"form": formulario})
 
         try:
-            sprintActual2 = model_to_dict(sprintSeleccionado)
+            print("Sprint seleccionado : ",sprintSeleccionado)
+            sprintActual = Sprint.objects.get(id=sprintSeleccionado)
+            sprintActual2 = model_to_dict(sprintActual)
             listaHistorias = sprintActual2['historias']
             versionesDic = {}
             for hist in listaHistorias:
@@ -1590,6 +1625,10 @@ def tableroQA_Release(request):
                 versionesDic[hist.id_historia] = listaDeComentarios
                # print(versionesDic)
             cantidaddehistorias = len(listaHistorias)
+            print(listaHistorias)
             return render(request, "QA_sprint.html",{"Sprint": sprintActual2, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
         except IndexError:
             return render(request, "Condicion_requerida.html", {"mensaje":"NINGUNA HISRORIA PARA HACER QA"})
+        except UnboundLocalError:
+            return render(request, "Condicion_requerida.html", {"mensaje": "NO HAY SPRINTS PARA SELECCIONAR"})
+

@@ -92,7 +92,10 @@ urlpatterns = [
     path('listarMiembros/',verMiembros),
 
     path('burndownChart/',lineChart),
-    path('qaRelease/',tableroQA_Release),
+
+    url(r'^productBacklog/$', search, name='search'),
+    path('productBacklog/<int:id>/', asignarSprint),
+
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google

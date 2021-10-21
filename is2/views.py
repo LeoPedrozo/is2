@@ -845,6 +845,16 @@ def step3_SprintPlanning(request):
     proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
     sprintActual=Sprint.objects.get(id=request.session['sprint_planning_id'])
     listaHistorias= Historia.objects.filter(proyecto=proyectoActual, estados="")
+    prioridades=["ALTA","MEDIA","BAJA"]
+    listaOrdenada=[]
+    #ordenamos la lista Alta Media Baja
+    for p in prioridades:
+        for h in listaHistorias:
+            if h.prioridad== p:
+                listaOrdenada.append(h)
+
+
+
     tablatemporal=UserSprint.objects.filter(proyecto=proyectoActual,sprint=sprintActual)
     developers=[]
     #aca preparo una lista exclusica de los desarrolladores
@@ -859,25 +869,22 @@ def step3_SprintPlanning(request):
 
 
     return render(request, "SprintPlanning_3.html",
-                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,"form":formulario})
+                      {"Sprint": sprintActual, "Historias": listaOrdenada, "Total": cantidaddehistorias,"form":formulario})
 
 
 #No funciona con redirect aunque con ese seria mejor.
 def step3_asignarEncargado(request,id,opcion):
-    print("entra en la vista")
-
     h = Historia.objects.get(id_historia=id)
-
-    if request.method == 'POST':
-        formulario= asignarDesarrolladorForm(request.POST,developers=request.session)
-        if (formulario.is_valid()):
-            usuarioSeleccionado=formulario.cleaned_data['encargado']
-            encargado = User.objects.get(username=usuarioSeleccionado)
-            if (opcion == 1):
+    if (opcion == 1):
+        if request.method == 'POST':
+            formulario= asignarDesarrolladorForm(request.POST,developers=request.session)
+            if (formulario.is_valid()):
+                usuarioSeleccionado=formulario.cleaned_data['encargado']
+                encargado = User.objects.get(username=usuarioSeleccionado)
                 h.encargado = encargado
                 h.save()
-        else:
-            print("formulario invalido")
+            else:
+                print("formulario invalido")
 
     if(opcion==2):
         h.encargado=None

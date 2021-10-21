@@ -119,29 +119,8 @@
                              style="width: 30% !important;
                                     height: 40% !important;">
 
-
                             <div class="modal-content">
                                 <h2>Asignar Encargado</h2>
-                                <!--
-                                <div class="row">
-                                    <form action="/SprintPlanning/3/{{ historia.id_historia }}/{{ 8 }}/{{ 1 }}"
-                                          method="POST"
-                                          class="col s12">
-
-                                        {% csrf_token %}
-
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <label for="developers-register">Developers</label>
-                                                <input id="developers-register" name="developers" type=""
-                                                       class="active validate">
-                                            </div>
-                                        </div>
-                                        <button value="Cargar" type="submit" class="modal-close btn blue">Agregar
-                                        </button>
-                                    </form>
-                                </div>-->
-
                                 <div class="row">
                                     {% if form.errors %}
                                         <script>M.toast({
@@ -161,12 +140,9 @@
 
                             </div>
 
-
                             <div class="modal-footer" style=" width: 0 !important;
         max-height: 100% !important;
-        height: 0 !important;">
-
-                            </div>
+        height: 0 !important;"></div>
                         </div>
                         {% endif %}
 
@@ -204,14 +180,12 @@
 
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item modal-trigger"
-                                                       data-target="modal_cargarHorasUS{{ historia.id_historia }}">cargar
-                                                        Horas </a>
+                                                       data-target="modal_asignarEncargado{{ historia.id_historia }}">Reasignar Encargado
+                                                    </a>
+
+
                                                     <a class="dropdown-item"
-                                                       href="/tableroKanban/{{ historia.id_historia }}/{{ 3 }}">Pasar a
-                                                        'Finalizado' </a>
-                                                    <a class="dropdown-item"
-                                                       href="/tableroKanban/{{ historia.id_historia }}/{{ 1 }}">Volver a
-                                                        'Pendiente' </a>
+                                                       href="/SprintPlanning/3/{{ historia.id_historia }}/{{ 2 }}">Quitar</a>
 
                                                 </div>
                                             </div>
@@ -220,11 +194,8 @@
                                         <p>Historia : {{ historia.nombre }}.</p>
                                         <p>Descripcion : {{ historia.descripcion }}.</p>
                                         <p>Prioridad : {{ historia.prioridad }}.</p>
-                                        <!--Posible lugar para cargar foto de perfil del encargado-->
-                                        <div class="float-right mt-n1">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="32"
-                                                 height="32" class="rounded-circle" alt="Avatar">
-                                        </div>
+                                        <p>Encargado : {{ historia.encargado }}.</p>
+
                                         <!-- Modal Trigger -->
                                         <a class="btn btn-outline-primary btn modal-trigger"
                                            href="#modal{{ historia.id_historia }}">ver</a>
@@ -250,35 +221,13 @@
                                 </div>
 
                             </div>
-                            <!--Modal-->
-                            <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
-                                 style="width: 30% !important;
+                            <!--MODAL -->
+                            <div id="modal_asignarEncargado{{ historia.id_historia }}" class="modal "
+                             style="width: 30% !important;
                                     height: 40% !important;">
 
-
-
-                                <div class="modal-content">
-                                <h2></h2>
-                                <!--
-                                <div class="row">
-                                    <form action="/SprintPlanning/3/{{ historia.id_historia }}/{{ 8 }}/{{ 1 }}"
-                                          method="POST"
-                                          class="col s12">
-
-                                        {% csrf_token %}
-
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <label for="developers-register">Developers</label>
-                                                <input id="developers-register" name="developers" type=""
-                                                       class="active validate">
-                                            </div>
-                                        </div>
-                                        <button value="Cargar" type="submit" class="modal-close btn blue">Agregar
-                                        </button>
-                                    </form>
-                                </div>-->
-
+                            <div class="modal-content">
+                                <h2>Asignar Encargado</h2>
                                 <div class="row">
                                     {% if form.errors %}
                                         <script>M.toast({
@@ -292,19 +241,18 @@
                                         {% csrf_token %}
                                         {% form form=form %}{% endform %}
 
-                                        <input type="submit" value="Re-Asignar" class="btn red">
+                                        <input type="submit" value="Asignar" class="btn red">
                                     </form>
                                 </div>
 
                             </div>
 
-
-                                <div class="modal-footer" style=" width: 0 !important;
+                            <div class="modal-footer" style=" width: 0 !important;
         max-height: 100% !important;
-        height: 0 !important;">
+        height: 0 !important;"></div>
+                        </div>
 
-                                </div>
-                            </div>
+
                         {% endif %}
                     {% endfor %}
                 </div>

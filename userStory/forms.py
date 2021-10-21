@@ -115,5 +115,13 @@ class eliminarHistoriaForm(forms.Form):
     Historia = forms.ModelChoiceField(queryset=Historia.objects.all(), initial=0,label="Seleccione Una Historia")
 
 
-class asignarDesarrollador(forms.Form):
-    encargado=forms.ChoiceField()
+class asignarDesarrolladorForm(forms.Form):
+    """
+    Formulario de asignacion de roles a usuarios del sistema con consulta a un filtro de usuario previo
+    """
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("developers")  # store value of request
+        super(asignarDesarrolladorForm, self).__init__(*args, **kwargs)
+        self.fields['encargado'].choices = self.datos['developers']
+
+    encargado = forms.ChoiceField(required=False)

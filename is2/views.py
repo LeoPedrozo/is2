@@ -29,7 +29,7 @@ from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprint
 from gestionUsuario.forms import asignarcapacidadForm
 from Sprints.models import Sprint
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
-    cargarHorasHistoriaForm, asignarEncargadoForm
+    cargarHorasHistoriaForm, asignarEncargadoForm,asignarDesarrolladorForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 import json
@@ -832,9 +832,6 @@ def asignarCapacidad(request,id):
 
 
 
-def pasar_a_step3(request):
-
-    redirect(step3_SprintPlanning)
 
 
 def step3_SprintPlanning(request):
@@ -845,54 +842,51 @@ def step3_SprintPlanning(request):
         :return: respuesta a la solicitud de TABLERO KANBAN
     """
 
-    usuarioActual = User.objects.get(username=request.user.username)
-    if (usuarioActual.proyecto == None):
-        mensaje = "Usted no forma parte de ningun proyecto"
-        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-    else:
-        proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
-        sprintActual=Sprint.objects.get(id=request.session['sprint_planning_id'])
-        listaHistorias= Historia.objects.filter(proyecto=proyectoActual, encargado=None)
-        tablatemporal=UserSprint.objects.filter(proyecto=proyectoActual,sprint=sprintActual)
-        developers=[]
-        #aca preparo una lista exclusica de los desarrolladores
-        for elemento in tablatemporal:
-            developers.append(elemento.usuario)
-
-        cantidaddehistorias = len(listaHistorias)
-        return render(request, "SprintPlanning_3.html",
-                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,"Developers":developers})
+    proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
+    sprintActual=Sprint.objects.get(id=request.session['sprint_planning_id'])
+    listaHistorias= Historia.objects.filter(proyecto=proyectoActual, estados="")
+    tablatemporal=UserSprint.objects.filter(proyecto=proyectoActual,sprint=sprintActual)
+    developers=[]
+    #aca preparo una lista exclusica de los desarrolladores
+    for elemento in tablatemporal:
+        developers.append((elemento.usuario.username,elemento.usuario.username))
+    cantidaddehistorias = len(listaHistorias)
 
 
+    request.session['developers']=developers
+    #Formulario para el selector de usuarios
+    formulario = asignarDesarrolladorForm(developers=request.session)
 
-def step3_SprintPlanning_logica(request,id_story,id_usuario,opcion):
+
+    return render(request, "SprintPlanning_3.html",
+                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,"form":formulario})
+
+
+#No funciona con redirect aunque con ese seria mejor.
+def step3_asignarEncargado(request,id,opcion):
+    print("entra en la vista")
+
+    h = Historia.objects.get(id_historia=id)
+
     if request.method == 'POST':
-        form = asignarcapacidadForm(request.POST)
-        print(f"form : {form}")
-        if (form.is_valid()):
-            capacidad = form.cleaned_data['capacidad']
-            print("LA CAPACIDAD ES : ", capacidad)
-
+        formulario= asignarDesarrolladorForm(request.POST,developers=request.session)
+        if (formulario.is_valid()):
+            usuarioSeleccionado=formulario.cleaned_data['encargado']
+            encargado = User.objects.get(username=usuarioSeleccionado)
+            if (opcion == 1):
+                h.encargado = encargado
+                h.save()
         else:
             print("formulario invalido")
 
-    return redirect(step2_SprintPlanning)
-
-    h = Historia.objects.get(id_historia=id_story)
-    encargado = User.objects.get(id=id_usuario)
-
-    if(opcion==1):
-        print("Se agrega al encargado")
-        h.encargado=encargado
-        h.save()
 
     if(opcion==2):
         h.encargado=None
         h.save()
 
 
-    redirect(step3_SprintPlanning)
-
+    #redirect(step3_SprintPlanning)
+    return step3_SprintPlanning(request)
 
 
 

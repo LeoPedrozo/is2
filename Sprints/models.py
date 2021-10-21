@@ -15,6 +15,9 @@ class Sprint(models.Model):
     fecha_inicio = models.DateField()
     fecha_fin = models.DateField()
     historias = models.ManyToManyField(Historia,blank=True)
+    estados = models.CharField(max_length=20, choices=ESTADOS_CHOICES,default='PLANNING')
+    #El Sprint es verificado, cuando el Scrum realiza todos los QA de las historias y confirma
+    verificado = models.BooleanField(default=False)
 
     ##Esto lo agrege yo por que estoy re loco
     horasLaboralesReal = ArrayField(models.IntegerField(), default=list, blank=True)

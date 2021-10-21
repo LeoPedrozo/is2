@@ -28,7 +28,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
-    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado
+    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release
 from django.conf.urls import url
 
 
@@ -66,8 +66,6 @@ urlpatterns = [
     path('SprintPlanning/1/', step1_SprintPlanning),
     path('SprintPlanning/2/', step2_SprintPlanning),
     path('SprintPlanning/2/<int:id>/', asignarCapacidad),
-    path('SprintPlanning/3/', step3_SprintPlanning),
-    path('SprintPlanning/3/<int:id>/<int:opcion>/', step3_asignarEncargado),
 
     path('modificarSprint/',modificarSprint),
     path('visualizarSprint/',visualizarSprint),
@@ -94,10 +92,7 @@ urlpatterns = [
     path('listarMiembros/',verMiembros),
 
     path('burndownChart/',lineChart),
-
-    url(r'^productBacklog/$', search, name='search'),
-    path('productBacklog/<int:id>/', asignarSprint),
-
+    path('qaRelease/',tableroQA_Release),
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google

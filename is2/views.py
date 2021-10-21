@@ -24,7 +24,7 @@ from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarC
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm,importarRolForm
 from django.contrib.auth.decorators import user_passes_test
-from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm
+from Sprints.forms import crearSprintForm, modificarSprintForm, visualizarSprintForm, seleccionarSprintForm
 
 from gestionUsuario.forms import asignarcapacidadForm
 from Sprints.models import Sprint
@@ -1457,3 +1457,54 @@ def search(request):
     historia_list = Historia.objects.all()
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'product_backlog.html', {'filter': historia_filter})
+
+@login_required
+def tableroQA_Release(request):
+    """
+    Metodo para visualizar el tablero Quality Assurance Release
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de TABLERO-QA RELEASE
+    """
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+    else:
+        proyectoActual = model_to_dict(usuarioActual.proyecto)
+        listaSprint = proyectoActual['id_sprints']
+
+        #Primero se obtiene la lista de los sprints no verificados que hayan finalizado
+        sprintsNoVerificados = []
+        for sprint in listaSprint:
+            if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
+                sprintsNoVerificados.append((sprint,sprint))
+
+        #desplegar selector
+        if request.method == "POST":
+            formulario = seleccionarSprintForm(request.POST, listaSprint=sprintsNoVerificados)
+            if (formulario.is_valid()):
+                sprintSeleccionado = formulario.cleaned_data['sprint']
+        else:
+            formulario = seleccionarSprintForm(listaSprint=sprintsNoVerificados)
+            return render(request, "QA_sprint.html", {"form": formulario})
+
+        try:
+            sprintActual2 = model_to_dict(sprintSeleccionado)
+            listaHistorias = sprintActual2['historias']
+            versionesDic = {}
+            for hist in listaHistorias:
+                x=hist.history.filter(Q(estados='FINALIZADO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(history_date__lte=sprintActual2['fecha_fin']))
+                listaDeComentarios=[]
+                for z in list(x):
+                    fech = z.history_date
+                    fechaComentario=fech.strftime("%d-%b-%Y : ")+z.comentarios
+                    if not fechaComentario in listaDeComentarios:
+                        listaDeComentarios.append(fechaComentario)
+
+                versionesDic[hist.id_historia] = listaDeComentarios
+               # print(versionesDic)
+            cantidaddehistorias = len(listaHistorias)
+            return render(request, "QA_sprint.html",{"Sprint": sprintActual2, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
+        except IndexError:
+            return render(request, "Condicion_requerida.html", {"mensaje":"NINGUNA HISRORIA PARA HACER QA"})

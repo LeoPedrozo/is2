@@ -879,7 +879,6 @@ def step3_asignarEncargado(request,id,opcion):
         else:
             print("formulario invalido")
 
-
     if(opcion==2):
         h.encargado=None
         h.save()

@@ -35,11 +35,10 @@ class modificarSprintForm(forms.Form):
         def __init__(self, *args, **kwargs):
                 self.request = kwargs.pop("request")  # store value of request
                 super(modificarSprintForm, self).__init__(*args, **kwargs)
-       # self.fields['creador'].initial=self.request.user.username
                 self.fields['id'].initial=self.request['id']
                 self.fields['proyecto'].initial=self.request['proyecto']
                 self.fields['sprintNumber'].initial=self.request['sprintNumber']
-                self.fields['historias'].queryset=Historia.objects.filter(pk__in=self.request['historias'])
+                #self.fields['historias'].queryset=Historia.objects.filter(pk__in=self.request['historias'])
                 self.fields['fecha_inicio'].initial = datetime.datetime.strptime(self.request['fecha_inicio'],"%Y/%m/%d")
                 self.fields['fecha_fin'].initial = datetime.datetime.strptime(self.request['fecha_fin'],"%Y/%m/%d")
 
@@ -51,7 +50,6 @@ class modificarSprintForm(forms.Form):
         #dato modificable
         fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],label="Fecha fin")
         #Las historias seleccioandas se ignorara durante el sprint
-        historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
 
 
 class visualizarSprintForm(forms.Form):

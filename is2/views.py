@@ -739,12 +739,14 @@ def step1_SprintPlanning(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosSprint = formulario.cleaned_data
+            print("SE CREA EL SPRINT")
             newSprint = nuevoSprint(datosSprint)
 
             #Por practicidad se le pasa el id del sprint
             request.session['sprint_planning_id']=newSprint.id
             #return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
-            redirect(step2_SprintPlanning)
+            print("REDIRECT PAPU")
+            return redirect(step2_SprintPlanning)
 
     else:
         usuarioActual = User.objects.get(username=request.user.username)
@@ -844,64 +846,113 @@ def step3_SprintPlanning(request):
 
     proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
     sprintActual=Sprint.objects.get(id=request.session['sprint_planning_id'])
-    listaHistorias= Historia.objects.filter(proyecto=proyectoActual, estados="")
+
+    #Lista 1 y 2 son las historias del proyecto y del sprint actualmente
+    Lista1 = Historia.objects.filter(proyecto=proyectoActual)
+    Lista2=sprintActual.historias.all()
     prioridades=["ALTA","MEDIA","BAJA"]
-    listaOrdenada=[]
+
+    #Como no estan ordenadas creamos otras listas que son ordenadas
+    productbacklog=[]
+    sprintbacklog=[]
+
     #ordenamos la lista Alta Media Baja
     for p in prioridades:
-        for h in listaHistorias:
+        for h in Lista1:
             if h.prioridad== p:
-                listaOrdenada.append(h)
+                productbacklog.append(h)
 
+    for p in prioridades:
+        for h in Lista2:
+            if h.prioridad== p:
+                sprintbacklog.append(h)
 
 
     tablatemporal=UserSprint.objects.filter(proyecto=proyectoActual,sprint=sprintActual)
     developers=[]
-    #aca preparo una lista exclusica de los desarrolladores
+
+    #La lista de los desarrolladores para el sprint actual
     for elemento in tablatemporal:
         developers.append((elemento.usuario.username,elemento.usuario.username))
-    cantidaddehistorias = len(listaHistorias)
+
+
+
+    cantidaddehistorias = len(productbacklog)
 
 
     request.session['developers']=developers
     #Formulario para el selector de usuarios
     formulario = asignarDesarrolladorForm(developers=request.session)
 
-
-    return render(request, "SprintPlanning_3.html",
-                      {"Sprint": sprintActual, "Historias": listaOrdenada, "Total": cantidaddehistorias,"form":formulario})
+    return render(request, "SprintPlanning_3.html",{"Sprint": sprintActual, "p_backlog": productbacklog,
+                                            "s_backlog": sprintbacklog,"Total": cantidaddehistorias,"form":formulario})
 
 
 #No funciona con redirect aunque con ese seria mejor.
 def step3_asignarEncargado(request,id,opcion):
-    h = Historia.objects.get(id_historia=id)
+    #h = Historia.objects.get(id_historia=id)
+    sprint_actual=Sprint.objects.get(id=request.session['sprint_planning_id'])
+
+
+
     if (opcion == 1):
+        h = Historia.objects.get(id_historia=id)
         if request.method == 'POST':
             formulario= asignarDesarrolladorForm(request.POST,developers=request.session)
             if (formulario.is_valid()):
                 usuarioSeleccionado=formulario.cleaned_data['encargado']
                 encargado = User.objects.get(username=usuarioSeleccionado)
                 h.encargado = encargado
+                h.estados='PENDIENTE'
                 h.save()
+                #Se le agrega al sprint
+                sprint_actual.historias.add(h)
+                sprint_actual.save()
             else:
                 print("formulario invalido")
 
     if(opcion==2):
+        h = Historia.objects.get(id_historia=id)
         h.encargado=None
+        h.estados=""
         h.save()
+        sprint_actual.historias.remove(h)
+        sprint_actual.save()
+
+    #Iniciar
+    if(opcion==3):
+        print('el sprint actual tiene el estado = ',sprint_actual.estados)
+        u=UserSprint.objects.filter(sprint=sprint_actual).first()
+        listasprints=u.proyecto.id_sprints
+        if(not listasprints.filter(estados="INICIADO").exists()):
+            sprint_actual.estados = 'INICIADO'
+            sprint_actual.save()
+            return redirect(tableroKanban)
+        else:
+            mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
+            return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+    #guardar
+    if(opcion==4):
+        sprint_actual.estados = 'PLANNING'
+        sprint_actual.save()
+        #redireccionar a lista de sprints
+        return redirect(visualizarSprint)
 
 
-    #redirect(step3_SprintPlanning)
-    return step3_SprintPlanning(request)
+
+    return redirect(step3_SprintPlanning)
+    #return step3_SprintPlanning(request)
 
 
 
 
 #Esta vista va a estar en lista de sprints
 # MODIFICAR SPRINT
+
 @login_required
 @permission_required('Sprints.change_sprint', raise_exception=True)
-def modificarSprint(request):
+def modificarSprint(request,id_sprint):
     """
     Metodo para la modificacion de sprint
 
@@ -914,25 +965,46 @@ def modificarSprint(request):
             # Acciones a realizar con el form
             # aca puede dar un problema con los datos de fechas
             datosSprint = formulario.cleaned_data
-
-            fecha_fin = formulario.cleaned_data['fecha_fin']
-            print('cleaned data = ', formulario.cleaned_data)
-            updateSprint(formulario.cleaned_data)
-            # Retornar mensaje de exito
-            return render(request, "outputmodificarSprint.html", {"SprintModificado": datosSprint})
+            updated_sprint=updateSprint(formulario.cleaned_data)
+            # Por practicidad se le pasa el id del sprint
+            request.session['sprint_planning_id'] = updated_sprint.id
+            return redirect(step2_SprintPlanning)
     else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        if (usuarioActual.proyecto == None):
-            return render(request, "Condicion_requerida.html")
-        else:
-            proyectoActual = usuarioActual.proyecto
-            poseeSprintActivo = guardarCamposdeSprint(request, proyectoActual)
-            if (poseeSprintActivo == True):
-                formulario = modificarSprintForm(request=request.session)
-                return render(request, "modificarSprint.html", {"form": formulario})
-            else:
-                mensaje = "No se puede modificar sprint ya que el proyecto aun no posee un sprint activo"
-                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+            sprint_seleccionado=Sprint.objects.get(id=id_sprint)
+            u=UserSprint.objects.filter(sprint=sprint_seleccionado)
+            proyectoPropietario = u.first().proyecto
+            request.session['proyecto'] = proyectoPropietario.id
+            guardarCamposdeSprint(request, sprint_seleccionado,proyectoPropietario.id)
+            formulario = modificarSprintForm(request=request.session)
+            return render(request, "modificarSprint.html", {"form": formulario})
+
+
+
+
+def eliminarSprint(request,id_sprint):
+    sprint_seleccionado = Sprint.objects.get(id=id_sprint)
+
+
+
+
+    #eliminamos la informacion relacionada al sprint de la tabla UserSprint
+    UserSprint.objects.filter(sprint=sprint_seleccionado).delete()
+    #Eliminamos el sprint del proyecto
+    #u = UserSprint.objects.filter(sprint=sprint_seleccionado)
+    #proyectoPropietario = u.first()
+    #proyectoPropietario= proyectoPropietario.proyecto
+    #proyectoPropietario.id_sprints
+
+    #
+    historias=sprint_seleccionado.historias.all()
+    for h in historias:
+        h.encargado=None
+        h.estados=""
+        h.save()
+
+    sprint_seleccionado.delete()
+
+    return redirect(visualizarSprint)
 
 
 ##Solo muestra los sprint sin mayor detalle
@@ -987,10 +1059,13 @@ def tableroKanban(request):
         mensaje = "Usted no forma parte de ningun proyecto"
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
     else:
-        proyectoActual = model_to_dict(usuarioActual.proyecto)
-        listaSprint = proyectoActual['id_sprints']
+        #proyectoActual = model_to_dict(usuarioActual.proyecto)
+        #listaSprint = proyectoActual['id_sprints']
+        proyectoActual = usuarioActual.proyecto
+        sprintActual = proyectoActual.id_sprints.get(estados="INICIADO")
         try:
-            sprintActual = listaSprint[-1]
+            #sprintActual = listaSprint[-1]
+
             sprintActual2 = model_to_dict(sprintActual)
             listaHistorias = sprintActual2['historias']
 

@@ -25,19 +25,19 @@
             </a>
         </div>
     </div>
-    <div class="container p-0">
+    <div class="container+">
 
         <h1 class="h3 mb-3">SPRINT PLANNING </h1>
 
         <div class="row">
-
+            <div class="col s12">
 
             <!-- Categoria enCurso -->
-            <div class="col-12 col-lg-6 col-xl-3">
+            <!--<div class="col s12 col-lg-6 col-xl-6">-->
                 <div class="card card-border-warning">
                     <div class="card-header">
-                        <h5 class="card-title">En Curso</h5>
-                        <h6 class="card-subtitle text-muted">Historias que estan siendo desarrolladas.</h6>
+                        <h5 class="card-title">LISTA DE DESARROLLADORES</h5>
+                        <h6 class="card-subtitle text-muted">Estos son los usuarios que se pueden agregar al Sprint.</h6>
                     </div>
                     {% for miembro in miembros %}
 
@@ -81,7 +81,6 @@
                                         href="#">ver</a>-->
                                     <a class="dropdown-item modal-trigger"
                                        data-target="modal_capacidad{{ miembro.id }}"> Agregar </a>
-                                    ]
                                 </div>
                             </div>
 
@@ -120,6 +119,8 @@
                 </div>
             </div>
 
+             <div class="col s6 offset-s6"><span class="flow-text"><a class="btn btn-outline-primary"
+   href="/SprintPlanning/3/">Siguente</a></span></div>
 
         </div>
 
@@ -286,8 +287,5 @@
 
 </script>
 
-
-<a class="btn btn-outline-primary"
-   href="/SprintPlanning/3/">Siguente</a>
 </body>
 </html>

@@ -26,12 +26,8 @@ def updateSprint(datosSprint):
     newSprint = Sprint.objects.get(id=datosSprint['id'])
     newSprint.fecha_fin = datosSprint['fecha_fin']
     newSprint.save()
+    return newSprint
 
-    historias = datosSprint['historias']
-    for historia in historias:
-        # aca se puede modificar el campo de la histaria quitada del sprint
-        historia.estados = None
-        historia.save()
 
 
 
@@ -62,31 +58,12 @@ def getSprint(id):
 # recibe le objeto proyecto
 
 
-def guardarCamposdeSprint(request, proyectoActual):
-    proyectoActual = model_to_dict(proyectoActual)
-    listaSprint = proyectoActual['id_sprints']
+def guardarCamposdeSprint(request, sprint_seleccionado,id_proyecto):
+    SprintActual = model_to_dict(sprint_seleccionado)
 
-    if len(listaSprint) != 0:
-        SprintActual = listaSprint[-1]
+    request.session['id'] =  SprintActual['id']
+    request.session['sprintNumber'] = SprintActual['sprintNumber']
+    request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
+    request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
 
-        SprintActual = model_to_dict(SprintActual)
-
-        print("el modelo del sprint es ")
-        print(SprintActual)
-
-        historias = SprintActual['historias']
-        pk_list = []
-        for historia in historias:
-            h = model_to_dict(historia)
-            pk_list.append(h['id_historia'])
-
-        request.session['proyecto'] = proyectoActual['id']
-        request.session['id'] = SprintActual['id']
-        request.session['sprintNumber'] = SprintActual['sprintNumber']
-        request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
-        request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
-        request.session['historias'] = pk_list
-
-        return True
-    else:
-        return False
+    return True

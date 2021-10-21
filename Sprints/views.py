@@ -52,11 +52,10 @@ def sprintActivoen(idProyecto):
 
 
 
-
+#dado un id te retorna el sprint
 def getSprint(id):
     sprt = Sprint.objects.get(id=id)
     return sprt
-
 
 # Vista subproceso de modificar, que sirve para no sobre cargar la vista de modificar. NO estoy usando
 # recibe el diccionario que es request.session

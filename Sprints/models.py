@@ -4,6 +4,14 @@ from django.db import models
 # Create your models here.
 from userStory.models import Historia
 
+"""
+Definimos los posibles estados del Sprint
+"""
+ESTADOS_CHOICES=[
+    ('PLANNING','Planning'),
+    ('INICIADO','Iniciado'),
+    ('FINALIZADO','Finalizado'),
+]
 
 class Sprint(models.Model):
     """

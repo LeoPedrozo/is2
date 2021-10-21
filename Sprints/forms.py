@@ -81,4 +81,16 @@ class visualizarSprintForm(forms.Form):
     historias = forms.ModelChoiceField(empty_label= "Despliegue las historias", queryset=Historia.objects.all(), label="Historias",
                                                blank=True, initial=None)
 
+class seleccionarSprintForm(forms.Form):
+    """
+    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un sprint con los
+    campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("listaSprint")  # store value of request
+        super(seleccionarSprintForm, self).__init__(*args, **kwargs)
+        self.fields['sprint'].choices = self.request
+
+    sprint = forms.ChoiceField(label="Seleccione el Sprint")
 

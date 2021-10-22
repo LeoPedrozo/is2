@@ -32,7 +32,8 @@ from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modifica
     cargarHorasHistoriaForm, asignarEncargadoForm,asignarDesarrolladorForm
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
-import json
+from django.conf import settings
+from django.core.mail import send_mail
 
 from django.core.exceptions import ObjectDoesNotExist
 

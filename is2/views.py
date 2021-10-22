@@ -1016,7 +1016,7 @@ def visualizarSprint2(request, id):
 
 ##Esta vista es para mostrar el tablero kanban actual.
 @login_required
-def tableroKanban(request):
+def tableroKanban(request, opcion=''):
     """
     Metodo para visualizar el tablero kanban
 
@@ -1053,9 +1053,29 @@ def tableroKanban(request):
                 versionesDic[hist.id_historia] = listaDeComentarios
             print(versionesDic)
             cantidaddehistorias = len(listaHistorias)
-            return render(request, "tableroKanban.html",{"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
+
+            if not opcion == '':
+                grupos = ', '.join(map(str, usuarioActual.groups.all()))
+                print("grupos del usuario = ", grupos)
+                try:
+                    if grupos.find('Scrum Master'):
+                        messages.info(request, "Finalizando Sprint")
+                        for hist in listaHistorias:
+                            if hist.estados == 'FINALIZADO':
+                                hist.estados = 'QUALITY_ASSURANCE'
+                            else:
+                                hist.estados = ''
+                                hist.encargado = None
+                            hist.save()
+                    sprintActual.estados = 'FINALIZADO'
+                    sprintActual.save()
+                except TypeError:
+                    messages.error(request, "Debes ser Scrum")
+            return render(request, "tableroKanban.html",
+                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                       "versionesDic": versionesDic})
         except IndexError:
-            return render(request, "Condicion_requerida.html", {"mensaje":"NO TIENE NINGUN SPRINT"})
+            return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT"})
 
 
 @login_required
@@ -1295,43 +1315,26 @@ def moverHistoria(request, id, opcion):
             print("formulario invalido")
 
     if (opcion == 1):
-        h.estados = 'PENDIENTE'
-        h.encargado=None
-    if (opcion == 2):
-        h.estados = 'EN_CURSO'
-        # Aca se debe agregar logica para asociar la histaria con el usuario.
-        encargado=User.objects.get(username=request.user.username)
-        h.encargado=encargado
-        messages.success(request, "Ya eres propiertario")
+        if (h.encargado == encargado):
+            h.estados = 'PENDIENTE'
+            messages.success(request, "Pasado a pendiente")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
 
+    if (opcion == 2):
+        if (h.encargado == encargado):
+            h.estados = 'EN_CURSO'
+            messages.success(request, "Pasado a en curso")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
 
     if (opcion == 3):
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
-            messages.success(request, "Operacion realizada con exito")
-        else:
-            messages.error(request, "No eres el encargado de la historia")
-    if (opcion == 4):
-        if (h.encargado == encargado):
-            h.estados = 'QUALITY_ASSURANCE'
-            messages.success(request, "Operacion realizada con exito")
+            messages.success(request, "Finalizado")
         else:
             messages.error(request, "No eres el encargado de la historia")
 
-    #aceptar en quality assurance la historia, entonces va a pasar a Release
-    if (opcion == 6):
-        h.estados = 'RELEASE'
-        messages.info(request, "Historia enviada a Release")
-    #Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
-    if (opcion == 7):
-        h.estados = ""
-        if h.prioridad == 'BAJA':
-            h.prioridad = 'MEDIA'
-        else:
-            h.prioridad = 'ALTA'
-        messages.info(request, "Historia rechazada")
-        messages.info(request, f"Nueva prioridad {h.prioridad}")
-    print("Historia : ",h)
     h.save()
     # aca se puede asociar una historia a un usuario
     # usuario = User.objects.get(username=request.user.username)

@@ -19,7 +19,7 @@ from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registra
 from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamposdeSprint, getSprint
 from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
-from is2.filters import UserFilter, HistoriaFilter
+from is2.filters import UserFilter, HistoriaFilter, SprintFilter
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
@@ -1608,3 +1608,26 @@ def moverHistoriaQA(request, id, opcion):
     # usuario.stories.add(h)
 
     return tableroQA_Release(request)
+
+##Solo muestra los sprint sin mayor detalle
+@login_required
+@permission_required('Sprints.view_sprint', raise_exception=True)
+def visualizarSprintFilter(request):
+    """
+    Metodo para la visualizacion de Sprints
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    """
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+    else:
+        #proyectoActual = model_to_dict(usuarioActual.proyecto)
+
+        proyectoActual =usuarioActual.proyecto
+        listaSprint=proyectoActual.id_sprints.all()
+        #listaSprint = proyectoActual['id_sprints']
+        sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
+        return render(request, "historialSprint.html", {"Sprints": listaSprint,'filter': sprint_filter})

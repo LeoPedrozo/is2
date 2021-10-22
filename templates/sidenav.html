@@ -206,10 +206,17 @@
 
             <!--Divisor-->
             <div class="divider"></div>
-
+            <li>
+                {% if perms.Sprints.view_sprint %}
+                    <a class='blue-grey btn' href="http://127.0.0.1:8000/visualizarSprint/">Historial de sprints
+                    </a>
+                {% endif %}
+            </li>
+            <!--Divisor-->
+            <div class="divider"></div>
             <li>
                 <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
-                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown3'>
+                <a class='dropdown-trigger blue-grey btn'  href='#' data-target='dropdown3'>
                     <p>Sprint</p>
                 </a>
                 <ul id='dropdown3' class='dropdown-content'>
@@ -219,11 +226,7 @@
                                 <i class="material-icons">assignment</i>
                                 Crear Sprint
                             </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">assignment</i>
-                                Crear Sprint
-                            </a>
+
                         {% endif %}
 
                         {% if perms.Sprints.change_sprint %}
@@ -285,69 +288,7 @@
                 <a class='blue-grey btn' href='/productBacklog/'>
                     <p>Product Backlog</p>
                 </a>
-                <ul id='dropdown4' class='dropdown-content'>
-                    <li>
-                        {% if perms.userStory.add_historia %}
-                            <a href="http://127.0.0.1:8000/crearHistoria/">
-                                <i class="material-icons">assignment</i>
-                                Crear Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">assignment</i>
-                                Crear Historia
-                            </a>
-                        {% endif %}
 
-                        {% if perms.userStory.change_historia %}
-                            <a href="http://127.0.0.1:8000/modificarHistoria/1/">
-                                <i class="material-icons">build</i>
-                                Modificar Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">build</i>
-                                Modificar Historia
-                            </a>
-                        {% endif %}
-
-                        {% if perms.userStory.delete_historia %}
-                            <a href="http://127.0.0.1:8000/eliminarHistoria/">
-                                <i class="material-icons">delete</i>
-                                Eliminar Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">delete</i>
-                                Eliminar Historia
-                            </a>
-                        {% endif %}
-
-                        {% if perms.userStory.view_historia %}
-                            <a href="http://127.0.0.1:8000/verHistorias/">
-                                <i class="material-icons">remove_red_eye</i>
-                                Ver Product Backlog
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">remove_red_eye</i>
-                                Ver Product Backlog
-                            </a>
-                        {% endif %}
-
-                        {% if perms.userStory.view_historia %}
-                            <a href="http://127.0.0.1:8000/asignarEncargado/">
-                                <i class="material-icons">person_add</i>
-                                Encargado Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">person_add</i>
-                                Encargado Historia
-                            </a>
-                        {% endif %}
-                    </li>
-                </ul>
             </li>
         </ul>
     </div>

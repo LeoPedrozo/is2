@@ -28,7 +28,8 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
-    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA
+    asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
+    visualizarSprintFilter
 from django.conf.urls import url
 
 
@@ -86,6 +87,7 @@ urlpatterns = [
     path('burndownChart/',lineChart),
     path('qaRelease/', tableroQA_Release),
     url(r'^productBacklog/$', search, name='search'),
+    url(r'^historialSprint/$', visualizarSprintFilter, name='visualizarSprintFilter'),
     path('productBacklog/<int:id>/', asignarSprint),
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)

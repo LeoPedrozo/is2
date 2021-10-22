@@ -1061,6 +1061,11 @@ def tableroKanban(request, opcion=''):
                 try:
                     if grupos.find('Scrum Master'):
                         messages.info(request, "Finalizando Sprint")
+                        #Marcar el ultimo estado que tenian las historias
+                        for hist in listaHistorias:
+                            hist._change_reason = 'fin_sprint'
+                            hist.save()
+                        #Ahora que ya se tiene el ultimo estado, procedemos a finalizar
                         for hist in listaHistorias:
                             if hist.estados == 'FINALIZADO':
                                 hist.estados = 'QUALITY_ASSURANCE'

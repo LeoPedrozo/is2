@@ -80,13 +80,14 @@ urlpatterns = [
     path('tableroKanban/<str:opcion>/',tableroKanban),
     path('tableroKanban/', tableroKanban),
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
+    path('qaRelease/<int:id>/<int:opcion>/', moverHistoriaQA),
+    path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
     path('burndownChart/',lineChart),
     path('qaRelease/', tableroQA_Release),
     url(r'^productBacklog/$', search, name='search'),
     path('productBacklog/<int:id>/', asignarSprint),
     re_path(r'^docs/', include('docs.urls')),
-    path('qaRelease/<int:id>/<int:opcion>/', moverHistoriaQA),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)

@@ -746,7 +746,7 @@ def step1_SprintPlanning(request):
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
         else:
             proy = usuarioActual.proyecto.id
-            request.session['proyecto'] = proy['id']
+            request.session['proyecto'] = proy
 
             formulario = crearSprintForm(request=request.session)
             return render(request, "SprintPlanning_1.html", {"form": formulario})

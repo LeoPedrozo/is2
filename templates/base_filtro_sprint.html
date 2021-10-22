@@ -1,0 +1,143 @@
+{% include 'material/includes/material_js.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}Product Backlog{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1c7abe;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Visualizar Sprints</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <!--
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+              </li>
+              -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Sprints
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li>
+                            {% if perms.userStory.add_historia %}
+                                <a class="dropdown-item" href="/SprintPlanning/1/">
+                                    Nuevo Sprint
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
+                                    Nuevo Sprint
+                                </a>
+                            {% endif %}
+
+                            {% if perms.userStory.change_historia %}
+                                <a class="dropdown-item" href="#">
+                                    opcion2
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
+                                    opcion2
+                                </a>
+                            {% endif %}
+
+                            {% if perms.userStory.delete_historia %}
+                                <a class="dropdown-item" href="#">
+                                    opcion3
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
+                                    opcion3
+                                </a>
+                            {% endif %}
+
+                            {% if perms.userStory.add_historia %}
+                                <a class="dropdown-item" href="#">
+                                    opcion4
+                                </a>
+                            {% else %}
+                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
+                                    opcion4
+                                </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="col-md-12 well">
+        <p></p>
+        <h4 class="text-muted">Sprints del Usuario</h4>
+        <hr style="border-top:1px dotted #ccc;"/>
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        //Dropdown menu
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl)
+        })
+    });
+</script>
+
+<!-- Alertar al usuario que no posee los permisos suficientes -->
+<script>
+    function toast_permisos() {
+        M.toast({
+            html: 'Permisos requeridos',
+            classes: "red"
+        })
+    }
+</script>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'info' %}
+                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'warning' %}
+                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'error' %}
+                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+</body>
+</html>

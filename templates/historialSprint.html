@@ -1,0 +1,78 @@
+{% extends 'base_filtro_sprint.html' %}
+
+{% load widget_tweaks %}
+{% load material_form %}
+{% block content %}
+  <form method="get">
+    <div class="well">
+      <h6 class="text-muted">Parametros de filtrado :</h6>
+      <div class="row">
+
+        <div class="form-group col s4">
+          {{ filter.form.estados.label_tag }}
+          {% render_field filter.form.estados class="form-control" %}
+        </div>
+
+      </div>
+        <p></p>
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search"></span> Filtrar
+      </button>
+        <p></p>
+    </div>
+  </form>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>Sprint Number</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Estado</th>
+        <th>Verificado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for hist in filter.qs %}
+        <td>
+          <td>{{ hist.id }}</td>
+          <td>{{ hist.sprintNumber }}</td>
+          <td>{{ hist.fecha_inicio }}</td>
+          <td>{{ hist.fecha_fin }}</td>
+          <td>{{ hist.estados }}</td>
+          <td>{{ hist.verificado }}</td>
+            <td>{{ hist.verificado }}</td>
+         <td><a class="btn btn-outline-primary btn-sm" href="/visualizarSprint/{{ hist.id }}">Ver Detalles</a>
+            {% if sprint.estados == "PLANNING" %}
+                <a class="btn btn-outline-primary" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a>
+                <a class="btn btn-outline-primary btn-sm" href="/modificarSprint/{{ hist.id }}/">Modificar</a>
+                <a class="btn btn-outline-primary btn-sm" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a>
+            {% endif %}
+        </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No hay coincidencias con ese criterio</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'info' %}
+                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'warning' %}
+                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'error' %}
+                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

@@ -828,7 +828,7 @@ def step3_SprintPlanning(request):
     sprintActual = Sprint.objects.get(id=request.session['sprint_planning_id'])
 
     # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
-    Lista1 = Historia.objects.filter(proyecto=proyectoActual)
+    Lista1 = Historia.objects.filter(proyecto=proyectoActual, estados="")
     Lista2 = sprintActual.historias.all()
     prioridades = ["ALTA", "MEDIA", "BAJA"]
 

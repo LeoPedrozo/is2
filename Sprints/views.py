@@ -1,6 +1,8 @@
 import datetime
+
 from django.forms import model_to_dict
 from django.shortcuts import render
+
 # Create your views here.
 from Sprints.models import Sprint
 from proyectos.models import Proyecto
@@ -19,33 +21,50 @@ def nuevoSprint(datosSprint):
     proyecto.id_sprints.add(newSprint)
     proyecto.save()
     return newSprint
+
 def updateSprint(datosSprint):
     newSprint = Sprint.objects.get(id=datosSprint['id'])
     newSprint.fecha_fin = datosSprint['fecha_fin']
     newSprint.save()
     return newSprint
+
+
+
+
+
 def sprintActivoen(idProyecto):
     proyecto = Proyecto.objects.get(id=idProyecto)
+    #proyecto = Proyecto.objects.get(id=idProyecto)
+    proyecto= Proyecto
     ultimoSprint=proyecto.id_sprints.last()
     if ultimoSprint == None:
         return False
     fechaFinalizacion = ultimoSprint.fecha_fin
     fechaActual = datetime.date.today()
+
     if( fechaFinalizacion>fechaActual):
         return True
     else:
         return False
+
+
+
 #dado un id te retorna el sprint
 def getSprint(id):
     sprt = Sprint.objects.get(id=id)
     return sprt
+
 # Vista subproceso de modificar, que sirve para no sobre cargar la vista de modificar. NO estoy usando
 # recibe el diccionario que es request.session
 # recibe le objeto proyecto
+
+
 def guardarCamposdeSprint(request, sprint_seleccionado,id_proyecto):
     SprintActual = model_to_dict(sprint_seleccionado)
+
     request.session['id'] =  SprintActual['id']
     request.session['sprintNumber'] = SprintActual['sprintNumber']
     request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
     request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
+
     return True

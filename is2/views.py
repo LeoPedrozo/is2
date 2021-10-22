@@ -745,16 +745,12 @@ def step1_SprintPlanning(request):
             mensaje = "Ustede no forma parte de ningun proyecto"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
         else:
-            proy = model_to_dict(usuarioActual.proyecto)
+            proy = usuarioActual.proyecto.id
             request.session['proyecto'] = proy['id']
-            sprintActualenProceso = sprintActivoen(proy['id'])
-            # Si el proyecto no tiene todavia sprint o el sprint actual ya termino
-            if (sprintActualenProceso == False):
-                formulario = crearSprintForm(request=request.session)
-                return render(request, "SprintPlanning_1.html", {"form": formulario})
-            else:
-                mensaje = "No puede crear un nuevo sprint hasta que el actual finalize"
-                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+            formulario = crearSprintForm(request=request.session)
+            return render(request, "SprintPlanning_1.html", {"form": formulario})
+
     return render(request, "SprintPlanning_1.html", {"form": formulario})
 
 
@@ -797,9 +793,9 @@ def asignarCapacidad(request, id):
             print("LA CAPACIDAD ES : ", capacidad)
             if capacidad > 0:
                 print("Entro en el prime if")
-                usuario = User.objects.get(id=id)
-                proyecto_actual = Proyecto.objects.get(id=request.session['proyecto'])
-                sprint_en_planning = Sprint.objects.get(id=request.session['sprint_planning_id'])
+                usuario=User.objects.get(id=id)
+                proyecto_actual=Proyecto.objects.get(id=request.session['proyecto'])
+                sprint_en_planning=Sprint.objects.get(id=request.session['sprint_planning_id'])
 
                 try:
                     u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
@@ -1513,7 +1509,7 @@ def search(request):
 
 
 @login_required
-def tableroQA_Release(request, id=''):
+def tableroQA_Release(request):
     """
     Metodo para visualizar el tablero Quality Assurance Release
 

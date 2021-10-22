@@ -3,6 +3,18 @@
 {% load widget_tweaks %}
 {% load material_form %}
 {% block content %}
+
+        <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        //Dropdown menu
+
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl)
+        })
+    });
+</script>
+
   <form method="get">
     <div class="well">
       <h6 class="text-muted">Parametros de filtrado :</h6>
@@ -25,7 +37,7 @@
     <thead>
       <tr>
         <th>id</th>
-        <th>Sprint Number</th>
+        <th>#Sprint</th>
         <th>Fecha Inicio</th>
         <th>Fecha Fin</th>
         <th>Estado</th>
@@ -34,21 +46,30 @@
     </thead>
     <tbody>
       {% for hist in filter.qs %}
-        <td>
+        <tr>
           <td>{{ hist.id }}</td>
           <td>{{ hist.sprintNumber }}</td>
           <td>{{ hist.fecha_inicio }}</td>
           <td>{{ hist.fecha_fin }}</td>
           <td>{{ hist.estados }}</td>
           <td>{{ hist.verificado }}</td>
-            <td>{{ hist.verificado }}</td>
-         <td><a class="btn btn-outline-primary btn-sm" href="/visualizarSprint/{{ hist.id }}">Ver Detalles</a>
-            {% if sprint.estados == "PLANNING" %}
-                <a class="btn btn-outline-primary" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a>
-                <a class="btn btn-outline-primary btn-sm" href="/modificarSprint/{{ hist.id }}/">Modificar</a>
-                <a class="btn btn-outline-primary btn-sm" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a>
-            {% endif %}
-        </td>
+
+      <td>
+          <div class="dropdown">
+<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ hist.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+        opciones
+      </a>
+
+      <ul class="dropdown-menu" aria-labelledby="dropdown{{ hist.id }}">
+        <li><a class="dropdown-item" href="/visualizarSprint/{{ hist.id }}">Ver Detalles</a></li>
+        {% if hist.estados == "PLANNING" %}
+        <li><a class="dropdown-item" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a></li>
+        <li><a class="dropdown-item" href="/modificarSprint/{{ hist.id }}/">Modificar</a></li>
+        <li><a class="dropdown-item" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a></li>
+        {% endif %}
+      </ul>
+          </div>
+      </td>
         </tr>
       {% empty %}
         <tr>
@@ -74,5 +95,8 @@
         {% endfor %}
     </ul>
 {% endif %}
+
+
+
 
 {% endblock %}

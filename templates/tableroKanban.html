@@ -178,18 +178,18 @@
                                                 <p>Tiempo restante Estimado :
                                                     {% with i=historia.horasEstimadas %}
                                                         {% with x=historia.horas_dedicadas %}
-                                                            {{i|sub:x}}
+                                                            {{ i|sub:x }}
                                                         {% endwith %}
                                                     {% endwith %}
                                                 </p>
                                                 <p>Comentarios : </p>
                                                 {% for key, value in versionesDic.items %}
                                                     {% if key is historia.id_historia %}
-                                                <ul>
-                                                    {% for cm in value %}
-                                                        <li>{{ cm }}</li>
-                                                    {% endfor %}
-                                                </ul>
+                                                        <ul>
+                                                            {% for cm in value %}
+                                                                <li>{{ cm }}</li>
+                                                            {% endfor %}
+                                                        </ul>
                                                     {% endif %}
                                                 {% endfor %}
 
@@ -224,7 +224,7 @@
                                                     <p>
                                                         <label for="comentario-register">Comentario</label>
                                                         <input id="comentario-register" name="comentario" type="text"
-                                                           class="active validate">
+                                                               class="active validate">
                                                     </p>
                                                 </div>
                                             </div>
@@ -319,9 +319,15 @@
                         {% endif %}
                     {% endfor %}
                 </div>
+
+            </div>
+            <div class="col-12 col-lg-6 col-xl-3">
+                <a class="btn btn-outline-primary btn modal-trigger"
+                   href="/tableroKanban/fin">finalizar Sprint</a>
             </div>
 
         </div>
+
 
     </div>
 

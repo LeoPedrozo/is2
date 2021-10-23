@@ -1,5 +1,6 @@
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
@@ -39,7 +40,10 @@ class Historia(models.Model):
     proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
 
     #Jose= esto lo agrego por que estoy re loco
-    encargado=models.ForeignKey(to='gestionUsuario.user', on_delete=models.SET_NULL,null=True,blank=True)
+    encargado=models.ForeignKey(to='gestionUsuario.User', on_delete=models.SET_NULL,null=True,blank=True)
+
+    comentarios=models.TextField(default='')
+    history = HistoricalRecords(user_model='gestionUsuario.User')
 
     class Meta:
         verbose_name = 'Historia'

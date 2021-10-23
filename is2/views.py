@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.admin.views.decorators import staff_member_required
 from datetime import date, datetime, timedelta
 from workalendar.america import Paraguay
+from django.db.models import Q
 
 from django.http import HttpResponse
 from django.db import models
@@ -818,8 +819,15 @@ def visualizarSprint2(request, id):
     sprint2 = model_to_dict(sprint)
     listaHistorias = sprint2['historias']
     cantidaddehistorias = len(listaHistorias)
-    return render(request, "tableroKanbanSprintAnterior.html",
-                  {"Sprint": sprint, "Historias": listaHistorias, "Total": cantidaddehistorias})
+    enFecha = sprint2['fecha_fin']
+    fecha= datetime(enFecha.year,enFecha.month,enFecha.day,23,59,59)
+    #print(fecha)
+    hists = []
+    for historia in listaHistorias:
+        hists.append(historia.history.as_of(fecha))
+
+
+    return render(request, "tableroKanbanSprintAnterior.html", {"Sprint": sprint, "Historias": hists, "Total": cantidaddehistorias})
 
 
 ##Esta vista es para mostrar el tablero kanban actual.
@@ -841,9 +849,21 @@ def tableroKanban(request):
         sprintActual = listaSprint[-1]
         sprintActual2 = model_to_dict(sprintActual)
         listaHistorias = sprintActual2['historias']
+
+        versionesDic = {}
+        for hist in listaHistorias:
+            x=hist.history.filter(Q(estados='EN_CURSO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(history_date__lte=sprintActual2['fecha_fin']))
+            listaDeComentarios=[]
+            for z in list(x):
+                fech = z.history_date
+                fechaComentario=fech.strftime("%d-%b-%Y : ")+z.comentarios
+                if not fechaComentario in listaDeComentarios:
+                    listaDeComentarios.append(fechaComentario)
+
+            versionesDic[hist.id_historia] = listaDeComentarios
+           # print(versionesDic)
         cantidaddehistorias = len(listaHistorias)
-        return render(request, "tableroKanban.html",
-                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias})
+        return render(request, "tableroKanban.html",{"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias, "versionesDic":versionesDic})
 
 
 @login_required
@@ -1062,13 +1082,15 @@ def moverHistoria(request, id, opcion):
         print(f"form : {form}")
         if (form.is_valid()):
             horas = form.cleaned_data['horas']
+            comentario = form.cleaned_data['comentario']
             if horas > 0:
                 print("Usuario que solicita : ",request.user)
                 print("Encargado : ",h.encargado)
                 if request.user == h.encargado:
                     if (opcion == 5):
-                        print(f"Historia con id {id} horas: {horas}")
+                        print(f"Historia con id {id} horas: {horas}, comentario: {comentario}")
                         h.horas_dedicadas = h.horas_dedicadas + horas
+                        h.comentarios = comentario
                         messages.success(request, "Horas registradas")
                 else:
                     messages.error(request, "No eres el encargado de la historia")
@@ -1115,6 +1137,7 @@ def moverHistoria(request, id, opcion):
             h.prioridad = 'ALTA'
         messages.info(request, "Historia rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
+    print("Historia : ",h)
     h.save()
     # aca se puede asociar una historia a un usuario
     # usuario = User.objects.get(username=request.user.username)

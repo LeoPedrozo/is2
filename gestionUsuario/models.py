@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from proyectos.models import Proyecto
 from userStory.models import Historia
-
+from simple_history import register
 
 class User(AbstractUser):
     """
@@ -19,7 +19,7 @@ class User(AbstractUser):
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
-
+register(User)
 
 
 # Equipos para evitar agregar individualmente los usuarios al proyecto

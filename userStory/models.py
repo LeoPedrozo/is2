@@ -73,3 +73,11 @@ class Historia(models.Model):
         if not self.horasEstimadas:
             return False
         return True
+
+    @property
+    def _history_user(self):
+        return self.encargado
+
+    @_history_user.setter
+    def _history_user(self, value):
+        self.encargado = value

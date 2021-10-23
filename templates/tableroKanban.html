@@ -2,6 +2,7 @@
 {% include 'material/includes/material_js.html' %}
 {% load material_form %}
 {% load static %}
+{% load mathfilters %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -175,7 +176,23 @@
                                                 <p>{{ historia.descripcion }}</p>
                                                 <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
                                                 <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
-                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+                                                <p>Tiempo restante Estimado :
+                                                    {% with i=historia.horasEstimadas %}
+                                                        {% with x=historia.horas_dedicadas %}
+                                                            {{i|sub:x}}
+                                                        {% endwith %}
+                                                    {% endwith %}
+                                                </p>
+                                                <p>Comentarios : </p>
+                                                {% for key, value in versionesDic.items %}
+                                                    {% if key is historia.id_historia %}
+                                                <ul>
+                                                    {% for cm in value %}
+                                                        <li>{{ cm }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                                    {% endif %}
+                                                {% endfor %}
 
                                             </div>
 
@@ -191,7 +208,7 @@
                             <!--Modal-->
                             <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
                                  style="width: 30% !important;
-                                    height: 40% !important;">
+                                    height: 60% !important;">
 
                                 <div class="modal-content">
                                     <h2>Cargar Horas de trabajos y Comentarios</h2>
@@ -205,6 +222,11 @@
                                                     <label for="horas-register">Horas dedicadas</label>
                                                     <input id="horas-register" name="horas" type="number"
                                                            class="active validate">
+                                                    <p>
+                                                        <label for="comentario-register">Comentario</label>
+                                                        <input id="comentario-register" name="comentario" type="text"
+                                                           class="active validate">
+                                                    </p>
                                                 </div>
                                             </div>
                                             <button value="Cargar" type="submit" class="modal-close btn blue">Cargar

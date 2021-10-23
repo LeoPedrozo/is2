@@ -1,10 +1,15 @@
+{% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <!--  This file has been downloaded from bootdey.com @bootdey on twitter -->
     <!--  All snippets are MIT license http://bootdey.com/license -->
-    <title>bs4 Kanban Board - Bootdey.com</title>
+    <title>Sprint finalizado</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +53,27 @@
                                                  height="32" class="rounded-circle" alt="Avatar">
                                         </div>
 
-                                        <a class="btn btn-outline-primary btn-sm" href="#">Ver</a>
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+
+                                                <h6> Descripcion </h6>
+                                                <p>{{ historia.descripcion }}</p>
+                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -82,7 +107,27 @@
                                             <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="32"
                                                  height="32" class="rounded-circle" alt="Avatar">
                                         </div>
-                                        <a class="btn btn-outline-primary btn-sm" href="#">Ver</a>
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+
+                                                <h6> Descripcion </h6>
+                                                <p>{{ historia.descripcion }}</p>
+                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -114,7 +159,27 @@
                                             <img src="https://bootdey.com/img/Content/avatar/avatar2.png" width="32"
                                                  height="32" class="rounded-circle" alt="Avatar">
                                         </div>
-                                        <a class="btn btn-outline-primary btn-sm" href="#">Ver</a>
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+
+                                                <h6> Descripcion </h6>
+                                                <p>{{ historia.descripcion }}</p>
+                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +212,27 @@
                                             <img src="https://bootdey.com/img/Content/avatar/avatar8.png" width="32"
                                                  height="32" class="rounded-circle" alt="Avatar">
                                         </div>
-                                        <a class="btn btn-outline-primary btn-sm" href="#">Ver</a>
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+
+                                                <h6> Descripcion </h6>
+                                                <p>{{ historia.descripcion }}</p>
+                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -287,6 +372,14 @@
         border-bottom: 1px solid #e5e9f2;
     }
 </style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+    });
+</script>
 
 </body>
 </html>

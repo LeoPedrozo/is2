@@ -43,7 +43,7 @@ class asignarRolForm(forms.Form):
 
 class seleccionarRolForm(forms.Form):
     """
-    Formulario de asignacion de roles a usuarios del sistema con consulta a un filtro de usuario previo
+    Formulario de seleccion de roles del sistema
     """
     def __init__(self, *args, **kwargs):
         self.datos = kwargs.pop("proyecto")  # store value of request
@@ -82,12 +82,6 @@ class modificarRolForm(forms.Form):
     Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
 
 
-
-
-
-
-
-
 class crearUsuarioForm(forms.Form):
     """
     Formulario de creacion de usuarios del sistema, solicitando el nombre y correo
@@ -98,7 +92,7 @@ class crearUsuarioForm(forms.Form):
 
 class registroDeUsuariosForm(forms.Form):
     """
-    Formulario para habilitacion de usuarios dentro del sistema
+    Formulario para habilitar o restringir acceso al sistema
     """
     estados=(
         (True,"Habilitar acceso al sistema"),

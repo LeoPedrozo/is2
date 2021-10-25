@@ -1546,7 +1546,7 @@ def search(request):
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'product_backlog.html', {'filter': historia_filter})
 
-
+@permission_required('Sprints.change_sprint', raise_exception=True)
 @login_required
 def tableroQA_Release(request):
     """

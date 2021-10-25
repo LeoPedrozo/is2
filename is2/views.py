@@ -921,7 +921,7 @@ def step3_asignarEncargado(request, id, opcion):
         sprint_actual.estados = 'PLANNING'
         sprint_actual.save()
         # redireccionar a lista de sprints
-        return redirect(visualizarSprint)
+        return redirect(visualizarSprintFilter)
 
     return redirect(step3_SprintPlanning)
     # return step3_SprintPlanning(request)
@@ -1276,16 +1276,16 @@ def eliminarHistoria(request):
 ##testeo pendiente
 @login_required
 @permission_required('userStory.view_historia', raise_exception=True)
-def verHistorias(request):
+def sprintBacklog(request,id_sprint):
     """
-    Metodo que es ejecutado para mostrar las historias de usuario
+    Metodo que es ejecutado para mostrar las historias del sprint
 
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de verHistorias
     """
-    id_proyectoActual = User.objects.get(username=request.user.username)
-    id_proyectoActual = id_proyectoActual.proyecto_id
-    historias = Historia.objects.filter(proyecto=id_proyectoActual)
+
+    sprintseleccionado=Sprint.objects.get(id=id_sprint)
+    historias = sprintseleccionado.historias.all()
 
     return render(request, "HistoriaContent.html", {"historias": historias})
 
@@ -1714,7 +1714,6 @@ def historicoSprint(request, id=''):
                         Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
                             history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
 
-                    #print("Historias", x)
                     listaDeComentarios = []
                     for z in list(x):
                         fech = z.history_date
@@ -1765,3 +1764,73 @@ def historicoSprint(request, id=''):
 
 
 
+
+def historicoSprint2(request, id_sprint):
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+    else:
+        #proyectoActual = model_to_dict(usuarioActual.proyecto)
+        #listaSprint = proyectoActual['id_sprints']
+
+        # Primero se obtiene la lista de los sprints no verificados que hayan finalizado
+        #sprintsNoVerificados = []
+        #for sprint in listaSprint:
+        #    if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
+        #        sprintsNoVerificados.append((sprint.id, sprint.sprintNumber))
+
+
+        sprintSeleccionado = Sprint.objects.get(id=id_sprint)
+
+        #listaHistorias = sprintSeleccionado.historias.all()
+        #sprintActual = Sprint.objects.get(id=sprintSeleccionado)
+        sprintActual2 = model_to_dict(sprintSeleccionado)
+        listaHistorias = sprintActual2['historias']
+        versionesDic = {}
+
+
+        for hist in listaHistorias:
+            if hist.history.filter(
+                Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+
+                x = hist.history.filter(
+                        Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                            history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+
+
+                listaDeComentarios = []
+
+                for z in list(x):
+                    fech = z.history_date
+                    if z.comentarios != '':
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                    else:
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+
+
+                    if not fechaComentario in listaDeComentarios:
+                        listaDeComentarios.append(fechaComentario)
+
+                versionesDic[hist.id_historia] = listaDeComentarios
+
+        cantidaddehistorias = len(listaHistorias)
+
+        for hist in listaHistorias:
+            if hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1))).exists():
+                x = hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1)) ).last()
+                hist.nombre = x.nombre
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas= x.horas_dedicadas
+                hist.estados = x.estados
+                finalizo = x.history_date
+            else:
+                print("No existe")
+
+        return render(request, "historicoSprint2.html",
+                      {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                       "versionesDic": versionesDic, "finalizo":finalizo})

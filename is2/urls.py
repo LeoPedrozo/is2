@@ -23,13 +23,13 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     step2_asignarRol, crearProyecto, \
     registrarUsuario, \
     modificarProyecto, verMiembros, step1_modificarRol, step2_modificarRol, step3_modificarRol, \
-    crearHistoria, verHistorias, \
+    crearHistoria, sprintBacklog, \
     seleccionarHistoria, modificarHistoria, eliminarProyecto, eliminarHistoria, modificarSprint, visualizarSprint, \
     tableroKanban, moverHistoria, visualizarSprint2, lineChart, asignarHistoriaEncargado, asignarSprint, productBacklog, \
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
-    visualizarSprintFilter, historicoSprint
+    visualizarSprintFilter, historicoSprint, historicoSprint2
 from django.conf.urls import url
 
 
@@ -63,6 +63,8 @@ urlpatterns = [
     path('SprintPlanning/3/', step3_SprintPlanning),
     path('SprintPlanning/3/<int:id>/<int:opcion>/', step3_asignarEncargado),
 
+    path('sprintBacklog/<int:id_sprint>/',sprintBacklog),
+
     path('modificarSprint/<int:id_sprint>/',modificarSprint),
 
     path('eliminarSprint/<int:id_sprint>/',eliminarSprint),
@@ -85,6 +87,9 @@ urlpatterns = [
     path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
     path('burndownChart/',lineChart),
+    path('historicooSprint/<int:id_sprint>',historicoSprint2),
+
+
     path('qaRelease/', tableroQA_Release),
     url(r'^productBacklog/$', search, name='search'),
     path('historicoSprint/<int:id>/', historicoSprint, name='historicoSprint'),

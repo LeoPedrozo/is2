@@ -771,7 +771,7 @@ def step2_SprintPlanning(request):
     print("La lista de posibles integrantes son :", PosiblesIntegrantes)
     # tablaparcial2=UserSprint.objects.filter(proyecto=proyecto_actual,sprint=sprint_actual)
 
-    # este for es para poder generar la lista de usuarios que se pueden seleccionar
+    # este for es para poder generar la lista de usuarios que se pueden seleccionar, y el if interno es para que no se repitan
     for elemento in PosiblesIntegrantes:
 
         u = UserSprint.objects.filter(proyecto=proyecto_actual, usuario=elemento.usuario, sprint=sprint_actual)
@@ -865,7 +865,7 @@ def step3_SprintPlanning(request):
                                                      "form": formulario})
 
 
-# No funciona con redirect aunque con ese seria mejor.
+
 def step3_asignarEncargado(request, id, opcion):
     # h = Historia.objects.get(id_historia=id)
     sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
@@ -897,12 +897,21 @@ def step3_asignarEncargado(request, id, opcion):
     # Iniciar
     if (opcion == 3):
         print('el sprint actual tiene el estado = ', sprint_actual.estados)
-        u = UserSprint.objects.filter(sprint=sprint_actual).first()
-        listasprints = u.proyecto.id_sprints
-        if (not listasprints.filter(estados="INICIADO").exists()):
-            sprint_actual.estados = 'INICIADO'
-            sprint_actual.save()
-            return redirect(tableroKanban)
+        #u = UserSprint.objects.filter(sprint=sprint_actual).first()
+        #listasprints = u.proyecto.id_sprints
+        listaDevelopers=UserSprint.objects.filter(sprint=sprint_actual)
+        proyectoPropietario= User.objects.get(username=request.user.username).proyecto
+        listasprints=proyectoPropietario.id_sprints
+
+        if (not listasprints.filter(estados="INICIADO").exists()):#No esta otro sprint iniciado actualmente
+            #si tiene desarroladores y tiene historias agregadas
+            if( len(listaDevelopers)!=0 and len(sprint_actual.historias.all()) != 0 ):
+                sprint_actual.estados = 'INICIADO'
+                sprint_actual.save()
+                return redirect(tableroKanban)
+            else:
+                mensaje = "No puede iniciar este sprint ya que no se han agregado desarrolladores o el  sprint carece  de historias agregadas"
+                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
         else:
             mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
@@ -942,8 +951,14 @@ def modificarSprint(request, id_sprint):
             return redirect(step2_SprintPlanning)
     else:
         sprint_seleccionado = Sprint.objects.get(id=id_sprint)
-        u = UserSprint.objects.filter(sprint=sprint_seleccionado)
-        proyectoPropietario = u.first().proyecto
+        proyectoPropietario=usuarioActual = User.objects.get(username=request.user.username).proyecto
+
+
+
+        #u = UserSprint.objects.filter(sprint=sprint_seleccionado)
+
+        #proyectoPropietario = u.first().proyecto
+        #No se agregaron developers por ello no se puede estirar el dato proyecto.
         request.session['proyecto'] = proyectoPropietario.id
         guardarCamposdeSprint(request, sprint_seleccionado, proyectoPropietario.id)
         formulario = modificarSprintForm(request=request.session)
@@ -1330,6 +1345,10 @@ def moverHistoria(request, id, opcion):
             print("formulario invalido")
 
     if (opcion == 1):
+
+        print("Encargado de historia = ",h.encargado," el usuario actual = ", encargado)
+
+
         if (h.encargado == encargado):
             h.estados = 'PENDIENTE'
             messages.success(request, "Pasado a pendiente")
@@ -1337,6 +1356,7 @@ def moverHistoria(request, id, opcion):
             messages.error(request, "No eres el encargado de la historia")
 
     if (opcion == 2):
+        print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'EN_CURSO'
             messages.success(request, "Pasado a en curso")
@@ -1344,6 +1364,7 @@ def moverHistoria(request, id, opcion):
             messages.error(request, "No eres el encargado de la historia")
 
     if (opcion == 3):
+        print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
             messages.success(request, "Finalizado")

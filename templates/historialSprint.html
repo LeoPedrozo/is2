@@ -61,12 +61,17 @@
       </a>
 
       <ul class="dropdown-menu" aria-labelledby="dropdown{{ hist.id }}">
-        <li><a class="dropdown-item" href="/visualizarSprint/{{ hist.id }}">Ver Detalles</a></li>
+
         {% if hist.estados == "PLANNING" %}
         <li><a class="dropdown-item" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a></li>
         <li><a class="dropdown-item" href="/modificarSprint/{{ hist.id }}/">Modificar</a></li>
         <li><a class="dropdown-item" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a></li>
         {% endif %}
+      {% if hist.estados == "INICIADO" or hist.estados == "FINALIZADO"  %}
+          <li><a class="dropdown-item" href="/visualizarSprint/{{ hist.id }}">Ver Kanban</a></li>
+          <li><a class="dropdown-item" href="/burndownChart/">Ver BurndownChart</a></li>
+
+      {% endif %}
       </ul>
           </div>
       </td>

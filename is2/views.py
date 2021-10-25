@@ -1540,7 +1540,9 @@ def search(request):
     if Historia.objects.filter(proyecto=id_proyectoActual).exists():
         historia_list = Historia.objects.filter(proyecto=id_proyectoActual)
     else:
-        historia_list = Historia.objects.all()
+        historia_list = historia_list = Historia.objects.filter(proyecto=id_proyectoActual)
+        #messages.info(request, "El proyecto no tiene historias")
+        print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'product_backlog.html', {'filter': historia_filter})
 

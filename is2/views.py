@@ -1037,17 +1037,29 @@ def tableroKanban(request, opcion=''):
 
             versionesDic = {}
             for hist in listaHistorias:
-                x = hist.history.filter(Q(estados='EN_CURSO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                    history_date__lte=sprintActual2['fecha_fin']))
-                print("Historias",x)
-                listaDeComentarios = []
-                for z in list(x):
-                    fech = z.history_date
-                    fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
-                    if not fechaComentario in listaDeComentarios:
-                        listaDeComentarios.append(fechaComentario)
+                #x = hist.history.filter(Q(estados='EN_CURSO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                #    history_date__lte=sprintActual2['fecha_fin']))
+                if hist.history.filter(Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                    history_date__lte=sprintActual2['fecha_fin']+timedelta(days=1))).exists():
 
-                versionesDic[hist.id_historia] = listaDeComentarios
+                    x = hist.history.filter(Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                        history_date__lte=sprintActual2['fecha_fin']+timedelta(days=1)))
+
+                    print("Historias",x)
+                    listaDeComentarios = []
+                    for z in list(x):
+                        fech = z.history_date
+                        if z.comentarios != '':
+                            fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                        else:
+                            fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+
+                        print("hist ",z.id_historia,"comentario=",fechaComentario)
+                        if not fechaComentario in listaDeComentarios:
+                            listaDeComentarios.append(fechaComentario)
+
+                    versionesDic[hist.id_historia] = listaDeComentarios
+
             print(versionesDic)
             cantidaddehistorias = len(listaHistorias)
 
@@ -1307,6 +1319,7 @@ def moverHistoria(request, id, opcion):
                         print(f"Historia con id {id} horas: {horas}, comentario: {comentario}")
                         h.horas_dedicadas = h.horas_dedicadas + horas
                         h.comentarios = comentario
+                        h._change_reason = "comentario"
                         messages.success(request, "Horas registradas")
                 else:
                     messages.error(request, "No eres el encargado de la historia")

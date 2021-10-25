@@ -46,7 +46,7 @@ class cargarHorasHistoriaForm(forms.Form):
       Implementa la clase para ejecutar un formulario de solicitud para cargar las horas trabajadas en el User Story
     """
     horas = forms.IntegerField(initial=0, widget=forms.NumberInput(attrs={'type': 'number', 'id':'register-form-horas', 'name':'register-form-horas', 'value':'0', 'class':'form-control'}))
-    comentario = forms.CharField(initial='', widget=forms.TextInput(attrs={'type': 'text', 'id':'register-form-comentario', 'name':'register-form-comentario', 'value':'', 'class':'form-control'}))
+    comentario = forms.CharField(initial='', widget=forms.TextInput(attrs={'type': 'text', 'id':'register-form-comentario', 'name':'register-form-comentario', 'value':'', 'class':'form-control'}),required=False)
 class seleccionarHistoriaForm(forms.Form):
     """
       Implementa la clase para ejecutar un formulario de solicitud para la seleccion de la historia que se desea modificar

@@ -1043,8 +1043,8 @@ def tableroKanban(request, opcion=''):
         # proyectoActual = model_to_dict(usuarioActual.proyecto)
         # listaSprint = proyectoActual['id_sprints']
         proyectoActual = usuarioActual.proyecto
-        sprintActual = proyectoActual.id_sprints.get(estados="INICIADO")
         try:
+            sprintActual = proyectoActual.id_sprints.get(estados="INICIADO")
             # sprintActual = listaSprint[-1]
 
             sprintActual2 = model_to_dict(sprintActual)
@@ -1105,6 +1105,8 @@ def tableroKanban(request, opcion=''):
                        "versionesDic": versionesDic})
         except IndexError:
             return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT"})
+        except ObjectDoesNotExist:
+            return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
 
 
 @login_required

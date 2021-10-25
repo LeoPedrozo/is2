@@ -67,11 +67,15 @@
         <li><a class="dropdown-item" href="/modificarSprint/{{ hist.id }}/">Modificar</a></li>
         <li><a class="dropdown-item" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a></li>
         {% endif %}
-      {% if hist.estados == "INICIADO" or hist.estados == "FINALIZADO"  %}
+      {% if hist.estados == "INICIADO" %}
+          <li><a class="dropdown-item" href="/tableroKanban/">Ver Kanban</a></li>
+          <li><a class="dropdown-item" href="/burndownChart/">Ver BurndownChart</a></li>
+      {% endif %}
+            {% if hist.estados == "FINALIZADO"  %}
           <li><a class="dropdown-item" href="/visualizarSprint/{{ hist.id }}">Ver Kanban</a></li>
           <li><a class="dropdown-item" href="/burndownChart/">Ver BurndownChart</a></li>
-
       {% endif %}
+
       </ul>
           </div>
       </td>

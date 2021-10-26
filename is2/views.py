@@ -47,6 +47,7 @@ def saludo(request):
     :param request: consulta recibida
     :return: respuesta
     """
+
     return render(request, "rolCreado.html", {"nombre": "Jose"})
 
 
@@ -57,6 +58,7 @@ def inicio(request):
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de INICIO
     """
+
     if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
         if request.user.is_superuser:
@@ -88,6 +90,7 @@ def documentaciones(request):
     :param request: consulta recibida
     :return: respuesta: de redireccionamiento
     """
+
     return render(request, "html/index.html", {})
 
 
@@ -96,11 +99,12 @@ def documentaciones(request):
 
 def step1_CrearRol(request):
     """
-        Metodo para la creacion de roles del sistema
+    Metodo auxiliar para la creacion de roles del sistema
 
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR ROL
-        """
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de CREAR ROL
+    """
+
     if request.method == "POST":
         formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
@@ -123,6 +127,7 @@ def step2_CrearRol(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR ROL
     """
+
     if request.method == "POST":
         formulario = crearRolForm(request.POST)
         if (formulario.is_valid()):
@@ -154,11 +159,12 @@ def step2_CrearRol(request):
 
 def step1_asignarRol(request):
     """
-        Metodo para la creacion de roles del sistema
+    Metodo auxiliar para la asignacion de roles a usuarios del sistema
 
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR ROL
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de ASIGNAR ROL
     """
+
     if request.method == "POST":
         formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
@@ -178,11 +184,12 @@ def step1_asignarRol(request):
 @permission_required('auth.add_group', raise_exception=True)
 def step2_asignarRol(request):
     """
-    Metodo para la asignacion de roles a los usuarios del sistema
+    Metodo para la asignacion de roles a usuarios del sistema
 
     :param request: solicitud recibida
     :return: respuesta: a la solicitud de ASIGNAR ROL
     """
+
     if request.method == "POST":
         formulario = asignarRolForm(request.POST, proyecto=request.session)
         if (formulario.is_valid()):
@@ -228,6 +235,13 @@ def step2_asignarRol(request):
 
 # funcion que realiza la logica de preparar los datos para el formulario de asignar Rol
 def procesoAsignarRol(request):
+    """
+    Metodo auxiliar que ayuda a preparar los datos necesarios para el formulario de asignacion de roles
+
+    :param request: solicitud recibida
+    :return: void
+    """
+
     # esto genera el formato adecuado para las opciones del formulario
     roles = []
     for rol in request.session['roles']:
@@ -251,11 +265,12 @@ def procesoAsignarRol(request):
 # @permission_required('auth.delete_group', raise_exception=True)
 def eliminarRol(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+    Metodo para la eliminacion de roles del sistema
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
-        """
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de ELIMINAR ROL
+    """
+
     if request.method == "POST":
         formulario = seleccionarRolForm(request.POST)
         if (formulario.is_valid()):
@@ -275,11 +290,12 @@ def eliminarRol(request):
 
 def step1_eliminarRol(request):
     """
-         Metodo para la creacion de roles del sistema
+    Metodo auxiliar para seleccionar un rol del sistema que se desea eliminar
 
-         :param request: solicitud recibida
-         :return: respuesta a la solicitud de CREAR ROL
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de ELIMINAR ROL
     """
+
     if request.method == "POST":
         formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
@@ -298,11 +314,12 @@ def step1_eliminarRol(request):
 @permission_required('auth.add_group', raise_exception=True)
 def step2_eliminarRol(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+    Metodo auxiliar para seleccionar un rol del sistema que se desea eliminar
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de ELIMINAR ROL
     """
+
     if request.method == "POST":
         formulario = seleccionarRolForm(request.POST, proyecto=request.session)
         if (formulario.is_valid()):
@@ -331,11 +348,12 @@ def step2_eliminarRol(request):
 
 def step1_modificarRol(request):
     """
-         Metodo para la creacion de roles del sistema
+    Metodo auxiliar para la seleccion del rol que se desea modificar
 
-         :param request: solicitud recibida
-         :return: respuesta a la solicitud de CREAR ROL
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de MODIFICAR ROL
     """
+
     if request.method == "POST":
         formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
@@ -354,11 +372,12 @@ def step1_modificarRol(request):
 @permission_required('auth.add_group', raise_exception=True)
 def step2_modificarRol(request):
     """
-        Metodo para la asignacion de roles a los usuarios del sistema
+    Metodo auxiliar para la seleccion del rol que se desea modificar
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ASIGNAR ROL
-        """
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de MODIFICAR ROL
+    """
+
     if request.method == "POST":
         formulario = seleccionarRolForm(request.POST, proyecto=request.session)
         if (formulario.is_valid()):
@@ -399,10 +418,12 @@ def step2_modificarRol(request):
 @permission_required('auth.change_group', raise_exception=True)
 def step3_modificarRol(request):
     """
-    Metodo para la modificacion de roles
+    Metodo para la modificacion de roles del sistema
+
     :param request: solicitud recibida
     :return: respuesta a la solicitud de MODIFICAR ROL
     """
+
     if request.method == "POST":
 
         formulario = modificarRolForm(request.POST, datosdelRol=request.session)
@@ -465,11 +486,12 @@ def step3_modificarRol(request):
 
 def importarRol(request):
     """
-        Metodo para la creacion de roles del sistema
+    Metodo para importar roles del sistema a un proyecto
 
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de CREAR ROL
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de IMPORTAR ROL
     """
+
     if request.method == "POST":
         formulario = importarRolForm(request.POST)
         if (formulario.is_valid()):
@@ -501,6 +523,7 @@ def registrarUsuario(request):
     :param request: solicitud recibida
     :return: respuesta: a la solicitud de REGISTRAR USUARIO
     """
+
     if request.method == "POST":
         formulario = registroDeUsuariosForm(request.POST)
         if (formulario.is_valid()):
@@ -528,6 +551,7 @@ def crearProyecto(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de CREAR PROYECTO
     """
+
     if request.method == "POST":
         formulario = crearproyectoForm(request.POST, request=request)
         if (formulario.is_valid()):
@@ -551,7 +575,7 @@ def modificarProyecto(request):
     Metodo para la modificacion de proyectos
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de MODIFICAR PROYECTO
     """
 
     try:
@@ -597,11 +621,12 @@ def modificarProyecto(request):
 @permission_required('proyectos.delete_proyecto', raise_exception=True)
 def eliminarProyecto(request):
     """
-        Metodo para la eliminacion de proyectos
+    Metodo para la eliminacion de proyectos
 
-        :param request: solicitud recibida
-        :return: respuesta: a la solicitud de ELIMINAR PROYECTO
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de ELIMINAR PROYECTO
     """
+
     if request.method == "POST":
         formulario = seleccionarProyectoForm(request.POST)
         if (formulario.is_valid()):
@@ -642,6 +667,14 @@ def eliminarProyecto(request):
 
 # La logica de Roles aun no revisado.
 def swichProyecto(request, id):
+    """
+    Metodo para cambiar de un proyecto a otro con las reasignaciones de roles correspondiente
+
+    :param request: Solicitud recibida
+    :param id: identificador del proyecto
+    :return: void
+    """
+
     u = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(id=id)
     u.proyecto = p
@@ -667,12 +700,13 @@ def swichProyecto(request, id):
 @login_required
 def getPermisos(request, listaPermisos):
     """
-    Metodo de gestion y asignacion de permisos para los usuarios del sistema
+    Metodo de gestion y asignacion de permisos a los usuarios del sistema
 
     :param request: solicitud recibida
     :param listaPermisos: lista de permisos a ser distribuidos
     :return: respuesta a la solicitud de ejecucion recibida para el metodo GETPERMISOS
     """
+
     listaProyecto = []
     listaHistoria = []
     listaSprint = []
@@ -720,11 +754,12 @@ def getPermisos(request, listaPermisos):
 @permission_required('Sprints.add_sprint', raise_exception=True)
 def step1_SprintPlanning(request):
     """
-    Metodo para la creacion de proyectos
+    Metodo auxiliar para la realizacion del Sprint Planning de un proyecto
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de CREAR PROYECTO
+    :return: respuesta a la solicitud de SPRINT PLANNING
     """
+
     if request.method == "POST":
         formulario = crearSprintForm(request.POST, request=request.session)
         if (formulario.is_valid()):
@@ -756,11 +791,12 @@ def step1_SprintPlanning(request):
 
 def step2_SprintPlanning(request):
     """
-        Metodo que es ejecutado para mostrar los miembros de un proyecto
+    Metodo para la seleccion de desarrolladores en el Sprint Planning
 
-        :param request: consulta recibida
-        :return: respuesta a la solicitud de ejecucion de verMiembros
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de SPRINT PLANNING
     """
+
     proyecto_actual = Proyecto.objects.get(id=request.session['proyecto'])
     sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
     usuarios = []
@@ -785,6 +821,14 @@ def step2_SprintPlanning(request):
 
 
 def asignarCapacidad(request, id):
+    """
+    Metodo para asignar la capacidad de trabajo de un desarrollador
+
+    :param request: Solicitud recibida
+    :param id: identificador de usuario
+    :return: respuesta a la solicitud ASIGNAR CAPACIDAD
+    """
+
     if request.method == 'POST':
         form = asignarcapacidadForm(request.POST)
         print(f"form : {form}")
@@ -818,10 +862,10 @@ def asignarCapacidad(request, id):
 
 def step3_SprintPlanning(request):
     """
-        Metodo para visualizar el tablero kanban
+    Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning
 
-        :param request: solicitud recibida
-        :return: respuesta a la solicitud de TABLERO KANBAN
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de SPRINT PLANNING
     """
 
     proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
@@ -867,6 +911,15 @@ def step3_SprintPlanning(request):
 
 
 def step3_asignarEncargado(request, id, opcion):
+    """
+    Metodo para administrar la asignacion o remocion de encargado de un user story
+
+    :param request: Solicitud recibida
+    :param id: identificador del user story
+    :param opcion: accion a realizar
+    :return: Respuesta a la solicitud ASIGNAR ENCARGADO
+    """
+
     # h = Historia.objects.get(id_historia=id)
     sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
 
@@ -921,7 +974,7 @@ def step3_asignarEncargado(request, id, opcion):
         sprint_actual.estados = 'PLANNING'
         sprint_actual.save()
         # redireccionar a lista de sprints
-        return redirect(visualizarSprint)
+        return redirect(visualizarSprintFilter)
 
     return redirect(step3_SprintPlanning)
     # return step3_SprintPlanning(request)
@@ -934,11 +987,14 @@ def step3_asignarEncargado(request, id, opcion):
 @permission_required('Sprints.change_sprint', raise_exception=True)
 def modificarSprint(request, id_sprint):
     """
-    Metodo para la modificacion de sprint
+    Metodo para la modificacion de sprint, se despliega un formulario con las informaciones actuales del sprint con la
+    posibilidad de modificar algunos datos
 
     :param request: solicitud recibida
+    :param id_sprint: identificador del sprint que se quiere modificar
     :return: respuesta a la solicitud de MODIFICAR SPRINT
     """
+
     if request.method == "POST":
         formulario = modificarSprintForm(request.POST, request=request.session)
         if (formulario.is_valid()):
@@ -953,8 +1009,6 @@ def modificarSprint(request, id_sprint):
         sprint_seleccionado = Sprint.objects.get(id=id_sprint)
         proyectoPropietario=usuarioActual = User.objects.get(username=request.user.username).proyecto
 
-
-
         #u = UserSprint.objects.filter(sprint=sprint_seleccionado)
 
         #proyectoPropietario = u.first().proyecto
@@ -966,6 +1020,14 @@ def modificarSprint(request, id_sprint):
 
 
 def eliminarSprint(request, id_sprint):
+    """
+    Metodo que permite la eliminacion de un sprint
+
+    :param request: solicitud recibida
+    :param id_sprint: identificador del sprint que se desea eliminar
+    :return: respuesta a la solicitud de ELIMINAR SPRINT
+    """
+
     sprint_seleccionado = Sprint.objects.get(id=id_sprint)
 
     # eliminamos la informacion relacionada al sprint de la tabla UserSprint
@@ -1011,6 +1073,14 @@ def visualizarSprint(request):
 @login_required
 @permission_required('Sprints.view_sprint', raise_exception=True)
 def visualizarSprint2(request, id):
+    """
+    Metodo que permite visualizar un sprint con todos sus detalles
+
+    :param request: solicitud recibida
+    :param id_sprint: identificador del sprint que se desea visualizar
+    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    """
+
     sprint = getSprint(id)
     sprint2 = model_to_dict(sprint)
     listaHistorias = sprint2['historias']
@@ -1030,11 +1100,12 @@ def visualizarSprint2(request, id):
 @login_required
 def tableroKanban(request, opcion=''):
     """
-    Metodo para visualizar el tablero kanban
+    Metodo que posibilita visualizar el tablero kanban
 
     :param request: solicitud recibida
     :return: respuesta a la solicitud de TABLERO KANBAN
     """
+
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
@@ -1117,6 +1188,7 @@ def verMiembros(request):
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de verMiembros
     """
+
     usuario = User.objects.get(username=request.user.username)
     id = usuario.proyecto_id
     usuarios = User.objects.filter(proyecto_id=id)
@@ -1132,11 +1204,13 @@ def verMiembros(request):
 @permission_required('userStory.add_historia', raise_exception=True)
 def crearHistoria(request):
     """
-    Metodo que es ejecutado para crear un user story
+    Metodo que es ejecutado para crear un user story, se despliega un formulario con los campos necesarios para la creacion de
+    un user story
 
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de crearHistoria
     """
+
     if request.method == "POST":
         formulario = crearHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
         if (formulario.is_valid()):
@@ -1169,11 +1243,12 @@ def crearHistoria(request):
 @permission_required('userStory.add_historia', raise_exception=True)
 def seleccionarHistoria(request):
     """
-    Metodo para la modificacion de historia, primeramente es necesario seleccionar la historia a ser modificada
+    Metodo para seleccionar un User Story
 
     :param request: solicitud recibida
     :return: respuesta: a la solicitud de SELECCIONAR HISTORIA
     """
+
     if request.method == "POST":
         formulario = seleccionarHistoriaForm(request.POST, proyecto=request.session['idproyecto'])
         if (formulario.is_valid()):
@@ -1202,6 +1277,7 @@ def asignarHistoriaEncargado(request):
     :param request: solicitud recibida
     :return: respuesta: a la solicitud de Asignar Encargado
     """
+
     if request.method == "POST":
         formulario = asignarEncargadoForm(request.POST)
         if (formulario.is_valid()):
@@ -1223,11 +1299,13 @@ def asignarHistoriaEncargado(request):
 @permission_required('userStory.change_historia', raise_exception=True)
 def modificarHistoria(request):
     """
-    Metodo para la modificacion de historias
+    Metodo para la modificacion de historias, se despliega un formulario con las informaciones actuales de la historia con la
+    posibilidad de modificar algunos datos
 
     :param request: solicitud recibida
     :return: respuesta a la solicitud de MODIFICAR HISTORIA
     """
+
     if request.method == "POST":
 
         formulario = modificarHistoriaForm(request.POST, datosdelaHistoria=request.session['HistoriaSeleccionada'])
@@ -1253,7 +1331,7 @@ def modificarHistoria(request):
 @permission_required('userStory.delete_historia', raise_exception=True)
 def eliminarHistoria(request):
     """
-    Metodo para eliminar historias
+    Metodo que permite la eliminacion de una historia de usuario
 
     :param request: solicitud recibida
     :return: respuesta: a la solicitud de ELIMINAR HISTORIA
@@ -1276,16 +1354,16 @@ def eliminarHistoria(request):
 ##testeo pendiente
 @login_required
 @permission_required('userStory.view_historia', raise_exception=True)
-def verHistorias(request):
+def sprintBacklog(request,id_sprint):
     """
-    Metodo que es ejecutado para mostrar las historias de usuario
+    Metodo para visualizar los user story que estan como objetivos del sprint
 
     :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de verHistorias
+    :return: respuesta a la solicitud de ejecucion de SPRINT BACKLOG
     """
-    id_proyectoActual = User.objects.get(username=request.user.username)
-    id_proyectoActual = id_proyectoActual.proyecto_id
-    historias = Historia.objects.filter(proyecto=id_proyectoActual)
+
+    sprintseleccionado=Sprint.objects.get(id=id_sprint)
+    historias = sprintseleccionado.historias.all()
 
     return render(request, "HistoriaContent.html", {"historias": historias})
 
@@ -1301,6 +1379,7 @@ def productBacklog(request):
     :param request: consulta recibida
     :return: respuesta a la solicitud de ejecucion de PRODUCT BACKLOG
     """
+
     id_proyectoActual = User.objects.get(username=request.user.username)
     id_proyectoActual = id_proyectoActual.proyecto_id
     historias = Historia.objects.filter(proyecto=id_proyectoActual, estados="")
@@ -1319,6 +1398,7 @@ def moverHistoria(request, id, opcion):
     :param opcion: estado de la historia
     :return: tablero kanban actualizado
     """
+
     h = Historia.objects.get(id_historia=id)
     encargado = User.objects.get(username=request.user.username)
     # Agregar Tiempo
@@ -1390,6 +1470,7 @@ def asignarSprint(request, id):
     :param id: identificador de la historia
     :return: sprint agregado a la historia
     """
+
     h = Historia.objects.get(id_historia=id)
     h.estados = 'PENDIENTE'
     h.save()
@@ -1533,6 +1614,13 @@ def formatearlista(lista):
 
 #despliega el product backlog
 def search(request):
+    """
+    Metodo que despliega todos los Users Storys del proyecto (Product Backlog), con la posibilidad de buscar mediante filtraciones
+
+    :param request: Solicitud recibida
+    :return: Respuesta a la solicitud SEARCH
+    """
+
     user_list = User.objects.all()
     user_filter = UserFilter(request.GET, queryset=user_list)
 
@@ -1548,6 +1636,7 @@ def search(request):
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'product_backlog.html', {'filter': historia_filter})
 
+
 @permission_required('Sprints.change_sprint', raise_exception=True)
 @login_required
 def tableroQA_Release(request):
@@ -1557,6 +1646,7 @@ def tableroQA_Release(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de TABLERO-QA RELEASE
     """
+
     print(f"id={id}")
 
     usuarioActual = User.objects.get(username=request.user.username)
@@ -1622,6 +1712,7 @@ def moverHistoriaQA(request, id, opcion):
     :param opcion: estado de la historia
     :return: tablero kanban actualizado
     """
+
     h = Historia.objects.get(id_historia=id)
     encargado=User.objects.get(username=request.user.username)
 
@@ -1651,11 +1742,12 @@ def moverHistoriaQA(request, id, opcion):
 @permission_required('Sprints.view_sprint', raise_exception=True)
 def visualizarSprintFilter(request):
     """
-    Metodo para la visualizacion de Sprints
+    Metodo para la visualizacion de Sprints, con la posibilidad de realizar una busqueda por medio de filtraciones
 
     :param request: solicitud recibida
     :return: respuesta a la solicitud de VISUALIZAR SPRINT
     """
+
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
@@ -1669,7 +1761,16 @@ def visualizarSprintFilter(request):
         sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
         return render(request, "historialSprint.html", {"Sprints": listaSprint,'filter': sprint_filter})
 
+
 def historicoSprint(request, id=''):
+    """
+    Metodo que permite visualizar el historial completo de un sprint dentro de un proyecto
+
+    :param request: Solicitud recibida
+    :param id: Indentificador del sprint
+    :return: Respuesta a la solicitud de HISTORICO SPRINT
+    """
+
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
@@ -1714,7 +1815,6 @@ def historicoSprint(request, id=''):
                         Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
                             history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
 
-                    #print("Historias", x)
                     listaDeComentarios = []
                     for z in list(x):
                         fech = z.history_date
@@ -1765,3 +1865,73 @@ def historicoSprint(request, id=''):
 
 
 
+
+def historicoSprint2(request, id_sprint):
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.proyecto == None):
+        mensaje = "Usted no forma parte de ningun proyecto"
+        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+    else:
+        #proyectoActual = model_to_dict(usuarioActual.proyecto)
+        #listaSprint = proyectoActual['id_sprints']
+
+        # Primero se obtiene la lista de los sprints no verificados que hayan finalizado
+        #sprintsNoVerificados = []
+        #for sprint in listaSprint:
+        #    if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
+        #        sprintsNoVerificados.append((sprint.id, sprint.sprintNumber))
+
+
+        sprintSeleccionado = Sprint.objects.get(id=id_sprint)
+
+        #listaHistorias = sprintSeleccionado.historias.all()
+        #sprintActual = Sprint.objects.get(id=sprintSeleccionado)
+        sprintActual2 = model_to_dict(sprintSeleccionado)
+        listaHistorias = sprintActual2['historias']
+        versionesDic = {}
+
+
+        for hist in listaHistorias:
+            if hist.history.filter(
+                Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+
+                x = hist.history.filter(
+                        Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                            history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+
+
+                listaDeComentarios = []
+
+                for z in list(x):
+                    fech = z.history_date
+                    if z.comentarios != '':
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                    else:
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+
+
+                    if not fechaComentario in listaDeComentarios:
+                        listaDeComentarios.append(fechaComentario)
+
+                versionesDic[hist.id_historia] = listaDeComentarios
+
+        cantidaddehistorias = len(listaHistorias)
+
+        for hist in listaHistorias:
+            if hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1))).exists():
+                x = hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1)) ).last()
+                hist.nombre = x.nombre
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas= x.horas_dedicadas
+                hist.estados = x.estados
+                finalizo = x.history_date
+            else:
+                print("No existe")
+
+        return render(request, "historicoSprint2.html",
+                      {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                       "versionesDic": versionesDic, "finalizo":finalizo})

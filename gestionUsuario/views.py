@@ -12,6 +12,7 @@ def asociarProyectoaUsuario( proyecto,miembros):
     :param miembros: lista de usuarios que van a ser asociados al proyecto
     :return: void
     """
+
     for miembro in miembros:
         u= User.objects.get(username=miembro)
         u.proyecto=proyecto
@@ -20,9 +21,9 @@ def asociarProyectoaUsuario( proyecto,miembros):
 
 ##No se si funca como deberia
 def desasociarUsuariodeProyecto(miembros):
-    """Metodo para desasociar a un usuario de un proyecto
+    """Metodo para desasociar a un grupo de usuarios de un proyecto
 
-    :param miembro: usuario que va ser excluido del proyecto
+    :param miembro: usuarios que van a ser excluidos del proyecto
     :return: void
     """
 

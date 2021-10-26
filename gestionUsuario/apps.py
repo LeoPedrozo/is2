@@ -7,5 +7,6 @@ class GestionusuarioConfig(AppConfig):
             - El tipo predeterminado de clave primaria: Un entero de 64 bits
             - El nombre de la aplicacion: GestionUsuario
     """
+
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'gestionUsuario'

@@ -69,7 +69,7 @@ def fabricarRol(Modelos):
     return new_group
 
 def removerRol(RolSeleccionado):
-    """Metodo para eliminar rol
+    """Metodo para eliminar un rol del sistema
 
     :param RolSeleccionado: rol a ser eliminado
     :return: void

@@ -6,7 +6,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # Connect to PostgreSQL DBMS
 
-con = psycopg2.connect("user=postgres password='admin'");
+con = psycopg2.connect("user=postgres host='localhost' password='admin'");
 
 con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
 

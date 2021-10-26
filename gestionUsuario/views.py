@@ -20,9 +20,9 @@ def asociarProyectoaUsuario( proyecto,miembros):
 
 ##No se si funca como deberia
 def desasociarUsuariodeProyecto(miembros):
-    """Metodo para desasociar a un usuario de un proyecto
+    """Metodo para desasociar a un grupo de usuarios de un proyecto
 
-    :param miembro: usuario que va ser excluido del proyecto
+    :param miembro: usuarios que van a ser excluidos del proyecto
     :return: void
     """
 

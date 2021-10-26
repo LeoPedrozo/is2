@@ -39,6 +39,7 @@ class UserProyecto(models.Model):
     """
     Clase que implementa la relacion entre el usuario y el proyecto al que pertenece
     """
+
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
     #Esta lista representa el rol del usuario_id en el proyecto_id
@@ -48,6 +49,7 @@ class UserSprint(models.Model):
     """
     Clase que implementa la relacion entre el usuario y el sprint que le corresponde
     """
+
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.SET_NULL, null=True, blank=True)
     sprint = models.ForeignKey(Sprint, on_delete=models.SET_NULL, null=True, blank=True)

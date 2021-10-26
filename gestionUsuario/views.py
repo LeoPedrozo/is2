@@ -12,6 +12,7 @@ def asociarProyectoaUsuario( proyecto,miembros):
     :param miembros: lista de usuarios que van a ser asociados al proyecto
     :return: void
     """
+
     for miembro in miembros:
         u= User.objects.get(username=miembro)
         u.proyecto=proyecto

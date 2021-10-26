@@ -19,7 +19,7 @@ from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registra
 from Sprints.views import nuevoSprint, updateSprint, sprintActivoen, guardarCamposdeSprint, getSprint
 from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
-from is2.filters import UserFilter, HistoriaFilter, SprintFilter
+from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
@@ -871,10 +871,23 @@ def step3_SprintPlanning(request):
     proyectoActual = Proyecto.objects.get(id=request.session['proyecto'])
     sprintActual = Sprint.objects.get(id=request.session['sprint_planning_id'])
 
+
+    calendarioParaguay = Paraguay()
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+
+    capacidad_sprint_horas=dias_de_sprint*24
+
+
+
+
     # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
     Lista1 = Historia.objects.filter(proyecto=proyectoActual, estados="")
     Lista2 = sprintActual.historias.all()
     prioridades = ["ALTA", "MEDIA", "BAJA"]
+
+
 
     # Como no estan ordenadas creamos otras listas que son ordenadas
     productbacklog = []
@@ -886,10 +899,13 @@ def step3_SprintPlanning(request):
             if h.prioridad == p:
                 productbacklog.append(h)
 
+    capacidad_ocupada_por_historias=0
     for p in prioridades:
         for h in Lista2:
             if h.prioridad == p:
                 sprintbacklog.append(h)
+                capacidad_ocupada_por_historias=  capacidad_ocupada_por_historias+h.horasEstimadas
+
 
     tablatemporal = UserSprint.objects.filter(proyecto=proyectoActual, sprint=sprintActual)
     developers = []
@@ -899,6 +915,10 @@ def step3_SprintPlanning(request):
         developers.append((elemento.usuario.username, elemento.usuario.username))
 
     cantidaddehistorias = len(productbacklog)
+    porcentaje=round((capacidad_ocupada_por_historias/capacidad_sprint_horas)*100)
+
+    print("LA cantidad de dias del sprint es : ",capacidad_sprint_horas," y la cantidad ocupada por historias es  :  ",capacidad_ocupada_por_historias ,"  EL PORCENTAJE ES : ", porcentaje)
+
 
     request.session['developers'] = developers
     # Formulario para el selector de usuarios
@@ -906,7 +926,8 @@ def step3_SprintPlanning(request):
 
     return render(request, "SprintPlanning_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
                                                      "s_backlog": sprintbacklog, "Total": cantidaddehistorias,
-                                                     "form": formulario})
+                                                     "form": formulario, "Porcentaje":porcentaje,"Duracion": dias_de_sprint}
+                  )
 
 
 
@@ -950,8 +971,6 @@ def step3_asignarEncargado(request, id, opcion):
     # Iniciar
     if (opcion == 3):
         print('el sprint actual tiene el estado = ', sprint_actual.estados)
-        #u = UserSprint.objects.filter(sprint=sprint_actual).first()
-        #listasprints = u.proyecto.id_sprints
         listaDevelopers=UserSprint.objects.filter(sprint=sprint_actual)
         proyectoPropietario= User.objects.get(username=request.user.username).proyecto
         listasprints=proyectoPropietario.id_sprints
@@ -1598,8 +1617,6 @@ def calcularEsfuerzoDiario(Historias, sprint, Dias):
                 sprint.horasLaboralesReal.pop(posicionEquivalenteDia + 1)
             except IndexError:
                 print("posicionEquivalenteDia+1 no existia")
-                # sprint.horasLaboralesReal.insert(posicionEquivalenteDia, esfuerzoDiario)
-                # sprint.horasLaboralesReal.pop(posicionEquivalenteDia + 1)
 
         sprint.save()
 
@@ -1753,11 +1770,8 @@ def visualizarSprintFilter(request):
         mensaje = "Usted no forma parte de ningun proyecto"
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
     else:
-        #proyectoActual = model_to_dict(usuarioActual.proyecto)
-
         proyectoActual =usuarioActual.proyecto
         listaSprint=proyectoActual.id_sprints.all()
-        #listaSprint = proyectoActual['id_sprints']
         sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
         return render(request, "historialSprint.html", {"Sprints": listaSprint,'filter': sprint_filter})
 
@@ -1863,75 +1877,266 @@ def historicoSprint(request, id=''):
         except UnboundLocalError:
             return render(request, "Condicion_requerida.html", {"mensaje": "NO HAY SPRINTS PARA SELECCIONAR"})
 
+#--------------------------------------------------------------------#
+# VISTAS NUEVAS PARA LA SECCION PROYECTO
 
 
 
+#1 Se llama esta funcion,   para ver la lista de proyectos
+def HistorialProyectoFilter(request):
+    """
+    Metodo para la visualizacion de Sprints
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    """
+    #usuarioActual = User.objects.get(username=request.user.username)
+    #if (usuarioActual.proyecto == None):
+    #    mensaje = "Usted no forma parte de ningun proyecto"
+    #    return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+    #else:
+        #proyectoActual =usuarioActual.proyecto
+        #listaSprint=proyectoActual.id_sprints.all()
+    listaProyectos=Proyecto.objects.all()
+
+    Proyecto_filter = ProyectoFilter(request.GET, queryset=listaProyectos)
+    return render(request, "historialProyecto.html", {'filter': Proyecto_filter})
+
+
+#2 cuando se seleciona la opcion de ver sprints.
+def HistorialSprintFilter(request,id_proyecto):
+    """
+    Metodo para la visualizacion de Sprints
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    """
+    request.session["selected_id_proy"]=id_proyecto
+    proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
+    listaSprint=proyecto_seleccionado.id_sprints.all()
+    sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
+    return render(request, "historialSprint.html", {"Sprints": listaSprint,'filter': sprint_filter})
+
+#3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
+#esta es cuando se le toca la opcion de ver kanban , es al foto del kanban de un sprint finalizado
 def historicoSprint2(request, id_sprint):
+    sprintSeleccionado = Sprint.objects.get(id=id_sprint)
+    sprintActual2 = model_to_dict(sprintSeleccionado)
+    listaHistorias = sprintActual2['historias']
+    versionesDic = {}
+
+    for hist in listaHistorias:
+        if hist.history.filter(
+            Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+            history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+
+            x = hist.history.filter(
+                    Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                        history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+
+
+            listaDeComentarios = []
+
+            for z in list(x):
+                fech = z.history_date
+                if z.comentarios != '':
+                    fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                else:
+                    fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+
+
+                if not fechaComentario in listaDeComentarios:
+                    listaDeComentarios.append(fechaComentario)
+
+            versionesDic[hist.id_historia] = listaDeComentarios
+
+    cantidaddehistorias = len(listaHistorias)
+
+    for hist in listaHistorias:
+        if hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1))).exists():
+            x = hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1)) ).last()
+            hist.nombre = x.nombre
+            hist.descripcion = x.descripcion
+            hist.prioridad = x.prioridad
+            hist.horasEstimadas = x.horasEstimadas
+            hist.horas_dedicadas= x.horas_dedicadas
+            hist.estados = x.estados
+            finalizo = x.history_date
+        else:
+            print("No existe")
+    return render(request, "historicoSprint2.html",
+                      {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                       "versionesDic": versionesDic, "finalizo":finalizo})
+
+
+#4 cuando se selecciona ver Product backlog
+#despliega el product backlog
+def HistorialProductBacklog(request,id_proyecto):
+    user_list = User.objects.all()
+    user_filter = UserFilter(request.GET, queryset=user_list)
+
+    proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
+    #id_proyectoActual = User.objects.get(username=request.user.username)
+    #id_proyectoActual = id_proyectoActual.proyecto_id
+    #if Historia.objects.filter(proyecto=id_proyectoActual)
+    if Historia.objects.filter(proyecto=proyecto_seleccionado).exists():
+        historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
+    else:
+        historia_list = historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
+        #messages.info(request, "El proyecto no tiene historias")
+        print("El proyecto no tiene historias")
+    historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
+    return render(request, 'product_backlog.html', {'filter': historia_filter})
+
+
+def BurndownChart(request):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
+    calendarioParaguay = Paraguay()
+    # formatear fecha print(x.strftime("%b %d %Y %H:%M:%S"))
     usuarioActual = User.objects.get(username=request.user.username)
     if (usuarioActual.proyecto == None):
         mensaje = "Usted no forma parte de ningun proyecto"
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-
     else:
-        #proyectoActual = model_to_dict(usuarioActual.proyecto)
-        #listaSprint = proyectoActual['id_sprints']
+        # 1- se consulta el sprint actual
+        proyectoPropietario= usuarioActual.proyecto
+        listasprints=proyectoPropietario.id_sprints
 
-        # Primero se obtiene la lista de los sprints no verificados que hayan finalizado
-        #sprintsNoVerificados = []
-        #for sprint in listaSprint:
-        #    if (not sprint.verificado) and sprint.estados == 'FINALIZADO':
-        #        sprintsNoVerificados.append((sprint.id, sprint.sprintNumber))
+        sprintActual=listasprints.get(estados="INICIADO")
+
+        # 2- calculamos la capacidad del equipo
+        capacidad_de_equipo=0
+        desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
+        for desarrollador in desarrolladores:
+            capacidad_de_equipo=capacidad_de_equipo+desarrollador.capacidad
 
 
-        sprintSeleccionado = Sprint.objects.get(id=id_sprint)
-
-        #listaHistorias = sprintSeleccionado.historias.all()
-        #sprintActual = Sprint.objects.get(id=sprintSeleccionado)
-        sprintActual2 = model_to_dict(sprintSeleccionado)
+        # 3- se extrae la lista de historias.
+        sprintActual2 = model_to_dict(sprintActual)
         listaHistorias = sprintActual2['historias']
-        versionesDic = {}
+        cantidad_total_historia = len(listaHistorias)
 
-
+        # Los miembros en forma de cadena para saber su estado
+        miembrosSprint = []
         for hist in listaHistorias:
-            if hist.history.filter(
-                Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
-
-                x = hist.history.filter(
-                        Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                            history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
-
-
-                listaDeComentarios = []
-
-                for z in list(x):
-                    fech = z.history_date
-                    if z.comentarios != '':
-                        fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
-                    else:
-                        fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+            try:
+                lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+                miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
+            except AttributeError:
+                print(f"la historia {hist} aun no tiene encargado")
+        #esto no se toca
 
 
-                    if not fechaComentario in listaDeComentarios:
-                        listaDeComentarios.append(fechaComentario)
 
-                versionesDic[hist.id_historia] = listaDeComentarios
+        #4 Se calcula la cantidad de dias del sprint
+        fechaInicio = sprintActual2['fecha_inicio']
+        fechaFin = sprintActual2['fecha_fin']
+        dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
 
-        cantidaddehistorias = len(listaHistorias)
 
-        for hist in listaHistorias:
-            if hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1))).exists():
-                x = hist.history.filter( Q(history_change_reason="fin_sprint") & Q(history_date__lte=sprintActual2['fecha_fin']+ timedelta(days=1)) ).last()
-                hist.nombre = x.nombre
-                hist.descripcion = x.descripcion
-                hist.prioridad = x.prioridad
-                hist.horasEstimadas = x.horasEstimadas
-                hist.horas_dedicadas= x.horas_dedicadas
-                hist.estados = x.estados
-                finalizo = x.history_date
-            else:
-                print("No existe")
 
-        return render(request, "historicoSprint2.html",
-                      {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                       "versionesDic": versionesDic, "finalizo":finalizo})
+        #5 Se inicializan las variables que son necesarios para el line chart
+        diasLaborales_py = []
+        horasLaborales_Ideal = []
+        horasLaborales_Real=[]
+        pasos = timedelta(days=1)
+
+        #6 Se genera la lista para el eje x del line chart
+        while fechaInicio <= fechaFin:
+            if calendarioParaguay.is_working_day(fechaInicio):
+                diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+
+            fechaInicio += pasos
+
+        total_horas_estimadas = 0
+        total_horas_dedicadas = 0
+
+        #7 Calculamos el esfuerzo ideal.
+        for h in listaHistorias:
+            total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
+
+        total=total_horas_estimadas
+        #calcula la lista de esfuerzo ideal, y lo guarda en el modelo
+        calcularEsfuerzoIdeal(horasLaborales_Ideal, sprintActual,diasLaborales_py, total,capacidad_de_equipo)
+
+        #8 Calculamos el efuerzo real.
+        # Calcula la lista de esfuerzo real y lo guarda en el modelo
+        calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py,total_horas_estimadas)
+
+        #Se le da el formato actual para el line chart
+        for i in sprintActual.horasLaboralesReal:
+            horasLaborales_Real.append(str(i))
+
+
+        return render(request, "lineChart.html",
+                      {"Sprint": sprintActual,
+                       "Historias": listaHistorias,
+                       "Total": cantidad_total_historia,
+                       "diasLaborales": ','.join(diasLaborales_py),
+                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
+                       "horasLaboralesReal": ','.join(horasLaborales_Real),
+                       "cantidadDias": dias_de_sprint,
+                       "miembros": miembrosSprint})
+
+def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales,total_horas_estimadas):
+    """
+    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
+
+    :param Historias: Lista de Historias
+    :param sprint: Sprint actual
+    :param Dias: Dia actual
+    :return: void
+    """
+    # FASE 1
+    # Calcula el esfuerzo total del dia
+    total_horas_dedicadas = 0
+    for historia in Historias:
+      #  esfuerzo_del_dia = esfuerzo_del_dia + (historia.horasEstimadas - historia.horas_dedicadas)
+      total_horas_dedicadas= total_horas_dedicadas+historia.horas_dedicadas
+    # -------------------------------
+    esfuerzo_del_dia=total_horas_estimadas-total_horas_dedicadas
+
+    # FASE 2
+    # Se agrega a el esfuerzo a la lista
+    hoy = datetime.today()
+    #hoy = hoy + timedelta(days=1) #???
+    hoy = hoy.strftime("%d-%b")
+
+    if (hoy in dias_laborales):
+        posicion = dias_laborales.index(hoy)
+
+        #si no hay todavia elementos en la lista de horas laborales reales se isnerta
+        if (len(sprint_seleccionado.horasLaboralesReal) == 0):
+            sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+        else: #se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
+            try:
+                sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+                sprint_seleccionado.horasLaboralesReal.pop(posicion + 1)
+            except IndexError:
+                print("posicion+1 no existia")
+
+        sprint_seleccionado.save()
+
+def calcularEsfuerzoIdeal(horasLaborales_Ideal,sprint_seleccionado,diasLaborales_py,total,capacidad_de_equipo):
+    posicion = 0
+    for dia in diasLaborales_py:
+        print("posicion = ",posicion)
+        horasLaborales_Ideal.append(str(total))
+        #if (len(sprint_seleccionado.horasLaboralesIdeal) == 0):
+        sprint_seleccionado.horasLaboralesIdeal.append(total)
+        #else:  # se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
+           # try:
+           #     sprint_seleccionado.horasLaboralesIdeal.insert(posicion, total)
+           #     sprint_seleccionado.horasLaboralesIdeal.pop(posicion + 1)
+           # except IndexError:
+           #     print("posicion+1 no existia")
+        posicion = posicion + 1
+        total = total - capacidad_de_equipo
+
+
+    sprint_seleccionado.save()

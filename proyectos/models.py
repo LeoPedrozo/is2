@@ -19,6 +19,7 @@ class Proyecto(models.Model):
     Implementa la clase de Proyectos, almacena datos generales acerca del proyecto:
     nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints
     """
+
     nombre = models.CharField(max_length=100)
     descripcion=models.TextField(null=True,blank=False)
     estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES)
@@ -39,6 +40,7 @@ class Proyecto(models.Model):
 
         :return: retorna el valor del campo nombre del objeto actual
         """
+
         return self.nombre
 
     def validate_test(self):

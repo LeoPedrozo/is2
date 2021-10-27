@@ -44,13 +44,6 @@ GestionPermisos.models module
    :undoc-members:
    :show-inheritance:
 
-GestionPermisos.tests module
-----------------------------
-
-.. automodule:: GestionPermisos.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 GestionPermisos.views module
 ----------------------------

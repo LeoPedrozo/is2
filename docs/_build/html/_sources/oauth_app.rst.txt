@@ -36,13 +36,6 @@ oauth\_app.models module
    :undoc-members:
    :show-inheritance:
 
-oauth\_app.tests module
------------------------
-
-.. automodule:: oauth_app.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 oauth\_app.views module
 -----------------------

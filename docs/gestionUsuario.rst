@@ -44,13 +44,6 @@ gestionUsuario.models module
    :undoc-members:
    :show-inheritance:
 
-gestionUsuario.tests module
----------------------------
-
-.. automodule:: gestionUsuario.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 gestionUsuario.views module
 ---------------------------

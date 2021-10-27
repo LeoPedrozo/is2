@@ -81,9 +81,12 @@
                 </a>
                 <ul id='dropdownProyectos' class='dropdown-content'>
                     {% for proyecto in proyectos %}
+
+                       {% if proyecto.estado == "INICIADO" %}
                         <a href="http://127.0.0.1:8000/inicio/{{ proyecto.pk }}/">
                             <li>{{ proyecto.nombre }}</li>
                         </a>
+                        {% endif %}
                     {% empty %}
                         <li>
                             <i class="material-icons" style="vertical-align: -3px">mood_bad</i>

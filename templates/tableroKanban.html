@@ -32,7 +32,6 @@
 
         <div class="row">
 
-
             <!-- Categoria de Pendiente -->
             <div class="col-12 col-lg-6 col-xl-3">
                 <div class="card card-border-primary">
@@ -330,9 +329,58 @@
                 </div>
 
             </div>
-            <div class="col-12 col-lg-6 col-xl-3">
+
+
+            <!--Modal de extender-->
+            <div id="modal_extender" class="modal "
+                 style="width: 30% !important;
+                                    height: 60% !important;">
+
+                <div class="modal-content">
+                    <h2>Cargar Nueva de finalizacion</h2>
+
+                    <div class="row">
+                        <form action="/tableroKanban/{{ Sprint.pk }}/expandir/" method="GET"
+                              class="col s12">
+
+                            {{ form }}
+
+                            <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="modal-footer" style=" width: 0 !important;
+        max-height: 100% !important;
+        height: 0 !important;">
+                </div>
+            </div>
+
+
+
+
+
+
+
+            {% if Master %}
+                <div class="col-12 col-lg-6 col-xl-3">
+
+                <a class="btn btn-outline-primary btn modal-trigger" data-target="modal_extender" href="#">Extender
+                    Sprint</a>
+
+
+
                 <a class="btn btn-outline-primary btn modal-trigger"
-                   href="/tableroKanban/fin">finalizar Sprint</a>
+                   href="/tableroKanban/{{ Sprint.pk }}/finalizar/">Finalizar Sprint</a>
+
+            {% endif %}
+
+
+
+
+
+
             </div>
 
         </div>

@@ -30,7 +30,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
     visualizarSprintFilter, historicoSprint, historicoSprint2, HistorialProyectoFilter, HistorialSprintFilter, \
-    HistorialProductBacklog, BurndownChart
+    HistorialProductBacklog, BurndownChart, finalizarProyecto, iniciarProyecto, finalizarOexpandirSprint
 from django.conf.urls import url
 
 
@@ -57,9 +57,10 @@ urlpatterns = [
     path('proyecto/nuevo/',crearProyecto),
 
     path('proyecto/',HistorialProyectoFilter),
-    path('proyecto/<int:id_proyecto>/Sprints/',HistorialSprintFilter),
-    path('proyecto/<int:id_proyecto>/ProductBacklog/',HistorialProductBacklog),
-
+    path('proyecto/<int:id_proyecto>/Sprints/', HistorialSprintFilter),
+    path('proyecto/<int:id_proyecto>/ProductBacklog/', HistorialProductBacklog),
+    path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto),
+    path('proyecto/<int:id_proyecto>/iniciar/', iniciarProyecto),
 
 
     path('modificarProyecto/',modificarProyecto),
@@ -90,15 +91,19 @@ urlpatterns = [
     path('modificarHistoria/2/',modificarHistoria),
     path('eliminarHistoria/',eliminarHistoria),
     path('asignarEncargado/',asignarHistoriaEncargado),
-    path('tableroKanban/<str:opcion>/',tableroKanban),
+
+    #path('tableroKanban/<str:opcion>/',tableroKanban),
     path('tableroKanban/', tableroKanban),
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
+    path('tableroKanban/<int:id_sprint>/<str:opcion>/',finalizarOexpandirSprint),
+
+
     path('qaRelease/<int:id>/<int:opcion>/', moverHistoriaQA),
     path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
-    path('burndownChart/',lineChart),
+    #path('burndownChart/',lineChart),
 
-    path('burndown',BurndownChart),
+    path('burndownChart/<int:id_sprint>/',BurndownChart),
     path('historicooSprint/<int:id_sprint>',historicoSprint2),
 
 

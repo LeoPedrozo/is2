@@ -45,37 +45,37 @@
       </tr>
     </thead>
     <tbody>
-      {% for hist in filter.qs %}
+      {% for sprint in filter.qs %}
         <tr>
-          <td>{{ hist.id }}</td>
-          <td>{{ hist.sprintNumber }}</td>
-          <td>{{ hist.fecha_inicio }}</td>
-          <td>{{ hist.fecha_fin }}</td>
-          <td>{{ hist.estados }}</td>
-          <td>{{ hist.verificado }}</td>
+          <td>{{ sprint.id }}</td>
+          <td>{{ sprint.sprintNumber }}</td>
+          <td>{{ sprint.fecha_inicio }}</td>
+          <td>{{ sprint.fecha_fin }}</td>
+          <td>{{ sprint.estados }}</td>
+          <td>{{ sprint.verificado }}</td>
 
       <td>
           <div class="dropdown">
-<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ hist.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ sprint.id }}" data-bs-toggle="dropdown" aria-expanded="false">
         opciones
       </a>
 
-      <ul class="dropdown-menu" aria-labelledby="dropdown{{ hist.id }}">
+      <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
 
-        {% if hist.estados == "PLANNING" %}
+        {% if sprint.estados == "PLANNING" %}
         <li><a class="dropdown-item" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a></li>
-        <li><a class="dropdown-item" href="/modificarSprint/{{ hist.id }}/">Modificar</a></li>
-        <li><a class="dropdown-item" href="/eliminarSprint/{{ hist.id }}/">Eliminar</a></li>
+        <li><a class="dropdown-item" href="/modificarSprint/{{ sprint.id }}/">Modificar</a></li>
+        <li><a class="dropdown-item" href="/eliminarSprint/{{ sprint.id }}/">Eliminar</a></li>
         {% endif %}
-      {% if hist.estados == "INICIADO" %}
+      {% if sprint.estados == "INICIADO" %}
           <li><a class="dropdown-item" href="/tableroKanban/">Ver Kanban</a></li>
-          <li><a class="dropdown-item" href="/burndownChart/">Ver BurndownChart</a></li>
+          <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
       {% endif %}
-            {% if hist.estados == "FINALIZADO"  %}
-          <li><a class="dropdown-item" href="/historicooSprint/{{ hist.id }}">Ver Kanban</a></li>
-          <li><a class="dropdown-item" href="/burndownChart/">Ver BurndownChart</a></li>
+            {% if sprint.estados == "FINALIZADO"  %}
+          <li><a class="dropdown-item" href="/historicooSprint/{{ sprint.id }}">Ver Kanban</a></li>
+          <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
       {% endif %}
-          <li><a class="dropdown-item" href="/sprintBacklog/{{ hist.id }}">Ver Sprint Backlog</a></li>
+          <li><a class="dropdown-item" href="/sprintBacklog/{{ sprint.id }}">Ver Sprint Backlog</a></li>
 
 
       </ul>

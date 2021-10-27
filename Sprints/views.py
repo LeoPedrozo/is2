@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, datetime
 
 from django.forms import model_to_dict
 from django.shortcuts import render
@@ -68,3 +68,8 @@ def guardarCamposdeSprint(request, sprint_seleccionado,id_proyecto):
     request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
 
     return True
+
+
+
+
+

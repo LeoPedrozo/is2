@@ -22,6 +22,8 @@ def nuevoProyecto(datos):
     newP= Proyecto(nombre = datos['nombre'],estado = datos['estado'],
                    descripcion = datos['descripcion'],fecha = datos['fecha'],
                    fecha_entrega =datos['fecha_entrega'],fecha_finalizacion=None)
+
+
     scrum = {
         "RolName": "Scrum Master",
         "Proyecto": ["change","view"],

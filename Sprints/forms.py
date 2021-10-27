@@ -92,3 +92,18 @@ class seleccionarSprintForm(forms.Form):
 
     sprint = forms.ChoiceField(label="Seleccione el Sprint")
 
+
+
+class extenderSprintForm(forms.Form):
+    """
+            Implementa la clase para ejecutar un formulario que permite la entrada de una nueva fecha de finalizacion estimada
+            """
+
+    def __init__(self, *args, **kwargs):
+        self.dato = kwargs.pop("dato")  # store value of request
+        super(extenderSprintForm, self).__init__(*args, **kwargs)
+        self.fields['fecha_fin'].initial = datetime.datetime.strptime(self.dato['fecha_fin'], "%Y/%m/%d")
+
+    fecha_fin = forms.DateField(widget=DateInput(), input_formats=['%Y/%m/%d'], label="Fecha fin")
+    #fecha_fin = forms.DateField(input_formats=['%Y/%m/%d'], label="Fecha fin")
+

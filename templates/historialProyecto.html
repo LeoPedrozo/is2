@@ -4,101 +4,118 @@
 {% load material_form %}
 {% block content %}
 
-        <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        //Dropdown menu
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            //Dropdown menu
 
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl)
-        })
-    });
-</script>
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+            })
+        });
+    </script>
 
-  <form method="get">
-    <div class="well">
-      <h6 class="text-muted">Parametros de filtrado :</h6>
-      <div class="row">
+    <form method="get">
+        <div class="well">
+            <h6 class="text-muted">Parametros de filtrado :</h6>
+            <div class="row">
 
-        <div class="form-group col s4">
-          {{ filter.form.estados.label_tag }}
-          {% render_field filter.form.estados class="form-control" %}
+                <div class="form-group col s4">
+                    {{ filter.form.estado.label_tag }}
+                    {% render_field filter.form.estado class="form-control" %}
+                </div>
+
+            </div>
+            <p></p>
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-search"></span> Filtrar
+            </button>
+            <p></p>
         </div>
-
-      </div>
-        <p></p>
-      <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-search"></span> Filtrar
-      </button>
-        <p></p>
-    </div>
-  </form>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>Nombre</th>
-
-          <th>Descripcion</th>
-          <th>Fecha Creacion</th>
-          <th>Fecha entrega</th>
-        <th>Fecha Finalizada</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for proyecto in filter.qs %}
+    </form>
+    <table class="table table-bordered">
+        <thead>
         <tr>
-          <td>{{ proyecto.pk }}</td>
-          <td>{{ proyecto.nombre }}</td>
-          <td>{{ proyecto.descripcion }}</td>
-          <td>{{ proyecto.fecha }}</td>
-          <td>{{ proyecto.fecha_entrega }}</td>
-          <td>{{ proyecto.fecha_finalizacion }}</td>
-          <td>{{ proyecto.estados }}</td>
-      <td>
-          <div class="dropdown">
-<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
-        opciones
-      </a>
+            <th>id</th>
+            <th>Nombre</th>
 
-      <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
-
-           <li><a class="dropdown-item" href="#">Ver mas detalles</a></li>
-          <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a></li>
-          <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver Product Backlog</a></li>
-
-
-
-
-      </ul>
-          </div>
-      </td>
+            <th>Descripcion</th>
+            <th>Fecha Creacion</th>
+            <th>Fecha entrega</th>
+            <th>Fecha Finalizada</th>
+            <th>Estado</th>
         </tr>
-      {% empty %}
-        <tr>
-          <td colspan="5">No hay coincidencias con ese criterio</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+        {% for proyecto in filter.qs %}
+            <tr>
+                <td>{{ proyecto.pk }}</td>
+                <td>{{ proyecto.nombre }}</td>
+                <td>{{ proyecto.descripcion }}</td>
+                <td>{{ proyecto.fecha }}</td>
+                <td>{{ proyecto.fecha_entrega }}</td>
+                <td>{{ proyecto.fecha_finalizacion }}</td>
+                <td>{{ proyecto.estado }}</td>
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                           id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            opciones
+                        </a>
 
+                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'info' %}
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'warning' %}
-                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'error' %}
-                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
-            {% endif %}
+                            {% if proyecto.estado == "PENDIENTE" %}
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar</a></li>
+                                <li><a class="dropdown-item" href="#">Modificar</a></li>
+
+                            {% endif %}
+
+                            {% if proyecto.estado == "INICIADO" %}
+                                <li><a class="dropdown-item" href="#">Ver Destalles</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
+                                    Product Backlog</a></li>
+                            {% endif %}
+
+                            {% if proyecto.estado == "FINALIZADO" %}
+                                <li><a class="dropdown-item" href="#">Ver Destalles</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
+                                    Product Backlog</a></li>
+                            {% endif %}
+
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No hay coincidencias con ese criterio</td>
+            </tr>
         {% endfor %}
-    </ul>
-{% endif %}
+        </tbody>
+    </table>
+
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'info' %}
+                    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'warning' %}
+                    <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'error' %}
+                    <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 
 
 

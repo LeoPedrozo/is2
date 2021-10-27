@@ -29,7 +29,8 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
-    visualizarSprintFilter, historicoSprint, historicoSprint2
+    visualizarSprintFilter, historicoSprint, historicoSprint2, HistorialProyectoFilter, HistorialSprintFilter, \
+    HistorialProductBacklog, BurndownChart
 from django.conf.urls import url
 
 
@@ -52,9 +53,18 @@ urlpatterns = [
     path('eliminarRol/1/',step1_eliminarRol),
     path('eliminarRol/2/',step2_eliminarRol),
     path('registrarUsuario/',registrarUsuario),
-    path('crearProyecto/',crearProyecto),
+
+    path('proyecto/nuevo/',crearProyecto),
+
+    path('proyecto/',HistorialProyectoFilter),
+    path('proyecto/<int:id_proyecto>/Sprints/',HistorialSprintFilter),
+    path('proyecto/<int:id_proyecto>/ProductBacklog/',HistorialProductBacklog),
+
+
+
     path('modificarProyecto/',modificarProyecto),
     path('eliminarProyecto/',eliminarProyecto),
+
     path('inicio/<int:id>/',swichProyecto),
     path('importarRoles/',importarRol),
     path('SprintPlanning/1/', step1_SprintPlanning),
@@ -87,6 +97,8 @@ urlpatterns = [
     path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
     path('burndownChart/',lineChart),
+
+    path('burndown',BurndownChart),
     path('historicooSprint/<int:id_sprint>',historicoSprint2),
 
 

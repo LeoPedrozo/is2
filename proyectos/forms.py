@@ -10,8 +10,9 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class crearproyectoForm(forms.Form):
     """
-    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un proyecto
+    Implementa la clase para ejecutar un formulario donde se solicitan los datos necesarios para la creacion de un proyecto
     """
+
     # overwrite __init__
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")  # store value of request
@@ -41,7 +42,7 @@ class crearproyectoForm(forms.Form):
 
 class modificarproyectoForm(forms.Form):
     """
-      Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto
+    Implementa la clase para ejecutar un formulario donde se solicitan los datos necesarios para modificar un proyecto
     """
 
     # overwrite __init__
@@ -81,9 +82,18 @@ class modificarproyectoForm(forms.Form):
 
 
 class seleccionarProyectoForm(forms.Form):
+    """
+    Implementa un formulario que posibilita seleccionar un proyecto de varios disponibles
+    """
+
     Proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0,label="Seleccione algun proyecto")
 
 
+
 class importarRolForm(forms.Form):
+    """
+    Implementa un formulario que permite importar roles definidos de un proyecto a otro
+    """
+
     ProyectoA = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0, label="Importar Roles del proyecto")
     ProyectoB = forms.ModelChoiceField(queryset=Proyecto.objects.all(), initial=0, label="al proyecto")

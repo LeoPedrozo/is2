@@ -1,6 +1,7 @@
 from Sprints.models import Sprint
 from gestionUsuario.models import User
 from userStory.models import Historia
+from proyectos.models import Proyecto
 import django_filters
 
 
@@ -32,3 +33,8 @@ class SprintFilter(django_filters.FilterSet):
     class Meta:
         model = Sprint
         fields = ['estados']
+
+class ProyectoFilter(django_filters.FilterSet):
+    class  Meta:
+        model=Proyecto
+        fields= ['estado']

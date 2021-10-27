@@ -18,6 +18,7 @@ def nuevoProyecto(datos):
     :param datos: informaciones referentes a los campos de datos de un proyecto
     :return: info del nuevo proyecto
     """
+
     newP= Proyecto(nombre = datos['nombre'],estado = datos['estado'],
                    descripcion = datos['descripcion'],fecha = datos['fecha'],
                    fecha_entrega =datos['fecha_entrega'],fecha_finalizacion=None)
@@ -48,11 +49,12 @@ def nuevoProyecto(datos):
 
 def updateProyecto(datos):
     """
-    Metodo que se ejecuta para actualizar los datos de un nuevo proyecto creado
+    Metodo que se ejecuta para actualizar los datos de un proyecto
 
     :param datos: informaciones referentes a los compos de datos de un proyecto
-    :return: info del nuevo proyecto
+    :return: void
     """
+
     proyecto=Proyecto.objects.get(id=datos['id'])
     proyecto.nombre=datos['nombre']
     proyecto.estado = datos['estado']
@@ -69,9 +71,10 @@ def getProyecto(project_id):
     """
     Metodo para obtener todos los datos de un proyecto
 
-    :param project_name: nombre del proyecto
+    :param project_id: identificador del proyecto
     :return: informacion completa del proyecto
     """
+
     print("EL id del proyecto es ", project_id)
     proyecto=Proyecto.objects.filter(id=project_id).latest('id')
 
@@ -84,16 +87,24 @@ def getProyecto(project_id):
 
 def deleteProyecto(proyecto):
     """
-    Metodo para la eliminacion de proyecto
+    Metodo para la eliminacion de un proyecto
 
     :param proyecto: proyecto a eliminar
-    :return:
+    :return: void
     """
+
     proyecto.delete()
 
 
 #Esto puede generar problemas
 def guardarCamposdeProyecto(request,usuarioActual):
+    """
+    Metodo que guarda todos lo campos de un proyecto
+
+    :param request: Solicitud recibida
+    :param usuarioActual: objeto del usuario actual
+    :return: void
+    """
 
     usuario=model_to_dict(usuarioActual)
     proyecto=model_to_dict(usuarioActual.proyecto)

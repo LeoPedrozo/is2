@@ -10,8 +10,8 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class crearSprintForm(forms.Form):
     """
-    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un sprint con los
-    campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+    Implementa la clase para ejecutar un formulario de solicitud de datos que son necesarios para la creacion de un sprint, el
+    formulario solicita los campos: 'numero sprint', 'fecha de inicio', 'fecha fin'
     """
 
     def __init__(self, *args, **kwargs):
@@ -29,9 +29,10 @@ class crearSprintForm(forms.Form):
 
 class modificarSprintForm(forms.Form):
         """
-        Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un sprint con los
-        campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+        Implementa la clase para ejecutar un formulario de solicitud de datos que son necesarios para la creacion de un sprint, el
+        formulario permite modificar los campos: 'numero sprint', 'fecha de inicio', 'fecha fin'
         """
+
         def __init__(self, *args, **kwargs):
                 self.request = kwargs.pop("request")  # store value of request
                 super(modificarSprintForm, self).__init__(*args, **kwargs)
@@ -55,7 +56,7 @@ class modificarSprintForm(forms.Form):
 class visualizarSprintForm(forms.Form):
     """
     Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la visualizacion de un sprint con los
-    campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+    campos de 'numero sprint', 'fecha de inicio', 'fecha fin'
     """
 
     def __init__(self, *args, **kwargs):
@@ -81,8 +82,7 @@ class visualizarSprintForm(forms.Form):
 
 class seleccionarSprintForm(forms.Form):
     """
-    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un sprint con los
-    campos de 'numero sprint', 'fecha de inicio', 'fecha fin' e 'historias'
+    Implementa un formulario que permite seleccionar un sprint de una lista de sprints del proyecto
     """
 
     def __init__(self, *args, **kwargs):
@@ -96,8 +96,8 @@ class seleccionarSprintForm(forms.Form):
 
 class extenderSprintForm(forms.Form):
     """
-            Implementa la clase para ejecutar un formulario que permite la entrada de una nueva fecha de finalizacion estimada
-            """
+    Implementa la clase para ejecutar un formulario que permite la entrada de una nueva fecha de finalizacion estimada
+    """
 
     def __init__(self, *args, **kwargs):
         self.dato = kwargs.pop("dato")  # store value of request

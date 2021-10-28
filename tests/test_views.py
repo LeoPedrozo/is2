@@ -16,9 +16,9 @@ class TestViews(TestCase):
         self.documentaciones_url = reverse(documentaciones)
         self.step1_crear_rol_url = reverse(step1_CrearRol)
         self.step2_crear_rol_url = reverse(step2_CrearRol)
-        self.step1_asignar_rol_url = reverse(step1_asignarRol)
-        self.step2_asignar_rol_url = reverse(step2_asignarRol)
-        self.eliminar_rol_url = reverse(eliminarRol)
+        self.eliminar_rol_url = reverse(step1_eliminarRol)
+        self.step1_asignar_rol_url = reverse(step1_CrearRol)
+        self.step2_asignar_rol_url = reverse(step1_CrearRol)
         self.step1_modificar_rol_url = reverse(step1_modificarRol)
         self.step2_modificar_rol_url = reverse(step1_modificarRol)
         self.step3_modificar_rol_url = reverse(step1_modificarRol)
@@ -28,8 +28,10 @@ class TestViews(TestCase):
         self.modificar_proyecto_url = reverse(modificarProyecto)
         self.eliminar_proyecto_url = reverse(eliminarProyecto)
         self.crear_sprints_url = reverse(step1_SprintPlanning)
-        self.modificar_sprint_url = reverse(modificarSprint)
-        self.visualizar_sprint_url = reverse(visualizarSprint)
+        self.step1_SprintPlanning_url = reverse(step1_SprintPlanning)
+        self.asignarCapacidad_url = reverse(step1_SprintPlanning)
+        #self.modificar_sprint_url = reverse(modificarSprint)
+        #self.visualizar_sprint_url = reverse(visualizarSprint)
         self.visualizar_sprint2_url = reverse(visualizarSprint2, args=(1,))
         self.tablero_kanban_url = reverse(tableroKanban)
         self.ver_miembros_url = reverse(verMiembros)
@@ -39,7 +41,11 @@ class TestViews(TestCase):
         self.eliminar_historia_url = reverse(eliminarHistoria)
         self.ver_historias_url = reverse(productBacklog)
         self.product_Backlog_url = reverse(productBacklog)
-        self.line_chart_url = reverse(lineChart)
+        self.search_url = reverse(productBacklog)
+        self.tableroQA_Release_url = reverse(tableroQA_Release)
+        self.searchvisualizarSprintFilter_url = reverse(visualizarSprintFilter)
+        self.HistorialProyectoFilter_url = reverse(importarRol)
+        #self.line_chart_url = reverse(lineChart)
         #self.mover_Historia_url = reverse(moverHistoria, args={1,1})
         User = get_user_model()
         User.objects.create_superuser(
@@ -99,7 +105,7 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'crearRol.html')
 
-    """
+
     def test_step1_asignarRol(self):
 
         User = get_user_model()
@@ -117,17 +123,25 @@ class TestViews(TestCase):
         response = self.client.get(self.step2_asignar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'asignarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
-    def test_eliminarRol(self):
+    def test_step1eliminarRol(self):
 
-        self.client.login(username='temporary2', password='temporary2', proyecto=1)
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'eliminarRol.html')
-    """
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2eliminarRol(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
 
     def test_step1_modificarRol(self):
 
@@ -197,6 +211,14 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'eliminarProyecto.html')
 
 
+    def test_step1_SprintPlanning(self):
+
+        response =  self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
     def test_crearSprint(self):
 
         response = self.client.get(self.crear_sprints_url)
@@ -205,21 +227,31 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
 
+    def test_asignarCapacidad(self):
+
+        response = self.client.get(self.asignarCapacidad_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+    """
     def test_modificarSprint(self):
 
         response = self.client.get(self.modificar_sprint_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
+    """
 
-
+    """
     def test_visualizarSprint(self):
 
         response = self.client.get(self.visualizar_sprint_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
-
+    """
 
     # def test_visualizarSprint2(self):
     #
@@ -287,12 +319,195 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'HistoriaContent.html')
 
 
+    def test_search(self):
+
+        response = self.client.get(self.search_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'HistoriaContent.html')
+
+
+    def test_tableroQARelease(self):
+        response = self.client.get(self.tableroQA_Release_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+
+    def test_visualizarSprintFilter(self):
+
+        response = self.client.get(self.searchvisualizarSprintFilter_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+    def test_HistorialProyectoFilter(self):
+
+        response = self.client.get(self.HistorialProyectoFilter_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+    """
     def test_lineChart(self):
 
         response = self.client.get(self.line_chart_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
-
+    """
 
     #def test_moverHistoria(self):
+
+
+    def test_step1_crearRoll(self):
+
+        User = get_user_model()
+        #self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.step1_crear_rol_url)
+        #user = User.objects.get(username='temporary')
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2_crearRoll(self):
+
+        User = get_user_model()
+        #self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.step2_crear_rol_url)
+        #user = User.objects.get(username='temporary')
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'crearRol.html')
+
+
+    def test_step1_asignarRoll(self):
+
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
+        response = self.client.get(self.step2_asignar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2_asignarRoll(self):
+
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
+        response = self.client.get(self.step2_asignar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step1eliminarRoll(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2eliminarRoll(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+
+    def test_step1_modificarRoll(self):
+
+        response = self.client.get(self.step1_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step2_modificarRoll(self):
+
+        response = self.client.get(self.step2_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_step3_modificarRoll(self):
+
+        response = self.client.get(self.step3_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_importarRoll(self):
+
+        response = self.client.get(self.importar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
+        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
+
+    def test_registrarUsuarios(self):
+
+        response = self.client.get(self.registrar_usuario_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'RegistrarUsuario.html')
+
+
+    def test_crearProyectos(self):
+
+        response = self.client.get(self.crear_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'crearProyecto.html')
+
+
+    def test_modificarProyectos(self):
+
+        response = self.client.get(self.modificar_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+        #self.assertTemplateUsed(response, 'outputmodificarProyecto.html')
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+    def test_eliminarProyectos(self):
+
+        response = self.client.get(self.eliminar_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'eliminarProyecto.html')
+
+
+    def test_step1_Sprint_Planning(self):
+
+        response =  self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+    def test_crear_Sprint(self):
+
+        response = self.client.get(self.crear_sprints_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
+    def test_asignarCapacidades(self):
+
+        response = self.client.get(self.asignarCapacidad_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+

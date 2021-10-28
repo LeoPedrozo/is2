@@ -469,84 +469,189 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoForm(self):
 
-        user = User(username='luis_Alberto')
+    def test_crearRollForm(self):
+        form = crearRolForm(data={
+            'RolName':'Scrum Master'
+        })
 
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+        self.assertTrue(form.is_valid())
+
+    def test_crear_RolForm1(self):
+        form = crearRolForm(data={
+            'RolName':'Product Owner'
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_crear_RolForm2(self):
+        form = crearRolForm(data={
+            'RolName':'Desarrollador'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoForm1(self):
+    def test_crearRolForms(self):
+        form = crearRolForm(data={
+            'RolName':'Nombre rol',
+            'Proyecto':self.proyecto,
+            'Sprint':self.sprints
+        })
 
-        user = User(username='AsuncionGM')
+        self.assertTrue(not(form.is_valid()))
 
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+    def test_crearRollForm1(self):
+        form = crearRolForm(data={
+            'RolName':'nuevo rol'
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_crearRollForm2(self):
+        form = crearRolForm(data={
+            'RolName':'Nombre rol'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoFor2(self):
 
-        user = User(username='Emigdio_Coronel')
-
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+    def test_crear_UsuarioForm(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Cristhian',
+            'correo': 'cristhian4@gmail.com'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoForm3(self):
-
-        user = User(username='Felix_Alexander')
-
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+    def test_crear_UsuarioForm2(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Cynthia',
+            'correo': 'Cynthia2@gmail.com'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoForm4(self):
-
-        user = User(username='Hector_Mendez')
-
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+    def test_crear_UsuarioForm3(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Mady',
+            'correo': 'mady5@gmail.com'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarEncargadoForm5(self):
-
-        user = User(username='Dora_Anastacia')
-
-        form = asignarEncargadoForm({
-            'Usuario': user,
-            'Historia': Historia.objects.all()
+    def test_crear_UsuarioForm4(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Luis',
+            'correo': 'luis9@gmail.com'
         })
 
         self.assertTrue(form.is_valid())
 
 
-    def test_eliminarHistoriaForm(self):
-
-
-        form = asignarEncargadoForm({
-            'Historia': Historia.objects.all()
+    def test_crear_UsuarioForm5(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Jose',
+            'correo': 'jose1@gmail.com'
         })
 
         self.assertTrue(form.is_valid())
 
+
+    def test_crear_UsuarioForm6(self):
+        form = crearUsuarioForm(data={
+            'Nombre': 'Leo',
+            'correo': 'leo3@gmail.com'
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_asignar_CapacidadForm(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':14
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_asignar_CapacidadForm1(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':20
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_asignar_CapacidadForm2(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':10
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_asignar_Capacidad_Form(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':30
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_asignar_Capacidad_Form1(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':17
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_seleccionarProyectosForm(self):
+
+        form = seleccionarProyectoForm({
+            'Proyecto':self.proyecto
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_seleccionarProyectosFormA(self):
+
+        A = Proyecto.objects.create(
+            nombre='Proyecto A',
+            descripcion='Prueba proyecto A',
+            estado='PENDIENTE',
+            fecha='2021-09-01',
+            fecha_entrega='2021-09-20'
+        )
+
+        form = seleccionarProyectoForm({
+            'Proyecto':A
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_seleccionarProyectosFormB(self):
+        B = Proyecto.objects.create(
+            nombre='Proyecto B',
+            descripcion='Prueba proyecto B',
+            estado='PENDIENTE',
+            fecha='2021-09-08',
+            fecha_entrega='2021-09-30'
+        )
+
+        form = seleccionarProyectoForm({
+            'Proyecto': B
+        })
+
+        self.assertTrue(form.is_valid())

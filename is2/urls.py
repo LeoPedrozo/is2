@@ -112,11 +112,21 @@ urlpatterns = [
 
 
     path('qaRelease/', tableroQA_Release),
+
+
     url(r'^productBacklog/$', search, name='search'),
+
+
+    path('productBacklog/<int:id>/', asignarSprint),
+
     path('historicoSprint/<int:id>/', historicoSprint, name='historicoSprint'),
     path('historicoSprint/', historicoSprint, name='historicoSprint'),
     url(r'^historialSprint/$', visualizarSprintFilter, name='visualizarSprintFilter'),
-    path('productBacklog/<int:id>/', asignarSprint),
+
+
+
+
+
     re_path(r'^docs/', include('docs.urls')),
     path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
     #Autenticador de google

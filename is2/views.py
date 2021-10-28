@@ -2269,7 +2269,7 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 def finalizarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
-    if (len(sprints) == 0):
+    if (len(sprints) != 0):
         proyecto_seleccionado.estado = "FINALIZADO"
         proyecto_seleccionado.fecha_finalizacion = date.today()
         proyecto_seleccionado.save()
@@ -2282,10 +2282,8 @@ def finalizarProyecto(request, id_proyecto):
 
 def iniciarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
-    sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
-
-    proyecto_seleccionado.estado = "FINALIZADO"
-    proyecto_seleccionado.fecha_finalizacion = date.today()
+    proyecto_seleccionado.estado = "INICIADO"
+    proyecto_seleccionado.fecha = date.today()
     proyecto_seleccionado.save()
 
     return redirect(HistorialProyectoFilter)
@@ -2347,3 +2345,115 @@ def finalizarOexpandirSprint(request, id_sprint, opcion):
     #        sprint_actual.save()
     #    else:
     #        print("formulario invalido")
+
+
+def infoProyecto(request, id_proyecto):
+
+    proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
+
+    total_sprints= len(proyecto_seleccionado.id_sprints.all())
+
+    promedioSprint=DuracionSprints(proyecto_seleccionado.id_sprints.all())
+
+    total_backlog=  len(Historia.objects.filter(proyecto=proyecto_seleccionado))
+    releases=len(Historia.objects.filter(proyecto=proyecto_seleccionado,estados="RELEASE"))
+    completado= round(releases/total_backlog)*100
+
+    #lista de miembros
+    miembros=[]
+    tabla_temporal=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
+    for m in tabla_temporal:
+        miembros.append(m.usuario)
+
+
+
+
+
+
+    print("Los miembros son ", miembros)
+
+    #contamos la duracion del proyecto en dias
+    calendarioParaguay = Paraguay()
+    pasos = timedelta(days=1)
+    duracion_proyecto=0
+    transcurrido_proyecto=0
+    fechaInicio=proyecto_seleccionado.fecha
+    fechaFin=proyecto_seleccionado.fecha_entrega
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            duracion_proyecto=duracion_proyecto+1
+        if( date.today() <= fechaFin):
+            transcurrido_proyecto=transcurrido_proyecto+1
+
+        fechaInicio += pasos
+
+    fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
+    fechaFin = proyecto_seleccionado.fecha_entrega.strftime("%m/%d/%Y")
+    fechaFinal=proyecto_seleccionado.fecha_finalizacion.strftime("%m/%d/%Y")
+
+
+
+
+    return render(request, "info-Proyecto.html",
+                  {"Proyecto":proyecto_seleccionado,"Miembros":miembros,"CantidadSprints":total_sprints,
+                   "CantidadHistorias":total_backlog,"Progreso":completado,"Duracion":duracion_proyecto,
+                   "Transcurrido":transcurrido_proyecto,"CantidadReleases":releases,"PromedioSprint":promedioSprint,
+                   "FechaInicio":fechaInicio,"FechaFin":fechaFin,"FechaFinal":fechaFinal})
+
+
+def DuracionSprints(sprints):
+
+    calendarioParaguay = Paraguay()
+
+    total_sprints=len(sprints)
+    suma=0
+
+    for sprint in sprints:
+        fechaInicio=sprint.fecha_inicio
+        fechaFin=sprint.fecha_fin
+        pasos = timedelta(days=1)
+        while fechaInicio <= fechaFin:
+            if calendarioParaguay.is_working_day(fechaInicio):
+                suma = suma + 1
+            fechaInicio += pasos
+
+
+    promedio=suma/total_sprints
+    return promedio
+
+
+
+def infoUsuario(request, id_usuario):
+    promedio_capacidad=0
+    Total_proyectos=0
+    Eficiencia=0
+    usuario_seleccionado=User.objects.get(id=id_usuario)
+    fotodeususario = SocialAccount.objects.filter(user=usuario_seleccionado)[0].extra_data['picture']
+
+    #Se cuenta la cantidad de proyectos que ya hizo
+    lista=UserProyecto.objects.filter(usuario=usuario_seleccionado)
+    listaProyecto=[]
+    for l in lista:
+        listaProyecto.append(l.proyecto)
+
+
+
+    Total_proyectos=len(listaProyecto)
+
+    sprints=UserSprint.objects.filter(usuario=usuario_seleccionado)
+    total=0
+    for sprint in  sprints:
+        total=total+sprint.capacidad
+
+    promedio_capacidad=total/len(sprints)
+    try:
+        Eficiencia=len(Historia.objects.filter(encargado=usuario_seleccionado,estados = "RELEASE"))/len(Historia.objects.filter(encargado=usuario_seleccionado)) *100
+    except ZeroDivisionError:
+        Eficiencia=0
+
+    return render(request, "info-Usuario.html",
+                  {"Usuario": usuario_seleccionado, "ListaProyecto": listaProyecto, "CantidadProyectos": Total_proyectos,
+                   "CapacidadPromedio": promedio_capacidad, "Eficiencia": Eficiencia, "avatar":fotodeususario})
+
+
+

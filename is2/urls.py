@@ -30,7 +30,8 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
     visualizarSprintFilter, historicoSprint, historicoSprint2, HistorialProyectoFilter, HistorialSprintFilter, \
-    HistorialProductBacklog, BurndownChart, finalizarProyecto, iniciarProyecto, finalizarOexpandirSprint
+    HistorialProductBacklog, BurndownChart, finalizarProyecto, iniciarProyecto, finalizarOexpandirSprint, infoProyecto, \
+    infoUsuario
 from django.conf.urls import url
 
 
@@ -53,6 +54,8 @@ urlpatterns = [
     path('eliminarRol/1/',step1_eliminarRol),
     path('eliminarRol/2/',step2_eliminarRol),
     path('registrarUsuario/',registrarUsuario),
+    path('Usuario/<int:id_usuario>/info/',infoUsuario),
+
 
     path('proyecto/nuevo/',crearProyecto),
 
@@ -61,6 +64,7 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/ProductBacklog/', HistorialProductBacklog),
     path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto),
     path('proyecto/<int:id_proyecto>/iniciar/', iniciarProyecto),
+    path('proyecto/<int:id_proyecto>/Resumen/',infoProyecto),
 
 
     path('modificarProyecto/',modificarProyecto),

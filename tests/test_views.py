@@ -308,7 +308,7 @@ class TestViews(TestCase):
         response = self.client.get(self.ver_historias_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'HistoriaContent.html')
+        self.assertTemplateUsed(response, 'SprintBacklog.html')
 
 
     def test_productBacklog(self):
@@ -316,7 +316,7 @@ class TestViews(TestCase):
         response = self.client.get(self.product_Backlog_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'HistoriaContent.html')
+        self.assertTemplateUsed(response, 'SprintBacklog.html')
 
 
     def test_search(self):

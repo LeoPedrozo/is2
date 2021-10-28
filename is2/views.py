@@ -962,7 +962,7 @@ def step3_asignarEncargado(request, id, opcion):
 
     # h = Historia.objects.get(id_historia=id)
     sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
-
+    #asigno encargado a la historia
     if (opcion == 1):
         h = Historia.objects.get(id_historia=id)
         if request.method == 'POST':
@@ -1401,7 +1401,7 @@ def sprintBacklog(request, id_sprint):
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
     historias = sprintseleccionado.historias.all()
 
-    return render(request, "HistoriaContent.html", {"historias": historias})
+    return render(request, "SprintBacklog.html", {"historias": historias})
 
 
 # Esta es una vista que lista todas las historais del proyecto pero las que estarian dentro del product backlog
@@ -1420,10 +1420,11 @@ def productBacklog(request):
     id_proyectoActual = id_proyectoActual.proyecto_id
     historias = Historia.objects.filter(proyecto=id_proyectoActual, estados="")
 
-    return render(request, "HistoriaContent.html", {"historias": historias})
+    return render(request, "SprintBacklog.html", {"historias": historias})
 
 
 # Vista que hace la logica de cambio de estado en el kanban
+#cambiar nombre a KanbanActual_Logica
 @login_required
 def moverHistoria(request, id, opcion):
     """
@@ -1438,64 +1439,56 @@ def moverHistoria(request, id, opcion):
     h = Historia.objects.get(id_historia=id)
     encargado = User.objects.get(username=request.user.username)
     # Agregar Tiempo
-    if request.method == 'POST':
-        form = cargarHorasHistoriaForm(request.POST)
-        print(f"form : {form}")
-        if (form.is_valid()):
-            horas = form.cleaned_data['horas']
-            comentario = form.cleaned_data['comentario']
-            if horas > 0:
-                print("Usuario que solicita : ", request.user)
-                print("Encargado : ", h.encargado)
-                if request.user == h.encargado:
-                    if (opcion == 5):
-                        print(f"Historia con id {id} horas: {horas}, comentario: {comentario}")
-                        h.horas_dedicadas = h.horas_dedicadas + horas
-                        h.comentarios = comentario
-                        h._change_reason = "comentario"
-                        messages.success(request, "Horas registradas")
-                else:
-                    messages.error(request, "No eres el encargado de la historia")
-                    messages.info(request, f"El encargado es {h.encargado}")
-            else:
-                messages.error(request, 'Ingrese una hora valida')
-        else:
-            print("formulario invalido")
 
+    #Se agrega mueve la historia a la columna pendiente
     if (opcion == 1):
-
-        print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
-
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'PENDIENTE'
             messages.success(request, "Pasado a pendiente")
         else:
             messages.error(request, "No eres el encargado de la historia")
-
+    #Se agrega mueve la historia a la columna En curso
     if (opcion == 2):
-        print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'EN_CURSO'
             messages.success(request, "Pasado a en curso")
         else:
             messages.error(request, "No eres el encargado de la historia")
-
+    # Se agrega mueve la historia a la columna Finalizado
     if (opcion == 3):
-        print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
             messages.success(request, "Finalizado")
         else:
             messages.error(request, "No eres el encargado de la historia")
+    # Este es para cargar horas y comentario
+    if(opcion == 5):
+        if request.method == 'POST':
+            form = cargarHorasHistoriaForm(request.POST)
+            if (form.is_valid()):
+                horas = form.cleaned_data['horas']
+                comentario = form.cleaned_data['comentario']
+                if horas > 0:
+                    if request.user == h.encargado:
+                        h.horas_dedicadas = h.horas_dedicadas + horas
+                        h.comentarios = comentario
+                        h._change_reason = "comentario"
+                        messages.success(request, "Horas registradas")
+                    else:
+                        messages.error(request, "No eres el encargado de la historia")
+                        messages.info(request, f"El encargado es {h.encargado}")
+                else:
+                    messages.error(request, 'Ingrese una hora valida')
+            else:
+                print("formulario invalido")
 
     h.save()
-    # aca se puede asociar una historia a un usuario
-    # usuario = User.objects.get(username=request.user.username)
-    # usuario.stories.add(h)
-
     return tableroKanban(request)
 
-
+#No lo se Rick creo que ya no se usa
 def asignarSprint(request, id):
     # 1 cambiamos el estado de la historia a agregar a
     """
@@ -1517,7 +1510,6 @@ def asignarSprint(request, id):
     try:
         sprintActual.historias.add(h)
         proyecto.save()
-
         messages.success(request, "Operacion realizada con exito")
         return search(request)
     except AttributeError:
@@ -1636,7 +1628,7 @@ def calcularEsfuerzoDiario(Historias, sprint, Dias):
 
         sprint.save()
 
-
+#esto se usa en line chart
 def formatearlista(lista):
     listaStrings = []
 
@@ -1646,7 +1638,8 @@ def formatearlista(lista):
     return listaStrings
 
 
-# despliega el product backlog
+# despliega el product backlog con filtro Pero del actual proyecto al que pertence el usuario actual
+# No se usa mas. Este es
 def search(request):
     """
     Metodo que despliega todos los Users Storys del proyecto (Product Backlog), con la posibilidad de buscar mediante filtraciones
@@ -1799,6 +1792,9 @@ def visualizarSprintFilter(request):
         return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter})
 
 
+
+#Esta vista es del el kanban con selector de sprint
+#Inutil
 def historicoSprint(request, id=''):
     """
     Metodo que permite visualizar el historial completo de un sprint dentro de un proyecto
@@ -1921,9 +1917,24 @@ def HistorialProyectoFilter(request):
     # else:
     # proyectoActual =usuarioActual.proyecto
     # listaSprint=proyectoActual.id_sprints.all()
-    listaProyectos = Proyecto.objects.all()
+
+    # Esto es para mostrar la lista de proyetos segun el tipo de usuario. si es admin se muestran todos.
+    # Si no es admin entonces solo se muestran los proyectos al cual pertenece.
+    # ya es un enfoque diferente
+
+    usuarioActual=User.objects.get(username=request.user.username)
+    if(usuarioActual.is_superuser ):
+        listaProyectos = Proyecto.objects.all()
+    else:
+        a=[]
+        lista = UserProyecto.objects.filter(usuario=usuarioActual)
+        for l in lista:
+            a.append(l.proyecto.id)
+        listaProyectos=Proyecto.objects.filter(pk__in=a)
+
 
     Proyecto_filter = ProyectoFilter(request.GET, queryset=listaProyectos)
+
     return render(request, "historialProyecto.html", {'filter': Proyecto_filter})
 
 
@@ -1943,7 +1954,7 @@ def HistorialSprintFilter(request, id_proyecto):
 
 
 # 3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
-# esta es cuando se le toca la opcion de ver kanban , es al foto del kanban de un sprint finalizado
+# esta es cuando se le toca la opcion de ver kanban , es la foto del kanban de un sprint finalizado
 def historicoSprint2(request, id_sprint):
     sprintSeleccionado = Sprint.objects.get(id=id_sprint)
     sprintActual2 = model_to_dict(sprintSeleccionado)
@@ -2202,7 +2213,7 @@ def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_h
     # FASE 2
     # Se agrega a el esfuerzo a la lista
     hoy = datetime.today()
-    hoy = hoy + timedelta(days=7) #???
+    hoy = hoy + timedelta(days=1) #???
     hoy = hoy.strftime("%d-%b")
 
     print("la lista de dias laborales es ",dias_laborales)
@@ -2265,7 +2276,7 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
         sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
         total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
 
-
+#Todos los sprints deben ser verificados antes de finalizar proyecto.
 def finalizarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")

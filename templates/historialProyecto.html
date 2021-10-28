@@ -68,6 +68,8 @@
                             {% if proyecto.estado == "PENDIENTE" %}
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar</a></li>
                                 <li><a class="dropdown-item" href="#">Modificar</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
+                                    Product Backlog</a></li>
 
                             {% endif %}
 

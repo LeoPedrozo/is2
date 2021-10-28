@@ -81,7 +81,7 @@
                             {% endif %}
 
                             {% if proyecto.estado == "FINALIZADO" %}
-                                <li><a class="dropdown-item" href="#">Ver Destalles</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
                                 </li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver

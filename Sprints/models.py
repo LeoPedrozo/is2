@@ -16,8 +16,9 @@ ESTADOS_CHOICES=[
 class Sprint(models.Model):
     """
     Clase de Sprint, almacena datos generales acerca de los sprint de un proyecto:
-    identificador, Numero de Sprint, fecha de inicio, fecha fin e historias
+    identificador, Numero de Sprint, fecha de inicio, fecha fin, historias, estados, verificado, horas laborales real e ideal
     """
+
     id = models.AutoField(primary_key=True)
     sprintNumber = models.IntegerField()
     fecha_inicio = models.DateField()
@@ -37,6 +38,7 @@ class Sprint(models.Model):
         Metodo del modelo de Sprint que retorna un booleano en caso
         que se hayan completado o no todos los campos obligatorios en el sprint.
         """
+
         if not self.sprintNumber:
             return False
         if not self.fecha_inicio:

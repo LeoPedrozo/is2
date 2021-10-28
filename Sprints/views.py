@@ -14,6 +14,7 @@ def nuevoSprint(datosSprint):
     :param datosSprint: datos de un sprint
     :return: respuesta a la solicitud de NUEVO SPRINT
     """
+
     newSprint = Sprint(sprintNumber=datosSprint["sprintNumber"], fecha_inicio=datosSprint["fecha_inicio"],
                        fecha_fin=datosSprint["fecha_fin"])
     newSprint.save()
@@ -23,6 +24,13 @@ def nuevoSprint(datosSprint):
     return newSprint
 
 def updateSprint(datosSprint):
+    """
+    Metodo que se ejecuta para actualizar los datos de un sprint
+
+    :param datos: informaciones referentes a los compos de datos de un sprint
+    :return: void
+    """
+
     newSprint = Sprint.objects.get(id=datosSprint['id'])
     newSprint.fecha_fin = datosSprint['fecha_fin']
     newSprint.save()
@@ -33,6 +41,13 @@ def updateSprint(datosSprint):
 
 
 def sprintActivoen(idProyecto):
+    """
+    Metodo que verifica si hay o no un sprint activo en el proyecto
+
+    :param idProyecto: Identificador de proyecto
+    :return: boolean
+    """
+
     proyecto = Proyecto.objects.get(id=idProyecto)
     #proyecto = Proyecto.objects.get(id=idProyecto)
     proyecto= Proyecto
@@ -51,6 +66,13 @@ def sprintActivoen(idProyecto):
 
 #dado un id te retorna el sprint
 def getSprint(id):
+    """
+    Metodo que retorna el objeto sprint dado el identificador
+
+    :param id: identificador de sprint
+    :return: objeto sprint
+    """
+
     sprt = Sprint.objects.get(id=id)
     return sprt
 
@@ -60,6 +82,14 @@ def getSprint(id):
 
 
 def guardarCamposdeSprint(request, sprint_seleccionado,id_proyecto):
+    """
+    Metodo que se ejecuta para guardar los campos de un Sprint
+
+    :param request: Solicitud recibida
+    :param sprint_seleccionado: sprint que se desea guardar
+    :param id_proyecto: identificador del proyecto al cual pertenece
+    :return: (boolean) Confirmacion de la accion realizada
+    """
     SprintActual = model_to_dict(sprint_seleccionado)
 
     request.session['id'] =  SprintActual['id']

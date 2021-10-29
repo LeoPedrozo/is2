@@ -1,3 +1,3 @@
 #!/bin/bash
 
-source .venv/bin/activate
+source /var/www/is2/.venv/bin/activate

@@ -44,7 +44,7 @@
             <div class="col s9 l3 offset-s9">
                 <div class="card blue white-text">
                     <div class="card-content">
-                        <p><b>Miembros:</b></p>
+                        <p><b>Miembros Activos:</b></p>
                         {% for miembro in miembros %}
                             <p><i class="material-icons" style="vertical-align: bottom;">person</i> {{ miembro }} </p>
                         {% endfor %}
@@ -135,13 +135,13 @@
                         label: "Trabajo Ideal",
                         data: generateDataIdeal(),
                         borderColor: 'green',
-                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
                         tension: 0.1
                     }, {
                         label: "Trabajo Real",
                         data: generateDataReal(),
                         borderColor: 'blue',
-                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
                         tension: 0.1
                     }
 

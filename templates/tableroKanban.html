@@ -28,7 +28,7 @@
         <h5> SPRINT NUMERO : {{ Sprint.sprintNumber }} </h5>
         <h5> Cantidad de historias : {{ Total }} </h5>
         <h5> Fecha de Finalizacion : {{ Sprint.fecha_fin }} </h5>
-
+        <h5 class="blue-grey-text">Usuario Actual: {{ request.user }}</h5>
 
         <div class="row">
 
@@ -72,7 +72,7 @@
 
                                         <!--Cargar Datos-->
                                         <p>Historia : {{ historia.nombre }}.</p>
-                                        <p>Prioridad : {{ historia.prioridad }}.</p>
+                                        <p>Encargado : {{ historia.encargado }}</p>
                                         <!--Posible lugar para cargar foto de perfil del encargado-->
                                         <div class="float-right mt-n1">
                                             <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="32"
@@ -87,6 +87,7 @@
                                                 <h4>{{ historia.nombre }}.</h4>
                                                 <br><b>Descripcion</b>
                                                 <p>{{ historia.descripcion }}.</p>
+
                                                 <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
                                                 <p>Prioridad : {{ historia.prioridad }}.</p>
                                                 <p>Horas dedicadas : {{ historia.horas_dedicadas }}.</p>

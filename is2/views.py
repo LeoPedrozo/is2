@@ -2202,21 +2202,23 @@ def BurndownChart(request,id_sprint):
         total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
         try:
             lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
-            miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
+            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
+            if not miembro in miembrosSprint:
+                miembrosSprint.append(miembro)
         except AttributeError:
             print(f"la historia {hist} aun no tiene encargado")
         # esto no se toca
 
-        # 4 Se calcula la cantidad de dias del sprint
-        fechaInicio = sprintActual2['fecha_inicio']
-        fechaFin = sprintActual2['fecha_fin']
-        dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    # 4 Se calcula la cantidad de dias del sprint
+    fechaInicio = sprintActual2['fecha_inicio']
+    fechaFin = sprintActual2['fecha_fin']
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
 
-        # 5 Se inicializan las variables que son necesarios para el line chart
-        diasLaborales_py = []
-        horasLaborales_Ideal = []
-        horasLaborales_Real = []
-        pasos = timedelta(days=1)
+    # 5 Se inicializan las variables que son necesarios para el line chart
+    diasLaborales_py = []
+    horasLaborales_Ideal = []
+    horasLaborales_Real = []
+    pasos = timedelta(days=1)
 
         # 6 Se genera la lista para el eje x del line chart
     while fechaInicio <= fechaFin:

@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from gestionUsuario.models import User
+from gestionUsuario.models import User, UserProyecto
+
+
 # Create your views here.
 
 ##una vista que reciba el id del proyecto recien creado y luego asociar ese id con los usuarios seleccionados tambien el formulario
@@ -17,10 +19,17 @@ def asociarProyectoaUsuario( proyecto,miembros):
         u= User.objects.get(username=miembro)
         u.proyecto=proyecto
         u.proyectos_asociados.add(proyecto)
+        if UserProyecto.objects.filter(usuario=u, proyecto=proyecto).exists():
+            a = UserProyecto.objects.get(usuario=u, proyecto=proyecto)
+            a.rol_name = ''
+            a.save()
+        else:
+            nuevo = UserProyecto(usuario=u, proyecto=proyecto, rol_name='')
+            nuevo.save()
         u.save()
 
 ##No se si funca como deberia
-def desasociarUsuariodeProyecto(miembros):
+def desasociarUsuariodeProyecto(proyecto,miembros):
     """Metodo para desasociar a un grupo de usuarios de un proyecto
 
     :param miembro: usuarios que van a ser excluidos del proyecto
@@ -29,8 +38,16 @@ def desasociarUsuariodeProyecto(miembros):
 
     for miembro in miembros:
         u = User.objects.get(username=miembro)
-        u.proyecto = None
+        #u.proyecto = None
+        u.proyectos_asociados.remove(proyecto)
+
+        print("lista de proyectos asociados Despues ", u.proyectos_asociados.all())
+        if UserProyecto.objects.filter(usuario=u, proyecto=proyecto).exists():
+            a = UserProyecto.objects.get(usuario=u, proyecto=proyecto)
+            a.delete()
+
         u.save()
+
 
 
 

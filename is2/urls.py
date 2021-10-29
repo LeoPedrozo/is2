@@ -31,7 +31,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
     visualizarSprintFilter, historicoSprint, historicoSprint2, HistorialProyectoFilter, HistorialSprintFilter, \
     HistorialProductBacklog, BurndownChart, finalizarProyecto, iniciarProyecto, finalizarOexpandirSprint, infoProyecto, \
-    infoUsuario
+    infoUsuario, modificarProyecto2, tableroQA_Release2
 from django.conf.urls import url
 
 
@@ -47,8 +47,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
     path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
+
+    #URL relacionados a roles y usuario
     path('crearRol/1/',step1_CrearRol),
     path('crearRol/2/',step2_CrearRol),
+    path('modificarRol/1/', step1_modificarRol),
+    path('modificarRol/2/', step2_modificarRol),
+    path('modificarRol/3/', step3_modificarRol),
     path('asignarRol/1/', step1_asignarRol),
     path('asignarRol/2/', step2_asignarRol),
     path('eliminarRol/1/',step1_eliminarRol),
@@ -56,22 +61,28 @@ urlpatterns = [
     path('registrarUsuario/',registrarUsuario),
     path('Usuario/<int:id_usuario>/info/',infoUsuario),
 
-
+    #URL relacionado a proyecto
     path('proyecto/nuevo/',crearProyecto),
-
     path('proyecto/',HistorialProyectoFilter),
     path('proyecto/<int:id_proyecto>/Sprints/', HistorialSprintFilter),
     path('proyecto/<int:id_proyecto>/ProductBacklog/', HistorialProductBacklog),
     path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto),
     path('proyecto/<int:id_proyecto>/iniciar/', iniciarProyecto),
+    path('proyecto/<int:id_proyecto>/modificar/', modificarProyecto2),
     path('proyecto/<int:id_proyecto>/Resumen/',infoProyecto),
+    path('importarRoles/',importarRol),
+    path('inicio/<int:id>/',swichProyecto),
 
-
+    #no se usa mas
     path('modificarProyecto/',modificarProyecto),
     path('eliminarProyecto/',eliminarProyecto),
 
-    path('inicio/<int:id>/',swichProyecto),
-    path('importarRoles/',importarRol),
+
+
+
+
+
+    #URL RELACIONADAS A SPRINT
     path('SprintPlanning/1/', step1_SprintPlanning),
     path('SprintPlanning/2/', step2_SprintPlanning),
     path('SprintPlanning/2/<int:id>/', asignarCapacidad),
@@ -79,18 +90,22 @@ urlpatterns = [
     path('SprintPlanning/3/<int:id>/<int:opcion>/', step3_asignarEncargado),
 
     path('sprintBacklog/<int:id_sprint>/',sprintBacklog),
+    #path('sprint/<int:id_sprint>/BackLog/',sprintBacklog),
 
     path('modificarSprint/<int:id_sprint>/',modificarSprint),
-
+    #path('sprint/<int:id_sprint>/modificar/',modificarSprint),
     path('eliminarSprint/<int:id_sprint>/',eliminarSprint),
+
+    #ya no se usa
     path('visualizarSprint/',visualizarSprint),
+    #ya no se usa
     path('visualizarSprint/<int:id>/',visualizarSprint2),
+    #path('KanBan/Historico/<int:id>/',visualizarSprint2),
+
+    #URL relacionada a historias
     path('crearHistoria/',crearHistoria),
     path('verHistorias/',productBacklog),
     path('verHistorias/<int:id>/',asignarSprint),
-    path('modificarRol/1/',step1_modificarRol),
-    path('modificarRol/2/',step2_modificarRol),
-    path('modificarRol/3/',step3_modificarRol),
     path('modificarHistoria/1/',seleccionarHistoria),
     path('modificarHistoria/2/',modificarHistoria),
     path('eliminarHistoria/',eliminarHistoria),
@@ -98,19 +113,32 @@ urlpatterns = [
 
     #path('tableroKanban/<str:opcion>/',tableroKanban),
     path('tableroKanban/', tableroKanban),
+
+
     path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
+    #path('sprint/tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
     path('tableroKanban/<int:id_sprint>/<str:opcion>/',finalizarOexpandirSprint),
+    #path('sprint/<int:id_sprint>/Kanban/<str:opcion>/',finalizarOexpandirSprint),
 
 
-    path('qaRelease/<int:id>/<int:opcion>/', moverHistoriaQA),
-    path('qaRelease/<int:id>/', tableroQA_Release),
     path('listarMiembros/',verMiembros),
     #path('burndownChart/',lineChart),
 
     path('burndownChart/<int:id_sprint>/',BurndownChart),
-    path('historicooSprint/<int:id_sprint>',historicoSprint2),
+    #path('sprint/<int:id_sprint>/BurndownChart/',BurndownChart),
+
+    path('historicooSprint/<int:id_sprint>/',historicoSprint2),
+    #path('sprint/<int:id>/KanBan/Historico/',historicoSprint2),
 
 
+    #URL relacionado a la tablero QA
+    path('qualityassurance/<int:id_sprint>/',tableroQA_Release2),
+    #path('sprint/<int:id_sprint>/QualityAssurance/',tableroQA_Release2),
+    path('qaRelease/<int:id>/<int:id_sprint>/<int:opcion>/', moverHistoriaQA),
+    #path('sprint/<int:id_sprint>/QuealityAssurance/<int:opcion>/<int:id>/', moverHistoriaQA),
+
+    #viejo ya no se usan
+    path('qaRelease/<int:id>/', tableroQA_Release),
     path('qaRelease/', tableroQA_Release),
 
 

@@ -72,7 +72,11 @@
           <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
       {% endif %}
             {% if sprint.estados == "FINALIZADO"  %}
-          <li><a class="dropdown-item" href="/historicooSprint/{{ sprint.id }}">Ver Kanban</a></li>
+          <li><a class="dropdown-item" href="/historicooSprint/{{ sprint.id }}/">Ver Kanban</a></li>
+
+                {% if sprint.verificado !=  True  %}
+                <li><a class="dropdown-item" href="/qualityassurance/{{ sprint.id }}/">Verificar</a></li>
+                {% endif %}
           <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
       {% endif %}
           <li><a class="dropdown-item" href="/sprintBacklog/{{ sprint.id }}">Ver Sprint Backlog</a></li>

@@ -66,15 +66,16 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
 
                             {% if proyecto.estado == "PENDIENTE" %}
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar</a></li>
-                                <li><a class="dropdown-item" href="#">Modificar</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/modificar/">Modificar</a></li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
                                     Product Backlog</a></li>
 
                             {% endif %}
 
                             {% if proyecto.estado == "INICIADO" %}
-                                <li><a class="dropdown-item" href="#">Ver Destalles</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar</a></li>
                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
                                 </li>

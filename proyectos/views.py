@@ -4,6 +4,7 @@ from django.forms import model_to_dict
 from GestionPermisos.views import fabricarRol
 from proyectos.models import Proyecto
 from django.contrib.auth.models import Group
+from gestionUsuario.models import User, UserProyecto
 
 # Create your views here.
 
@@ -30,6 +31,7 @@ def nuevoProyecto(datos):
         "Historia": ["add","change","view","delete"],
         "Sprint" : ["add","change","view","delete"]
     }
+
     fabricarRol(scrum)
 
     desarrollador = {
@@ -99,7 +101,7 @@ def deleteProyecto(proyecto):
 
 
 #Esto puede generar problemas
-def guardarCamposdeProyecto(request,usuarioActual):
+def guardarCamposdeProyecto(request,proyecto_seleccionado):
     """
     Metodo que guarda todos lo campos de un proyecto
 
@@ -108,18 +110,23 @@ def guardarCamposdeProyecto(request,usuarioActual):
     :return: void
     """
 
-    usuario=model_to_dict(usuarioActual)
-    proyecto=model_to_dict(usuarioActual.proyecto)
-    print("usuario = ", usuario)
-    print("proyecto", proyecto)
+    proyecto=model_to_dict(proyecto_seleccionado)
 
-    request.session['creador']=usuario['username']
+    lista=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
+    miembros=[]
+    for l in lista:
+        miembros.append((l.usuario.username,l.usuario.username))
+
     request.session['Proyecto']=proyecto['nombre']
     request.session['Descripcion']=proyecto['descripcion']
     request.session['estado']=proyecto['estado']
     request.session['fecha']=proyecto['fecha'].strftime("%Y/%m/%d")
     request.session['fecha_entrega'] = proyecto['fecha_entrega'].strftime("%Y/%m/%d")
     #request.session['fecha_finalizacion'] = proyecto['fecha_finalizacion'].strftime("%Y/%m/%d")
+    request.session['miembros']=miembros
+
+    print(" Miembros : ", miembros)
+
     request.session['Proyecto_id']=proyecto['id']
 
 

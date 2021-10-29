@@ -49,7 +49,6 @@ class modificarproyectoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")  # store value of request
         super(modificarproyectoForm, self).__init__(*args, **kwargs)
-        self.fields['creador'].initial = self.request['creador']
         self.fields['nombre'].initial = self.request['Proyecto']
         self.fields['descripcion'].initial = self.request['Descripcion']
         self.fields['estado'].initial = self.request['estado']
@@ -57,28 +56,28 @@ class modificarproyectoForm(forms.Form):
         self.fields['fecha_entrega'].initial = datetime.datetime.strptime(self.request['fecha_entrega'], "%Y/%m/%d")
         self.fields['id'].initial = self.request['Proyecto_id']
         #Esto debe cambiar
-        self.fields['miembros'].queryset = User.objects.filter(proyecto_id=self.request['Proyecto_id']).exclude(
-            username='admin')
-        #self.fields['fecha_finalizacion'].initial = datetime.datetime.strptime(self.request['fecha_finalizacion'], "%Y/%m/%d")
+        self.fields['miembros'].choices = self.request['miembros']
+        self.fields['usuarios'].queryset = User.objects.all().exclude(username='admin',proyectos_asociados__proyectos__proyecto_id=self.request['Proyecto_id'])
+
 
     estados = (
         ('PENDIENTE', 'Pendiente'),
         ('INICIADO', 'Iniciado'),
-        ('FINALIZADO', 'Finalizado'),
-        ('CANCELADO', 'Cancelado'),
+       # ('FINALIZADO', 'Finalizado'),
+       # ('CANCELADO', 'Cancelado'),
     )
 
 
     id=forms.IntegerField(disabled=True,label="ID del proyecto")
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
-    creador = forms.CharField(disabled=True)
     estado = forms.ChoiceField(required=False, widget=forms.RadioSelect, choices=estados)
 
-    fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
-    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Entrega")
-    miembros = forms.ModelMultipleChoiceField(required=False,queryset=User.objects.filter().exclude(username="admin"), label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
-    usuarios= forms.ModelMultipleChoiceField(required=False,queryset=User.objects.all().exclude(username='admin'),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
+    fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
+    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Finalizacion")
+    miembros = forms.MultipleChoiceField(required=False, label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
+    usuarios= forms.ModelMultipleChoiceField(required=False,queryset= User.objects.all(),
+label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 
 
 class seleccionarProyectoForm(forms.Form):

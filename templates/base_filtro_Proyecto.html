@@ -16,16 +16,18 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1c7abe;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Lista de Proyectos</a>
+<a class="navbar-brand" href="#">Lista de Proyectos</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
+                              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/inicio/" >Inicio</a>
+              </li>
 
-
-                <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         Proyectos
@@ -48,32 +50,16 @@
                                 </a>
                             {% else %}
                                 <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
-                                    opcion2
+                                    Importar Roles
                                 </a>
                             {% endif %}
 
-                            {% if perms.userStory.delete_historia %}
-                                <a class="dropdown-item" href="#">
-                                    opcion3
-                                </a>
-                            {% else %}
-                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
-                                    opcion3
-                                </a>
-                            {% endif %}
-
-                            {% if perms.userStory.add_historia %}
-                                <a class="dropdown-item" href="#">
-                                    opcion4
-                                </a>
-                            {% else %}
-                                <a class="dropdown-item" href="#" onclick="toast_permisos()" class="grey-text">
-                                    opcion4
-                                </a>
-                            {% endif %}
                         </li>
                     </ul>
                 </li>
+
+
+
             </ul>
         </div>
     </div>

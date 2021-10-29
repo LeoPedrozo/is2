@@ -96,6 +96,9 @@ def inicio(request):
 
             proyectos = usuario.proyectos_asociados.all()
             roles = ', '.join(map(str, usuario.groups.all()))
+
+
+            print("LA LISTA DE PROYECTOS del usuario = ",proyectos)
             return render(request, "sidenav.html",
                           {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos": proyectos,
                            "roles": roles})
@@ -581,6 +584,7 @@ def crearProyecto(request):
             datosProyecto = formulario.cleaned_data
             miembros = formulario.cleaned_data["miembros"]
             proyecto = nuevoProyecto(formulario.cleaned_data)
+
             # proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto, miembros)
             # Retornar mensaje de exito
@@ -637,6 +641,62 @@ def modificarProyecto(request):
         print("El usuario no posee ningun proyecto")
         messages.error(request, 'El usuario no posee ningun proyecto')
         return redirect(inicio)
+
+
+@login_required
+@permission_required('proyectos.change_proyecto', raise_exception=True)
+def modificarProyecto2(request,id_proyecto):
+    """
+    Metodo para la modificacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de MODIFICAR PROYECTO
+    """
+
+    try:
+        if request.method == "POST":
+            formulario = modificarproyectoForm(request.POST, request=request.session)
+            if (formulario.is_valid()):
+                # Acciones a realizar con el form
+                idproyecto = formulario.cleaned_data['id']
+                datosProyecto = formulario.cleaned_data
+
+                miembros = formulario.cleaned_data["miembros"]
+                usuarios = formulario.cleaned_data["usuarios"]
+
+                print(" Listas de miembros -> ",miembros)
+
+                print(" Listas de miembros -> ", usuarios)
+
+                updateProyecto(formulario.cleaned_data)
+
+                proyecto = getProyecto(idproyecto)
+
+                # se agrega los usuarios nuevos
+                asociarProyectoaUsuario(proyecto, usuarios)
+                # se elimina los usuarios viejos
+                desasociarUsuariodeProyecto(proyecto,miembros)
+
+                miembrosActuales = User.objects.filter(proyecto=idproyecto)
+                # Retornar mensaje de exito
+                return render(request, "outputmodificarProyecto.html",
+                              {"proyectoCreado": datosProyecto, "members": miembrosActuales})
+        else:
+            #usuarioActual = User.objects.get(username=request.user.username)
+            #if (usuarioActual.proyecto == None):
+            #    mensaje = "Usted no forma parte de ningun proyecto"
+            #    return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+            #else:
+                proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
+                guardarCamposdeProyecto(request, proyecto_seleccionado)
+                formulario = modificarproyectoForm(request=request.session)
+                return render(request, "modificarProyecto.html", {"form": formulario})
+    except AttributeError:
+        print("El usuario no posee ningun proyecto")
+        messages.error(request, 'El usuario no posee ningun proyecto')
+        return redirect(inicio)
+
+
 
 
 @login_required
@@ -703,16 +763,20 @@ def swichProyecto(request, id):
 
     if UserProyecto.objects.filter(usuario=u, proyecto=p).exists():
         print("Esta asociado al proyecto, reasignando rol...")
+
         proy = UserProyecto.objects.get(usuario=u, proyecto=p)
-        rol_object = Group.objects.get(name=proy.rol_name)
+        if(proy.rol_name!=""):
+            rol_object = Group.objects.get(name=proy.rol_name)
 
         # Agrego al usuario al rol
         # Limpiar antiguo rol del usuario para el cambio
-        print("Limpiando antiguos roles")
-        u.groups.clear()
+            print("Limpiando antiguos roles")
+            u.groups.clear()
         # enlazar con el rol asignado para el proyecto
-        enlazar_Usuario_con_Rol(u, rol_object)
-        registrar_usuario(u, 'True')
+            enlazar_Usuario_con_Rol(u, rol_object)
+            registrar_usuario(u, 'True')
+
+
 
     u.save()
     return redirect(inicio)
@@ -1733,9 +1797,10 @@ def tableroQA_Release(request):
             return render(request, "Condicion_requerida.html", {"mensaje": "NO HAY SPRINTS PARA SELECCIONAR"})
 
 
+
 # Vista que hace la logica de cambio de estado en el kanban
 @login_required
-def moverHistoriaQA(request, id, opcion):
+def moverHistoriaQA(request, id,id_sprint, opcion):
     """
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
@@ -1745,15 +1810,16 @@ def moverHistoriaQA(request, id, opcion):
     :return: tablero kanban actualizado
     """
 
-    h = Historia.objects.get(id_historia=id)
-    encargado = User.objects.get(username=request.user.username)
 
     # aceptar en quality assurance la historia, entonces va a pasar a Release
     if (opcion == 6):
+        h = Historia.objects.get(id_historia=id)
         h.estados = 'RELEASE'
         messages.info(request, "Historia enviada a Release")
+        h.save()
     # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
     if (opcion == 7):
+        h = Historia.objects.get(id_historia=id)
         h.estados = ""
         if h.prioridad == 'BAJA':
             h.prioridad = 'MEDIA'
@@ -1761,13 +1827,20 @@ def moverHistoriaQA(request, id, opcion):
             h.prioridad = 'ALTA'
         messages.info(request, "Historia rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
-    print("Historia : ", h)
-    h.save()
+        h.save()
+
+
+    if opcion==8:
+        sp=Sprint.objects.get(id=id_sprint)
+        sp.verificado=True
+        sp.save()
+        return redirect(visualizarSprintFilter)
+
     # aca se puede asociar una historia a un usuario
     # usuario = User.objects.get(username=request.user.username)
     # usuario.stories.add(h)
 
-    return tableroQA_Release(request)
+    return tableroQA_Release2(request,id_sprint)
 
 
 ##Solo muestra los sprint sin mayor detalle
@@ -1910,27 +1983,12 @@ def HistorialProyectoFilter(request):
     :param request: solicitud recibida
     :return: respuesta a la solicitud de VISUALIZAR SPRINT
     """
-    # usuarioActual = User.objects.get(username=request.user.username)
-    # if (usuarioActual.proyecto == None):
-    #    mensaje = "Usted no forma parte de ningun proyecto"
-    #    return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-    # else:
-    # proyectoActual =usuarioActual.proyecto
-    # listaSprint=proyectoActual.id_sprints.all()
-
-    # Esto es para mostrar la lista de proyetos segun el tipo de usuario. si es admin se muestran todos.
-    # Si no es admin entonces solo se muestran los proyectos al cual pertenece.
-    # ya es un enfoque diferente
-
     usuarioActual=User.objects.get(username=request.user.username)
     if(usuarioActual.is_superuser ):
         listaProyectos = Proyecto.objects.all()
     else:
-        a=[]
-        lista = UserProyecto.objects.filter(usuario=usuarioActual)
-        for l in lista:
-            a.append(l.proyecto.id)
-        listaProyectos=Proyecto.objects.filter(pk__in=a)
+
+        listaProyectos=usuarioActual.proyectos_asociados.all()
 
 
     Proyecto_filter = ProyectoFilter(request.GET, queryset=listaProyectos)
@@ -2213,7 +2271,7 @@ def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_h
     # FASE 2
     # Se agrega a el esfuerzo a la lista
     hoy = datetime.today()
-    hoy = hoy + timedelta(days=1) #???
+    hoy = hoy + timedelta(days=13) #???
     hoy = hoy.strftime("%d-%b")
 
     print("la lista de dias laborales es ",dias_laborales)
@@ -2272,15 +2330,20 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
         total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
 
     for dia in diasLaborales_py:
-        # horasLaborales_Ideal.append(str(total_horas_estimadas))
-        sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
-        total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
+        if(total_horas_estimadas - capacidad_de_equipo >=0 ):
+            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+            total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
+        else:
+            sprint_seleccionado.horasLaboralesIdeal.append(0)
+            break
+
 
 #Todos los sprints deben ser verificados antes de finalizar proyecto.
 def finalizarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
-    if (len(sprints) != 0):
+    print("la longitud de sprints es : ", len(sprints))
+    if (len(sprints) == 0):
         proyecto_seleccionado.estado = "FINALIZADO"
         proyecto_seleccionado.fecha_finalizacion = date.today()
         proyecto_seleccionado.save()
@@ -2343,21 +2406,6 @@ def finalizarOexpandirSprint(request, id_sprint, opcion):
 
     return redirect(tableroKanban)
 
-    # if request.method == 'POST':
-    #    formulario = asignarDesarrolladorForm(request.POST, developers=request.session)
-    #    if (formulario.is_valid()):
-    #        usuarioSeleccionado = formulario.cleaned_data['encargado']
-    #        encargado = User.objects.get(username=usuarioSeleccionado)
-    #        h.encargado = encargado
-    #        h.estados = 'PENDIENTE'
-    #        h.save()
-    #        # Se le agrega al sprint
-    #        sprint_actual.historias.add(h)
-    #        sprint_actual.save()
-    #    else:
-    #        print("formulario invalido")
-
-
 def infoProyecto(request, id_proyecto):
 
     proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
@@ -2367,8 +2415,14 @@ def infoProyecto(request, id_proyecto):
     promedioSprint=DuracionSprints(proyecto_seleccionado.id_sprints.all())
 
     total_backlog=  len(Historia.objects.filter(proyecto=proyecto_seleccionado))
-    releases=len(Historia.objects.filter(proyecto=proyecto_seleccionado,estados="RELEASE"))
-    completado= round(releases/total_backlog)*100
+    if (total_backlog != 0):
+        releases = len(Historia.objects.filter(proyecto=proyecto_seleccionado, estados="RELEASE"))
+        completado = round(releases / total_backlog) * 100
+    else:
+        releases = 0
+        completado=0
+
+
 
     #lista de miembros
     miembros=[]
@@ -2400,8 +2454,10 @@ def infoProyecto(request, id_proyecto):
 
     fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
     fechaFin = proyecto_seleccionado.fecha_entrega.strftime("%m/%d/%Y")
-    fechaFinal=proyecto_seleccionado.fecha_finalizacion.strftime("%m/%d/%Y")
-
+    try:
+        fechaFinal=proyecto_seleccionado.fecha_finalizacion.strftime("%m/%d/%Y")
+    except AttributeError:
+        fechaFinal="No definido"
 
 
 
@@ -2429,7 +2485,11 @@ def DuracionSprints(sprints):
             fechaInicio += pasos
 
 
-    promedio=suma/total_sprints
+    if(total_sprints!=0):
+        promedio=suma/total_sprints
+    else:
+        promedio=0
+
     return promedio
 
 
@@ -2465,6 +2525,43 @@ def infoUsuario(request, id_usuario):
     return render(request, "info-Usuario.html",
                   {"Usuario": usuario_seleccionado, "ListaProyecto": listaProyecto, "CantidadProyectos": Total_proyectos,
                    "CapacidadPromedio": promedio_capacidad, "Eficiencia": Eficiencia, "avatar":fotodeususario})
+
+
+@permission_required('Sprints.change_sprint', raise_exception=True)
+@login_required
+def tableroQA_Release2(request,id_sprint):
+    """
+    Metodo para visualizar el tablero Quality Assurance Release
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de TABLERO-QA RELEASE
+    """
+    try:
+        sprintActual = Sprint.objects.get(id=id_sprint)
+        sprintActual2 = model_to_dict(sprintActual)
+        listaHistorias = sprintActual2['historias']
+        versionesDic = {}
+        for hist in listaHistorias:
+            x = hist.history.filter(
+                Q(estados='FINALIZADO') & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                    history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+            listaDeComentarios = []
+            for z in list(x):
+                fech = z.history_date
+                fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                if not fechaComentario in listaDeComentarios:
+                    listaDeComentarios.append(fechaComentario)
+            versionesDic[hist.id_historia] = listaDeComentarios
+
+        cantidaddehistorias = len(listaHistorias)
+        print(listaHistorias)
+        return render(request, "QA_sprint2.html",
+                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                       "versionesDic": versionesDic})
+    except IndexError:
+        return render(request, "Condicion_requerida.html", {"mensaje": "NINGUNA HISRORIA PARA HACER QA"})
+    except UnboundLocalError:
+        return render(request, "Condicion_requerida.html", {"mensaje": "NO HAY SPRINTS PARA SELECCIONAR"})
 
 
 

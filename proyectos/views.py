@@ -110,12 +110,19 @@ def guardarCamposdeProyecto(request,proyecto_seleccionado):
     :return: void
     """
 
+
+    us=User.objects.all()
+    usuarioslibres=[]
+    for u in us:
+        if( len( u.proyectos_asociados.filter(id=proyecto_seleccionado.id) ) == 0):
+            usuarioslibres.append((u.email,u.email))
+
     proyecto=model_to_dict(proyecto_seleccionado)
 
     lista=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
     miembros=[]
     for l in lista:
-        miembros.append((l.usuario.username,l.usuario.username))
+        miembros.append((l.usuario.email,l.usuario.email))
 
     request.session['Proyecto']=proyecto['nombre']
     request.session['Descripcion']=proyecto['descripcion']
@@ -124,6 +131,7 @@ def guardarCamposdeProyecto(request,proyecto_seleccionado):
     request.session['fecha_entrega'] = proyecto['fecha_entrega'].strftime("%Y/%m/%d")
     #request.session['fecha_finalizacion'] = proyecto['fecha_finalizacion'].strftime("%Y/%m/%d")
     request.session['miembros']=miembros
+    request.session['usuarios']=usuarioslibres
 
     print(" Miembros : ", miembros)
 

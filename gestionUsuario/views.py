@@ -7,7 +7,7 @@ from gestionUsuario.models import User, UserProyecto
 ##una vista que reciba el id del proyecto recien creado y luego asociar ese id con los usuarios seleccionados tambien el formulario
 ##asociarmiembrosaproyecto
 
-def asociarProyectoaUsuario( proyecto,miembros):
+def asociarProyectoaUsuario( proyecto,correos):
     """Metodo para asociar un proyecto a un grupo de usuarios del sistema
 
     :param proyecto: proyecto que se quiere asociar
@@ -15,8 +15,9 @@ def asociarProyectoaUsuario( proyecto,miembros):
     :return: void
     """
 
-    for miembro in miembros:
-        u= User.objects.get(username=miembro)
+    for correo in correos:
+
+        u= User.objects.get(email=correo)
         u.proyecto=proyecto
         u.proyectos_asociados.add(proyecto)
         if UserProyecto.objects.filter(usuario=u, proyecto=proyecto).exists():
@@ -29,15 +30,15 @@ def asociarProyectoaUsuario( proyecto,miembros):
         u.save()
 
 ##No se si funca como deberia
-def desasociarUsuariodeProyecto(proyecto,miembros):
+def desasociarUsuariodeProyecto(proyecto,correos):
     """Metodo para desasociar a un grupo de usuarios de un proyecto
 
     :param miembro: usuarios que van a ser excluidos del proyecto
     :return: void
     """
 
-    for miembro in miembros:
-        u = User.objects.get(username=miembro)
+    for correo in correos:
+        u = User.objects.get(email=correo)
         #u.proyecto = None
         u.proyectos_asociados.remove(proyecto)
 

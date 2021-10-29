@@ -88,13 +88,15 @@ def enlazar_Usuario_con_Rol(user, grupo):
     grupo.user_set.add(user)
 
 
-def registrar_usuario(user, state):
+def registrar_usuario(correo, state):
     """ Metodo para registrar un usuario en el sistema
 
     :param user: usuario que va ser registrado
     :param state: estado que se encuentra
     :return: Mensaje de confirmacion del registro
     """
+    user=User.objects.get(email=correo)
+
     grupo = Group.objects.get(name='registrado')
     users_in_group = grupo.user_set.all()
 

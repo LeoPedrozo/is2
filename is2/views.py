@@ -226,7 +226,7 @@ def step2_asignarRol(request):
             rol_name = formulario.cleaned_data['Roles']
 
             # Realizo las consultas para tener el objeto Rol y el objeto proyecto para poder agregar en la tabla UserProy
-            user_object = User.objects.get(username=user_name)
+            user_object = User.objects.get(email=user_name)
             rol_object = Group.objects.get(name=rol_name)
             proyecto_object = Proyecto.objects.get(id=request.session['id_proyecto'])
 
@@ -280,7 +280,7 @@ def procesoAsignarRol(request):
     users = User.objects.filter(proyectos_asociados=p)
     for u in users:
         # usuarios_names.append( (u.usuario.username,u.usuario.username) )
-        usuarios_names.append((u.username, u.username))
+        usuarios_names.append((u.email, u.email))
 
     request.session['usuario_names'] = usuarios_names
     request.session['roles_name'] = roles
@@ -550,18 +550,24 @@ def registrarUsuario(request):
     """
 
     if request.method == "POST":
-        formulario = registroDeUsuariosForm(request.POST)
+        formulario = registroDeUsuariosForm(request.POST,request=request.session)
         if (formulario.is_valid()):
             datos = formulario.cleaned_data
-            userdata = formulario.cleaned_data['Usuario']
+            correo_usuario = formulario.cleaned_data['Usuario']
             estado = formulario.cleaned_data['Habilitado']
             # Acciones a realizar con el form
-            registrar_usuario(userdata, estado)
+            registrar_usuario(correo_usuario, estado)
 
-            # Retornar mensaje de exito
             return render(request, "outputRegistrarUsuario.html", {"usuario": datos})
     else:
-        formulario = registroDeUsuariosForm()
+
+        lista= User.objects.all()
+        miembros = []
+        for l in lista:
+            miembros.append((l.email, l.email))
+
+        request.session['miembros']=miembros
+        formulario = registroDeUsuariosForm(request=request.session)
 
     return render(request, "RegistrarUsuario.html", {"form": formulario})
 
@@ -578,7 +584,7 @@ def crearProyecto(request):
     """
 
     if request.method == "POST":
-        formulario = crearproyectoForm(request.POST, request=request)
+        formulario = crearproyectoForm(request.POST, request=request.session)
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosProyecto = formulario.cleaned_data
@@ -590,7 +596,14 @@ def crearProyecto(request):
             # Retornar mensaje de exito
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
-        formulario = crearproyectoForm(request=request)
+        #Lista de miembros
+        us=User.objects.all().exclude(username=['admin','Admin'])
+        usuarios=[]
+        for u in us:
+            usuarios.append((u.email,u.email))
+
+        request.session['miembros']=usuarios
+        formulario = crearproyectoForm(request=request.session)
     return render(request, "crearProyecto.html", {"form": formulario})
 
 
@@ -2518,7 +2531,11 @@ def infoUsuario(request, id_usuario):
     for sprint in  sprints:
         total=total+sprint.capacidad
 
-    promedio_capacidad=total/len(sprints)
+    try:
+        promedio_capacidad = total / len(sprints)
+    except ZeroDivisionError:
+        promedio_capacidad = 0
+
     try:
         Eficiencia=len(Historia.objects.filter(encargado=usuario_seleccionado,estados = "RELEASE"))/len(Historia.objects.filter(encargado=usuario_seleccionado)) *100
     except ZeroDivisionError:

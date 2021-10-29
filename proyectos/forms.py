@@ -4,8 +4,9 @@ from gestionUsuario.models import User
 from proyectos.models import Proyecto
 import datetime
 from functools import partial
-
+from django.forms import fields
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
+
 
 
 class crearproyectoForm(forms.Form):
@@ -17,7 +18,7 @@ class crearproyectoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")  # store value of request
         super(crearproyectoForm,self).__init__(*args, **kwargs)
-        self.fields['creador'].initial=self.request.user.username
+        self.fields['miembros'].choices=self.request['miembros']
 
     estados = (
         ('PENDIENTE', 'Pendiente'),
@@ -28,15 +29,14 @@ class crearproyectoForm(forms.Form):
 
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
-    creador = forms.CharField(disabled=True)
-    #creador = forms.ModelChoiceField(queryset=User.objects.all().exclude(username='admin'),label="Selecciona el encargado",initial=0)
     estado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados)
 
     fecha = forms.DateField(initial=datetime.date.today,disabled=True,label="Fecha de Creacion")
     fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha de Entrega")
-    miembros = forms.ModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin","Admin"]), initial=0)
-
-
+    #miembros = forms.ModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin","Admin"]),initial=0)
+    #miembros = UserModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin", "Admin"]),
+    #                                          initial=0)
+    miembros = forms.MultipleChoiceField(label="Lista de usuarios disponibles")
 # crear formualrios de  modificar y eliminar proyecto.
 # el campo de miembros pierde el estado original, se solucionaria si el modelo de proyecto si tenga un campo de miembros
 
@@ -57,8 +57,8 @@ class modificarproyectoForm(forms.Form):
         self.fields['id'].initial = self.request['Proyecto_id']
         #Esto debe cambiar
         self.fields['miembros'].choices = self.request['miembros']
-        self.fields['usuarios'].queryset = User.objects.all().exclude(username='admin',proyectos_asociados__proyectos__proyecto_id=self.request['Proyecto_id'])
-
+        #self.fields['usuarios'].queryset = User.objects.all().exclude(username='admin',proyectos_asociados__proyectos__proyecto_id=self.request['Proyecto_id'])
+        self.fields['usuarios'].choices = self.request['usuarios']
 
     estados = (
         ('PENDIENTE', 'Pendiente'),
@@ -76,9 +76,8 @@ class modificarproyectoForm(forms.Form):
     fecha = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
     fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Finalizacion")
     miembros = forms.MultipleChoiceField(required=False, label="Eliminar miembros [Los usuarios seleccionados seran eliminados]",label_suffix="Miembros del proyecto")
-    usuarios= forms.ModelMultipleChoiceField(required=False,queryset= User.objects.all(),
-label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
-
+    #usuarios= forms.ModelMultipleChoiceField(required=False,queryset= User.objects.all(),label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
+    usuarios= forms.MultipleChoiceField(required=False, label="Agregar Nuevos usuarios",label_suffix="lista de usuarios disponibles")
 
 class seleccionarProyectoForm(forms.Form):
     """

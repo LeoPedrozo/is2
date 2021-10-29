@@ -94,11 +94,18 @@ class registroDeUsuariosForm(forms.Form):
     """
     Formulario para habilitar o restringir acceso al sistema
     """
+
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("request")  # store value of request
+        super(registroDeUsuariosForm, self).__init__(*args, **kwargs)
+        self.fields['Usuario'].choices = self.datos['miembros']
+
+
     estados=(
         (True,"Habilitar acceso al sistema"),
         (False,"Restringir acceso al sistema"),
     )
-    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario")
+    Usuario = forms.ChoiceField(initial=0,label="Seleccione un usuario")
     Habilitado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados,label="Usted desea?")
 
 

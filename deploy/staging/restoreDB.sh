@@ -10,7 +10,7 @@ psql \
     -X \
     -U postgres \
     -h $DBHOST \
-    -f ./scripSql.sql \
+    -f /var/www/is2/deploy/staging/scripSql.sql \
     --echo-all \
     --set AUTOCOMMIT=off \
     --set ON_ERROR_STOP=on \

@@ -109,3 +109,5 @@ def bootstrap():
 
     run('bash {project_root}/activarEntorno.sh'.format(project_root=PROJECT_ROOT))
 
+    sudo('chmod -R 777 {project_root}/docs/'.format(project_root=PROJECT_ROOT))
+

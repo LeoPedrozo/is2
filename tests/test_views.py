@@ -324,7 +324,7 @@ class TestViews(TestCase):
         response = self.client.get(self.search_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'HistoriaContent.html')
+        self.assertTemplateUsed(response, 'SprintBacklog.html')
 
 
     def test_tableroQARelease(self):

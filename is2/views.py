@@ -2986,7 +2986,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 sprint_actual.estados = 'INICIADO'
                 sprint_actual.save()
 
-                url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/'"
+                url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
                 return redirect(url)
             else:
                 mensaje = "No puede iniciar este sprint ya que no se han agregado desarrolladores o el  sprint carece  de historias agregadas"

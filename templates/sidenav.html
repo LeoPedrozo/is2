@@ -32,6 +32,8 @@
         </a>
 
         <ul class="sidenav" id="menu-side">
+
+
             <!--perfil-->
             <li>
                 <div class="user-view">
@@ -70,6 +72,14 @@
                     {% endif %}
                 </div>
             </li>
+
+
+
+
+
+
+
+
             <!--menu-->
 
             <!--MIS PROYECTOS-->
@@ -225,17 +235,6 @@
                     <p>Product Backlog</p>
                 </a>
 
-            </li>
-
-
-            <!--Divisor-->
-            <div class="divider"></div>
-            <!--HISTORIAL SPRINT-->
-            <li>
-                {% if perms.Sprints.view_sprint %}
-                    <a class='blue-grey btn' href="http://127.0.0.1:8000/visualizarSprint/">Historial de sprints
-                    </a>
-                {% endif %}
             </li>
 
 

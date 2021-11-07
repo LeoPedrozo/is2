@@ -37,7 +37,7 @@ class crearHistoriaForm(forms.Form):
     descripcion = forms.CharField(widget=forms.Textarea)
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
-    horasEstimadas = forms.IntegerField(initial=0, label="Horas Estimadas")
+    #horasEstimadas = forms.IntegerField(initial=0, label="Horas Estimadas")
     #horas_dedicadas = forms.IntegerField(initial=0)
     proyecto=forms.IntegerField(disabled=True, label="Proyecto Propietario")
 
@@ -73,15 +73,15 @@ class modificarHistoriaForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.datosHistoria = kwargs.pop("datosdelaHistoria")  # store value of request
         super(modificarHistoriaForm, self).__init__(*args, **kwargs)
-        self.fields['id_historia'].initial=self.datosHistoria['id_historia']
+        #self.fields['id_historia'].initial=self.datosHistoria['id_historia']
         self.fields['nombre'].initial = self.datosHistoria['nombre']
         self.fields['descripcion'].initial = self.datosHistoria['descripcion']
         self.fields['prioridad'].initial = self.datosHistoria['prioridad']
         #self.fields['fecha_creacion'].initial=self.datosHistoria['fecha_creacion']#este crea problema
-        self.fields['horasEstimadas'].initial = self.datosHistoria['horasEstimadas']
+        #self.fields['horasEstimadas'].initial = self.datosHistoria['horasEstimadas']
 
-        self.fields['horas_dedicadas'].initial = self.datosHistoria['horas_dedicadas']
-        self.fields['proyecto'].initial = self.datosHistoria['proyecto']
+        #self.fields['horas_dedicadas'].initial = self.datosHistoria['horas_dedicadas']
+        #self.fields['proyecto'].initial = self.datosHistoria['proyecto']
 
 
     ESTADOS_CHOICES = [
@@ -97,15 +97,15 @@ class modificarHistoriaForm(forms.Form):
         ('BAJA', 'Baja'),
     ]
 
-    id_historia=forms.IntegerField(disabled=True,label="ID de Historia")
-    proyecto = forms.IntegerField(disabled=True, label="Proyecto Propietario")
+    #id_historia=forms.IntegerField(disabled=True,label="ID de Historia")
+    #proyecto = forms.IntegerField(disabled=True, label="Proyecto Propietario")
     nombre = forms.CharField()
     descripcion = forms.CharField(widget=forms.Textarea)
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     #fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
-    horasEstimadas = forms.IntegerField(initial=0)
+    #horasEstimadas = forms.IntegerField(initial=0)
 
-    horas_dedicadas = forms.IntegerField(initial=0)
+   # horas_dedicadas = forms.IntegerField(initial=0)
 
 
 class eliminarHistoriaForm(forms.Form):
@@ -125,3 +125,23 @@ class asignarDesarrolladorForm(forms.Form):
         self.fields['encargado'].choices = self.datos['developers']
 
     encargado = forms.ChoiceField(required=False)
+
+
+
+class asignaryestimarHistoria(forms.Form):
+    """
+    Formulario de asignacion de roles a usuarios del sistema con consulta a un filtro de usuario previo
+    """
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("developers")  # store value of request
+        super(asignaryestimarHistoria, self).__init__(*args, **kwargs)
+        self.fields['encargado'].choices = self.datos['developers']
+
+    encargado = forms.ChoiceField(required=False)
+    estimado = forms.IntegerField(initial=0, widget=forms.NumberInput(
+        attrs={'type': 'number', 'id': 'estimado', 'name': 'estimado', 'value': '0',
+               'class': 'form-control'}))
+
+
+
+

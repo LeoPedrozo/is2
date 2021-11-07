@@ -52,7 +52,6 @@ class modificarSprintForm(forms.Form):
         fecha_fin = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],label="Fecha fin")
         #Las historias seleccioandas se ignorara durante el sprint
 
-
 class visualizarSprintForm(forms.Form):
     """
     Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la visualizacion de un sprint con los
@@ -91,8 +90,6 @@ class seleccionarSprintForm(forms.Form):
         self.fields['sprint'].choices = self.request
 
     sprint = forms.ChoiceField(label="Seleccione el Sprint")
-
-
 
 class extenderSprintForm(forms.Form):
     """

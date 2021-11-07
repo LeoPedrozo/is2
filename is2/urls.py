@@ -29,9 +29,11 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, \
     search, swichProyecto, importarRol, step1_eliminarRol, step2_eliminarRol, step2_SprintPlanning, \
     asignarCapacidad, step3_SprintPlanning, step3_asignarEncargado, tableroQA_Release, eliminarSprint, moverHistoriaQA, \
-    visualizarSprintFilter, historicoSprint, historicoSprint2, HistorialProyectoFilter, HistorialSprintFilter, \
+    visualizarSprintFilter, historicoSprint, HistorialProyectoFilter, HistorialSprintFilter, \
     HistorialProductBacklog, BurndownChart, finalizarProyecto, iniciarProyecto, finalizarOexpandirSprint, infoProyecto, \
-    infoUsuario, modificarProyecto2, tableroQA_Release2
+    infoUsuario, modificarProyecto2, tableroQA_Release2, modificarHistoria2, eliminarHistoria2, step1_SprintPlanning2, \
+    step2_SprintPlanning2, asignarCapacidad2, step3_SprintPlanning2, step3_Funcionalidades, modificarSprint2, \
+    sprintBacklog2, tableroKanban2, moverHistoria2, funcionalidadesQA, KanbanHistorico, eliminarSprint2, homeProyecto
 from django.conf.urls import url
 
 
@@ -63,7 +65,8 @@ urlpatterns = [
 
     #URL relacionado a proyecto
     path('proyecto/nuevo/',crearProyecto),
-    path('proyecto/',HistorialProyectoFilter),
+    #path('proyecto/',HistorialProyectoFilter),
+    path('proyecto/<int:id_proyecto>/',homeProyecto),
     path('proyecto/<int:id_proyecto>/Sprints/', HistorialSprintFilter),
     path('proyecto/<int:id_proyecto>/ProductBacklog/', HistorialProductBacklog),
     path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto),
@@ -73,21 +76,67 @@ urlpatterns = [
     path('importarRoles/',importarRol),
     path('inicio/<int:id>/',swichProyecto),
 
-    #no se usa mas
-    path('modificarProyecto/',modificarProyecto),
-    path('eliminarProyecto/',eliminarProyecto),
+
+    #NUEVOS URLS relacionados a Historia
+
+    path('proyecto/<int:id_proyecto>/ProductBacklog/nuevo/', crearHistoria),
+    path('proyecto/<int:id_proyecto>/ProductBacklog/modificar/Historia<int:id_historia>/', modificarHistoria2),
+    path('proyecto/<int:id_proyecto>/ProductBacklog/Eliminar/Historia<int:id_historia>/', eliminarHistoria2),
+
+
+    #NUEVOS URLS  relacionados al Manejo de Sprint.
+         #estos paths son de crear nuevo sprint
+    path('proyecto/<int:id_proyecto>/Sprints/nuevo/InformacionBasica/', step1_SprintPlanning2),
+        #esto no se usa
+    path('proyecto/<int:id_proyecto>/Sprints/nuevo/FormarEquipo/', step2_SprintPlanning),
+    path('proyecto/<int:id_proyecto>/Sprints/nuevo/AsignarHistorias/', step3_SprintPlanning),
+    path('proyecto/<int:id_proyecto>/Sprints/nuevo/FormarEquipo/<int:id_usuario>', asignarCapacidad),
+    #ojo
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/AsignarEncargado/<int:id>/<int:opcion>/', step3_asignarEncargado),
+
+        #estos paths son de modificar.
+    path('proyecto/<int:id_proyecto>/Sprints/modificar/<int:id_sprint>/InformacionBasica/',modificarSprint2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/', step2_SprintPlanning2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarHistorias/', step3_SprintPlanning2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/', asignarCapacidad2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarEncargado/Historia<int:id_historia>/Op<int:opcion>/', step3_Funcionalidades),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/Eliminar/', eliminarSprint2),
+
+
+    #URL relacionados a los aspectos relacionados al sprint
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/SprintBacklog/',sprintBacklog2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/',tableroKanban2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/Historia<int:id_historia>/Op<int:opcion>', moverHistoria2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/BurndownChart/',BurndownChart),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/accion+<str:opcion>/',finalizarOexpandirSprint),
+
+
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/',tableroQA_Release2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/<int:id_historia>/<int:opcion>/', funcionalidadesQA),
+
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/kanbanHistorico/',KanbanHistorico),
 
 
 
 
-
-
+    #Url ya desactualizado
+    path('tableroKanban/<int:id_sprint>/<str:opcion>/', finalizarOexpandirSprint),
+    path('tableroKanban/', tableroKanban),
+    path('tableroKanban/<int:id>/<int:opcion>/', moverHistoria),
     #URL RELACIONADAS A SPRINT
     path('SprintPlanning/1/', step1_SprintPlanning),
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/InformacionBasica/', step1_SprintPlanning),
+
     path('SprintPlanning/2/', step2_SprintPlanning),
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/FormarEquipo/', step2_SprintPlanning),
     path('SprintPlanning/2/<int:id>/', asignarCapacidad),
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/FormarEquipo/<int:id_usuario>', asignarCapacidad),
+
     path('SprintPlanning/3/', step3_SprintPlanning),
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/AsignarHistoria/', step3_SprintPlanning),
+
     path('SprintPlanning/3/<int:id>/<int:opcion>/', step3_asignarEncargado),
+    #path('proyecto/<int:id_proyecto>/Sprints/nuevo/AsignarHistoria/<int:id_historia>/<int:opcion>/', step3_asignarEncargado),
 
     path('sprintBacklog/<int:id_sprint>/',sprintBacklog),
     #path('sprint/<int:id_sprint>/BackLog/',sprintBacklog),
@@ -103,22 +152,29 @@ urlpatterns = [
     #path('KanBan/Historico/<int:id>/',visualizarSprint2),
 
     #URL relacionada a historias
-    path('crearHistoria/',crearHistoria),
+    path('modificarHistoria/1/', seleccionarHistoria),
+    path('modificarHistoria/2/', modificarHistoria),
+    path('eliminarHistoria/', eliminarHistoria),
+
+
+
+
+
+
+
+
+
+
+
+    # no se usa mas
+    path('modificarProyecto/', modificarProyecto),
+    path('eliminarProyecto/', eliminarProyecto),
+
     path('verHistorias/',productBacklog),
     path('verHistorias/<int:id>/',asignarSprint),
-    path('modificarHistoria/1/',seleccionarHistoria),
-    path('modificarHistoria/2/',modificarHistoria),
-    path('eliminarHistoria/',eliminarHistoria),
     path('asignarEncargado/',asignarHistoriaEncargado),
-
     #path('tableroKanban/<str:opcion>/',tableroKanban),
-    path('tableroKanban/', tableroKanban),
 
-
-    path('tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
-    #path('sprint/tableroKanban/<int:id>/<int:opcion>/',moverHistoria),
-    path('tableroKanban/<int:id_sprint>/<str:opcion>/',finalizarOexpandirSprint),
-    #path('sprint/<int:id_sprint>/Kanban/<str:opcion>/',finalizarOexpandirSprint),
 
 
     path('listarMiembros/',verMiembros),
@@ -127,7 +183,7 @@ urlpatterns = [
     path('burndownChart/<int:id_sprint>/',BurndownChart),
     #path('sprint/<int:id_sprint>/BurndownChart/',BurndownChart),
 
-    path('historicooSprint/<int:id_sprint>/',historicoSprint2),
+    #path('historicooSprint/<int:id_sprint>/',historicoSprint2),
     #path('sprint/<int:id>/KanBan/Historico/',historicoSprint2),
 
 
@@ -156,7 +212,11 @@ urlpatterns = [
 
 
     re_path(r'^docs/', include('docs.urls')),
-    path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
+    #path('inicio/',inicio), #Pagina de inicio del sistema (Una vez loggeado)
+
+    path('inicio/',inicio),
+
+
     #Autenticador de google
     path('', TemplateView.as_view(template_name="index.html")), #Pagina de logeo (Boton iniciar sesion)
     path('accounts/', include('allauth.urls')), #Pagina SSO de Google mediante OAuth2

@@ -55,7 +55,7 @@ from proyectos.forms import crearproyectoForm, modificarproyectoForm, selecciona
 from proyectos.models import Proyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
-    cargarHorasHistoriaForm, asignarEncargadoForm, asignarDesarrolladorForm
+    cargarHorasHistoriaForm, asignarEncargadoForm, asignarDesarrolladorForm,asignaryestimarHistoria
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 
@@ -72,15 +72,8 @@ def saludo(request):
 
     return render(request, "rolCreado.html", {"nombre": "Jose"})
 
-
+"""
 def inicio(request):
-    """
-    Metodo que es ejecutado para mostrar la pagina de inicio del sistema
-
-    :param request: consulta recibida
-    :return: respuesta a la solicitud de ejecucion de INICIO
-    """
-
     if request.user.groups.filter(name='registrado'):
         print("el usuario pertenece al grupo de registrados")
         if request.user.is_superuser:
@@ -104,7 +97,7 @@ def inicio(request):
                            "roles": roles})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
-
+"""
 
 # Para acceder directamente a los archivos guardados en el directorio docs
 # (Todavia no se ha implementado)
@@ -902,21 +895,12 @@ def step2_SprintPlanning(request):
     proyecto_actual = Proyecto.objects.get(id=request.session['proyecto'])
     sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
     usuarios = []
-    # aca en este filter se puede agregar la condicion de que tengan el rol de developer.
-    # tablaparcial tiene la lista de usuarios del proyecto,<sin filtrar>
+
     PosiblesIntegrantes = UserProyecto.objects.filter(proyecto=proyecto_actual, rol_name="Desarrollador")
 
-    print("La lista de posibles integrantes son :", PosiblesIntegrantes)
-    # tablaparcial2=UserSprint.objects.filter(proyecto=proyecto_actual,sprint=sprint_actual)
-
-    # este for es para poder generar la lista de usuarios que se pueden seleccionar, y el if interno es para que no se repitan
     for elemento in PosiblesIntegrantes:
-
         u = UserSprint.objects.filter(proyecto=proyecto_actual, usuario=elemento.usuario, sprint=sprint_actual)
-        print("existe -> ", u)
-        # si el usuario ya existe en la tabla entonces no hace falta agregar 2 veces. No entra en el if
         if (len(u) == 0):
-            print("El usuario ", elemento.usuario.username, " es agregado a la lista")
             usuarios.append(elemento.usuario)
 
     return render(request, "SprintPlanning_2.html", {"miembros": usuarios})
@@ -1173,9 +1157,13 @@ def eliminarSprint(request, id_sprint):
         h.save()
 
     sprint_seleccionado.delete()
+    print('Proyecto actual=',request.session["selected_id_proy"])
 
-    return redirect(visualizarSprint)
+    proye=request.session["selected_id_proy"]
 
+    #return redirect(visualizarSprint)
+
+    return render(request, "outputEliminarSprintl.html", {"Sprint": sprint_seleccionado, "ProyectoID": proye})
 
 ##Solo muestra los sprint sin mayor detalle
 @login_required
@@ -1315,7 +1303,7 @@ def verMiembros(request):
 
 @login_required
 @permission_required('userStory.add_historia', raise_exception=True)
-def crearHistoria(request):
+def crearHistoria(request,id_proyecto):
     """
     Metodo que es ejecutado para crear un user story, se despliega un formulario con los campos necesarios para la creacion de
     un user story
@@ -1329,23 +1317,19 @@ def crearHistoria(request):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosHistoria = formulario.cleaned_data
-            print("el cleaned data en bruto del formulario de crear Historia")
-            print(datosHistoria)
 
             datosHistoria['proyecto'] = getProyecto(formulario.cleaned_data['proyecto'])
 
-            print("el cleaned data en bruto del formulario de crear Historia + asociado al proyecto actual")
-            print(datosHistoria)
 
             nuevaHistoria(datosHistoria)
 
             # Retornar mensaje de exito
-            return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria})
+            return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria,"ID_proyecto":id_proyecto})
     else:
-        usuarioActual = User.objects.get(username=request.user.username)
-        u = model_to_dict(usuarioActual)
-        request.session['idproyecto'] = u['proyecto']
-
+        #no sirve mas
+        #usuarioActual = User.objects.get(username=request.user.username)
+        #u = model_to_dict(usuarioActual)
+        request.session['idproyecto'] = id_proyecto
         formulario = crearHistoriaForm(proyecto=request.session['idproyecto'])
 
     return render(request, "crearUserStory.html", {"form": formulario})
@@ -1738,7 +1722,7 @@ def search(request):
         # messages.info(request, "El proyecto no tiene historias")
         print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
-    return render(request, 'product_backlog.html', {'filter': historia_filter})
+    return render(request, 'historialProduct.html', {'filter': historia_filter})
 
 
 @permission_required('Sprints.change_sprint', raise_exception=True)
@@ -1813,7 +1797,7 @@ def tableroQA_Release(request):
 
 # Vista que hace la logica de cambio de estado en el kanban
 @login_required
-def moverHistoriaQA(request, id,id_sprint, opcion):
+def moverHistoriaQA(request,id_proyecto,id_sprint,id_historia, opcion):
     """
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
@@ -1826,13 +1810,13 @@ def moverHistoriaQA(request, id,id_sprint, opcion):
 
     # aceptar en quality assurance la historia, entonces va a pasar a Release
     if (opcion == 6):
-        h = Historia.objects.get(id_historia=id)
+        h = Historia.objects.get(id_historia=id_historia)
         h.estados = 'RELEASE'
         messages.info(request, "Historia enviada a Release")
         h.save()
     # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
     if (opcion == 7):
-        h = Historia.objects.get(id_historia=id)
+        h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
         if h.prioridad == 'BAJA':
             h.prioridad = 'MEDIA'
@@ -1842,16 +1826,14 @@ def moverHistoriaQA(request, id,id_sprint, opcion):
         messages.info(request, f"Nueva prioridad {h.prioridad}")
         h.save()
 
-
+    #marcar como verificado.
     if opcion==8:
         sp=Sprint.objects.get(id=id_sprint)
         sp.verificado=True
         sp.save()
+        url=""
         return redirect(visualizarSprintFilter)
 
-    # aca se puede asociar una historia a un usuario
-    # usuario = User.objects.get(username=request.user.username)
-    # usuario.stories.add(h)
 
     return tableroQA_Release2(request,id_sprint)
 
@@ -2020,13 +2002,21 @@ def HistorialSprintFilter(request, id_proyecto):
     request.session["selected_id_proy"] = id_proyecto
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     listaSprint = proyecto_seleccionado.id_sprints.all()
+
+    if(len(proyecto_seleccionado.id_sprints.filter(estados="INICIADO"))!=0):
+        sprint_activo=proyecto_seleccionado.id_sprints.get(estados="INICIADO")
+        request.session['fecha_fin'] = sprint_activo.fecha_fin.strftime("%Y/%m/%d")
+        formulioExtender = extenderSprintForm(dato=request.session)
+    else:
+        formulioExtender= "No tiene sprint iniciados"
+
     sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
-    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter})
+    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter,"ID_proyecto":id_proyecto,"ExtenderForm":formulioExtender})
 
 
 # 3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
 # esta es cuando se le toca la opcion de ver kanban , es la foto del kanban de un sprint finalizado
-def historicoSprint2(request, id_sprint):
+def KanbanHistorico(request, id_proyecto,id_sprint):
     sprintSeleccionado = Sprint.objects.get(id=id_sprint)
     sprintActual2 = model_to_dict(sprintSeleccionado)
     listaHistorias = sprintActual2['historias']
@@ -2071,9 +2061,9 @@ def historicoSprint2(request, id_sprint):
             finalizo = x.history_date
         else:
             print("No existe")
-    return render(request, "historicoSprint2.html",
+    return render(request, "KanbanHistorico.html",
                   {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                   "versionesDic": versionesDic, "finalizo": finalizo})
+                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
 
 # 4 cuando se selecciona ver Product backlog
@@ -2082,10 +2072,12 @@ def HistorialProductBacklog(request, id_proyecto):
     user_list = User.objects.all()
     user_filter = UserFilter(request.GET, queryset=user_list)
 
+
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario=User.objects.get(username=request.user.username)
+
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
-    # id_proyectoActual = User.objects.get(username=request.user.username)
-    # id_proyectoActual = id_proyectoActual.proyecto_id
-    # if Historia.objects.filter(proyecto=id_proyectoActual)
+
     if Historia.objects.filter(proyecto=proyecto_seleccionado).exists():
         historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
     else:
@@ -2093,7 +2085,7 @@ def HistorialProductBacklog(request, id_proyecto):
         # messages.info(request, "El proyecto no tiene historias")
         print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
-    return render(request, 'product_backlog.html', {'filter': historia_filter})
+    return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario})
 
 """
 def BurndownChart(request):
@@ -2177,7 +2169,7 @@ def BurndownChart(request):
 
 """
 
-def BurndownChart(request,id_sprint):
+def BurndownChart(request,id_proyecto,id_sprint):
     """
     Metodo para Graficar el burndown chart en un gráfico de linea
 
@@ -2185,16 +2177,7 @@ def BurndownChart(request,id_sprint):
     :return: grafico de burndown chart
     """
     calendarioParaguay = Paraguay()
-    # formatear fecha print(x.strftime("%b %d %Y %H:%M:%S"))
-    #usuarioActual = User.objects.get(username=request.user.username)
-    #if (usuarioActual.proyecto == None):
-    #    mensaje = "Usted no forma parte de ningun proyecto"
-    #    return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-    #else:
-        # 1- se consulta el sprint actual
 
-
-    #sprintActual = listasprints.get(id=id_sprint)
     sprintActual = Sprint.objects.get(id=id_sprint)
 
     # 2- calculamos la capacidad del equipo
@@ -2378,12 +2361,11 @@ def iniciarProyecto(request, id_proyecto):
     return redirect(HistorialProyectoFilter)
 
 
-def finalizarOexpandirSprint(request, id_sprint, opcion):
+def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
 
     if opcion == 'finalizar':
-        print("A")
         listaHistorias = sprintActual.historias.all()
         grupos = ', '.join(map(str, usuarioActual.groups.all()))
         # print("grupos del usuario = ", grupos)
@@ -2414,12 +2396,20 @@ def finalizarOexpandirSprint(request, id_sprint, opcion):
 
     if (opcion == "expandir"):
         if request.method == 'GET':
-            print("CAMBIA LA FECHA")
             fecha = request.GET['fecha_fin']
-            sprintActual.fecha_fin = fecha
+            datetime_object = datetime.strptime(fecha, "%Y/%m/%d")
+            sprintActual.fecha_fin = datetime_object
             sprintActual.save()
+            url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
+            return redirect(url)
 
-    return redirect(tableroKanban)
+            # fecha = request.GET['fecha_fin']
+            #sprintActual.fecha_fin = fecha
+            #sprintActual.save()
+
+    url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
+    return redirect(url)
+    #return redirect(tableroKanban)
 
 def infoProyecto(request, id_proyecto):
 
@@ -2548,7 +2538,7 @@ def infoUsuario(request, id_usuario):
 
 @permission_required('Sprints.change_sprint', raise_exception=True)
 @login_required
-def tableroQA_Release2(request,id_sprint):
+def tableroQA_Release2(request,id_proyecto,id_sprint):
     """
     Metodo para visualizar el tablero Quality Assurance Release
 
@@ -2574,9 +2564,10 @@ def tableroQA_Release2(request,id_sprint):
 
         cantidaddehistorias = len(listaHistorias)
         print(listaHistorias)
-        return render(request, "QA_sprint2.html",
+        return render(request, "QA_sprint3.html",
                       {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                       "versionesDic": versionesDic})
+                       "versionesDic": versionesDic,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+
     except IndexError:
         return render(request, "Condicion_requerida.html", {"mensaje": "NINGUNA HISRORIA PARA HACER QA"})
     except UnboundLocalError:
@@ -2584,3 +2575,720 @@ def tableroQA_Release2(request,id_sprint):
 
 
 
+def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
+    """
+    Metodo para administrar el cambio de estado de historias en el tablero kanban
+
+    :param request: solicitud recibida
+    :param id: identificador de la historia a mover
+    :param opcion: estado de la historia
+    :return: tablero kanban actualizado
+    """
+
+
+    # aceptar en quality assurance la historia, entonces va a pasar a Release
+    if (opcion == 6):
+        h = Historia.objects.get(id_historia=id_historia)
+        h.estados = 'RELEASE'
+        messages.info(request, "Historia enviada a Release")
+        h.save()
+    # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
+    if (opcion == 7):
+        h = Historia.objects.get(id_historia=id_historia)
+        h.estados = ""
+        if h.prioridad == 'BAJA':
+            h.prioridad = 'MEDIA'
+        else:
+            h.prioridad = 'ALTA'
+        messages.info(request, "Historia rechazada")
+        messages.info(request, f"Nueva prioridad {h.prioridad}")
+        h.save()
+
+    #marcar como verificado.
+    if opcion==8:
+        sp=Sprint.objects.get(id=id_sprint)
+        sp.verificado=True
+        sp.save()
+        url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        return redirect(url)
+
+    url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/QualityAssurance/"
+    return redirect(url)
+    #return tableroQA_Release2(request,id_sprint)
+
+
+
+
+#La vistas 2 -----------------------------------------------------------------------
+
+def inicio(request):
+    usuarioActual = User.objects.get(username=request.user.username)
+
+
+    if usuarioActual.groups.filter(name='registrado'):
+        usuarioActual=User.objects.get(username=request.user.username)
+        usuarioActual.proyecto=None
+        if(usuarioActual.is_superuser ):
+            listaProyectos = Proyecto.objects.all()
+            listaUsuarioRolesProyecto = listaderoles(listaProyectos, usuarioActual, True)
+
+        else:
+            listaProyectos=usuarioActual.proyectos_asociados.all()
+            #Esto es nuevo
+            listaUsuarioRolesProyecto=listaderoles(listaProyectos,usuarioActual,False)
+
+
+
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        Proyecto_filter = ProyectoFilter(request.GET, queryset=listaProyectos)
+        return render(request, "historialProyecto.html", {'filter': Proyecto_filter,'avatar':fotodeususario,'usuario':usuarioActual,"Roles":listaUsuarioRolesProyecto})
+    else:
+        return render(request, "registroRequerido.html", {"mail": request.user.email})
+
+
+#no se usa de momento
+def listaderoles(proyectos,usuario,admin):
+    listaUsuarioRolesProyecto = []
+    if(not admin):
+        for proyecto in proyectos:
+            up = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto)
+            listaUsuarioRolesProyecto.append(up.rol_name)
+    else:
+        for proyecto in proyectos:
+            listaUsuarioRolesProyecto.append("Administrador")
+    return listaUsuarioRolesProyecto
+
+
+#Modificar Historia 2
+@login_required
+@permission_required('userStory.change_historia', raise_exception=True)
+def modificarHistoria2(request,id_proyecto,id_historia):
+    """
+    Metodo para la modificacion de historias, se despliega un formulario con las informaciones actuales de la historia con la
+    posibilidad de modificar algunos datos
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de MODIFICAR HISTORIA
+    """
+
+    if request.method == "POST":
+
+        formulario = modificarHistoriaForm(request.POST, datosdelaHistoria=request.session['HistoriaSeleccionada'])
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosdeHistoria = formulario.cleaned_data
+
+            datosdeHistoria['id_historia']=id_historia
+            print(datosdeHistoria)
+
+            updateHistoria(datosdeHistoria)
+            # Retornar mensaje de exito
+            return render(request, "outputmodificarHistoria.html", {"historiaModificada": datosdeHistoria,"ID_proyecto":id_proyecto})
+    else:
+
+        h=Historia.objects.get(id_historia=id_historia)
+
+        request.session['HistoriaSeleccionada']=model_to_dict(h)
+
+        formulario = modificarHistoriaForm(datosdelaHistoria=request.session['HistoriaSeleccionada'])
+
+    return render(request, "modificarHistoria.html", {"form": formulario})
+
+
+
+
+@login_required
+@permission_required('userStory.delete_historia', raise_exception=True)
+def eliminarHistoria2(request,id_proyecto,id_historia):
+    """
+    Metodo que permite la eliminacion de una historia de usuario
+
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de ELIMINAR HISTORIA
+    """
+
+    HistoriaSeleccionada = Historia.objects.get(id_historia=id_historia)
+        # Acciones a realizar con el form
+    HistoriaSeleccionada.delete()
+
+    # Retornar mensaje de exito
+    return render(request, "outputEliminarHistoria.html", {"HistoriaEliminado": HistoriaSeleccionada,"ID_proyecto":id_proyecto})
+
+
+
+
+# VISTAS RELACIONADAS Al  SPRINT PLANNING
+
+@login_required
+@permission_required('Sprints.change_sprint', raise_exception=True)
+def modificarSprint2(request, id_proyecto, id_sprint):
+    """
+    Metodo para la modificacion de sprint, se despliega un formulario con las informaciones actuales del sprint con la
+    posibilidad de modificar algunos datos
+
+    :param request: solicitud recibida
+    :param id_sprint: identificador del sprint que se quiere modificar
+    :return: respuesta a la solicitud de MODIFICAR SPRINT
+    """
+
+    if request.method == "POST":
+        formulario = modificarSprintForm(request.POST, request=request.session)
+        if (formulario.is_valid()):
+            datosSprint = formulario.cleaned_data
+            updated_sprint = updateSprint(formulario.cleaned_data)
+            url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
+            return redirect(url)
+    else:
+        proyectoPropietario = Proyecto.objects.get(id=id_proyecto)
+        sprint_seleccionado = Sprint.objects.get(id=id_sprint)
+
+        request.session['proyecto'] = proyectoPropietario.id
+        guardarCamposdeSprint(request, sprint_seleccionado, proyectoPropietario.id)
+        formulario = modificarSprintForm(request=request.session)
+        return render(request, "modificarSprint.html", {"form": formulario})
+
+
+@login_required
+@permission_required('Sprints.add_sprint', raise_exception=True)
+def step1_SprintPlanning2(request,id_proyecto):
+    """
+    Metodo auxiliar para la realizacion del Sprint Planning de un proyecto
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de SPRINT PLANNING
+    """
+
+    if request.method == "POST":
+        formulario = crearSprintForm(request.POST, request=request.session)
+        if (formulario.is_valid()):
+            # Acciones a realizar con el form
+            datosSprint = formulario.cleaned_data
+            newSprint = nuevoSprint(datosSprint)
+            request.session['sprint_planning_id'] = newSprint.id
+            alpaso2 = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
+            return redirect(alpaso2)
+
+    else:
+        proy = Proyecto.objects.get(id=id_proyecto)
+        if (len(proy.id_sprints.filter(estados="PLANNING")) == 0):
+            request.session['proyecto'] = proy.id
+            formulario = crearSprintForm(request=request.session)
+            return render(request, "SprintPlanning_1.html", {"form": formulario})
+        else:
+            mensaje = "Ya existe un sprint en planning"
+            return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+    return render(request, "SprintPlanning_1.html", {"form": formulario,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+
+
+def step2_SprintPlanning2(request, id_proyecto, id_sprint):
+    """
+    Metodo para la seleccion de desarrolladores en el Sprint Planning
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de SPRINT PLANNING
+    """
+
+    proyecto_actual = Proyecto.objects.get(id=id_proyecto)
+    #sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
+    sprint_actual = Sprint.objects.get(id=id_sprint)
+    usuarios = []
+    PosiblesIntegrantes = UserProyecto.objects.filter(proyecto=proyecto_actual, rol_name="Desarrollador")
+
+    for elemento in PosiblesIntegrantes:
+
+        u = UserSprint.objects.filter(proyecto=proyecto_actual, usuario=elemento.usuario, sprint=sprint_actual)
+
+        # si el usuario ya existe en la tabla entonces no hace falta agregar 2 veces. No entra en el if
+        if (len(u) == 0):
+            usuarios.append(elemento.usuario)
+
+    return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+
+
+
+def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
+    """
+    Metodo para asignar la capacidad de trabajo de un desarrollador
+
+    :param request: Solicitud recibida
+    :param id: identificador de usuario
+    :return: respuesta a la solicitud ASIGNAR CAPACIDAD
+    """
+
+    if request.method == 'POST':
+        form = asignarcapacidadForm(request.POST)
+        if (form.is_valid()):
+            capacidad = form.cleaned_data['capacidad']
+            if capacidad > 0:
+                usuario = User.objects.get(id=id_usuario)
+                proyecto_actual = Proyecto.objects.get(id=id_proyecto)
+                sprint_en_planning = Sprint.objects.get(id=id_sprint)
+                try:
+                    u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
+                except ObjectDoesNotExist:
+                    nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
+                                               capacidad=capacidad)
+                    nuevoElemento.save()
+                else:
+
+                    u.capacidad = capacidad
+                    u.save()
+
+            else:
+                messages.error(request, 'Ingrese una capacidad valida')
+        else:
+            print("formulario invalido")
+
+    url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
+    #return redirect(step2_SprintPlanning)
+    return redirect(url)
+
+
+
+
+def step3_SprintPlanning2(request, id_proyecto, id_sprint):
+    """
+    Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de SPRINT PLANNING
+    """
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+    sprintActual = Sprint.objects.get(id=id_sprint)
+
+    calendarioParaguay = Paraguay()
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+
+    capacidad_sprint_horas = dias_de_sprint * 24
+
+    # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
+    Lista1 = Historia.objects.filter(proyecto=proyectoActual, estados="")
+    Lista2 = sprintActual.historias.all()
+    prioridades = ["ALTA", "MEDIA", "BAJA"]
+
+    # Como no estan ordenadas creamos otras listas que son ordenadas
+    productbacklog = []
+    sprintbacklog = []
+
+    # ordenamos la lista Alta Media Baja
+    for p in prioridades:
+        for h in Lista1:
+            if h.prioridad == p:
+                productbacklog.append(h)
+
+    capacidad_ocupada_por_historias = 0
+    for p in prioridades:
+        for h in Lista2:
+            if h.prioridad == p:
+                sprintbacklog.append(h)
+                capacidad_ocupada_por_historias = capacidad_ocupada_por_historias + h.horasEstimadas
+
+    tablatemporal = UserSprint.objects.filter(proyecto=proyectoActual, sprint=sprintActual)
+    developers = []
+
+    # La lista de los desarrolladores para el sprint actual
+    for elemento in tablatemporal:
+        developers.append((elemento.usuario.username, elemento.usuario.username))
+
+    cantidaddehistorias = len(productbacklog)
+    porcentaje = round((capacidad_ocupada_por_historias / capacidad_sprint_horas) * 100)
+
+    request.session['developers'] = developers
+
+    formulario_asignar= asignaryestimarHistoria(developers=request.session)
+    #formulario = asignarDesarrolladorForm(developers=request.session)  "form": formulario
+
+    return render(request, "step3_SprintPlanning_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
+                                                     "s_backlog": sprintbacklog, "Total": cantidaddehistorias,
+                                                     "formulario_asignar": formulario_asignar, "Porcentaje": porcentaje,
+                                                     "Duracion": dias_de_sprint,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+
+
+
+
+def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
+    """
+    Metodo para administrar la asignacion o remocion de encargado de un user story
+
+    :param request: Solicitud recibida
+    :param id: identificador del user story
+    :param opcion: accion a realizar
+    :return: Respuesta a la solicitud ASIGNAR ENCARGADO
+    """
+
+    # h = Historia.objects.get(id_historia=id)
+    #sprint_actual = Sprint.objects.get(id=request.session['sprint_planning_id'])
+
+    sprint_actual = Sprint.objects.get(id=id_sprint)
+    #asigno encargado a la historia
+    if (opcion == 1):
+        h = Historia.objects.get(id_historia=id_historia)
+        #if request.method == 'POST':
+        #   formulario = asignaryestimarHistoria(request.POST, developers=request.session)
+        #    if (formulario.is_valid()):
+        #        usuarioSeleccionado = formulario.cleaned_data['encargado']
+        #        encargado = User.objects.get(username=usuarioSeleccionado)
+        #        h.encargado = encargado
+        #        h.estados = 'PENDIENTE'
+        #        h.horasEstimadas=formulario.cleaned_data['estimado']
+        #        h.save()
+        #        # Se le agrega al sprint
+        #        sprint_actual.historias.add(h)
+        #        sprint_actual.save()
+        #    else:
+        #        print("formulario invalido")
+        if request.method == 'POST':
+            usuarioSeleccionado = User.objects.get(username=request.POST['encargado'])
+            h.horasEstimadas=request.POST['estimado']
+            h.encargado = usuarioSeleccionado
+            h.estados = 'PENDIENTE'
+            h.save()
+            sprint_actual.historias.add(h)
+            sprint_actual.save()
+
+
+    if (opcion == 2):
+        h = Historia.objects.get(id_historia=id_historia)
+        h.encargado = None
+        h.estados = ""
+        h.horasEstimadas=0
+        h.save()
+        sprint_actual.historias.remove(h)
+        sprint_actual.save()
+
+    # Iniciar
+    if (opcion == 3):
+
+        #proyectoPropietario = User.objects.get(username=request.user.username).proyecto
+        proyectoPropietario = Proyecto.objects.get(id=id_proyecto)
+
+        listaDevelopers = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprint_actual)
+
+        # proyectoPropietario= User.objects.get(username=request.user.username).proyecto
+        listasprints = proyectoPropietario.id_sprints
+
+        if (not listasprints.filter(estados="INICIADO").exists()):  # No esta otro sprint iniciado actualmente
+            # si tiene desarroladores y tiene historias agregadas
+            if (len(listaDevelopers) != 0 and len(sprint_actual.historias.all()) != 0):
+
+                # El siguente if es para cargar los datos para el burndown chart.
+                # La verdad es que no se si el if es necesario ya que solo se puede iniciar 1 vez.
+                if (len(sprint_actual.horasLaboralesIdeal) == 0):
+                    calcularEsfuerzoIdeal(sprint_actual, listaDevelopers)
+                else:
+                    sprint_actual.horasLaboralesIdeal.clear()
+                    calcularEsfuerzoIdeal(sprint_actual, listaDevelopers)
+
+                sprint_actual.estados = 'INICIADO'
+                sprint_actual.save()
+
+                url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/'"
+                return redirect(url)
+            else:
+                mensaje = "No puede iniciar este sprint ya que no se han agregado desarrolladores o el  sprint carece  de historias agregadas"
+                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+        else:
+            mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
+            return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
+    # guardar
+    if (opcion == 4):
+        sprint_actual.estados = 'PLANNING'
+        sprint_actual.save()
+
+        url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        return redirect(url)
+
+    #return redirect(step3_SprintPlanning)
+    url = "/proyecto/" + str(id_proyecto) + "/Sprints/"+str(id_sprint)+"/AsignarHistorias/"
+    return redirect(url)
+
+
+#FUNCIONES RELACIONADAS A LAS CARACTERISTICAS DEL SPRITN
+
+
+@login_required
+@permission_required('userStory.view_historia', raise_exception=True)
+def sprintBacklog2(request,id_proyecto,id_sprint):
+    """
+    Metodo para visualizar los user story que estan como objetivos del sprint
+
+    :param request: consulta recibida
+    :return: respuesta a la solicitud de ejecucion de SPRINT BACKLOG
+    """
+
+    sprintseleccionado = Sprint.objects.get(id=id_sprint)
+    historias = sprintseleccionado.historias.all()
+
+    return render(request, "SprintBacklog.html", {"historias": historias})
+
+
+
+
+@login_required
+def tableroKanban2(request,id_proyecto,id_sprint):
+    """
+    Metodo que posibilita visualizar el tablero kanban
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de TABLERO KANBAN
+    """
+
+    usuarioActual = User.objects.get(username=request.user.username)
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    try:
+
+        #sprintActual = proyectoActual.id_sprints.get(estados="INICIADO")
+        sprintActual = Sprint.objects.get(id=id_sprint)
+        if usuarioActual.groups.filter(name="Scrum Master"):
+            esMaster = True
+        else:
+            esMaster = False
+
+        sprintActual2 = model_to_dict(sprintActual)
+        listaHistorias = sprintActual2['historias']
+
+        #Preparacion de comentarios
+        versionesDic = {}
+        for hist in listaHistorias:
+            if hist.history.filter(
+                    Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                            history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+
+                x = hist.history.filter(
+                    Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
+                        history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+
+                listaDeComentarios = []
+                for z in list(x):
+                    fech = z.history_date
+                    if z.comentarios != '':
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + z.comentarios
+                    else:
+                        fechaComentario = fech.strftime("%d-%b-%Y : ") + "Ninguno"
+
+                    print("hist ", z.id_historia, "comentario=", fechaComentario)
+                    if not fechaComentario in listaDeComentarios:
+                        listaDeComentarios.append(fechaComentario)
+
+                versionesDic[hist.id_historia] = listaDeComentarios
+
+
+        cantidaddehistorias = len(listaHistorias)
+
+        request.session['fecha_fin'] = sprintActual2['fecha_fin'].strftime("%Y/%m/%d")
+
+        formulioExtender = extenderSprintForm(dato=request.session)
+
+
+        return render(request, "tableroKanban2.html",
+                          {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+
+            # except IndexError:
+            # return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT"})
+    except ObjectDoesNotExist:
+        return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
+
+
+
+
+@login_required
+def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
+    """
+    Metodo para administrar el cambio de estado de historias en el tablero kanban
+
+    :param request: solicitud recibida
+    :param id: identificador de la historia a mover
+    :param opcion: estado de la historia
+    :return: tablero kanban actualizado
+    """
+
+    h = Historia.objects.get(id_historia=id_historia)
+    encargado = User.objects.get(username=request.user.username)
+    # Agregar Tiempo
+
+    #Se agrega mueve la historia a la columna pendiente
+    if (opcion == 1):
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
+        if (h.encargado == encargado):
+            h.estados = 'PENDIENTE'
+            messages.success(request, "Pasado a pendiente")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
+    #Se agrega mueve la historia a la columna En curso
+    if (opcion == 2):
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
+        if (h.encargado == encargado):
+            h.estados = 'EN_CURSO'
+            messages.success(request, "Pasado a en curso")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
+    # Se agrega mueve la historia a la columna Finalizado
+    if (opcion == 3):
+        #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
+        if (h.encargado == encargado):
+            h.estados = 'FINALIZADO'
+            messages.success(request, "Finalizado")
+        else:
+            messages.error(request, "No eres el encargado de la historia")
+    # Este es para cargar horas y comentario
+    if(opcion == 5):
+        if request.method == 'POST':
+            form = cargarHorasHistoriaForm(request.POST)
+            if (form.is_valid()):
+                horas = form.cleaned_data['horas']
+                comentario = form.cleaned_data['comentario']
+                if horas > 0:
+                    if request.user == h.encargado:
+                        h.horas_dedicadas = h.horas_dedicadas + horas
+                        h.comentarios = comentario
+                        h._change_reason = "comentario"
+                        messages.success(request, "Horas registradas")
+                    else:
+                        messages.error(request, "No eres el encargado de la historia")
+                        messages.info(request, f"El encargado es {h.encargado}")
+                else:
+                    messages.error(request, 'Ingrese una hora valida')
+            else:
+                print("formulario invalido")
+
+    h.save()
+    url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
+
+    #return tableroKanban(request)
+    return redirect(url)
+
+
+
+def eliminarSprint2(request, id_proyecto,id_sprint):
+    """
+    Metodo que permite la eliminacion de un sprint
+
+    :param request: solicitud recibida
+    :param id_sprint: identificador del sprint que se desea eliminar
+    :return: respuesta a la solicitud de ELIMINAR SPRINT
+    """
+
+    sprint_seleccionado = Sprint.objects.get(id=id_sprint)
+
+    # eliminamos la informacion relacionada al sprint de la tabla UserSprint
+    UserSprint.objects.filter(sprint=sprint_seleccionado).delete()
+    # Eliminamos el sprint del proyecto
+    # u = UserSprint.objects.filter(sprint=sprint_seleccionado)
+    # proyectoPropietario = u.first()
+    # proyectoPropietario= proyectoPropietario.proyecto
+    # proyectoPropietario.id_sprints
+
+    #
+    historias = sprint_seleccionado.historias.all()
+    for h in historias:
+        h.encargado = None
+        h.estados = ""
+        h.save()
+
+    sprint_seleccionado.delete()
+
+    proye=request.session["selected_id_proy"]
+
+    #return redirect(visualizarSprint)
+
+    #return render(request, "outputEliminarSprintl.html", {"Sprint": sprint_seleccionado, "ProyectoID": id_proyecto})
+    url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+    return redirect(url)
+
+
+
+
+#url= /proyecto/id_proyecto/
+def homeProyecto(request,id_proyecto):
+
+
+    #Paso 1, realiza el swich de proyecto
+    u = User.objects.get(username=request.user.username)
+    p = Proyecto.objects.get(id=id_proyecto)
+
+    if(u.is_superuser):
+        rol_name="Administrador"
+        fotodeususario="No tiene"
+        return render(request, "Home_Proyecto.html",
+                      {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
+                       "usuario": u, "proyecto": p})
+
+    else:
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        rol_name=swichProyecto2(request,u,p,id_proyecto)
+        if(rol_name!=""):
+            return render(request, "Home_Proyecto.html",
+                          {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
+                           "usuario": u, "proyecto": p})
+
+        else:
+            return render(request, "Condicion_requerida.html",{"mensaje":"No tiene un rol aun definido, contactese con el administrador"})
+
+
+
+
+
+
+def swichProyecto2(request,u,p, id_proyecto):
+    """
+    Metodo para cambiar de un proyecto a otro con las reasignaciones de roles correspondiente
+
+    :param request: Solicitud recibida
+    :param id: identificador del proyecto
+    :return: void
+    """
+
+
+    u.proyecto = p
+    if UserProyecto.objects.filter(usuario=u, proyecto=p).exists():
+        proy = UserProyecto.objects.get(usuario=u, proyecto=p)
+        #Si el usuario tiene rol en el proyecto entonces se realiza el cambio de roles
+        if(proy.rol_name!=""):
+            rol_object = Group.objects.get(name=proy.rol_name)
+            print("Limpiando antiguos roles")
+            u.groups.clear()
+        # enlazar con el rol asignado para el proyecto
+            enlazar_Usuario_con_Rol(u, rol_object)
+            registrar_usuario(u.email, 'True')
+            u.save()
+            return proy.rol_name
+        else:
+            return proy.rol_name
+            print("No tiene ROl")
+
+
+# La logica de Roles aun no revisado.
+"""
+def swichProyecto(request, id):
+    u = User.objects.get(username=request.user.username)
+    p = Proyecto.objects.get(id=id)
+    u.proyecto = p
+
+    if UserProyecto.objects.filter(usuario=u, proyecto=p).exists():
+        print("Esta asociado al proyecto, reasignando rol...")
+
+        proy = UserProyecto.objects.get(usuario=u, proyecto=p)
+        if(proy.rol_name!=""):
+            rol_object = Group.objects.get(name=proy.rol_name)
+
+        # Agrego al usuario al rol
+        # Limpiar antiguo rol del usuario para el cambio
+            print("Limpiando antiguos roles")
+            u.groups.clear()
+        # enlazar con el rol asignado para el proyecto
+            enlazar_Usuario_con_Rol(u, rol_object)
+            registrar_usuario(u, 'True')
+
+
+
+    u.save()
+    return redirect(inicio)
+
+"""

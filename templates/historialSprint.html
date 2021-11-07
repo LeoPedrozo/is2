@@ -1,117 +1,274 @@
 {% extends 'base_filtro_sprint.html' %}
+{% include 'material/includes/material_js.html' %}
 
 {% load widget_tweaks %}
 {% load material_form %}
 {% block content %}
 
-        <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        //Dropdown menu
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            //Dropdown menu
 
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl)
-        })
-    });
-</script>
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+            })
+        });
 
-  <form method="get">
-    <div class="well">
-      <h6 class="text-muted">Parametros de filtrado :</h6>
-      <div class="row">
+    </script>
 
-        <div class="form-group col s4">
-          {{ filter.form.estados.label_tag }}
-          {% render_field filter.form.estados class="form-control" %}
+
+
+
+
+    <form method="get">
+        <div class="well">
+            <h6 class="text-muted">Parametros de filtrado :</h6>
+            <div class="row">
+
+                <div class="form-group col s4">
+                    {{ filter.form.estados.label_tag }}
+                    {% render_field filter.form.estados class="form-control" %}
+                </div>
+
+            </div>
+            <p></p>
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-search"></span> Filtrar
+            </button>
+            <p></p>
         </div>
-
-      </div>
-        <p></p>
-      <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-search"></span> Filtrar
-      </button>
-        <p></p>
-    </div>
-  </form>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>#Sprint</th>
-        <th>Fecha Inicio</th>
-        <th>Fecha Fin</th>
-        <th>Estado</th>
-        <th>Verificado</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for sprint in filter.qs %}
+    </form>
+    <table class="table table-bordered">
+        <thead>
         <tr>
-          <td>{{ sprint.id }}</td>
-          <td>{{ sprint.sprintNumber }}</td>
-          <td>{{ sprint.fecha_inicio }}</td>
-          <td>{{ sprint.fecha_fin }}</td>
-          <td>{{ sprint.estados }}</td>
-          <td>{{ sprint.verificado }}</td>
-
-      <td>
-          <div class="dropdown">
-<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ sprint.id }}" data-bs-toggle="dropdown" aria-expanded="false">
-        opciones
-      </a>
-
-      <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
-
-        {% if sprint.estados == "PLANNING" %}
-        <li><a class="dropdown-item" href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar</a></li>
-        <li><a class="dropdown-item" href="/modificarSprint/{{ sprint.id }}/">Modificar</a></li>
-        <li><a class="dropdown-item" href="/eliminarSprint/{{ sprint.id }}/">Eliminar</a></li>
-        {% endif %}
-      {% if sprint.estados == "INICIADO" %}
-          <li><a class="dropdown-item" href="/tableroKanban/">Ver Kanban</a></li>
-          <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
-      {% endif %}
-            {% if sprint.estados == "FINALIZADO"  %}
-          <li><a class="dropdown-item" href="/historicooSprint/{{ sprint.id }}/">Ver Kanban</a></li>
-
-                {% if sprint.verificado !=  True  %}
-                <li><a class="dropdown-item" href="/qualityassurance/{{ sprint.id }}/">Verificar</a></li>
-                {% endif %}
-          <li><a class="dropdown-item" href="/burndownChart/{{ sprint.id }}/">Ver BurndownChart</a></li>
-      {% endif %}
-          <li><a class="dropdown-item" href="/sprintBacklog/{{ sprint.id }}">Ver Sprint Backlog</a></li>
-
-
-      </ul>
-          </div>
-      </td>
+            <th>id</th>
+            <th>#Sprint</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Estado</th>
+            <th>Verificado</th>
         </tr>
-      {% empty %}
-        <tr>
-          <td colspan="5">No hay coincidencias con ese criterio</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </thead>
+        <tbody>
+        {% for sprint in filter.qs %}
+
+            <!-- Modal Iniciar Sprint -->
+
+            <div class="container">
+
+                <div class="modal fade" id="modal_iniciar{{ sprint.id }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel2"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Iniciar del
+                                    sprint {{ sprint.sprintNumber }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Una vez que sea iniciado no se podra modificar agregar mas historias
+                                Desea Iniciar Sprint?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">Cancelar
+                                </button>
+
+                                <a class="btn btn-primary red"
+                                   href=/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/AsignarEncargado/Historia{{ 0 }}/Op{{ 3 }}/>Iniciar
+                                    Sprint</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Eliminar Sprint -->
+                <div class="modal fade" id="modal_eliminar{{ sprint.id }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Eliminacion del
+                                    sprint {{ sprint.sprintNumber }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Realmente desea Eliminar esta sprint?
+                                Todas sus historias volveran al product backlog..
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">Cancelar
+                                </button>
+
+                                <a class="btn btn-primary red"
+                                   href=/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/Eliminar/>Eliminar
+                                    Sprint</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal extender Sprint -->
+                <div class="modal fade" id="modal_extender{{ sprint.id }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Extender
+                                    Sprint #{{ sprint.sprintNumber }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="height: 150px">
 
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'info' %}
-                <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'warning' %}
-                <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
-            {% elif message.tags == 'error' %}
-                <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
-            {% endif %}
+                                <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/accion+expandir/"
+                                      method="GET">
+
+                                    {% form form=ExtenderForm %}{% endform %}
+
+                                <div class="col" style="position: absolute; right: 20px;">
+
+                                    <button value="Cargar" type="submit" class="btn btn-secondary blue">Cargar</button>
+                                    <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">Cancelar</button>
+
+                                </div>
+
+
+                                </form>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <tr>
+                <td>{{ sprint.id }}</td>
+                <td>{{ sprint.sprintNumber }}</td>
+                <td>{{ sprint.fecha_inicio }}</td>
+                <td>{{ sprint.fecha_fin }}</td>
+                <td>{{ sprint.estados }}</td>
+                <td>{{ sprint.verificado }}</td>
+
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdown{{ sprint.id }}"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            opciones
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
+
+                            {% if sprint.estados == "PLANNING" %}
+
+
+                                <script>
+                                    var myModal = new bootstrap.Modal(document.getElementById('modal_iniciar{{ sprint.id }}'), options)
+                                </script>
+                                <li><a class="dropdown-item" data-bs-toggle="modal"
+                                       data-bs-target="#modal_iniciar{{ sprint.id }}">Iniciar Sprint</a>
+                                </li>
+
+
+
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/modificar/{{ sprint.id }}/InformacionBasica/">Modificar
+                                    Sprint</a></li>
+
+                                <!-- ESTE TIENE QUE SER UN MODAL TRIGGER-->
+
+
+                                <script>
+                                    var myModal = new bootstrap.Modal(document.getElementById('modal_eliminar{{ sprint.id }}'), options)
+                                </script>
+
+                                <li><a class="dropdown-item" data-bs-toggle="modal"
+                                       data-bs-target="#modal_eliminar{{ sprint.id }}">Eliminar Sprint</a>
+                                </li>
+
+                            {% endif %}
+                            {% if sprint.estados == "INICIADO" %}
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/">Ir al
+                                    Tablero Kanban</a></li>
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/">Ir al
+                                    BurndownChart</a></li>
+
+                                <script>
+                                    var myModal = new bootstrap.Modal(document.getElementById('modal_extender{{ sprint.id }}'), options)
+                                </script>
+
+                                <li><a class="dropdown-item" data-bs-toggle="modal"
+                                       data-bs-target="#modal_extender{{ sprint.id }}">Extender Sprint</a>
+                                </li>
+
+
+                            {% endif %}
+                            {% if sprint.estados == "FINALIZADO" %}
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/">Ir al
+                                    Tablero Kanban</a></li>
+
+                                {% if sprint.verificado !=  True %}
+                                    <li><a class="dropdown-item"
+                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/QualityAssurance/">Verificar
+                                        Calidad</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/">Ir al
+                                    BurndownChart</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item"
+                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/">Ir al
+                                Sprint Backlog</a></li>
+
+
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No hay coincidencias con ese criterio</td>
+            </tr>
+
+
+
+
         {% endfor %}
-    </ul>
-{% endif %}
+        </tbody>
+    </table>
+
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'info' %}
+                    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'warning' %}
+                    <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'error' %}
+                    <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 
 
 
 
 {% endblock %}
+

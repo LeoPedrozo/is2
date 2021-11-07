@@ -1,19 +1,8 @@
 {% extends 'base_filtro_Proyecto.html' %}
-
 {% load widget_tweaks %}
 {% load material_form %}
 {% block content %}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            //Dropdown menu
-
-            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-                return new bootstrap.Dropdown(dropdownToggleEl)
-            })
-        });
-    </script>
 
     <form method="get">
         <div class="well">
@@ -33,12 +22,11 @@
             <p></p>
         </div>
     </form>
-    <table class="table table-bordered">
+    <table class="table table-dark table-hover">
         <thead>
         <tr>
-            <th>id</th>
+            <!--<th>id</th>-->
             <th>Nombre</th>
-
             <th>Descripcion</th>
             <th>Fecha Creacion</th>
             <th>Fecha entrega</th>
@@ -49,51 +37,65 @@
         <tbody>
         {% for proyecto in filter.qs %}
             <tr>
-                <td>{{ proyecto.pk }}</td>
+               <!-- <td>{{ proyecto.pk }}</td>-->
                 <td>{{ proyecto.nombre }}</td>
                 <td>{{ proyecto.descripcion }}</td>
                 <td>{{ proyecto.fecha }}</td>
                 <td>{{ proyecto.fecha_entrega }}</td>
-                <td>{{ proyecto.fecha_finalizacion }}</td>
+                <td>{{ proyecto.fecha_finalizacion }}</td>>
                 <td>{{ proyecto.estado }}</td>
+            <td><a class="btn btn-success" href="/proyecto/{{ proyecto.pk }}/"><i class="fas fa-arrow-alt-circle-right"></i> </a></td>
+
+             <!--
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
                            id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
-                            opciones
+                           <i class="fas fa-bars"></i>
                         </a>
 
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
+                        <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/"><i class="fas fa-arrow-alt-circle-right"></i> </a>
+                                </li>
 
                             {% if proyecto.estado == "PENDIENTE" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/modificar/">Modificar</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
-                                    Product Backlog</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/"><i class="fas fa-play"></i>   Iniciar Proyecto </a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/modificar/"><i class="fas fa-pen-square"></i>   Modificar Proyecto</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i></i>   Ir a Product Backlog</a></li>
 
                             {% endif %}
 
                             {% if proyecto.estado == "INICIADO" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
+
+
+
+
+
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
                                 </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
-                                    Product Backlog</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i class="fas fa-running"></i>   Ir a la lista de Sprints</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i>   Ir a Product Backlog</a></li>
+                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/"><i class="fas fa-bullseye"></i>   Finalizar Proyecto</a>
+                                </li>
                             {% endif %}
 
                             {% if proyecto.estado == "FINALIZADO" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/">Resumen</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/">Ver Sprints</a>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
                                 </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/">Ver
-                                    Product Backlog</a></li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i class="fas fa-running"></i>   Ir a la lista de Sprints</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i>  Ir a Product Backlog</a></li>
                             {% endif %}
 
                         </ul>
                     </div>
                 </td>
+            -->
             </tr>
         {% empty %}
             <tr>
@@ -102,6 +104,18 @@
         {% endfor %}
         </tbody>
     </table>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            //Dropdown menu
+
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+            })
+        });
+    </script>
 
 
     {% if messages %}

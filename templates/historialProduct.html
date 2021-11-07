@@ -1,0 +1,101 @@
+{% extends 'base_filtro_ProductBacklog.html' %}
+
+{% load widget_tweaks %}
+{% load material_form %}
+{% block content %}
+    <form method="get">
+        <div class="well">
+            <h6 class="text-muted">Parametros de filtrado :</h6>
+            <div class="row">
+                <div class="form-group col s4">
+                    {{ filter.form.prioridad.label_tag }}
+                    {% render_field filter.form.prioridad class="form-control" %}
+                </div>
+                <div class="form-group col s4">
+                    {{ filter.form.estados.label_tag }}
+                    {% render_field filter.form.estados class="form-control" %}
+                </div>
+                <div class="form-group col s4">
+                    {{ filter.form.encargado.label_tag }}
+                    {% render_field filter.form.encargado class="form-control" %}
+                </div>
+            </div>
+            <p></p>
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-search"></span> Filtrar
+            </button>
+            <p></p>
+        </div>
+    </form>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Prioridad</th>
+            <th>Creado</th>
+            <th>Horas dedicadas</th>
+            <th>Encargado</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for hist in filter.qs %}
+            <tr>
+                <td>{{ hist.id_historia }}</td>
+                <td>{{ hist.nombre }}</td>
+                <td>{{ hist.descripcion }}</td>
+                <td>{{ hist.prioridad }}</td>
+                <td>{{ hist.fecha_creacion }}</td>
+                <td>{{ hist.horas_dedicadas }}</td>
+                <td>{{ hist.encargado }}</td>
+                <td>{{ hist.estados }}</td>
+                <td>
+                        <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                           id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
+                           <i class="fas fa-bars"></i>
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
+
+                            {% if hist.estados == "" %}
+                                <li><a class="dropdown-item" href="/proyecto/{{ ID_proyecto }}/ProductBacklog/modificar/Historia{{ hist.id_historia }}/"><i class="fas fa-clipboard-list"></i>   Resumen de Historia</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ ID_proyecto }}/ProductBacklog/modificar/Historia{{ hist.id_historia }}/"><i class="fas fa-pen-square"></i>   Modificar Historia</a>
+                                </li>
+                                <li><a class="dropdown-item" href="/proyecto/{{ ID_proyecto }}/ProductBacklog/Eliminar/Historia{{ hist.id_historia }}/"><i class="fas fa-trash-alt"></i>   Eliminar Historia</a></li>
+
+                            {% endif %}
+                        </ul>
+                    </div>
+                </td>
+        -->
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">No hay coincidencias con ese criterio</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script>M.toast({html: "{{message}}", classes: 'green rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'info' %}
+                    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'warning' %}
+                    <script>M.toast({html: "{{message}}", classes: 'yellow rounded', displayLength: 5000});</script>
+                {% elif message.tags == 'error' %}
+                    <script>M.toast({html: "{{message}}", classes: 'red rounded', displayLength: 5000});</script>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

@@ -30,7 +30,7 @@ class Historia(models.Model):
     identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
     """
     id_historia = models.AutoField(primary_key = True)
-    nombre=models.CharField(max_length=20)
+    nombre=models.CharField(max_length=50)
     descripcion = models.TextField()
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES)
     fecha_creacion = models.DateField(auto_now_add=True)

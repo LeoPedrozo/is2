@@ -2392,7 +2392,9 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
             sprintActual.save()
         except TypeError:
             messages.error(request, "Debes ser Scrum")
-        return redirect(visualizarSprintFilter)
+
+        url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        return redirect(url)
 
     if (opcion == "expandir"):
         if request.method == 'GET':

@@ -2357,8 +2357,8 @@ def iniciarProyecto(request, id_proyecto):
     proyecto_seleccionado.estado = "INICIADO"
     proyecto_seleccionado.fecha = date.today()
     proyecto_seleccionado.save()
-
-    return redirect(HistorialProyectoFilter)
+    url="/proyecto/"+str(id_proyecto)+"/"
+    return redirect(url)
 
 
 def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):

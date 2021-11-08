@@ -2430,10 +2430,26 @@ def infoProyecto(request, id_proyecto):
 
 
     #lista de miembros
-    miembros=[]
+    lista1=[]
+    lista2=[]
     tabla_temporal=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
     for m in tabla_temporal:
-        miembros.append(m.usuario)
+        lista1.append(m.usuario)
+
+        if(m.rol_name != ""):
+            lista2.append(m.rol_name)
+        else:
+            lista2.append("No tiene rol")
+
+
+    miembros=zip(lista1,lista2)
+
+    """
+     miembros=[]
+    tabla_temporal=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
+    for m in tabla_temporal:
+        miembros.append(m.usuario,m.rol_name)
+    """
 
 
 

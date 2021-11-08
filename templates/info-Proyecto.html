@@ -97,17 +97,23 @@
                 <!--SECCION DE MIEMBROS-->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                    {% for miembro in Miembros %}
+                    {% for miembro,rol in Miembros %}
                     <div class="row">
                         <div class="col-md-6">
                             <label>Nombre de Usuario </label><br>
                             <label>Nombre completo </label><br>
-                            <label>Correo Electronico </label>
+                            <label>Correo Electronico </label><br>
+                            <label> Rol </label>
                         </div>
                         <div class="col-md-6">
                             <label style="color: #0062cc "> {{ miembro.username }}</label><br>
                             <label style="color: #0062cc ">{{ miembro.first_name }} {{ miembro.last_name }}</label><br>
                             <label style="color: #0062cc ">{{ miembro.email }}</label><br>
+                            <label style="color: #0062cc ">{{ rol }}</label><br>
+
+
+
+                        <label style="color: #0062cc "> </label>
                             <a class="btn btn-outline-primary" href="/Usuario/{{ miembro.pk }}/info/">Mas Detalle</a>
                         </div>
                     </div>

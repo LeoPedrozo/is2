@@ -68,6 +68,12 @@
                                 <li><a class="dropdown-item" href="/proyecto/{{ ID_proyecto }}/ProductBacklog/Eliminar/Historia{{ hist.id_historia }}/"><i class="fas fa-trash-alt"></i>   Eliminar Historia</a></li>
 
                             {% endif %}
+
+                             {% if hist.estados == "RELEASE" %}
+                        <li><a class="dropdown-item" href="/proyecto/{{ ID_proyecto }}/ProductBacklog/modificar/Historia{{ hist.id_historia }}/"><i class="fas fa-clipboard-list"></i>   Resumen de Historia</a>
+                                </li>
+                        {% endif %}
+
                         </ul>
                     </div>
                 </td>

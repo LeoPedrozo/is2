@@ -4,6 +4,13 @@
 {% block content %}
 
 
+
+
+
+
+
+
+
     <form method="get">
         <div class="well">
             <h6 class="text-muted">Parametros de filtrado :</h6>
@@ -36,6 +43,7 @@
         </thead>
         <tbody>
         {% for proyecto in filter.qs %}
+
             <tr>
                <!-- <td>{{ proyecto.pk }}</td>-->
                 <td>{{ proyecto.nombre }}</td>
@@ -44,58 +52,58 @@
                 <td>{{ proyecto.fecha_entrega }}</td>
                 <td>{{ proyecto.fecha_finalizacion }}</td>>
                 <td>{{ proyecto.estado }}</td>
-            <td><a class="btn btn-success" href="/proyecto/{{ proyecto.pk }}/"><i class="fas fa-arrow-alt-circle-right"></i> </a></td>
 
-             <!--
-                <td>
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
-                           id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
-                           <i class="fas fa-bars"></i>
-                        </a>
+            <!-- SOLO SI ES SCRUM MASTER O ADMIN-->
+            <script>
+                var myModal = new bootstrap.Modal(document.getElementById('modal_eliminar{{ proyecto.pk }}'), options)
+            </script>
 
-                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
-                        <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/"><i class="fas fa-arrow-alt-circle-right"></i> </a>
-                                </li>
+                <td><a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_eliminar{{ proyecto.pk }}" title="Eliminar Proyecto"><i class="fas fa-trash-alt"></i></a></td>
 
-                            {% if proyecto.estado == "PENDIENTE" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/"><i class="fas fa-play"></i>   Iniciar Proyecto </a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/modificar/"><i class="fas fa-pen-square"></i>   Modificar Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i></i>   Ir a Product Backlog</a></li>
 
-                            {% endif %}
 
-                            {% if proyecto.estado == "INICIADO" %}
+                 {% if proyecto.estado != "FINALIZADO" %}
+                <td><a class="btn btn-primary" href="/proyecto/{{ proyecto.pk }}/modificar/" title="Modificar Proyecto"><i class="fas fa-edit"></i> </a></td>
+                {% endif %}
+                <td><a class="btn btn-success" href="/proyecto/{{ proyecto.pk }}/" title="Acceder al Proyecto"><i class="fas fa-arrow-alt-circle-right"></i> </a></td>
 
 
 
 
+                <!-- Modal Eliminar Sprint -->
+                <div class="modal fade" id="modal_eliminar{{ proyecto.pk }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Eliminacion de
+                                    Proyecto {{ proyecto.nombre }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Realmente desea Eliminar este Proyecto?
+                                Los siguentes datos seran eliminados de la base de datos
+                                * Los usuarios seran desasociados
+                                * Los sprint seran eliminados
+                                * Las historias seran eliminados
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">Cancelar
+                                </button>
 
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i class="fas fa-running"></i>   Ir a la lista de Sprints</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i>   Ir a Product Backlog</a></li>
-                                 <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/"><i class="fas fa-bullseye"></i>   Finalizar Proyecto</a>
-                                </li>
-                            {% endif %}
-
-                            {% if proyecto.estado == "FINALIZADO" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i class="fas fa-clipboard-list"></i>   Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i class="fas fa-running"></i>   Ir a la lista de Sprints</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i class="fas fa-boxes"></i>  Ir a Product Backlog</a></li>
-                            {% endif %}
-
-                        </ul>
+                                <a class="btn btn-danger "
+                                   href="/proyecto/{{ proyecto.pk }}/eliminar/">Eliminar
+                                    Proyecto</a>
+                            </div>
+                        </div>
                     </div>
-                </td>
-            -->
+                </div>
+
+
+
+
             </tr>
         {% empty %}
             <tr>
@@ -133,7 +141,6 @@
             {% endfor %}
         </ul>
     {% endif %}
-
 
 
 

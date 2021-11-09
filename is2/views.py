@@ -753,6 +753,47 @@ def eliminarProyecto(request):
     return render(request, "eliminarProyecto.html", {"form": formulario})
 
 
+def eliminarProyecto2(request,id_proyecto):
+    """
+    Metodo para la eliminacion de proyectos
+
+    :param request: solicitud recibida
+    :return: respuesta: a la solicitud de ELIMINAR PROYECTO
+    """
+    ProyectoSeleccionado=Proyecto.objects.get(id=id_proyecto)
+
+    Historia.objects.filter(proyecto=id_proyecto).delete()
+
+    proyecto = model_to_dict(ProyectoSeleccionado)
+    sprints = proyecto["id_sprints"]
+    for s in sprints:
+        s.delete()
+
+    historias = Historia.objects.filter(proyecto=id_proyecto)
+    for h in historias:
+        h.delete()
+
+
+
+    lista = UserProyecto.objects.filter(proyecto=ProyectoSeleccionado)
+    miembros = []
+    for l in lista:
+        miembros.append(l.usuario.email)
+
+
+
+    # desasociamos proyecto con ususario
+    desasociarUsuariodeProyecto(ProyectoSeleccionado,miembros)
+
+    # Eliminamos proyecto
+    ProyectoSeleccionado.delete()
+
+    # Retornar mensaje de exito
+    #return render(request, "outputEliminarProyecto.html", {"Proyectoeliminado": ProyectoSeleccionado})
+
+    return redirect(inicio)
+
+
 # La logica de Roles aun no revisado.
 def swichProyecto(request, id):
     """
@@ -2022,6 +2063,14 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
     listaHistorias = sprintActual2['historias']
     versionesDic = {}
 
+    usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.is_superuser):
+        fotodeusuario = "No tiene"
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
     for hist in listaHistorias:
         if hist.history.filter(
                 Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
@@ -2063,7 +2112,7 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
             print("No existe")
     return render(request, "KanbanHistorico.html",
                   {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual})
 
 
 # 4 cuando se selecciona ver Product backlog
@@ -3057,6 +3106,11 @@ def tableroKanban2(request,id_proyecto,id_sprint):
     """
 
     usuarioActual = User.objects.get(username=request.user.username)
+    if (usuarioActual.is_superuser):
+        fotodeususario = "No tiene"
+    else:
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
     proyectoActual = Proyecto.objects.get(id=id_proyecto)
 
     try:
@@ -3106,7 +3160,7 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual})
 
             # except IndexError:
             # return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT"})

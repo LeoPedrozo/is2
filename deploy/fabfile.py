@@ -19,8 +19,10 @@ def staging():
 
 @task
 def production():
-    env.hosts = ['luis@production-server']
-    env.environment = 'production'
+    # env.hosts = ['luis@production-server']
+    env.hosts = ['luis@luis']
+    env.environment = 'staging'
+    # env.environment = 'production'
 
 
 # DO NOT EDIT ANYTHING BELOW THIS LINE!
@@ -88,7 +90,7 @@ def bootstrap():
             # with prefix('export DJANGO_SETTINGS_MODULE={}.settings.{}'.format(PROJECT_NAME, env.environment)):
             with prefix('export DJANGO_SETTINGS_MODULE={}.settings'.format(PROJECT_NAME)):
                 # run('source .env/bin/activate && pip install -r requirements/production.txt')
-                run('source .venv/bin/activate && pip install -r requirements.txt')
+                run('source .venv/bin/activate && pip install wheel && pip install -r requirements.txt')
                 # run('./manage.py migrate')
                 # run('./manage.py collectstatic --noinput')
                 sudo('./manage.py collectstatic --noinput')
@@ -109,5 +111,21 @@ def bootstrap():
 
     run('bash {project_root}/activarEntorno.sh'.format(project_root=PROJECT_ROOT))
 
-    sudo('chmod -R 777 {project_root}/docs/'.format(project_root=PROJECT_ROOT))
+    sudo('chmod -R 777 {project_root}/'.format(project_root=PROJECT_ROOT))
 
+    # Para borrar las migraciones
+    run('find {project_root} -path "*/migrations/*.py" -not -name "__init__.py" -delete'.format(
+        project_root=PROJECT_ROOT))
+    run('find {project_root} -path "*/migrations/*.pyc"  -delete'.format(project_root=PROJECT_ROOT))
+
+    # arreglar dependencias de django
+
+    with cd(PROJECT_ROOT):
+        with source_virtualenv():
+            run('pip uninstall -y django')
+            run('pip install django==3.2.6')
+
+            # make django migrations
+            run('./manage.py makemigrations')
+            # fake migrate
+            run('./manage.py migrate --fake')

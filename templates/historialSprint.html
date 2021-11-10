@@ -52,11 +52,9 @@
         </thead>
         <tbody>
         {% for sprint in filter.qs %}
-
-            <!-- Modal Iniciar Sprint -->
-
+            <!--MODALS-->
             <div class="container">
-
+                <!-- Modal Iniciar Sprint -->
                 <div class="modal fade" id="modal_iniciar{{ sprint.id }}" tabindex="-1"
                      aria-labelledby="exampleModalLabel2"
                      aria-hidden="true">
@@ -132,12 +130,15 @@
 
                                     {% form form=ExtenderForm %}{% endform %}
 
-                                <div class="col" style="position: absolute; right: 20px;">
+                                    <div class="col" style="position: absolute; right: 20px;">
 
-                                    <button value="Cargar" type="submit" class="btn btn-secondary blue">Cargar</button>
-                                    <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">Cancelar</button>
+                                        <button value="Cargar" type="submit" class="btn btn-secondary blue">Cargar
+                                        </button>
+                                        <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">
+                                            Cancelar
+                                        </button>
 
-                                </div>
+                                    </div>
 
 
                                 </form>
@@ -148,9 +149,8 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
+            <!-- !Modals-->
 
             <tr>
                 <td>{{ sprint.id }}</td>
@@ -169,22 +169,20 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
 
                             {% if sprint.estados == "PLANNING" %}
-
-
                                 <script>
                                     var myModal = new bootstrap.Modal(document.getElementById('modal_iniciar{{ sprint.id }}'), options)
                                 </script>
                                 <li><a class="dropdown-item" data-bs-toggle="modal"
-                                       data-bs-target="#modal_iniciar{{ sprint.id }}"><i class="uil uil-bolt-alt"></i>   Iniciar Sprint</a>
+                                       data-bs-target="#modal_iniciar{{ sprint.id }}">  <i class="uil uil-bolt-alt"></i>    Iniciar Sprint</a>
                                 </li>
 
 
 
                                 <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/modificar/{{ sprint.id }}/InformacionBasica/"><i class="fas fa-edit"></i>   Modificar
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/modificar/{{ sprint.id }}/InformacionBasica/">  <i
+                                        class="fas fa-edit"></i>    Modificar
                                     Sprint</a></li>
 
-                                <!-- ESTE TIENE QUE SER UN MODAL TRIGGER-->
 
 
                                 <script>
@@ -192,17 +190,17 @@
                                 </script>
 
                                 <li><a class="dropdown-item" data-bs-toggle="modal"
-                                       data-bs-target="#modal_eliminar{{ sprint.id }}"><i class="uil uil-trash-alt"></i>   Eliminar Sprint</a>
+                                       data-bs-target="#modal_eliminar{{ sprint.id }}">  <i class="uil uil-trash-alt"></i>    Eliminar Sprint</a>
                                 </li>
 
                             {% endif %}
+
                             {% if sprint.estados == "INICIADO" %}
                                 <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/"><i class="fas fa-exchange-alt"></i>   Ir al
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/">  <i class="fas fa-grip-horizontal"></i>    Ir al
                                     Tablero Kanban</a></li>
                                 <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/">
-                                    <i class="uil uil-chart-down"></i>   Ir al
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/">  <i class="uil uil-chart-down"></i>    Ir al
                                     BurndownChart</a></li>
 
                                 <script>
@@ -210,29 +208,43 @@
                                 </script>
 
                                 <li><a class="dropdown-item" data-bs-toggle="modal"
-                                       data-bs-target="#modal_extender{{ sprint.id }}"> <i class="uil uil-expand-arrows-alt"></i>   Extender Sprint</a>
+                                       data-bs-target="#modal_extender{{ sprint.id }}">  <i
+                                        class="uil uil-expand-arrows-alt"></i>    Extender Sprint</a>
                                 </li>
+
+
+
+
+                                    <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/intercambiar/">  <i
+                                        class="fas fa-exchange-alt"></i>    Cambiar Desarrollador </a></li>
+
+
+
 
 
                             {% endif %}
                             {% if sprint.estados == "FINALIZADO" %}
                                 <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/"><i class="fas fa-exchange-alt"></i>   Ir al
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/">  <i class="fas fa-grip-horizontal"></i>    Ir al
                                     Tablero Kanban</a></li>
 
                                 {% if sprint.verificado !=  True %}
                                     <li><a class="dropdown-item"
-                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/QualityAssurance/"><i class="uil uil-feedback"></i>   Verificar
+                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/QualityAssurance/">  <i
+                                            class="uil uil-feedback"></i>    Verificar
                                         Calidad</a></li>
                                 {% endif %}
                                 <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/"> <i class="uil uil-chart-down"></i>   Ir al
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/">  <i
+                                        class="uil uil-chart-down"></i>    Ir al
                                     BurndownChart</a></li>
                             {% endif %}
 
 
                             <li><a class="dropdown-item"
-                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/"><i class="uil uil-clipboard-notes"></i>   Ir al
+                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/">  <i
+                                    class="uil uil-clipboard-notes"></i>    Ir al
                                 Sprint Backlog</a></li>
 
 
@@ -244,13 +256,14 @@
             <tr>
                 <td colspan="5">No hay coincidencias con ese criterio</td>
             </tr>
-
-
-
-
         {% endfor %}
         </tbody>
     </table>
+
+
+
+
+
 
 
     {% if messages %}
@@ -268,9 +281,5 @@
             {% endfor %}
         </ul>
     {% endif %}
-
-
-
-
 {% endblock %}
 

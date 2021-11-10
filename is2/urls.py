@@ -34,7 +34,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     infoUsuario, modificarProyecto2, tableroQA_Release2, modificarHistoria2, eliminarHistoria2, step1_SprintPlanning2, \
     step2_SprintPlanning2, asignarCapacidad2, step3_SprintPlanning2, step3_Funcionalidades, modificarSprint2, \
     sprintBacklog2, tableroKanban2, moverHistoria2, funcionalidadesQA, KanbanHistorico, eliminarSprint2, homeProyecto, \
-    eliminarProyecto2
+    eliminarProyecto2, intercambiarMiembro
 from django.conf.urls import url
 
 
@@ -111,11 +111,11 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/Historia<int:id_historia>/Op<int:opcion>', moverHistoria2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/BurndownChart/',BurndownChart),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/accion+<str:opcion>/',finalizarOexpandirSprint),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/intercambiar/',intercambiarMiembro),
 
 
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/',tableroQA_Release2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/<int:id_historia>/<int:opcion>/', funcionalidadesQA),
-
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/kanbanHistorico/',KanbanHistorico),
 
 

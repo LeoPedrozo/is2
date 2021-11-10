@@ -86,63 +86,6 @@
                         <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar Proyecto</a></li>
                     {% endif %}
 
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="AdminnavbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Opciones Administrativas
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="AdminnavbarDropdown">
-
-                            {% if proyecto.estado == "PENDIENTE" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i
-                                        class="fas fa-clipboard-list"></i> Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/iniciar/"><i
-                                        class="fas fa-play"></i> Iniciar Proyecto </a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/modificar/"><i
-                                        class="fas fa-pen-square"></i> Modificar Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i
-                                        class="fas fa-boxes"></i></i>   Ir a Product Backlog</a></li>
-
-                            {% endif %}
-
-                            {% if proyecto.estado == "INICIADO" %}
-
-
-
-
-
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i
-                                        class="fas fa-clipboard-list"></i> Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i
-                                        class="fas fa-running"></i> Ir a la lista de Sprints</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i
-                                        class="fas fa-boxes"></i> Ir a Product Backlog</a></li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Finalizar/"><i
-                                        class="fas fa-bullseye"></i> Finalizar Proyecto</a>
-                                </li>
-                            {% endif %}
-
-                            {% if proyecto.estado == "FINALIZADO" %}
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Resumen/"><i
-                                        class="fas fa-clipboard-list"></i> Resumen de Proyecto</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/Sprints/"><i
-                                        class="fas fa-running"></i> Ir a la lista de Sprints</a>
-                                </li>
-                                <li><a class="dropdown-item" href="/proyecto/{{ proyecto.pk }}/ProductBacklog/"><i
-                                        class="fas fa-boxes"></i> Ir a Product Backlog</a></li>
-                            {% endif %}
-
-
-                        </ul>
-                    </li>
-
                 </ul>
 
             </div>
@@ -195,7 +138,10 @@
     <div class="row py-lg-1">
       <div class="mx-auto">
         <h1 class="fw-light">{{ proyecto.nombre }}</h1>
+
         <p class="lead text-muted">{{ proyecto.descripcion }}</p>
+          <p class="lead text-muted">"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."</p>
+
 
       </div>
     </div>

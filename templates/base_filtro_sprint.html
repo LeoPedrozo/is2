@@ -59,85 +59,88 @@ myModal.addEventListener('shown.bs.modal', function () {
 -->
 <!--Nav Bar nuevo-->
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
-    <!-- Container wrapper -->
-    <div class="container-fluid">
-        <!-- Toggle button -->
-        <button
-                class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <i class="fas fa-bars"></i>
-        </button>
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
 
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt="" loading="lazy"
-                     style="width:50px;height:50px;">
-                Grupo 8
-            </a>
-
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a>
-                </li>
-
-
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Menu de Proyecto</a>
-                </li>
-
-
-                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
-                </li>
-
-            </ul>
-
-        </div>
-        <!-- Collapsible wrapper -->
-
-        <!-- Right elements -->
-        <div class="container_row">
-            <div class="layer1" style="color: white">
-                {{ usuario.first_name }} {{ usuario.last_name }}
-            </div>
-            <div class="layer2" style="color: white">
-                {{ usuario.email }}
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center">
-
-            <div class="nav-item dropstart">
-                <a type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                   aria-expanded="false">
-
-                    {% if user.is_superuser %}
-                        <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class ="rounded-circle"
-                                     style='filter: invert(100%);width:50px;height:50px;'>
-                    {% else %}
-                                <img src="{{ avatar }}" alt="" class ="rounded-circle" style="width:50px;height:50px;">
-                    {% endif %}
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;">
+                    Grupo 8
                 </a>
-                <ul class="dropdown-menu">
-                     {% if not user.is_superuser %}
-                   <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
 
-                      {% endif %}
-                    <li><a class="dropdown-item" href="/logout">Cerrar Sesion</a></li>
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
+
+                    {% if proyecto.estado == "PENDIENTE" %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar Proyecto</a></li>
+                    {% endif %}
+
+                    {% if proyecto.estado == "INICIADO" %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar Proyecto</a></li>
+                    {% endif %}
+
                 </ul>
+
+            </div>
+            <!-- Collapsible wrapper -->
+
+            <!-- Right elements -->
+            <div class="container_row">
+                <div class="layer1" style="color: white">
+                    {{ usuario.first_name }} {{ usuario.last_name }}
+                </div>
+                <div class="layer2" style="color: white">
+                    {{ usuario.email }}
+                </div>
+                <div class="layer2" style="color: white">
+                    {{ Rol_de_usuario }}
+                </div>
             </div>
 
+            <div class="d-flex align-items-center">
 
+                <div class="nav-item dropstart">
+                    <a type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        {% if user.is_superuser %}
+                            <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="rounded-circle"
+                                 style='filter: invert(100%);width:50px;height:50px;'>
+                        {% else %}
+                            <img src="{{ avatar }}" alt="" class="rounded-circle" style="width:50px;height:50px;">
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if not user.is_superuser %}
+                            <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+
+                        {% endif %}
+                        <li><a class="dropdown-item" href="/inicio/logout">Cerrar Sesion</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 <div class="container">
     <div class="col-md-12 well">

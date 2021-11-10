@@ -18,7 +18,7 @@ from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
 from proyectos.models import Proyecto
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
-from Sprints.forms import crearSprintForm, modificarSprintForm, seleccionarSprintForm, extenderSprintForm
+from Sprints.forms import crearSprintForm, modificarSprintForm, seleccionarSprintForm, extenderSprintForm,intercambiardeveloperForm
 
 from gestionUsuario.forms import asignarcapacidadForm
 from Sprints.models import Sprint
@@ -2044,6 +2044,15 @@ def HistorialSprintFilter(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     listaSprint = proyecto_seleccionado.id_sprints.all()
 
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario=User.objects.get(username=request.user.username)
+
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto_seleccionado)
+        rol_name = proy.rol_name
+
     if(len(proyecto_seleccionado.id_sprints.filter(estados="INICIADO"))!=0):
         sprint_activo=proyecto_seleccionado.id_sprints.get(estados="INICIADO")
         request.session['fecha_fin'] = sprint_activo.fecha_fin.strftime("%Y/%m/%d")
@@ -2052,7 +2061,7 @@ def HistorialSprintFilter(request, id_proyecto):
         formulioExtender= "No tiene sprint iniciados"
 
     sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
-    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter,"ID_proyecto":id_proyecto,"ExtenderForm":formulioExtender})
+    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter,"ID_proyecto":id_proyecto,"ExtenderForm":formulioExtender,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario})
 
 
 # 3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
@@ -2124,8 +2133,16 @@ def HistorialProductBacklog(request, id_proyecto):
 
     fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
     usuario=User.objects.get(username=request.user.username)
-
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
+
+
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto_seleccionado)
+        rol_name = proy.rol_name
+
+
 
     if Historia.objects.filter(proyecto=proyecto_seleccionado).exists():
         historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
@@ -2134,7 +2151,7 @@ def HistorialProductBacklog(request, id_proyecto):
         # messages.info(request, "El proyecto no tiene historias")
         print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
-    return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario})
+    return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name})
 
 """
 def BurndownChart(request):
@@ -2403,11 +2420,27 @@ def finalizarProyecto(request, id_proyecto):
 
 def iniciarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
-    proyecto_seleccionado.estado = "INICIADO"
-    proyecto_seleccionado.fecha = date.today()
-    proyecto_seleccionado.save()
-    url="/proyecto/"+str(id_proyecto)+"/"
-    return redirect(url)
+
+    miembros=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
+    developers=False
+    scrum=False
+
+    for l in miembros:
+        if(l.rol_name=="Scrum Master"):
+             scrum=True
+        if(l.rol_name=="Desarrollador"):
+             developers=True
+
+    if( scrum and developers):
+
+        proyecto_seleccionado.estado = "INICIADO"
+        proyecto_seleccionado.fecha = date.today()
+        proyecto_seleccionado.save()
+        url="/proyecto/"+str(id_proyecto)+"/"
+        return redirect(url)
+    else:
+        return render(request, "Condicion_requerida.html", {"mensaje": "El proyecto aun necesita tener a sus miembros con un rol definido"})
+
 
 
 def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
@@ -2416,38 +2449,30 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
 
     if opcion == 'finalizar':
         listaHistorias = sprintActual.historias.all()
-        grupos = ', '.join(map(str, usuarioActual.groups.all()))
-        # print("grupos del usuario = ", grupos)
-        try:
-            if grupos.find('Scrum Master'):
-                print("B")
-                messages.info(request, "Finalizando Sprint")
 
-                # Marcar el ultimo estado que tenian las historias
-                for hist in listaHistorias:
-                    hist._change_reason = 'fin_sprint'
-                    hist.save()
-                # Ahora que ya se tiene el ultimo estado, procedemos a finalizar
-                for hist in listaHistorias:
-                    if hist.estados == 'FINALIZADO':
-                        hist.estados = 'QUALITY_ASSURANCE'
-                    else:
-                        hist.estados = ''
-                        hist.encargado = None
-                    hist.save()
-            print("ESTA MIERDA CAMBIA DE ESTADO")
-            sprintActual.fecha_final=date.today()
-            sprintActual.estados = 'FINALIZADO'
-            sprintActual.save()
-        except TypeError:
-            messages.error(request, "Debes ser Scrum")
+        for hist in listaHistorias:
+            hist._change_reason = 'fin_sprint'
+            hist.save()
 
+        # Ahora que ya se tiene el ultimo estado, procedemos a finalizar
+        for hist in listaHistorias:
+            if hist.estados == 'FINALIZADO':
+                hist.estados = 'QUALITY_ASSURANCE'
+            else:
+                hist.estados = ""
+                hist.encargado = None
+            hist.save()
+
+        sprintActual.fecha_final=date.today()
+        sprintActual.estados = 'FINALIZADO'
+        sprintActual.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         return redirect(url)
 
     if (opcion == "expandir"):
         if request.method == 'GET':
             fecha = request.GET['fecha_fin']
+
             datetime_object = datetime.strptime(fecha, "%Y/%m/%d")
             sprintActual.fecha_fin = datetime_object
             sprintActual.save()
@@ -2697,18 +2722,18 @@ def inicio(request):
         usuarioActual.proyecto=None
         if(usuarioActual.is_superuser ):
             listaProyectos = Proyecto.objects.all()
-            listaUsuarioRolesProyecto = listaderoles(listaProyectos, usuarioActual, True)
+            #listaUsuarioRolesProyecto = listaderoles(listaProyectos, usuarioActual, True)
+            fotodeususario = "No tiene"
 
         else:
             listaProyectos=usuarioActual.proyectos_asociados.all()
+            fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
             #Esto es nuevo
-            listaUsuarioRolesProyecto=listaderoles(listaProyectos,usuarioActual,False)
+            #listaUsuarioRolesProyecto=listaderoles(listaProyectos,usuarioActual,False)
 
 
-
-        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
         Proyecto_filter = ProyectoFilter(request.GET, queryset=listaProyectos)
-        return render(request, "historialProyecto.html", {'filter': Proyecto_filter,'avatar':fotodeususario,'usuario':usuarioActual,"Roles":listaUsuarioRolesProyecto})
+        return render(request, "historialProyecto.html", {'filter': Proyecto_filter,'avatar':fotodeususario,'usuario':usuarioActual})
     else:
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 
@@ -3305,6 +3330,70 @@ def homeProyecto(request,id_proyecto):
 
 
 
+def intercambiarMiembro(request,id_proyecto,id_sprint):
+
+
+    if request.method == "POST":
+        formulario= intercambiardeveloperForm(request.POST,dato=request.session)
+        if (formulario.is_valid()):
+            emailA = formulario.cleaned_data['miembroA']
+            emailB = formulario.cleaned_data['miembroB']
+
+            usuario1=User.objects.get(email=emailA)
+            usuario2 = User.objects.get(email=emailB)
+            sprint_actual = Sprint.objects.get(id=id_sprint)
+            proyecto_actual=Proyecto.objects.get(id=id_proyecto)
+
+            # lo reemplazamos en el equipo sin cambiar su capacidad.
+            miembro_saliente = UserSprint.objects.get(proyecto=proyecto_actual,sprint=sprint_actual, usuario=usuario1)
+            miembro_entrando = UserSprint(proyecto=proyecto_actual, sprint=sprint_actual, usuario=usuario2,capacidad=miembro_saliente.capacidad)
+            miembro_saliente.delete()
+
+            historiaspendientes = sprint_actual.historias.filter(encargado=usuario1, estados='PENDIENTE')
+            historiasencurso = sprint_actual.historias.filter(encargado=usuario1, estados='EN_CURSO')
+
+
+            for h in historiaspendientes:
+                h.encargado = usuario2
+                h.save()
+
+            for h in historiasencurso:
+                h.encargado = usuario2
+                h.save()
+
+            sprint_actual.save()
+            url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
+            return redirect(url)
+    else:
+        proyecto_actual = Proyecto.objects.get(id=id_proyecto)
+        sprint_actual = Sprint.objects.get(id=id_sprint)
+
+        lista = UserSprint.objects.filter(proyecto=proyecto_actual, sprint=sprint_actual)
+        equipo = []
+        for l in lista:
+            equipo.append((l.usuario.email,l.usuario.email))
+
+        lista2 = UserProyecto.objects.filter(proyecto=proyecto_actual)
+
+        disponibles = []
+
+        for i in lista2:
+            for j in lista:
+                if (i.usuario.email != j.usuario.email and i.rol_name=="Desarrollador"):
+                    disponibles.append((i.usuario.email,i.usuario.email))
+
+        if(len(equipo)==0):
+            # el sprint aun no tiene miembros
+            return render(request, "Condicion_requerida.html", {"mensaje": "El sprint aun no tiene desarrolladores"})
+
+        request.session['equipo'] = equipo
+        request.session['disponibles'] = disponibles
+        formulario = intercambiardeveloperForm(dato=request.session)
+    return render(request, "IntercambiarMiembro.html", {"form": formulario})
+
+
+
+
 
 
 
@@ -3334,33 +3423,3 @@ def swichProyecto2(request,u,p, id_proyecto):
         else:
             return proy.rol_name
             print("No tiene ROl")
-
-
-# La logica de Roles aun no revisado.
-"""
-def swichProyecto(request, id):
-    u = User.objects.get(username=request.user.username)
-    p = Proyecto.objects.get(id=id)
-    u.proyecto = p
-
-    if UserProyecto.objects.filter(usuario=u, proyecto=p).exists():
-        print("Esta asociado al proyecto, reasignando rol...")
-
-        proy = UserProyecto.objects.get(usuario=u, proyecto=p)
-        if(proy.rol_name!=""):
-            rol_object = Group.objects.get(name=proy.rol_name)
-
-        # Agrego al usuario al rol
-        # Limpiar antiguo rol del usuario para el cambio
-            print("Limpiando antiguos roles")
-            u.groups.clear()
-        # enlazar con el rol asignado para el proyecto
-            enlazar_Usuario_con_Rol(u, rol_object)
-            registrar_usuario(u, 'True')
-
-
-
-    u.save()
-    return redirect(inicio)
-
-"""

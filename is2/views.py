@@ -2371,15 +2371,38 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
 
             fecha2 = request.GET['datefilter']
 
-            datetime_object = datetime.strptime(fecha2, "%Y/%m/%d")
-            sprintActual.fecha_fin = datetime_object
+            nuevafecha = datetime.strptime(fecha2, "%Y/%m/%d")
+            sprintActual.fecha_fin = nuevafecha.date()
             sprintActual.save()
             proyecto=Proyecto.objects.get(id=id_proyecto)
             if(len(proyecto.id_sprints.filter(estados="PLANNING"))!=0):
                 sprint_en_planning=proyecto.id_sprints.get(estados="PLANNING")
+                #Calendario laboral
+                calendarioParaguay = Paraguay()
 
+                duracionSprint = calendarioParaguay.get_working_days_delta(sprint_en_planning.fecha_inicio, sprint_en_planning.fecha_fin)
+                #nueva fecha de inicio
                 sprint_en_planning.fecha_inicio=sprintActual.fecha_fin+timedelta(days=1)
+
+                while not calendarioParaguay.is_working_day(sprint_en_planning.fecha_inicio):
+                    sprint_en_planning.fecha_inicio = sprint_en_planning.fecha_inicio + timedelta(days=1)
+
+                #nueva fecha de fin
+                sprint_en_planning.fecha_fin = sprint_en_planning.fecha_inicio
+                while duracionSprint > 0:
+                    sprint_en_planning.fecha_fin = sprint_en_planning.fecha_fin + timedelta(days=1)
+                    if calendarioParaguay.is_working_day(sprint_en_planning.fecha_fin):
+                        duracionSprint = duracionSprint - 1
+
+                #Si la fecha de entrega del proyecto es mayor a la de fin del sprint
+                if sprint_en_planning.fecha_fin > proyecto.fecha_entrega:
+                    extension = calendarioParaguay.get_working_days_delta(proyecto.fecha_entrega, sprint_en_planning.fecha_fin)
+                    proyecto.fecha_entrega = sprint_en_planning.fecha_fin
+                    messages.info(request, "La fecha estimada de entrega del Proyecto se ha extendido")
+                    messages.info(request, f"Dias extendidos: {extension}")
+
                 sprint_en_planning.save()
+                proyecto.save()
                 
 
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
@@ -3076,6 +3099,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
         else:
             mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
             return render(request, "condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
+
 
     # guardar
     if (opcion == 4):

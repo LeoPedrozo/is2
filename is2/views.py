@@ -2750,7 +2750,7 @@ def modificarSprint2(request, id_proyecto, id_sprint):
         sprint_seleccionado = Sprint.objects.get(id=id_sprint)
 
         request.session['proyecto'] = proyectoPropietario.id
-        guardarCamposdeSprint(request, sprint_seleccionado, proyectoPropietario.id)
+        guardarCamposdeSprint(request, sprint_seleccionado, proyectoPropietario)
         formulario = modificarSprintForm(request=request.session)
         return render(request, "modificarSprint.html", {"form": formulario})
 
@@ -2771,19 +2771,28 @@ def step1_SprintPlanning2(request,id_proyecto):
             # Acciones a realizar con el form
             datosSprint = formulario.cleaned_data
 
-
-            if (procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)):
+            sepuedecrear=procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)
+            if (sepuedecrear):
                 newSprint = nuevoSprint(datosSprint)
                 request.session['sprint_planning_id'] = newSprint.id
                 url = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
                 return redirect(url)
             else:
-               return render(request, "Condicion_requerida.html", {"mensaje": "La fecha no cumple con las restricciones"})
+                proyecto = Proyecto.objects.get(id=id_proyecto)
+                sprintActivo = proyecto.id_sprints.get(estados="INICIADO") 
+                mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"
+                mensaje2="Rango del Sprint Iniciado  : ["+sprintActivo.fecha_inicio.strftime("%d/%m/%Y") + " - " + sprintActivo.fecha_fin.strftime("%d/%m/%Y")+ "]"
+                mensaje3="Rango del Proyecto  : [" +  proyecto.fecha.strftime("%d/%m/%Y") + " - " + proyecto.fecha_entrega.strftime("%d/%m/%Y") + "]"
+
+                mensaje4="RANGO PERMITIDO : [ "+ sprintActivo.fecha_fin.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"
+
+                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"SprintIniciado": mensaje2,"Proyecto":mensaje3,"Permitido":mensaje4})
 
     else:
         proy = Proyecto.objects.get(id=id_proyecto)
         if (len(proy.id_sprints.filter(estados="PLANNING")) == 0):
             request.session['proyecto'] = proy.id
+            request.session['rango']=calcularRango(proy)
             formulario = crearSprintForm(request=request.session)
             return render(request, "SprintPlanning_1.html", {"form": formulario})
         else:
@@ -2794,6 +2803,13 @@ def step1_SprintPlanning2(request,id_proyecto):
 
 
 
+def calcularRango(proyecto):
+    if (len(proyecto.id_sprints.filter(estados="INICIADO")) == 0):
+       rango="[ "+ proyecto.fecha.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"
+    else:
+       sprintActivo=proyecto.id_sprints.get(estados="INICIADO")
+       rango="[ "+ (sprintActivo.fecha_fin + timedelta(days=1)).strftime('%Y/%m/%d') +" - "+ proyecto.fecha_entrega.strftime('%Y/%m/%d') +" ]"
+    return rango
 
 
 def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
@@ -2815,6 +2831,7 @@ def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
             if (sp_fechaFin < proyecto.fecha_entrega):
                 esvalido = True
 
+        
         #if (cantidad_iniciado==0 and cantidad_planning!=0):
         #   sprint=proyecto.id_sprints.get(estados="PLANNING")
         #    #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido

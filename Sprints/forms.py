@@ -23,15 +23,19 @@ class crearSprintForm(forms.Form):
         self.request = kwargs.pop("request")  # store value of request
         super(crearSprintForm, self).__init__(*args, **kwargs)
         self.fields['idproyecto'].initial = self.request['proyecto']
+        self.fields['rango'].initial = self.request['rango']
         # self.fields['historias'].queryset = Historia.objects.filter(proyecto=self.request['proyecto'],estados="")
 
     idproyecto = forms.IntegerField(label="Proyecto Propietario", disabled=True)
     sprintNumber = forms.IntegerField(label="Numero de Sprint", required=True)
 
-    fecha_inicio = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Inicio")
+    rango=forms.CharField(disabled=True,label="Rango de Fecha Valida")
+    fecha_inicio = forms.DateField(widget=DateInput(), input_formats=['%Y/%m/%d'],initial=datetime.date.today, label="Fecha de Inicio")
     fecha_fin = forms.DateField(widget=DateInput(), input_formats=['%Y/%m/%d'], initial=datetime.date.today,
-                                label="Fecha fin")
+                                label="Fecha de Finalizacion")
+
     # historias =forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),label="Selecciona historia",blank=True,initial=None,required=False)
+
 
 
 class modificarSprintForm(forms.Form):
@@ -49,12 +53,14 @@ class modificarSprintForm(forms.Form):
         # self.fields['historias'].queryset=Historia.objects.filter(pk__in=self.request['historias'])
         self.fields['fecha_inicio'].initial = datetime.datetime.strptime(self.request['fecha_inicio'], "%Y/%m/%d")
         self.fields['fecha_fin'].initial = datetime.datetime.strptime(self.request['fecha_fin'], "%Y/%m/%d")
+        self.fields['rango'].initial=self.request['rango']
 
     id = forms.IntegerField(label="ID de sprint", disabled=True)
     proyecto = forms.IntegerField(label="Proyecto Propietario", disabled=True)
     sprintNumber = forms.IntegerField(label="Numero de Sprint", disabled=True)
     # autovalor
-    fecha_inicio = forms.DateField(disabled=True, label="Fecha de Inicio")
+    rango=forms.CharField(disabled=True,  label="Rango Permitido")
+    fecha_inicio = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],label="Fecha de Inicio")
     # dato modificable
     fecha_fin = forms.DateField(widget=DateInput(), input_formats=['%Y/%m/%d'], label="Fecha fin")
     # Las historias seleccioandas se ignorara durante el sprint

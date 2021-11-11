@@ -2367,9 +2367,11 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
 
     if (opcion == "expandir"):
         if request.method == 'GET':
-            fecha = request.GET['fecha_fin']
+            #fecha = request.GET['fecha_fin']
 
-            datetime_object = datetime.strptime(fecha, "%Y/%m/%d")
+            fecha2 = request.GET['datefilter']
+
+            datetime_object = datetime.strptime(fecha2, "%Y/%m/%d")
             sprintActual.fecha_fin = datetime_object
             sprintActual.save()
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"

@@ -2374,6 +2374,14 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
             datetime_object = datetime.strptime(fecha2, "%Y/%m/%d")
             sprintActual.fecha_fin = datetime_object
             sprintActual.save()
+            proyecto=Proyecto.objects.get(id=id_proyecto)
+            if(len(proyecto.id_sprints.filter(estados="PLANNING"))!=0):
+                sprint_en_planning=proyecto.id_sprints.get(estados="PLANNING")
+
+                sprint_en_planning.fecha_inicio=sprintActual.fecha_fin+timedelta(days=1)
+                sprint_en_planning.save()
+                
+
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
             return redirect(url)
 
@@ -2744,9 +2752,23 @@ def modificarSprint2(request, id_proyecto, id_sprint):
         formulario = modificarSprintForm(request.POST, request=request.session)
         if (formulario.is_valid()):
             datosSprint = formulario.cleaned_data
-            updated_sprint = updateSprint(formulario.cleaned_data)
-            url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
-            return redirect(url)
+
+            sepuedecrear=procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)
+            if (sepuedecrear):
+                updated_sprint = updateSprint(formulario.cleaned_data)
+                url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
+                return redirect(url)
+            else:                                                                                                                                                            
+                proyecto = Proyecto.objects.get(id=id_proyecto)                                                                                                                              
+                sprintActivo = proyecto.id_sprints.get(estados="INICIADO")                                                                                                                   
+                mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"                                               
+                mensaje2="Rango del Sprint Iniciado  : ["+sprintActivo.fecha_inicio.strftime("%d/%m/%Y") + " - " + sprintActivo.fecha_fin.strftime("%d/%m/%Y")+ "]"                          
+                mensaje3="Rango del Proyecto  : [" +  proyecto.fecha.strftime("%d/%m/%Y") + " - " + proyecto.fecha_entrega.strftime("%d/%m/%Y") + "]"                                        
+                                                                                                                                                                                             
+                mensaje4="RANGO PERMITIDO : [ "+ sprintActivo.fecha_fin.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"                                       
+                                                                                                                                                                                             
+                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"SprintIniciado": mensaje2,"Proyecto":mensaje3,"Permitido":mensaje4})
+
     else:
         proyectoPropietario = Proyecto.objects.get(id=id_proyecto)
         sprint_seleccionado = Sprint.objects.get(id=id_sprint)
@@ -2828,34 +2850,18 @@ def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
             sprint=proyecto.id_sprints.get(estados="INICIADO")
             #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
             if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
-                esvalido=True
+                esvalido = True
         if (cantidad_iniciado==0 and cantidad_planning==0):
             if (sp_fechaFin < proyecto.fecha_entrega):
                 esvalido = True
 
-        
-        #if (cantidad_iniciado==0 and cantidad_planning!=0):
-        #   sprint=proyecto.id_sprints.get(estados="PLANNING")
-        #    #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
-        #    if (sp_fechaFin < proyecto.fecha_finalizacion):
-        #        esvalido = True
+        if (cantidad_iniciado!=0 and cantidad_planning==1):
+            sprint_activo=proyecto.id_sprints.get(estados="INICIADO")
+            if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint_activo.fecha_fin)):
+                esvalido=True
+       
+    return esvalido
 
-        return esvalido
-
-    #si es durante el proceso de extension de sprint
-    #if(situacion==1):
-    #    sprint_actual = proyecto.id_sprints.get(estados="INICIADO")
-
-   #     proyecto = Proyecto.objects.get(id=id_proyecto)
-    #    a = len(proyecto.id_sprints.filter(estados="PLANNING"))
-    #    if(a!=0):
-
-      #      if(sp_fechaFin+pasos< proyecto.fecha_finalizacion):
-       #         sprint_en_planning = proyecto.id_sprints.get(estados="PLANNING")
-        #        sprint_en_planning.fecha_inicio=sp_fechaFin+pasos
-         #       sprint_actual.fecha_fin=sp_fechaFin
-         #     sprint_actual.save()
-         #       sprint_en_planning.save()
 
 def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     """

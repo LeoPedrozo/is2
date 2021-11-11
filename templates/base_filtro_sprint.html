@@ -12,6 +12,17 @@
             crossorigin="anonymous"></script>
 
 
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+
+
+
+
     <!--LINK DE LIBRERIA DE ICONOS-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
@@ -28,35 +39,6 @@ myModal.addEventListener('shown.bs.modal', function () {
 
 </head>
 <body>
-<!--
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1c7abe;">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Sprints</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/proyecto/" >Atras</a>
-                </li>
-
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/inicio/" >Inicio</a>
-                </li>
-
-
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/SprintPlanning/1/" >Nuevo Sprint</a>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-</nav>
--->
 <!--Nav Bar nuevo-->
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
         <!-- Container wrapper -->
@@ -87,15 +69,14 @@ myModal.addEventListener('shown.bs.modal', function () {
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
 
-                    {% if proyecto.estado == "PENDIENTE" %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar Proyecto</a></li>
-                    {% endif %}
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Menu de Proyecto</a></li>
 
-                    {% if proyecto.estado == "INICIADO" %}
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar Proyecto</a></li>
-                    {% endif %}
+
+
+                        <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
+                </li>
 
                 </ul>
 

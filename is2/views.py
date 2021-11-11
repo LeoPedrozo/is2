@@ -72,33 +72,6 @@ def saludo(request):
 
     return render(request, "rolCreado.html", {"nombre": "Jose"})
 
-"""
-def inicio(request):
-    if request.user.groups.filter(name='registrado'):
-        print("el usuario pertenece al grupo de registrados")
-        if request.user.is_superuser:
-            usuario = User.objects.get(username=request.user.username)
-            proyectos = usuario.proyectos_asociados.all()
-            # proyecto=usuario.proyectos_asociados.first()
-            # proyecto.
-            return render(request, "sidenav.html",
-                          {"avatar": None, "proyectoActual": usuario.proyecto, "proyectos": proyectos})
-        else:
-            usuario = User.objects.get(username=request.user.username)
-            fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-
-            proyectos = usuario.proyectos_asociados.all()
-            roles = ', '.join(map(str, usuario.groups.all()))
-
-
-            print("LA LISTA DE PROYECTOS del usuario = ",proyectos)
-            return render(request, "sidenav.html",
-                          {"avatar": fotodeususario, "proyectoActual": usuario.proyecto, "proyectos": proyectos,
-                           "roles": roles})
-    else:
-        return render(request, "registroRequerido.html", {"mail": request.user.email})
-"""
-
 # Para acceder directamente a los archivos guardados en el directorio docs
 # (Todavia no se ha implementado)
 def documentaciones(request):
@@ -701,7 +674,6 @@ def modificarProyecto2(request,id_proyecto):
         print("El usuario no posee ningun proyecto")
         messages.error(request, 'El usuario no posee ningun proyecto')
         return redirect(inicio)
-
 
 
 
@@ -2047,6 +2019,8 @@ def HistorialSprintFilter(request, id_proyecto):
     fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
     usuario=User.objects.get(username=request.user.username)
 
+
+
     if (usuario.is_superuser):
         rol_name = "Administrador"
     else:
@@ -2060,8 +2034,11 @@ def HistorialSprintFilter(request, id_proyecto):
     else:
         formulioExtender= "No tiene sprint iniciados"
 
+
     sprint_filter = SprintFilter(request.GET, queryset=listaSprint)
-    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter,"ID_proyecto":id_proyecto,"ExtenderForm":formulioExtender,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario})
+    return render(request, "historialSprint.html", {"Sprints": listaSprint, 'filter': sprint_filter,
+                                                    "ID_proyecto":id_proyecto,"ExtenderForm":formulioExtender,
+                                                    "avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyecto_seleccionado})
 
 
 # 3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
@@ -2153,87 +2130,6 @@ def HistorialProductBacklog(request, id_proyecto):
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name})
 
-"""
-def BurndownChart(request):
-
-    calendarioParaguay = Paraguay()
-    # formatear fecha print(x.strftime("%b %d %Y %H:%M:%S"))
-    usuarioActual = User.objects.get(username=request.user.username)
-    if (usuarioActual.proyecto == None):
-        mensaje = "Usted no forma parte de ningun proyecto"
-        return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
-    else:
-        # 1- se consulta el sprint actual
-        proyectoPropietario = usuarioActual.proyecto
-        listasprints = proyectoPropietario.id_sprints
-
-        sprintActual = listasprints.get(estados="INICIADO")
-
-        # 2- calculamos la capacidad del equipo
-        capacidad_de_equipo = 0
-        desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
-        for desarrollador in desarrolladores:
-            capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
-
-        # 3- se extrae la lista de historias.
-        sprintActual2 = model_to_dict(sprintActual)
-        listaHistorias = sprintActual2['historias']
-        cantidad_total_historia = len(listaHistorias)
-
-        # Los miembros en forma de cadena para saber su estado
-        total_horas_estimadas = 0
-        miembrosSprint = []
-        for hist in listaHistorias:
-            total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
-            try:
-                lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
-                miembrosSprint.append(f"{hist.encargado.email}\nUlt. activo : {lastlog}")
-            except AttributeError:
-                print(f"la historia {hist} aun no tiene encargado")
-        # esto no se toca
-
-        # 4 Se calcula la cantidad de dias del sprint
-        fechaInicio = sprintActual2['fecha_inicio']
-        fechaFin = sprintActual2['fecha_fin']
-        dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-
-        # 5 Se inicializan las variables que son necesarios para el line chart
-        diasLaborales_py = []
-        horasLaborales_Ideal = []
-        horasLaborales_Real = []
-        pasos = timedelta(days=1)
-
-        # 6 Se genera la lista para el eje x del line chart
-        while fechaInicio <= fechaFin:
-            if calendarioParaguay.is_working_day(fechaInicio):
-                diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
-            fechaInicio += pasos
-
-        total_horas_dedicadas = 0
-
-        # 8 Calculamos el efuerzo real.
-        # Calcula la lista de esfuerzo real y lo guarda en el modelo
-        calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
-
-        # SE PREPARAN LAS 2 LINEAS
-        for i in sprintActual.horasLaboralesIdeal:
-            horasLaborales_Ideal.append(str(i))
-
-        # Se le da el formato actual para el line chart
-        for i in sprintActual.horasLaboralesReal:
-            horasLaborales_Real.append(str(i))
-
-        return render(request, "lineChart.html",
-                      {"Sprint": sprintActual,
-                       "Historias": listaHistorias,
-                       "Total": cantidad_total_historia,
-                       "diasLaborales": ','.join(diasLaborales_py),
-                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
-                       "horasLaboralesReal": ','.join(horasLaborales_Real),
-                       "cantidadDias": dias_de_sprint,
-                       "miembros": miembrosSprint})
-
-"""
 
 def BurndownChart(request,id_proyecto,id_sprint):
     """
@@ -2738,17 +2634,34 @@ def inicio(request):
         return render(request, "registroRequerido.html", {"mail": request.user.email})
 
 
-#no se usa de momento
-def listaderoles(proyectos,usuario,admin):
-    listaUsuarioRolesProyecto = []
-    if(not admin):
-        for proyecto in proyectos:
-            up = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto)
-            listaUsuarioRolesProyecto.append(up.rol_name)
+
+
+#url= /proyecto/id_proyecto/
+def homeProyecto(request,id_proyecto):
+
+
+    #Paso 1, realiza el swich de proyecto
+    u = User.objects.get(username=request.user.username)
+    p = Proyecto.objects.get(id=id_proyecto)
+
+    if(u.is_superuser):
+        rol_name="Administrador"
+        fotodeususario="No tiene"
+        return render(request, "Home_Proyecto.html",
+                      {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
+                       "usuario": u, "proyecto": p})
+
     else:
-        for proyecto in proyectos:
-            listaUsuarioRolesProyecto.append("Administrador")
-    return listaUsuarioRolesProyecto
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        rol_name=swichProyecto2(request,u,p,id_proyecto)
+        if(rol_name!=""):
+            return render(request, "Home_Proyecto.html",
+                          {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
+                           "usuario": u, "proyecto": p})
+
+        else:
+            return render(request, "Condicion_requerida.html",{"mensaje":"No tiene un rol aun definido, contactese con el administrador"})
+
 
 
 #Modificar Historia 2
@@ -2855,10 +2768,15 @@ def step1_SprintPlanning2(request,id_proyecto):
         if (formulario.is_valid()):
             # Acciones a realizar con el form
             datosSprint = formulario.cleaned_data
-            newSprint = nuevoSprint(datosSprint)
-            request.session['sprint_planning_id'] = newSprint.id
-            alpaso2 = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
-            return redirect(alpaso2)
+
+
+            if (procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)):
+                newSprint = nuevoSprint(datosSprint)
+                request.session['sprint_planning_id'] = newSprint.id
+                url = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
+                return redirect(url)
+            else:
+               return render(request, "Condicion_requerida.html", {"mensaje": "La fecha no cumple con las restricciones"})
 
     else:
         proy = Proyecto.objects.get(id=id_proyecto)
@@ -2872,6 +2790,51 @@ def step1_SprintPlanning2(request,id_proyecto):
 
     return render(request, "SprintPlanning_1.html", {"form": formulario,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
+
+
+
+
+def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
+    esvalido=False
+    pasos = timedelta(days=1)
+
+    #Si se llama en sprint planning 1
+    if(situacion==0):
+        proyecto=Proyecto.objects.get(id=id_proyecto)
+        cantidad_iniciado=len(proyecto.id_sprints.filter(estados="INICIADO"))
+        cantidad_planning = len(proyecto.id_sprints.filter(estados="PLANNING"))
+
+        if (cantidad_iniciado!=0 and cantidad_planning==0):
+            sprint=proyecto.id_sprints.get(estados="INICIADO")
+            #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
+            if( (sp_fechaFin < proyecto.fecha_finalizacion) and (sp_fechaInicio>sprint.fecha_fin)):
+                esvalido=True
+        if (cantidad_iniciado==0 and cantidad_planning==0):
+            if (sp_fechaFin < proyecto.fecha_finalizacion):
+                esvalido = True
+
+        #if (cantidad_iniciado==0 and cantidad_planning!=0):
+        #   sprint=proyecto.id_sprints.get(estados="PLANNING")
+        #    #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
+        #    if (sp_fechaFin < proyecto.fecha_finalizacion):
+        #        esvalido = True
+
+        return esvalido
+
+    #si es durante el proceso de extension de sprint
+    #if(situacion==1):
+    #    sprint_actual = proyecto.id_sprints.get(estados="INICIADO")
+
+   #     proyecto = Proyecto.objects.get(id=id_proyecto)
+    #    a = len(proyecto.id_sprints.filter(estados="PLANNING"))
+    #    if(a!=0):
+
+      #      if(sp_fechaFin+pasos< proyecto.fecha_finalizacion):
+       #         sprint_en_planning = proyecto.id_sprints.get(estados="PLANNING")
+        #        sprint_en_planning.fecha_inicio=sp_fechaFin+pasos
+         #       sprint_actual.fecha_fin=sp_fechaFin
+         #     sprint_actual.save()
+         #       sprint_en_planning.save()
 
 def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     """
@@ -3302,32 +3265,6 @@ def eliminarSprint2(request, id_proyecto,id_sprint):
 
 
 
-#url= /proyecto/id_proyecto/
-def homeProyecto(request,id_proyecto):
-
-
-    #Paso 1, realiza el swich de proyecto
-    u = User.objects.get(username=request.user.username)
-    p = Proyecto.objects.get(id=id_proyecto)
-
-    if(u.is_superuser):
-        rol_name="Administrador"
-        fotodeususario="No tiene"
-        return render(request, "Home_Proyecto.html",
-                      {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
-                       "usuario": u, "proyecto": p})
-
-    else:
-        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
-        rol_name=swichProyecto2(request,u,p,id_proyecto)
-        if(rol_name!=""):
-            return render(request, "Home_Proyecto.html",
-                          {"ID_proyecto": id_proyecto, "avatar": fotodeususario, "Rol_de_usuario": rol_name,
-                           "usuario": u, "proyecto": p})
-
-        else:
-            return render(request, "Condicion_requerida.html",{"mensaje":"No tiene un rol aun definido, contactese con el administrador"})
-
 
 
 def intercambiarMiembro(request,id_proyecto,id_sprint):
@@ -3394,9 +3331,6 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
 
 
 
-
-
-
 def swichProyecto2(request,u,p, id_proyecto):
     """
     Metodo para cambiar de un proyecto a otro con las reasignaciones de roles correspondiente
@@ -3423,3 +3357,7 @@ def swichProyecto2(request,u,p, id_proyecto):
         else:
             return proy.rol_name
             print("No tiene ROl")
+
+
+
+

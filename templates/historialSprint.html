@@ -128,7 +128,36 @@
                                 <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/accion+expandir/"
                                       method="GET">
 
-                                    {% form form=ExtenderForm %}{% endform %}
+                                    {% form form=ExtenderForm %}
+
+                                    {% endform %}
+
+                                <input type="text" name="datefilter" value="" />
+
+                                    <script type="text/javascript">
+                                    $(function() {
+
+                                      $('input[name="datefilter"]').daterangepicker({
+                                          autoUpdateInput: false,
+                                          singleDatePicker: true,
+                                          minDate: "{{ sprint.fecha_fin|date:"m/d/Y"}}",
+                                          maxDate:"{{ proyecto.fecha_entrega|date:"m/d/Y"}}",
+                                          locale: {
+                                              cancelLabel: 'Clear'
+                                          }
+                                      });
+
+                                      $('input[name="datefilter"]').on('apply.daterangepicker', function(ev, picker) {
+                                          $(this).val(picker.endDate.format('YYYY/MM/DD'));
+                                      });
+
+                                     $('input[name="datefilter"]').on('cancel.daterangepicker', function(ev, picker) {
+                                          $(this).val('');
+                                      });
+
+                                    });
+                                    </script>
+
 
                                     <div class="col" style="position: absolute; right: 20px;">
 

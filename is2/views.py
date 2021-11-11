@@ -3082,10 +3082,10 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 return redirect(url)
             else:
                 mensaje = "No puede iniciar este sprint ya que no se han agregado desarrolladores o el  sprint carece  de historias agregadas"
-                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+                return render(request, "Condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
         else:
             mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
-            return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+            return render(request, "Condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
 
     # guardar
     if (opcion == 4):

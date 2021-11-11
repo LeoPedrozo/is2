@@ -2823,7 +2823,7 @@ def step1_SprintPlanning2(request,id_proyecto):
             mensaje = "Ya existe un sprint en planning"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
 
-    return render(request, "SprintPlanning_1.html", {"form": formulario,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+    return render(request, "SprintPlanning_1.html", {"form": formulario,"ID_proyecto":id_proyecto})
 
 
 

@@ -793,7 +793,7 @@ def swichProyecto(request, id):
             u.groups.clear()
         # enlazar con el rol asignado para el proyecto
             enlazar_Usuario_con_Rol(u, rol_object)
-            registrar_usuario(u, 'True')
+            registrar_usuario(u.email, 'True')
 
 
 
@@ -2311,7 +2311,7 @@ def finalizarProyecto(request, id_proyecto):
         mensaje = "No puede finalizar el proyecto ya que hay un sprint activo"
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
 
-    return redirect(HistorialProyectoFilter)
+    return redirect(inicio)
 
 
 def iniciarProyecto(request, id_proyecto):
@@ -2515,6 +2515,8 @@ def infoUsuario(request, id_usuario):
         promedio_capacidad = 0
 
     try:
+        promedio_capacidad=total/len(sprints)
+
         Eficiencia=len(Historia.objects.filter(encargado=usuario_seleccionado,estados = "RELEASE"))/len(Historia.objects.filter(encargado=usuario_seleccionado)) *100
     except ZeroDivisionError:
         Eficiencia=0
@@ -2807,10 +2809,10 @@ def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
         if (cantidad_iniciado!=0 and cantidad_planning==0):
             sprint=proyecto.id_sprints.get(estados="INICIADO")
             #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
-            if( (sp_fechaFin < proyecto.fecha_finalizacion) and (sp_fechaInicio>sprint.fecha_fin)):
+            if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
                 esvalido=True
         if (cantidad_iniciado==0 and cantidad_planning==0):
-            if (sp_fechaFin < proyecto.fecha_finalizacion):
+            if (sp_fechaFin < proyecto.fecha_entrega):
                 esvalido = True
 
         #if (cantidad_iniciado==0 and cantidad_planning!=0):
@@ -3045,10 +3047,10 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 return redirect(url)
             else:
                 mensaje = "No puede iniciar este sprint ya que no se han agregado desarrolladores o el  sprint carece  de historias agregadas"
-                return render(request, "Condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
+                return render(request, "condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
         else:
             mensaje = "No puede iniciar Otro sprint ya que esta uno actualmente en progreso"
-            return render(request, "Condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
+            return render(request, "condicion_requerida_Sprint.html", {"mensaje": mensaje, "id_proyecto":id_proyecto})
 
     # guardar
     if (opcion == 4):

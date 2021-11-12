@@ -2,7 +2,7 @@ from django.contrib.auth.models import Permission
 from django.test import TestCase
 import unittest
 from random import randrange
-
+from django.test import Client, TestCase
 import Sprints
 from GestionPermisos.forms import *
 from Sprints.forms import *
@@ -32,10 +32,39 @@ class TestForms(unittest.TestCase):
             fecha_fin='2021-09-20'
         )
 
+        self.historias = Historia.objects.create(
+            nombre='Primer Proyecto',
+            descripcion='Proyecto de prueba',
+            prioridad='ALTA',
+            fecha_creacion='2021-07-25',
+            horasEstimadas=15,
+            estados='pendiente',
+            horas_dedicadas=24,
+            comentarios='comentario de prueba',
+        )
+
         self.estados=(
             (True,"Habilitar acceso al sistema"),
             (False,"Restringir acceso al sistema"),
         )
+
+        self.OPTIONS = (
+            ("add", "Agregar"),
+            ("delete", "Borrar"),
+            ("change","Modificar"),
+            ("view","Ver"),
+        )
+        self.valid1 = 302
+
+        self.proyecto1 = Proyecto.objects.create(
+            nombre='Segundo Proyecto',
+            descripcion='Proyecto de prueba 2',
+            estado='PENDIENTE',
+            fecha='2021-07-24',
+            fecha_entrega='2021-07-29'
+        )
+
+        self.valid = 200
 
 
     def test_crearRolForm(self):
@@ -46,6 +75,162 @@ class TestForms(unittest.TestCase):
         })
 
         self.assertTrue(form.is_valid())
+
+
+    def test_asignarRolForm(self):
+
+        c = Client()
+        res = c.post('/asignarRol/2/', {'Usuario': 'Cristhian', 'Roles': 'Scrum Master'})
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_seleccionarRolForm(self):
+
+        c = Client()
+        res = c.post('/modificarRol/2/', {'Rol': 'Scrum Master'})
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_modificarRolForm(self):
+
+        c = Client()
+        res = c.post('/modificarRol/3/', {'RolName': 'Scrum Master'})
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_crearUsuarioForm(self):
+        form = crearUsuarioForm(data={
+            'Nombre':'Juan',
+            'correo':'juan3@gmail.com'
+        })
+
+        self.assertTrue(form.is_valid())
+
+
+    def test_registroDeUsuariosForm1(self):
+
+        c = Client()
+        res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_asignarcapacidadForm(self):
+
+        c = Client()
+        res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_asignarCapacidadForm(self):
+
+        form = asignarcapacidadForm({
+            'capacidad':14
+        })
+
+        self.assertTrue(form.is_valid())
+
+    def test_crearproyectoForm(self):
+
+        c = Client()
+        res = c.get('/proyecto/nuevo/',
+                    {'nombre':'Proyecto1',
+                     'descripcion': 'Proyecto de prueba 1',
+                     'estado': 'Pendiente',
+                     'fecha': 2021/ 10/30,
+                     'fecha_entrega': 2021/11/0o3,
+                     'miembros': ('Edher', 'Cynthia'),
+                    })
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_modificarproyectoForm(self):
+
+        c = Client()
+        res = c.get('/proyecto/1/modificar/',
+                    {'id':1,
+                     'nombre':'Proyecto1',
+                     'descripcion': 'Proyecto de prueba 1',
+                     'estado': 'Pendiente',
+                     'fecha': 2021/ 10/30,
+                     'fecha_entrega': 2021/11/0o3,
+                     'miembros': ('Cynthia'),
+                     'usuarios': ('Edher','Mady','Milena')
+                    })
+
+        self.assertEquals(res.status_code, self.valid1)
+
+    def test_seleccionarproyectoForm(self):
+        c = Client()
+        res = c.get('/modificarRol/1/',
+                    {'Proyecto': self.proyecto,
+                     })
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_importarRolForm(self):
+        c = Client()
+        res = c.get('/modificarRol/1/',
+                    {'ProyectoA': self.proyecto,
+                     'ProyectoB': self.proyecto1,
+                     })
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_crearsprintForm(self):
+
+        c = Client()
+
+        r = c.get('/proyecto/nuevo/',
+                    {'id':1,
+                     'sprintNumber':1,
+                     'rango': '[ 2021/11/02 - 2021/11/02 ]',
+                     'fecha_inicio': 2021/ 10/27,
+                     'fecha_fin': 2021/11/0o1,
+                    })
+
+        self.assertEquals(r.status_code, self.valid1)
+
+
+    def test_modificarsprintForm(self):
+
+        c = Client()
+
+        r = c.get('/proyecto/nuevo/',
+                    {'id':1,
+                     'proyecto': 2,
+                     'sprintNumber':1,
+                     'rango': '[ 2021/11/02 - 2021/11/02 ]',
+                     'fecha_inicio': 2021/ 10/27,
+                     'fecha_fin': 2021/11/0o5,
+                    })
+
+        self.assertEquals(r.status_code, self.valid1)
+
+
+    def test_visualizarsprintForm(self):
+
+        c = Client()
+
+        r = c.get('/proyecto/nuevo/',
+                    {'id':1,
+                     'proyecto': 2,
+                     'sprintNumber':1,
+                     'fecha_inicio': 2021/ 10/27,
+                     'fecha_fin': 2021/11/0o5,
+                     'historias': self.historias
+                    })
+
+        self.assertEquals(r.status_code, self.valid1)
+
+
 
     """
     def test_asignarRolForm(self):
@@ -66,23 +251,6 @@ class TestForms(unittest.TestCase):
 
         self.assertTrue(form.is_valid())
     """
-
-    def test_crearUsuarioForm(self):
-        form = crearUsuarioForm(data={
-            'Nombre':'Juan',
-            'correo':'juan3@gmail.com'
-        })
-
-        self.assertTrue(form.is_valid())
-
-
-    def test_registroDeUsuariosForm(self):
-        form = registroDeUsuariosForm(data={
-            'Usuario':User(username='Juan'),
-            'Habilitado':"Habilitar acceso al sistema"
-        })
-
-        self.assertTrue(not(form.is_valid()))
 
 
     def test_crearRolForm1(self):
@@ -131,14 +299,7 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
 
-    def test_registroDeUsuariosForm1(self):
-        form = registroDeUsuariosForm(data={
-            'Usuario':'Cristhian',
-            'Habilitado':'false'
-        })
-
-        self.assertTrue(not(form.is_valid()))
-
+    """
     def test_registroDeUsuariosForm2(self):
         form = registroDeUsuariosForm(data={
             'Usuario':'Cynthia',
@@ -187,7 +348,7 @@ class TestForms(unittest.TestCase):
 
         self.assertTrue(not(form.is_valid()))
 
-
+    """
     def test_crearUsuarioForm1(self):
         form = crearUsuarioForm(data={
             'Nombre': 'Cristhian',
@@ -242,13 +403,6 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
 
-    def test_asignarCapacidadForm(self):
-
-        form = asignarcapacidadForm({
-            'capacidad':14
-        })
-
-        self.assertTrue(form.is_valid())
 
 
     def test_asignarCapacidadForm1(self):

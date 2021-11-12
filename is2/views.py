@@ -616,7 +616,7 @@ def modificarProyecto(request):
 #@login_required
 #@permission_required('proyectos.change_proyecto', raise_exception=True)
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def modificarProyecto2(request,id_proyecto):
     """
     Metodo para la modificacion de proyectos
@@ -2296,7 +2296,7 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 
 #Todos los sprints deben ser verificados antes de finalizar proyecto.
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def finalizarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
@@ -2312,7 +2312,7 @@ def finalizarProyecto(request, id_proyecto):
     return redirect(inicio)
 
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def iniciarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
 
@@ -2338,7 +2338,7 @@ def iniciarProyecto(request, id_proyecto):
 
 
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
@@ -2778,29 +2778,27 @@ def modificarSprint2(request, id_proyecto, id_sprint):
         formulario = modificarSprintForm(request.POST, request=request.session)
         if (formulario.is_valid()):
             datosSprint = formulario.cleaned_data
+            fechavalida=validarfechaingresada(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],1)
+            if (fechavalida):
 
-            sepuedecrear=procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)
-            if (sepuedecrear):
+                a= request.user.groups.filter(name='Scrum Master').count()
+
                 updated_sprint = updateSprint(formulario.cleaned_data)
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
                 return redirect(url)
-            else:                                                                                                                                                            
-                proyecto = Proyecto.objects.get(id=id_proyecto)                                                                                                                              
-                sprintActivo = proyecto.id_sprints.get(estados="INICIADO")                                                                                                                   
-                mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"                                               
-                mensaje2="Rango del Sprint Iniciado  : ["+sprintActivo.fecha_inicio.strftime("%d/%m/%Y") + " - " + sprintActivo.fecha_fin.strftime("%d/%m/%Y")+ "]"                          
-                mensaje3="Rango del Proyecto  : [" +  proyecto.fecha.strftime("%d/%m/%Y") + " - " + proyecto.fecha_entrega.strftime("%d/%m/%Y") + "]"                                        
-                                                                                                                                                                                             
-                mensaje4="RANGO PERMITIDO : [ "+ sprintActivo.fecha_fin.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"                                       
-                                                                                                                                                                                             
-                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"SprintIniciado": mensaje2,"Proyecto":mensaje3,"Permitido":mensaje4})
-
+            else:
+                proyecto = Proyecto.objects.get(id=id_proyecto)
+                mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"
+                rangodisponible = calcularRango(proyecto)
+                mensaje4 = "RANGO PERMITIDO :" + rangodisponible
+                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"Permitido":mensaje4})
     else:
         proyectoPropietario = Proyecto.objects.get(id=id_proyecto)
         sprint_seleccionado = Sprint.objects.get(id=id_sprint)
-
         request.session['proyecto'] = proyectoPropietario.id
         guardarCamposdeSprint(request, sprint_seleccionado, proyectoPropietario)
+        rango = calcularRango(proyectoPropietario)
+        request.session['rango'] = rango
         formulario = modificarSprintForm(request=request.session)
         return render(request, "modificarSprint.html", {"form": formulario})
 
@@ -2821,7 +2819,7 @@ def step1_SprintPlanning2(request,id_proyecto):
             # Acciones a realizar con el form
             datosSprint = formulario.cleaned_data
 
-            sepuedecrear=procesarFechaSprint(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)
+            sepuedecrear=validarfechaingresada(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],0)
             if (sepuedecrear):
                 newSprint = nuevoSprint(datosSprint)
                 request.session['sprint_planning_id'] = newSprint.id
@@ -2829,14 +2827,10 @@ def step1_SprintPlanning2(request,id_proyecto):
                 return redirect(url)
             else:
                 proyecto = Proyecto.objects.get(id=id_proyecto)
-                sprintActivo = proyecto.id_sprints.get(estados="INICIADO") 
                 mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"
-                mensaje2="Rango del Sprint Iniciado  : ["+sprintActivo.fecha_inicio.strftime("%d/%m/%Y") + " - " + sprintActivo.fecha_fin.strftime("%d/%m/%Y")+ "]"
-                mensaje3="Rango del Proyecto  : [" +  proyecto.fecha.strftime("%d/%m/%Y") + " - " + proyecto.fecha_entrega.strftime("%d/%m/%Y") + "]"
-
-                mensaje4="RANGO PERMITIDO : [ "+ sprintActivo.fecha_fin.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"
-
-                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"SprintIniciado": mensaje2,"Proyecto":mensaje3,"Permitido":mensaje4})
+                angodisponible=calcularRango(proyecto)
+                mensaje4="RANGO PERMITIDO :"+rangodisponible
+                return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"Permitido":mensaje4})
 
     else:
         proy = Proyecto.objects.get(id=id_proyecto)
@@ -2853,14 +2847,25 @@ def step1_SprintPlanning2(request,id_proyecto):
 
 #Proceso de step1_SprintPlanning2
 def calcularRango(proyecto):
-    if (len(proyecto.id_sprints.filter(estados="INICIADO")) == 0):
-       rango="[ "+ proyecto.fecha.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"
-    else:
+    cantidad_iniciado = len(proyecto.id_sprints.filter(estados="INICIADO"))
+    cantidad_finalizado = len(proyecto.id_sprints.filter(estados="FINALIZADO"))
+
+    if (cantidad_iniciado == 0 and  cantidad_finalizado==0):
+       return "[ "+ proyecto.fecha.strftime('%Y/%m/%d') +" - "+ proyecto.fecha_entrega.strftime('%Y/%m/%d') +" ]"
+
+    if (cantidad_iniciado != 0 ):
        sprintActivo=proyecto.id_sprints.get(estados="INICIADO")
-       rango="[ "+ (sprintActivo.fecha_fin + timedelta(days=1)).strftime('%Y/%m/%d') +" - "+ proyecto.fecha_entrega.strftime('%Y/%m/%d') +" ]"
-    return rango
+       return "[ "+ (sprintActivo.fecha_fin + timedelta(days=1)).strftime('%Y/%m/%d') +" - "+ proyecto.fecha_entrega.strftime('%Y/%m/%d') +" ]"
+
+    if (cantidad_iniciado == 0 and cantidad_finalizado != 0):
+        sps = proyecto.id_sprints.filter(estados="FINALIZADO")
+        for s in sps:
+            sprint_anterior = s
+        return "[ " + (sprint_anterior.fecha_final + timedelta(days=1)).strftime('%Y/%m/%d') + " - " + (proyecto.fecha_entrega).strftime('%Y/%m/%d') + " ]"
+
+
 #Proceso de step1_SprintPlanning2
-def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
+def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
     esvalido=False
     pasos = timedelta(days=1)
 
@@ -2868,28 +2873,63 @@ def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
     if(situacion==0):
         proyecto=Proyecto.objects.get(id=id_proyecto)
         cantidad_iniciado=len(proyecto.id_sprints.filter(estados="INICIADO"))
-        cantidad_planning = len(proyecto.id_sprints.filter(estados="PLANNING"))
+        #cantidad_planning = len(proyecto.id_sprints.filter(estados="PLANNING")) #ESTE SIEMPRE VA A SER 0 POR QUE NO AL CREAR UN NUEVO SPRINT NO DEBE HABER SPRINT EN PLANNING
+        cantidad_finalizado = len(proyecto.id_sprints.filter(estados="FINALIZADO"))
 
-        if (cantidad_iniciado!=0 and cantidad_planning==0):
+
+        #CASO 1= NUEVO SPRINT CUANDO YA HAY UNO INICIADO
+        if (cantidad_iniciado!=0):
             sprint=proyecto.id_sprints.get(estados="INICIADO")
             #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
             if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
                 esvalido = True
-        if (cantidad_iniciado==0 and cantidad_planning==0):
-            if (sp_fechaFin < proyecto.fecha_entrega):
+
+        #CASO 2= NUEVO SPRINT EN EL INICIO
+        if (cantidad_finalizado == 0 and cantidad_iniciado == 0):
+            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > proyecto.fecha)):
                 esvalido = True
 
-        if (cantidad_iniciado!=0 and cantidad_planning==1):
-            sprint_activo=proyecto.id_sprints.get(estados="INICIADO")
-            if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint_activo.fecha_fin)):
+
+        #CASO 3= NUEVO SPRINT CUANDO NO HAY INICIADO PERO SI CUANDO YA HAT SPRINT FINALIZADO PREVIAMENTE
+        if (cantidad_finalizado!=0 and cantidad_iniciado== 0 ):
+            sps = proyecto.id_sprints.filter(estados="FINALIZADO")
+            for s in sps:
+                sprint_anterior=s
+            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_fin)):
+                esvalido = True
+
+    #CUANDO SE LLAMA EN MODIFICAR SPRINT
+    if (situacion == 1):
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+        cantidad_iniciado = len(proyecto.id_sprints.filter(estados="INICIADO"))
+        cantidad_finalizado = len(proyecto.id_sprints.filter(estados="FINALIZADO"))
+
+        #CASO 1= SE MODIFICAR UN SPRINT CUANDO  NO HAY OTRO INICIADO y TAMPOCO HAY SPRINTS FINALIZADOS
+        if (cantidad_iniciado==0 and cantidad_finalizado==0 ):
+            if( (sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio>=proyecto.fecha)):
                 esvalido=True
+
+        #CASO 2= SE MODIFICA UN SPRINT CUANDO NO HAY OTRO INICIADO PERO HAY  SPRINTS FINALIZADOS
+        if (cantidad_iniciado == 0 and cantidad_finalizado != 0):
+            sps = proyecto.id_sprints.filter(estados="FINALIZADO")
+            for s in sps:
+                sprint_anterior = s
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_final)):
+                esvalido = True
+
+        if (cantidad_iniciado != 0):
+            sprintActivo = proyecto.id_sprints.get(estados="INICIADO")
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio > sprintActivo.fecha_fin)):
+                esvalido = True
+
+
+
        
     return esvalido
 
 
 @login_required
-@login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la seleccion de desarrolladores en el Sprint Planning
@@ -2958,7 +2998,7 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
 
 
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning

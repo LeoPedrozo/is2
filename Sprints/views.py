@@ -91,13 +91,6 @@ def guardarCamposdeSprint(request, sprint_seleccionado,proyecto):
     :return: (boolean) Confirmacion de la accion realizada
     """
 
-    if (len(proyecto.id_sprints.filter(estados="INICIADO")) == 0 ):
-        rango = "[ " + proyecto.fecha.strftime("%d/%m/%Y") + " - " + proyecto.fecha_entrega.strftime("%d/%m/%Y") + " ]"
-    else:
-        sprintActivo = proyecto.id_sprints.get(estados="INICIADO")
-        rango = "[ " + (sprintActivo.fecha_fin + timedelta(days=1)).strftime('%Y/%m/%d') + " - " + proyecto.fecha_entrega.strftime(
-            '%Y/%m/%d') + " ]"
-
 
 
 
@@ -109,7 +102,7 @@ def guardarCamposdeSprint(request, sprint_seleccionado,proyecto):
     request.session['sprintNumber'] = SprintActual['sprintNumber']
     request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
     request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
-    request.session['rango']=rango
+
 
     return True
 

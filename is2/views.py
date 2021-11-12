@@ -2835,10 +2835,15 @@ def step1_SprintPlanning2(request,id_proyecto):
     else:
         proy = Proyecto.objects.get(id=id_proyecto)
         if (len(proy.id_sprints.filter(estados="PLANNING")) == 0):
-            request.session['proyecto'] = proy.id
-            request.session['rango']=calcularRango(proy)
-            formulario = crearSprintForm(request=request.session)
-            return render(request, "SprintPlanning_1.html", {"form": formulario})
+            if(len(proy.id_sprints.filter(estados="FINALIZADO",verificado=False))==0):
+                request.session['proyecto'] = proy.id
+                request.session['rango']=calcularRango(proy)
+                formulario = crearSprintForm(request=request.session)
+                return render(request, "SprintPlanning_1.html", {"form": formulario})
+            else:
+                mensaje = "No puede crear otro sprint, primero debe realizarse el proceso QA"
+                return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
+
         else:
             mensaje = "Ya existe un sprint en planning"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})

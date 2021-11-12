@@ -34,7 +34,7 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     infoUsuario, modificarProyecto2, tableroQA_Release2, modificarHistoria2, eliminarHistoria2, step1_SprintPlanning2, \
     step2_SprintPlanning2, asignarCapacidad2, step3_SprintPlanning2, step3_Funcionalidades, modificarSprint2, \
     sprintBacklog2, tableroKanban2, moverHistoria2, funcionalidadesQA, KanbanHistorico, eliminarSprint2, homeProyecto, \
-    eliminarProyecto2, intercambiarMiembro
+    eliminarProyecto2, intercambiarMiembro, accesoDenegado
 from django.conf.urls import url
 
 
@@ -50,31 +50,32 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('bienvenida/',saludo), # hola mundo para probar si funciona el sistema
     path('documentacion/',documentaciones), #Todavia no implementado, para mostrar las documentaciones en la pagina
+    path('AccesoDenegado/',accesoDenegado),
 
     #URL relacionados a roles y usuario
-    path('crearRol/1/',step1_CrearRol),
-    path('crearRol/2/',step2_CrearRol),
-    path('modificarRol/1/', step1_modificarRol),
-    path('modificarRol/2/', step2_modificarRol),
-    path('modificarRol/3/', step3_modificarRol),
-    path('asignarRol/1/', step1_asignarRol),
-    path('asignarRol/2/', step2_asignarRol),
-    path('eliminarRol/1/',step1_eliminarRol),
-    path('eliminarRol/2/',step2_eliminarRol),
-    path('registrarUsuario/',registrarUsuario),
+    path('crearRol/1/',step1_CrearRol), #ok
+    path('crearRol/2/',step2_CrearRol), #ok
+    path('modificarRol/1/', step1_modificarRol), #ok
+    path('modificarRol/2/', step2_modificarRol), #ok
+    path('modificarRol/3/', step3_modificarRol), #ok
+    path('asignarRol/1/', step1_asignarRol), #ok
+    path('asignarRol/2/', step2_asignarRol), #ok
+    path('eliminarRol/1/',step1_eliminarRol), #ok
+    path('eliminarRol/2/',step2_eliminarRol), #ok
+    path('registrarUsuario/',registrarUsuario), #ok
     path('Usuario/<int:id_usuario>/info/',infoUsuario),
 
     #URL relacionado a proyecto
-    path('proyecto/nuevo/',crearProyecto),
+    path('proyecto/nuevo/',crearProyecto), #ok only superuser
     #path('proyecto/',HistorialProyectoFilter),
-    path('proyecto/<int:id_proyecto>/',homeProyecto),
+    path('proyecto/<int:id_proyecto>/',homeProyecto),#
     path('proyecto/<int:id_proyecto>/Sprints/', HistorialSprintFilter),
     path('proyecto/<int:id_proyecto>/ProductBacklog/', HistorialProductBacklog),
-    path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto),
-    path('proyecto/<int:id_proyecto>/iniciar/', iniciarProyecto),
+    path('proyecto/<int:id_proyecto>/Finalizar/', finalizarProyecto), #ok
+    path('proyecto/<int:id_proyecto>/iniciar/', iniciarProyecto), #ok
     path('proyecto/<int:id_proyecto>/modificar/', modificarProyecto2),
     path('proyecto/<int:id_proyecto>/Resumen/',infoProyecto),
-    path('proyecto/<int:id_proyecto>/eliminar/',eliminarProyecto2),
+    path('proyecto/<int:id_proyecto>/eliminar/',eliminarProyecto2), #ok
     path('importarRoles/',importarRol),
     path('inicio/<int:id>/',swichProyecto),
 
@@ -102,13 +103,13 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarHistorias/', step3_SprintPlanning2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/', asignarCapacidad2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarEncargado/Historia<int:id_historia>/Op<int:opcion>/', step3_Funcionalidades),
-    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/Eliminar/', eliminarSprint2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/Eliminar/', eliminarSprint2), #ok
 
 
     #URL relacionados a los aspectos relacionados al sprint
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/SprintBacklog/',sprintBacklog2),
-    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/',tableroKanban2),
-    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/Historia<int:id_historia>/Op<int:opcion>', moverHistoria2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/',tableroKanban2), # FalTa
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/Historia<int:id_historia>/Op<int:opcion>', moverHistoria2), #Falta
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/BurndownChart/',BurndownChart),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/KanbanActivo/accion+<str:opcion>/',finalizarOexpandirSprint),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/intercambiar/',intercambiarMiembro),
@@ -119,6 +120,9 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/kanbanHistorico/',KanbanHistorico),
 
 
+
+
+#----------------------------------OLD URLS------------------------------------------
 
 
     #Url ya desactualizado
@@ -159,15 +163,6 @@ urlpatterns = [
     path('eliminarHistoria/', eliminarHistoria),
 
 
-
-
-
-
-
-
-
-
-
     # no se usa mas
     path('modificarProyecto/', modificarProyecto),
     path('eliminarProyecto/', eliminarProyecto),
@@ -187,7 +182,6 @@ urlpatterns = [
 
     #path('historicooSprint/<int:id_sprint>/',historicoSprint2),
     #path('sprint/<int:id>/KanBan/Historico/',historicoSprint2),
-
 
     #URL relacionado a la tablero QA
     path('qualityassurance/<int:id_sprint>/',tableroQA_Release2),

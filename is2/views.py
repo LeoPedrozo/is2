@@ -1,50 +1,17 @@
-from django.forms import model_to_dict
-from django.contrib.auth.models import Group
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.admin.views.decorators import staff_member_required
 from datetime import date, datetime, timedelta
-from workalendar.america import Paraguay
-from django.db.models import Q
-from django.shortcuts import render, redirect
 from allauth.socialaccount.models import SocialAccount
-from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
-    modificarRolForm
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required, permission_required,user_passes_test
+from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
+from django.forms import model_to_dict
+from django.shortcuts import render, redirect
+from workalendar.america import Paraguay
+from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm,modificarRolForm
 from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
-from Sprints.views import nuevoSprint, updateSprint, guardarCamposdeSprint, getSprint
-from gestionUsuario.models import User, UserProyecto, UserSprint
-from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
-from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
-from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
-from proyectos.models import Proyecto
-from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from Sprints.forms import crearSprintForm, modificarSprintForm, seleccionarSprintForm, extenderSprintForm,intercambiardeveloperForm
-
-from gestionUsuario.forms import asignarcapacidadForm
-from Sprints.models import Sprint
-from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
-    cargarHorasHistoriaForm, asignarEncargadoForm, asignarDesarrolladorForm
-from userStory.models import Historia
-from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
-
-from django.core.exceptions import ObjectDoesNotExist
-from datetime import date, datetime, timedelta
-
-from allauth.socialaccount.models import SocialAccount
-from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Group
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
-from django.forms import model_to_dict
-from django.shortcuts import render, redirect
-from workalendar.america import Paraguay
-
-from GestionPermisos.forms import crearRolForm, asignarRolForm, registroDeUsuariosForm, seleccionarRolForm, \
-    modificarRolForm
-from GestionPermisos.views import fabricarRol, enlazar_Usuario_con_Rol, registrar_usuario, removerRol
-from Sprints.forms import crearSprintForm, modificarSprintForm, seleccionarSprintForm, extenderSprintForm
 from Sprints.models import Sprint
 from Sprints.views import nuevoSprint, updateSprint, guardarCamposdeSprint, getSprint
 from gestionUsuario.forms import asignarcapacidadForm
@@ -54,8 +21,8 @@ from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from proyectos.models import Proyecto
 from proyectos.views import nuevoProyecto, getProyecto, updateProyecto, guardarCamposdeProyecto
-from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, \
-    cargarHorasHistoriaForm, asignarEncargadoForm, asignarDesarrolladorForm,asignaryestimarHistoria
+from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modificarHistoriaForm, eliminarHistoriaForm, cargarHorasHistoriaForm, asignarEncargadoForm,\
+    asignarDesarrolladorForm,asignaryestimarHistoria
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 
@@ -85,9 +52,13 @@ def documentaciones(request):
     return render(request, "html/index.html", {})
 
 
+
+def accesoDenegado(request):
+    return render(request, "403.html")
 ##VISTAS RELACIONADAS AL MANEJO DE ROL
 
-
+@login_required
+@user_passes_test(lambda u: u.is_staff,login_url="/AccesoDenegado/")
 def step1_CrearRol(request):
     """
     Metodo auxiliar para la creacion de roles del sistema
@@ -109,8 +80,10 @@ def step1_CrearRol(request):
     return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
+#@login_required
+#@permission_required('auth.add_group', raise_exception=True)
 @login_required
-@permission_required('auth.add_group', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step2_CrearRol(request):
     """
     Metodo para la creacion de roles del sistema
@@ -148,6 +121,8 @@ def step2_CrearRol(request):
     return render(request, "crearRol.html", {"form": formulario})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step1_asignarRol(request):
     """
     Metodo auxiliar para la asignacion de roles a usuarios del sistema
@@ -171,8 +146,10 @@ def step1_asignarRol(request):
     return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
+#@login_required
+#@permission_required('auth.add_group', raise_exception=True)
 @login_required
-@permission_required('auth.add_group', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step2_asignarRol(request):
     """
     Metodo para la asignacion de roles a usuarios del sistema
@@ -254,6 +231,7 @@ def procesoAsignarRol(request):
 
 # @login_required
 # @permission_required('auth.delete_group', raise_exception=True)
+
 def eliminarRol(request):
     """
     Metodo para la eliminacion de roles del sistema
@@ -278,7 +256,8 @@ def eliminarRol(request):
 
     return render(request, "eliminarRol.html", {"form": formulario})
 
-
+@login_required
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step1_eliminarRol(request):
     """
     Metodo auxiliar para seleccionar un rol del sistema que se desea eliminar
@@ -301,8 +280,10 @@ def step1_eliminarRol(request):
     return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
+#@login_required
+#@permission_required('auth.add_group', raise_exception=True)
 @login_required
-@permission_required('auth.add_group', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step2_eliminarRol(request):
     """
     Metodo auxiliar para seleccionar un rol del sistema que se desea eliminar
@@ -337,6 +318,8 @@ def step2_eliminarRol(request):
     return render(request, "seleccionarRol.html", {"form": formulario})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step1_modificarRol(request):
     """
     Metodo auxiliar para la seleccion del rol que se desea modificar
@@ -359,8 +342,10 @@ def step1_modificarRol(request):
     return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
+#@login_required
+#@permission_required('auth.add_group', raise_exception=True)
 @login_required
-@permission_required('auth.add_group', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step2_modificarRol(request):
     """
     Metodo auxiliar para la seleccion del rol que se desea modificar
@@ -405,8 +390,10 @@ def step2_modificarRol(request):
 
 # ESTE TIENE UN PROBLEMA, LA LISTA DE USUARIO SE MANTEIENE VACIA
 # La linea 359 no funca. no da errores pero no hace lo que pienso.
+#@login_required
+#@permission_required('auth.change_group', raise_exception=True)
 @login_required
-@permission_required('auth.change_group', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def step3_modificarRol(request):
     """
     Metodo para la modificacion de roles del sistema
@@ -505,8 +492,10 @@ def importarRol(request):
     return render(request, "seleccionarProyecto.html", {"form": formulario})
 
 
+#@login_required
+#@staff_member_required
 @login_required
-@staff_member_required
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def registrarUsuario(request):
     """
     Metodo para registrar usuarios al sistema
@@ -539,8 +528,10 @@ def registrarUsuario(request):
 
 
 # VISTAS RELACIONADAS AL MANEJO DE PROYECTOS
+#@login_required
+#@permission_required('proyectos.add_proyecto', raise_exception=True)
 @login_required
-@permission_required('proyectos.add_proyecto', raise_exception=True)
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def crearProyecto(request):
     """
     Metodo para la creacion de proyectos
@@ -622,8 +613,10 @@ def modificarProyecto(request):
         return redirect(inicio)
 
 
+#@login_required
+#@permission_required('proyectos.change_proyecto', raise_exception=True)
 @login_required
-@permission_required('proyectos.change_proyecto', raise_exception=True)
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def modificarProyecto2(request,id_proyecto):
     """
     Metodo para la modificacion de proyectos
@@ -724,7 +717,10 @@ def eliminarProyecto(request):
 
     return render(request, "eliminarProyecto.html", {"form": formulario})
 
-
+#@login_required
+#@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@login_required
+@user_passes_test(lambda u: u.is_superuser,login_url="/AccesoDenegado/")
 def eliminarProyecto2(request,id_proyecto):
     """
     Metodo para la eliminacion de proyectos
@@ -2299,6 +2295,8 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 
 
 #Todos los sprints deben ser verificados antes de finalizar proyecto.
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def finalizarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
@@ -2313,7 +2311,8 @@ def finalizarProyecto(request, id_proyecto):
 
     return redirect(inicio)
 
-
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def iniciarProyecto(request, id_proyecto):
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
 
@@ -2338,7 +2337,8 @@ def iniciarProyecto(request, id_proyecto):
         return render(request, "Condicion_requerida.html", {"mensaje": "El proyecto aun necesita tener a sus miembros con un rol definido"})
 
 
-
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
@@ -2559,8 +2559,10 @@ def infoUsuario(request, id_usuario):
                    "CapacidadPromedio": promedio_capacidad, "Eficiencia": Eficiencia, "avatar":fotodeususario})
 
 
-@permission_required('Sprints.change_sprint', raise_exception=True)
+#@permission_required('Sprints.change_sprint', raise_exception=True)
+#@login_required
 @login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def tableroQA_Release2(request,id_proyecto,id_sprint):
     """
     Metodo para visualizar el tablero Quality Assurance Release
@@ -2643,7 +2645,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
 
 
 #La vistas 2 -----------------------------------------------------------------------
-
+@login_required
 def inicio(request):
     usuarioActual = User.objects.get(username=request.user.username)
 
@@ -2672,6 +2674,7 @@ def inicio(request):
 
 
 #url= /proyecto/id_proyecto/
+@login_required
 def homeProyecto(request,id_proyecto):
 
 
@@ -2848,8 +2851,7 @@ def step1_SprintPlanning2(request,id_proyecto):
 
     return render(request, "SprintPlanning_1.html", {"form": formulario,"ID_proyecto":id_proyecto})
 
-
-
+#Proceso de step1_SprintPlanning2
 def calcularRango(proyecto):
     if (len(proyecto.id_sprints.filter(estados="INICIADO")) == 0):
        rango="[ "+ proyecto.fecha.strftime("%d/%m/%Y") +" - "+ proyecto.fecha_entrega.strftime("%d/%m/%Y") +" ]"
@@ -2857,8 +2859,7 @@ def calcularRango(proyecto):
        sprintActivo=proyecto.id_sprints.get(estados="INICIADO")
        rango="[ "+ (sprintActivo.fecha_fin + timedelta(days=1)).strftime('%Y/%m/%d') +" - "+ proyecto.fecha_entrega.strftime('%Y/%m/%d') +" ]"
     return rango
-
-
+#Proceso de step1_SprintPlanning2
 def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
     esvalido=False
     pasos = timedelta(days=1)
@@ -2886,6 +2887,9 @@ def procesarFechaSprint(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
     return esvalido
 
 
+@login_required
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la seleccion de desarrolladores en el Sprint Planning
@@ -2911,7 +2915,9 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
 
-
+#@login_required
+#@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+#Es mas un proceso
 def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
     """
     Metodo para asignar la capacidad de trabajo de un desarrollador
@@ -2951,7 +2957,8 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
 
 
 
-
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning
@@ -3014,7 +3021,7 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
 
 
 
-
+#Es un proceso de sprint planning 3
 def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     """
     Metodo para administrar la asignacion o remocion de encargado de un user story
@@ -3118,7 +3125,6 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
 
 
 @login_required
-@permission_required('userStory.view_historia', raise_exception=True)
 def sprintBacklog2(request,id_proyecto,id_sprint):
     """
     Metodo para visualizar los user story que estan como objetivos del sprint
@@ -3134,8 +3140,9 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
 
 
 
-
+#-------TABLERO KANBAN DEL SPRINT-----------#
 @login_required
+#ESte no se que permiso ponerle ya que diferentes roles pueden verlo.
 def tableroKanban2(request,id_proyecto,id_sprint):
     """
     Metodo que posibilita visualizar el tablero kanban
@@ -3201,13 +3208,8 @@ def tableroKanban2(request,id_proyecto,id_sprint):
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
                            "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual})
 
-            # except IndexError:
-            # return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT"})
     except ObjectDoesNotExist:
         return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
-
-
-
 
 @login_required
 def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
@@ -3277,6 +3279,11 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
 
 
 
+
+#@login_required
+#@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@login_required
+@permission_required('Sprints.delete_sprint', raise_exception=True)
 def eliminarSprint2(request, id_proyecto,id_sprint):
     """
     Metodo que permite la eliminacion de un sprint
@@ -3315,12 +3322,10 @@ def eliminarSprint2(request, id_proyecto,id_sprint):
 
 
 
-
-
-
+#muestra el formulario para cambiar de miembro en un sprint
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 def intercambiarMiembro(request,id_proyecto,id_sprint):
-
-
     if request.method == "POST":
         formulario= intercambiardeveloperForm(request.POST,dato=request.session)
         if (formulario.is_valid()):
@@ -3381,7 +3386,7 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
 
 
 
-
+#Es un proceso
 def swichProyecto2(request,u,p, id_proyecto):
     """
     Metodo para cambiar de un proyecto a otro con las reasignaciones de roles correspondiente

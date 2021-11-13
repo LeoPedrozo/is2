@@ -1341,7 +1341,7 @@ def crearHistoria(request,id_proyecto):
         request.session['idproyecto'] = id_proyecto
         formulario = crearHistoriaForm(proyecto=request.session['idproyecto'])
 
-    return render(request, "crearUserStory.html", {"form": formulario})
+    return render(request, "crearUserStory.html", {"form": formulario,"ID_proyecto":id_proyecto})
 
 
 # Seleccionar historia 1

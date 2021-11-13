@@ -33,7 +33,7 @@ class crearHistoriaForm(forms.Form):
         ('BAJA', 'Baja'),
     ]
     #id_historia = forms.IntegerField(disabled=True, label="ID de Historia")
-    nombre = forms.CharField()
+    nombre = forms.CharField(max_length=20, help_text='20 characters max.')
     descripcion = forms.CharField(widget=forms.Textarea)
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")
@@ -99,7 +99,7 @@ class modificarHistoriaForm(forms.Form):
 
     #id_historia=forms.IntegerField(disabled=True,label="ID de Historia")
     #proyecto = forms.IntegerField(disabled=True, label="Proyecto Propietario")
-    nombre = forms.CharField()
+    nombre = forms.CharField(max_length=20, help_text='20 characters max.')
     descripcion = forms.CharField(widget=forms.Textarea)
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     #fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")

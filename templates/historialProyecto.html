@@ -52,23 +52,31 @@
                 <td>{{ proyecto.estado }}</td>
 
             <!-- SOLO SI ES SCRUM MASTER O ADMIN-->
+
+            {% if perms.proyectos.delete_proyecto  or usuario.is_superuser%}
             <script>
                 var myModal = new bootstrap.Modal(document.getElementById('modal_eliminar{{ proyecto.pk }}'), options)
             </script>
 
                 <td><a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal_eliminar{{ proyecto.pk }}" title="Eliminar Proyecto"><i class="fas fa-trash-alt"></i></a></td>
 
-
+            {% endif %}
 
                  {% if proyecto.estado != "FINALIZADO" %}
+
+                        {% if perms.proyectos.change_proyecto  or usuario.is_superuser%}
                 <td><a class="btn btn-primary" href="/proyecto/{{ proyecto.pk }}/modificar/" title="Modificar Proyecto"><i class="fas fa-edit"></i> </a></td>
-                {% endif %}
+                        {% endif %}
+
+                     {% endif %}
+
+
                 <td><a class="btn btn-success" href="/proyecto/{{ proyecto.pk }}/" title="Acceder al Proyecto"><i class="fas fa-arrow-alt-circle-right"></i> </a></td>
 
 
 
 
-                <!-- Modal Eliminar Sprint -->
+                <!-- Modal Eliminar PROYECTO -->
                 <div class="modal fade" id="modal_eliminar{{ proyecto.pk }}" tabindex="-1"
                      aria-labelledby="exampleModalLabel"
                      aria-hidden="true">

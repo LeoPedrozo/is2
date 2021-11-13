@@ -2125,7 +2125,7 @@ def HistorialProductBacklog(request, id_proyecto):
         # messages.info(request, "El proyecto no tiene historias")
         print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
-    return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name})
+    return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name,"proyecto":proyecto_seleccionado})
 
 
 def BurndownChart(request,id_proyecto,id_sprint):
@@ -2303,9 +2303,14 @@ def finalizarProyecto(request, id_proyecto):
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
     print("la longitud de sprints es : ", len(sprints))
     if (len(sprints) == 0):
-        proyecto_seleccionado.estado = "FINALIZADO"
-        proyecto_seleccionado.fecha_finalizacion = date.today()
-        proyecto_seleccionado.save()
+
+        if (len(proy.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
+            proyecto_seleccionado.estado = "FINALIZADO"
+            proyecto_seleccionado.fecha_finalizacion = date.today()
+            proyecto_seleccionado.save()
+        else:
+            mensaje = "No puede finalizar el proyecto ya que hay un sprint sin proceso QA"
+            return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
     else:
         mensaje = "No puede finalizar el proyecto ya que hay un sprint activo"
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
@@ -2549,7 +2554,7 @@ def infoUsuario(request, id_usuario):
 #@permission_required('Sprints.change_sprint', raise_exception=True)
 #@login_required
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def tableroQA_Release2(request,id_proyecto,id_sprint):
     """
     Metodo para visualizar el tablero Quality Assurance Release
@@ -2642,7 +2647,6 @@ def inicio(request):
         usuarioActual.proyecto=None
         if(usuarioActual.is_superuser ):
             listaProyectos = Proyecto.objects.all()
-            #listaUsuarioRolesProyecto = listaderoles(listaProyectos, usuarioActual, True)
             fotodeususario = "No tiene"
 
         else:
@@ -2822,6 +2826,7 @@ def step1_SprintPlanning2(request,id_proyecto):
 
     else:
         proy = Proyecto.objects.get(id=id_proyecto)
+
         if (len(proy.id_sprints.filter(estados="PLANNING")) == 0):
             if(len(proy.id_sprints.filter(estados="FINALIZADO",verificado=False))==0):
                 request.session['proyecto'] = proy.id

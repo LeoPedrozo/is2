@@ -75,7 +75,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
-
+        {% if perms.proyectos.change_proyecto  or usuario.is_superuser%}
                     {% if proyecto.estado == "PENDIENTE" %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/iniciar/">Iniciar Proyecto</a></li>
@@ -85,7 +85,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar Proyecto</a></li>
                     {% endif %}
-
+                {% endif %}
                 </ul>
 
             </div>

@@ -181,6 +181,45 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="modal fade" id="modal_finalizar{{ sprint.id }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Finalizar
+                                    Sprint #{{ sprint.sprintNumber }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="height: 150px">
+                                <h5 style="alignment: center">ATENCION</h5>
+                                <p> Estas seguro de finalizar el sprint?</p>
+
+                                <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/accion+finalizar/"
+                                      method="GET">
+
+                                    <div class="col" style="position: absolute; right: 20px;">
+
+                                        <button value="Cargar" type="submit" class="btn btn-primary">Finalizar
+                                        </button>
+                                        <button type="button" class="btn btn-secondary blue" data-bs-dismiss="modal">
+                                            Cancelar
+                                        </button>
+
+                                    </div>
+
+
+                                </form>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
                 {% endif %}
             </div>
             <!-- !Modals-->
@@ -232,6 +271,11 @@
                                         class="uil uil-trash-alt"></i> Eliminar Sprint</a>
                                 </li>
                                     {% endif %}
+
+                                <li><a class="dropdown-item"
+                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/"> <i
+                                    class="uil uil-clipboard-notes"></i> Ir al
+                                Sprint Backlog</a></li>
                             {% endif %}
 
                             {% if sprint.estados == "INICIADO" %}
@@ -243,6 +287,11 @@
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/"> <i
                                         class="uil uil-chart-down"></i> Ir al
                                     BurndownChart</a></li>
+
+                                <li><a class="dropdown-item"
+                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/"> <i
+                                    class="uil uil-clipboard-notes"></i> Ir al
+                                Sprint Backlog</a></li>
 
                                 {% if perms.Sprints.change_sprint or usuario.is_superuser%}
                                 <script>
@@ -257,11 +306,20 @@
                                 <li><a class="dropdown-item"
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/intercambiar/"> <i
                                         class="fas fa-exchange-alt"></i> Cambiar Desarrollador </a></li>
+
+                                 <script>
+                                    var myModal = new bootstrap.Modal(document.getElementById('modal_finalizar{{ sprint.id }}'), options)
+                                </script>
+
+                                <li><a class="dropdown-item" data-bs-toggle="modal"
+                                       data-bs-target="#modal_finalizar{{ sprint.id }}"> <i class="fas fa-hand-paper"></i> Finalizar Sprint</a>
+                                </li>
+
+
+
                                 {% endif %}
 
 
-                                <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/">  <i class="fas fa-hand-paper"></i></i>    Finalizar Sprint</a></li>
 
 
 
@@ -270,10 +328,7 @@
 
 
                             {% if sprint.estados == "FINALIZADO" %}
-                                <li><a class="dropdown-item"
-                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/"> <i
-                                        class="fas fa-grip-horizontal"></i> Ir al
-                                    Tablero Kanban</a></li>
+
 
                                 {% if sprint.verificado !=  True %}
 
@@ -286,17 +341,24 @@
 
                                     {% endif %}
                                 {% endif %}
+
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/"> <i
+                                        class="fas fa-grip-horizontal"></i> Ir al
+                                    Tablero Kanban</a></li>
+
                                 <li><a class="dropdown-item"
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/"> <i
                                         class="uil uil-chart-down"></i> Ir al
                                     BurndownChart</a></li>
-                            {% endif %}
-
-
-                            <li><a class="dropdown-item"
+                                <li><a class="dropdown-item"
                                    href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/SprintBacklog/"> <i
                                     class="uil uil-clipboard-notes"></i> Ir al
                                 Sprint Backlog</a></li>
+                            {% endif %}
+
+
+
 
 
                         </ul>

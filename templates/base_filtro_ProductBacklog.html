@@ -93,7 +93,8 @@
     <div class="container-fluid">
         <!-- Toggle button -->
         <button
-                class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent"
+                class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
@@ -110,18 +111,23 @@
 
             <!-- Left links -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                                              <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a>
                 </li>
 
 
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Menu de
+                        Proyecto</a>
+                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Menu de Proyecto</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="nuevo/">Crear Historia</a>
-                </li>
+                {% if proyecto.estado == "INICIADO" %}
+                    {% if perms.userStory.add_historia or usuario.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="nuevo/">Crear Historia</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
 
 
             </ul>
@@ -146,17 +152,17 @@
                    aria-expanded="false">
 
                     {% if user.is_superuser %}
-                        <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class ="rounded-circle"
-                                     style='filter: invert(100%);width:50px;height:50px;'>
+                        <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="rounded-circle"
+                             style='filter: invert(100%);width:50px;height:50px;'>
                     {% else %}
-                                <img src="{{ avatar }}" alt="" class ="rounded-circle" style="width:50px;height:50px;">
+                        <img src="{{ avatar }}" alt="" class="rounded-circle" style="width:50px;height:50px;">
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">
-                     {% if not user.is_superuser %}
-                   <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+                    {% if not user.is_superuser %}
+                        <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
 
-                      {% endif %}
+                    {% endif %}
                     <li><a class="dropdown-item" href="logout">Cerrar Sesion</a></li>
                 </ul>
             </div>
@@ -166,7 +172,6 @@
     </div>
     <!-- Container wrapper -->
 </nav>
-
 
 
 <div class="container">
@@ -182,8 +187,8 @@
 
 <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         //Dropdown menu

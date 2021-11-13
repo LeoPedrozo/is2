@@ -74,7 +74,7 @@ myModal.addEventListener('shown.bs.modal', function () {
 
 
 
-                    {% if perms.Sprints.add_sprint %}
+                    {% if perms.Sprints.add_sprint and proyecto.estado == "INICIADO"%}
                         <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
                 </li>

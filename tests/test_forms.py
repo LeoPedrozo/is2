@@ -54,6 +54,7 @@ class TestForms(unittest.TestCase):
             ("change","Modificar"),
             ("view","Ver"),
         )
+
         self.valid1 = 302
 
         self.proyecto1 = Proyecto.objects.create(
@@ -66,6 +67,7 @@ class TestForms(unittest.TestCase):
 
         self.valid = 200
 
+        self.invalid = 404
 
     def test_crearRolForm(self):
 
@@ -188,7 +190,7 @@ class TestForms(unittest.TestCase):
 
         c = Client()
 
-        r = c.get('/proyecto/nuevo/',
+        r = c.get('/proyecto/1/Sprints/nuevo/InformacionBasica/',
                     {'id':1,
                      'sprintNumber':1,
                      'rango': '[ 2021/11/02 - 2021/11/02 ]',
@@ -230,6 +232,122 @@ class TestForms(unittest.TestCase):
 
         self.assertEquals(r.status_code, self.valid1)
 
+
+    def test_extendersprintForm(self):
+
+        c = Client()
+
+        r = c.get('/proyecto/1/Sprints/',
+                    {
+                     'fecha_fin': 2021/11/0o6,
+                    })
+
+        self.assertEquals(r.status_code, self.valid1)
+
+
+    def test_intercambiardeveloperForm(self):
+
+        c = Client()
+
+        r = c.get('/proyecto/1/Sprints/2/intercambiar/',
+                    {
+                     'miembroA': User.objects.filter(),
+                     'miembroB': User.objects.filter()
+                    })
+
+        self.assertEquals(r.status_code, self.valid1)
+
+
+    def test_crearHistoriaForm(self):
+
+        c = Client()
+        res = c.get('/proyecto/1/ProductBacklog/nuevo/',
+                    {'nombre':'Historia Nro1',
+                     'descripcion': 'Historia de prueba 1',
+                     'prioridad': 'Alta',
+                     'fecha_creacion': 2021/ 10/30,
+                     'proyecto':1,
+                     })
+
+        self.assertEquals(res.status_code, self.valid1)
+
+
+    def test_cargarHorasHistoriaForm(self):
+
+        c = Client()
+        res = c.get('proyecto/1/Sprints/1/KanbanActivo/Historia1/Op5',
+                    {
+                     'horas':6,
+                     'comentario': 'comentario de prueba',
+                     })
+
+        self.assertEquals(res.status_code, self.invalid)
+
+
+    def test_seleccionarHistoriaForm(self):
+
+        c = Client()
+
+        res = c.get('modificarHistoria/1/',
+                    {
+                     'Historia': self.historias,
+                    })
+
+        self.assertEquals(res.status_code, self.invalid)
+
+
+
+    def test_asignarEncargadoForm(self):
+
+        c = Client()
+
+        res = c.get('asignarEncargado/',
+                    {
+                     'Usuario': User.objects.filter(),
+                     'Historia': self.historias,
+                    })
+
+        self.assertEquals(res.status_code, self.invalid)
+
+
+
+    def test_modificarHistoriaForm(self):
+
+        c = Client()
+
+        res = c.get('proyecto/1/ProductBacklog/modificar/Historia1/',
+                    {'nombre':'Historia Nro1',
+                     'descripcion': 'Historia de prueba 1',
+                     'prioridad': 'Baja',
+                     })
+
+        self.assertEquals(res.status_code, self.invalid)
+
+
+    def test_eliminarHistoriaForm(self):
+
+        c = Client()
+
+        res = c.get('proyecto/1/ProductBacklog/Eliminar/Historia1/',
+                    {
+                     'Historia': self.historias,
+                    })
+
+        self.assertEquals(res.status_code, self.invalid)
+
+
+
+    def test_asignaryestimarHistoriaForm(self):
+
+        c = Client()
+
+        res = c.get('proyecto/1/Sprints/2/AsignarHistorias/',
+                    {
+                     'encargado': User.objects.all(),
+                     'estimado':27
+                    })
+
+        self.assertEquals(res.status_code, self.invalid)
 
 
     """
@@ -545,7 +663,7 @@ class TestForms(unittest.TestCase):
 
 
 
-    def test_importarRolForm(self):
+    def test_importarRol1Form(self):
 
         P = Proyecto.objects.create(
             nombre='Primer Proyecto',
@@ -563,7 +681,7 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
 
-    def test_cargarHorasHistoriaForm(self):
+    def test_cargarHorasHistoria1Form(self):
 
         form = cargarHorasHistoriaForm({
             'horas':5,

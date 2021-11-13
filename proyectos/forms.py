@@ -31,8 +31,8 @@ class crearproyectoForm(forms.Form):
     descripcion = forms.CharField(widget=forms.Textarea)
     estado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados)
 
-    fecha = forms.DateField(initial=datetime.date.today,disabled=True,label="Fecha de Creacion")
-    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha de Entrega")
+    fecha = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha inicio Estimado")
+    fecha_entrega = forms.DateField(widget=DateInput(),input_formats=['%Y/%m/%d'],initial=datetime.date.today,label="Fecha de Finalizacion Estimada")
     #miembros = forms.ModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin","Admin"]),initial=0)
     #miembros = UserModelMultipleChoiceField(queryset=User.objects.all().exclude(username=["admin", "Admin"]),
     #                                          initial=0)

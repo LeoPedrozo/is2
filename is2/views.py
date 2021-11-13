@@ -616,7 +616,7 @@ def modificarProyecto(request):
 #@login_required
 #@permission_required('proyectos.change_proyecto', raise_exception=True)
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def modificarProyecto2(request,id_proyecto):
     """
     Metodo para la modificacion de proyectos
@@ -2001,6 +2001,7 @@ def HistorialProyectoFilter(request):
 
 
 # 2 cuando se seleciona la opcion de ver sprints.
+@login_required
 def HistorialSprintFilter(request, id_proyecto):
     """
     Metodo para la visualizacion de Sprints
@@ -2449,20 +2450,6 @@ def infoProyecto(request, id_proyecto):
 
     miembros=zip(lista1,lista2)
 
-    """
-     miembros=[]
-    tabla_temporal=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
-    for m in tabla_temporal:
-        miembros.append(m.usuario,m.rol_name)
-    """
-
-
-
-
-
-
-    print("Los miembros son ", miembros)
-
     #contamos la duracion del proyecto en dias
     calendarioParaguay = Paraguay()
     pasos = timedelta(days=1)
@@ -2473,7 +2460,7 @@ def infoProyecto(request, id_proyecto):
     while fechaInicio <= fechaFin:
         if calendarioParaguay.is_working_day(fechaInicio):
             duracion_proyecto=duracion_proyecto+1
-        if( date.today() <= fechaFin):
+        if( date.today() <= fechaFin and calendarioParaguay.is_working_day(date.today())):
             transcurrido_proyecto=transcurrido_proyecto+1
 
         fechaInicio += pasos
@@ -2804,7 +2791,8 @@ def modificarSprint2(request, id_proyecto, id_sprint):
 
 
 @login_required
-@permission_required('Sprints.add_sprint', raise_exception=True)
+#@permission_required('Sprints.add_sprint', raise_exception=True)
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def step1_SprintPlanning2(request,id_proyecto):
     """
     Metodo auxiliar para la realizacion del Sprint Planning de un proyecto
@@ -2828,7 +2816,7 @@ def step1_SprintPlanning2(request,id_proyecto):
             else:
                 proyecto = Proyecto.objects.get(id=id_proyecto)
                 mensaje1="[ " + datosSprint["fecha_inicio"].strftime("%d/%m/%Y")+ " - " + datosSprint["fecha_fin"].strftime("%d/%m/%Y") + " ]"
-                angodisponible=calcularRango(proyecto)
+                rangodisponible=calcularRango(proyecto)
                 mensaje4="RANGO PERMITIDO :"+rangodisponible
                 return render(request, "Condicion_Requerida_CrearSprint.html", {"NuevoSprint": mensaje1,"Permitido":mensaje4})
 
@@ -2934,7 +2922,7 @@ def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
 
 
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la seleccion de desarrolladores en el Sprint Planning
@@ -3003,7 +2991,7 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
 
 
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     """
     Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning
@@ -3325,10 +3313,10 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
 
 
 
-#@login_required
-#@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 @login_required
-@permission_required('Sprints.delete_sprint', raise_exception=True)
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
+#@login_required
+#@permission_required('Sprints.delete_sprint', raise_exception=True)
 def eliminarSprint2(request, id_proyecto,id_sprint):
     """
     Metodo que permite la eliminacion de un sprint
@@ -3369,7 +3357,7 @@ def eliminarSprint2(request, id_proyecto,id_sprint):
 
 #muestra el formulario para cambiar de miembro en un sprint
 @login_required
-@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
+@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def intercambiarMiembro(request,id_proyecto,id_sprint):
     if request.method == "POST":
         formulario= intercambiardeveloperForm(request.POST,dato=request.session)

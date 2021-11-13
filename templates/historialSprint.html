@@ -201,10 +201,13 @@
 
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
 
-                            {% if sprint.estados == "PLANNING" %}
+                            {% if sprint.estados == "PLANNING"%}
+
+                                {% if perms.Sprints.change_sprint or usuario.is_superuser%}
                                 <script>
                                     var myModal = new bootstrap.Modal(document.getElementById('modal_iniciar{{ sprint.id }}'), options)
                                 </script>
+
                                 <li><a class="dropdown-item" data-bs-toggle="modal"
                                        data-bs-target="#modal_iniciar{{ sprint.id }}"> <i class="uil uil-bolt-alt"></i>
                                     Iniciar Sprint</a>
@@ -217,9 +220,9 @@
                                     <i
                                             class="fas fa-edit"></i> Modificar
                                     Sprint</a></li>
+                                {% endif %}
 
-
-
+                                    {% if perms.Sprints.delete_sprint or usuario.is_superuser%}
                                 <script>
                                     var myModal = new bootstrap.Modal(document.getElementById('modal_eliminar{{ sprint.id }}'), options)
                                 </script>
@@ -228,7 +231,7 @@
                                        data-bs-target="#modal_eliminar{{ sprint.id }}"> <i
                                         class="uil uil-trash-alt"></i> Eliminar Sprint</a>
                                 </li>
-
+                                    {% endif %}
                             {% endif %}
 
                             {% if sprint.estados == "INICIADO" %}
@@ -241,6 +244,7 @@
                                         class="uil uil-chart-down"></i> Ir al
                                     BurndownChart</a></li>
 
+                                {% if perms.Sprints.change_sprint or usuario.is_superuser%}
                                 <script>
                                     var myModal = new bootstrap.Modal(document.getElementById('modal_extender{{ sprint.id }}'), options)
                                 </script>
@@ -253,12 +257,18 @@
                                 <li><a class="dropdown-item"
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/intercambiar/"> <i
                                         class="fas fa-exchange-alt"></i> Cambiar Desarrollador </a></li>
+                                {% endif %}
 
 
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/KanbanActivo/">  <i class="fas fa-hand-paper"></i></i>    Finalizar Sprint</a></li>
 
 
 
                             {% endif %}
+
+
+
                             {% if sprint.estados == "FINALIZADO" %}
                                 <li><a class="dropdown-item"
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/kanbanHistorico/"> <i
@@ -266,11 +276,15 @@
                                     Tablero Kanban</a></li>
 
                                 {% if sprint.verificado !=  True %}
+
+                                    {% if perms.Sprints.change_sprint or usuario.is_superuser%}
                                     <li><a class="dropdown-item"
                                            href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/QualityAssurance/">
                                         <i
                                                 class="uil uil-feedback"></i> Verificar
                                         Calidad</a></li>
+
+                                    {% endif %}
                                 {% endif %}
                                 <li><a class="dropdown-item"
                                        href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/BurndownChart/"> <i

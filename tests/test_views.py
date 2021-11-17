@@ -73,7 +73,9 @@ class TestViews(TestCase):
         self.client.logout()
 
     def test_saludo(self):
-
+        """
+        Verifica que la URL de la vista 'saludo' existe en la ubicación deseada
+        """
         response = self.client.get(self.accesoDenegado_url)
 
         self.assertEquals(response.status_code, 200)
@@ -81,7 +83,9 @@ class TestViews(TestCase):
 
 
     def test_accesoDenegado(self):
-
+        """
+        Verifica que la URL de la vista 'accesoDenegado' existe en la ubicación deseada
+        """
         response = self.client.get(self.saludo_url)
 
         self.assertEquals(response.status_code, 200)
@@ -89,6 +93,9 @@ class TestViews(TestCase):
 
 
     def test_inicio(self):
+        """
+        Verifica que la URL de la vista 'inicio' existe en la ubicación deseada
+        """
 
         User = get_user_model()
         #self.client.login(username='temporary', password='temporary')
@@ -107,6 +114,9 @@ class TestViews(TestCase):
     """
 
     def test_step1_crearRol(self):
+        """
+        Verifica que la URL de la vista 'step1_crearRol' existe en la ubicación deseada
+        """
 
         User = get_user_model()
         #self.client.login(username='temporary', password='temporary')
@@ -118,6 +128,9 @@ class TestViews(TestCase):
 
 
     def test_step2_crearRol(self):
+        """
+        Verifica que la URL de la vista 'step2_crearRol' existe en la ubicación deseada
+        """
 
         User = get_user_model()
         #self.client.login(username='temporary', password='temporary')
@@ -129,6 +142,9 @@ class TestViews(TestCase):
 
 
     def test_step1_asignarRol(self):
+        """
+        Verifica que la URL de la vista 'step1_asignarRol' existe en la ubicación deseada
+        """
 
         User = get_user_model()
         self.client.login(username='temporary2', password='temporary2')
@@ -139,6 +155,9 @@ class TestViews(TestCase):
 
 
     def test_step2_asignarRol(self):
+        """
+        Verifica que la URL de la vista 'step2_asignarRol' existe en la ubicación deseada
+        """
 
         User = get_user_model()
         self.client.login(username='temporary2', password='temporary2')
@@ -149,6 +168,9 @@ class TestViews(TestCase):
 
 
     def test_eliminarRol(self):
+        """
+        Verifica que la URL de la vista 'eliminarRol' existe en la ubicación deseada
+        """
 
         response = self.client.get(self.eliminar_rol_url)
 
@@ -156,7 +178,10 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
-    def test_step1eliminarRol(self):
+    def test_step1_eliminarRol(self):
+        """
+        Verifica que la URL de la vista 'step1_eliminarRol' existe en la ubicación deseada
+        """
 
         response = self.client.get(self.eliminar_rol_url)
 
@@ -164,8 +189,10 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
-    def test_step2eliminarRol(self):
-
+    def test_step2_eliminarRol(self):
+        """
+        Verifica que la URL de la vista 'step2_eliminarRol' existe en la ubicación deseada
+        """
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -174,7 +201,9 @@ class TestViews(TestCase):
 
 
     def test_step1_modificarRol(self):
-
+        """
+        Verifica que la URL de la vista 'step1_modificarRol' existe en la ubicación deseada
+        """
         response = self.client.get(self.step1_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -182,7 +211,9 @@ class TestViews(TestCase):
 
 
     def test_step2_modificarRol(self):
-
+        """
+        Verifica que la URL de la vista 'step2_modificarRol' existe en la ubicación deseada
+        """
         response = self.client.get(self.step2_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -191,7 +222,9 @@ class TestViews(TestCase):
 
 
     def test_step3_modificarRol(self):
-
+        """
+        Verifica que la URL de la vista 'step3_modificarRol' existe en la ubicación deseada
+        """
         response = self.client.get(self.step3_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -200,7 +233,9 @@ class TestViews(TestCase):
 
 
     def test_importarRol(self):
-
+        """
+        Verifica que la URL de la vista 'importarRol' existe en la ubicación deseada
+        """
         response = self.client.get(self.importar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -209,7 +244,9 @@ class TestViews(TestCase):
 
 
     def test_registrarUsuario(self):
-
+        """
+        Verifica que la URL de la vista 'registrarUsuario' existe en la ubicación deseada
+        """
         response = self.client.get(self.registrar_usuario_url)
 
         self.assertEquals(response.status_code, 200)
@@ -217,7 +254,9 @@ class TestViews(TestCase):
 
 
     def test_crearProyecto(self):
-
+        """
+        Verifica que la URL de la vista 'crearProyecto' existe en la ubicación deseada
+        """
         response = self.client.get(self.crear_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
@@ -225,7 +264,9 @@ class TestViews(TestCase):
 
 
     def test_modificarProyecto(self):
-
+        """
+        Verifica que la URL de la vista 'modificarProyecto' existe en la ubicación deseada
+        """
         response = self.client.get(self.modificar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
@@ -242,7 +283,9 @@ class TestViews(TestCase):
     """
 
     def test_eliminarProyecto(self):
-
+        """
+        Verifica que la URL de la vista 'eliminarProyecto' existe en la ubicación deseada
+        """
         response = self.client.get(self.eliminar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
@@ -258,7 +301,9 @@ class TestViews(TestCase):
     """
 
     def test_swichProyecto(self):
-
+        """
+        Verifica que la URL de la vista 'swichProyecto' existe en la ubicación deseada
+        """
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
@@ -266,6 +311,9 @@ class TestViews(TestCase):
 
 
     def test_getPermisos(self):
+        """
+        Verifica que la URL de la vista 'getPermisos' existe en la ubicación deseada
+        """
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
@@ -273,7 +321,9 @@ class TestViews(TestCase):
 
 
     def test_step1_SprintPlanning(self):
-
+        """
+        Verifica que la URL de la vista 'step1_SprintPlanning' existe en la ubicación deseada
+        """
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -281,7 +331,9 @@ class TestViews(TestCase):
 
 
     def test_step2_SprintPlanning(self):
-
+        """
+        Verifica que la URL de la vista 'step2_SprintPlanning' existe en la ubicación deseada
+        """
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -306,7 +358,9 @@ class TestViews(TestCase):
     """
 
     def test_step3_SprintPlanning(self):
-
+        """
+        Verifica que la URL de la vista 'step3_SprintPlannig' existe en la ubicación deseada
+        """
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -314,7 +368,9 @@ class TestViews(TestCase):
 
 
     def test_step3_asignarEncargado(self):
-
+        """
+        Verifica que la URL de la vista 'step3_asignarEncargado' existe en la ubicación deseada
+        """
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -338,7 +394,9 @@ class TestViews(TestCase):
     """
 
     def test_crearSprint(self):
-
+        """
+        Verifica que la URL de la vista 'crearSprint' existe en la ubicación deseada
+        """
         response = self.client.get(self.crear_sprints_url)
 
         self.assertEquals(response.status_code, 200)
@@ -356,7 +414,9 @@ class TestViews(TestCase):
 
 
     def test_visualizarSprint(self):
-
+        """
+        Verifica que la URL de la vista 'visualizarSprint' existe en la ubicación deseada
+        """
         response = self.client.get(self.visualizar_sprint_url)
 
         self.assertEquals(response.status_code, 200)
@@ -372,7 +432,9 @@ class TestViews(TestCase):
     """
 
     def test_tableroKanban(self):
-
+        """
+        Verifica que la URL de la vista 'tableroKanban' existe en la ubicación deseada
+        """
         response = self.client.get(self.tablero_kanban_url)
 
         self.assertEquals(response.status_code, 200)
@@ -388,7 +450,9 @@ class TestViews(TestCase):
     """
 
     def test_seleccionarHistoria(self):
-
+        """
+        Verifica que la URL de la vista 'seleccionarHistoria' existe en la ubicación deseada
+        """
         response = self.client.get(self.seleccionar_historia_url)
 
         self.assertEquals(response.status_code, 200)
@@ -396,7 +460,9 @@ class TestViews(TestCase):
 
 
     def test_asignarHistoriaEncargado(self):
-
+        """
+        Verifica que la URL de la vista 'asignarHistoriaEncargado' existe en la ubicación deseada
+        """
         response = self.client.get(self.asignarHistoriaEncargado_url)
 
         self.assertEquals(response.status_code, 200)
@@ -412,7 +478,9 @@ class TestViews(TestCase):
     """
 
     def test_eliminarHistoria(self):
-
+        """
+        Verifica que la URL de la vista 'eliminarHistoria' existe en la ubicación deseada
+        """
         response = self.client.get(self.eliminar_historia_url)
 
         self.assertEquals(response.status_code, 200)
@@ -428,7 +496,9 @@ class TestViews(TestCase):
     """
 
     def test_productBacklog(self):
-
+        """
+        Verifica que la URL de la vista 'productBacklog' existe en la ubicación deseada
+        """
         response = self.client.get(self.product_Backlog_url)
 
         self.assertEquals(response.status_code, 200)
@@ -444,7 +514,9 @@ class TestViews(TestCase):
     """
 
     def test_search(self):
-
+        """
+        Verifica que la URL de la vista 'search' existe en la ubicación deseada
+        """
         response = self.client.get(self.search_url)
 
         self.assertEquals(response.status_code, 200)
@@ -469,6 +541,9 @@ class TestViews(TestCase):
 
 
     def test_tableroQARelease(self):
+        """
+        Verifica que la URL de la vista 'tableroQARelease' existe en la ubicación deseada
+        """
         response = self.client.get(self.tableroQA_Release_url)
 
         self.assertEquals(response.status_code, 200)
@@ -484,7 +559,9 @@ class TestViews(TestCase):
 
 
     def test_visualizarSprintFilter(self):
-
+        """
+        Verifica que la URL de la vista 'visualizarSprintFilter' existe en la ubicación deseada
+        """
         response = self.client.get(self.searchvisualizarSprintFilter_url)
 
         self.assertEquals(response.status_code, 200)
@@ -492,7 +569,9 @@ class TestViews(TestCase):
 
 
     def test_HistorialProyectoFilter(self):
-
+        """
+        Verifica que la URL de la vista 'HistorialProyectoFilter' existe en la ubicación deseada
+        """
         response = self.client.get(self.HistorialProyectoFilter_url)
 
         self.assertEquals(response.status_code, 200)
@@ -500,13 +579,16 @@ class TestViews(TestCase):
 
 
     def test_historicoSprint(self):
-
+        """
+        Verifica que la URL de la vista 'historicoSprint' existe en la ubicación deseada
+        """
         response = self.client.get(self.historicoSprint_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     def test_saludoHTML(self):
+
         response = self.client.get(self.accesoDenegado_url)
 
         self.assertEquals(response.status_code, 200)

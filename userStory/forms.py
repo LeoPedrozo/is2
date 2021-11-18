@@ -43,13 +43,14 @@ class crearHistoriaForm(forms.Form):
 
 class cargarHorasHistoriaForm(forms.Form):
     """
-      Implementa la clase para ejecutar un formulario de solicitud para cargar las horas trabajadas en el User Story
+    Implementa la clase para ejecutar un formulario de solicitud para cargar las horas trabajadas en el User Story
     """
     horas = forms.IntegerField(initial=0, widget=forms.NumberInput(attrs={'type': 'number', 'id':'register-form-horas', 'name':'register-form-horas', 'value':'0', 'class':'form-control'}))
     comentario = forms.CharField(initial='', widget=forms.TextInput(attrs={'type': 'text', 'id':'register-form-comentario', 'name':'register-form-comentario', 'value':'', 'class':'form-control'}),required=False)
+
 class seleccionarHistoriaForm(forms.Form):
     """
-      Implementa la clase para ejecutar un formulario de solicitud para la seleccion de la historia que se desea modificar
+    Implementa la clase para ejecutar un formulario de solicitud para la seleccion de la historia que se desea modificar
     """
     def __init__(self, *args, **kwargs):
         self.proyecto = kwargs.pop('proyecto')  # store value of request
@@ -60,7 +61,7 @@ class seleccionarHistoriaForm(forms.Form):
 
 class asignarEncargadoForm(forms.Form):
     """
-         Implementa la clase para ejecutar un formulario de solicitud para asignar una historia a un usuario
+    Implementa la clase para ejecutar un formulario de solicitud para asignar una historia a un usuario
     """
     Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario", required=True)
     Historia = forms.ModelMultipleChoiceField(queryset=Historia.objects.all(),initial=0,label="Selecciona la historia", required=True)
@@ -68,7 +69,7 @@ class asignarEncargadoForm(forms.Form):
 
 class modificarHistoriaForm(forms.Form):
     """
-      Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto
+    Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto
     """
     def __init__(self, *args, **kwargs):
         self.datosHistoria = kwargs.pop("datosdelaHistoria")  # store value of request

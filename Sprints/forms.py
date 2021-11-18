@@ -122,7 +122,6 @@ class seleccionarSprintForm(forms.Form):
 #    fecha_fin = forms.DateField(widget=DateInput(), input_formats=['%Y/%m/%d'], label="Fecha fin")
 
 class extenderSprintForm(forms.Form):
-
    """
    Implementa la clase para ejecutar un formulario que permite la entrada de una nueva fecha de finalizacion estimada
    """
@@ -139,13 +138,11 @@ class extenderSprintForm(forms.Form):
         ),label="Fecha fin")
 
 
-
-
-
-
-
-
 class intercambiardeveloperForm(forms.Form):
+    """
+    Implementa la clase para ejecutar un formulario que permite intercambiar desarrolladores de un sprint con otros
+    pertenecientes al mismo proyecto
+    """
     def __init__(self, *args, **kwargs):
         self.dato = kwargs.pop("dato")  # store value of request
         super(intercambiardeveloperForm, self).__init__(*args, **kwargs)

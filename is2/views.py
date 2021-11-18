@@ -1982,11 +1982,12 @@ def historicoSprint(request, id=''):
 # 1 Se llama esta funcion,   para ver la lista de proyectos
 def HistorialProyectoFilter(request):
     """
-    Metodo para la visualizacion de Sprints
+    Metodo que permite tener un listado completo de proyectos asociados al usuario logueado
 
-    :param request: solicitud recibida
-    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    :param request: Solicitud recibida
+    :return: respuesta a la solicitud de HISTORIA PROYECTO FILTER
     """
+
     usuarioActual=User.objects.get(username=request.user.username)
     if(usuarioActual.is_superuser ):
         listaProyectos = Proyecto.objects.all()
@@ -2004,10 +2005,10 @@ def HistorialProyectoFilter(request):
 @login_required
 def HistorialSprintFilter(request, id_proyecto):
     """
-    Metodo para la visualizacion de Sprints
+    Metodo que permite la visualizacion de un listado de Sprints del proyecto
 
     :param request: solicitud recibida
-    :return: respuesta a la solicitud de VISUALIZAR SPRINT
+    :return: respuesta a la solicitud de HISTORIAL SPRINT FILTER
     """
     request.session["selected_id_proy"] = id_proyecto
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
@@ -2041,6 +2042,14 @@ def HistorialSprintFilter(request, id_proyecto):
 # 3 cuando se selecciona la opcion de ver el tablero kanban de un sprint finalizado de un proyecto anterior.
 # esta es cuando se le toca la opcion de ver kanban , es la foto del kanban de un sprint finalizado
 def KanbanHistorico(request, id_proyecto,id_sprint):
+    """
+    Metodo que permite visualizar el tablero kanban de un sprint finalizado
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :return: respuesta a la solicitud de KANBAN HISTORICO
+    """
     sprintSeleccionado = Sprint.objects.get(id=id_sprint)
     sprintActual2 = model_to_dict(sprintSeleccionado)
     listaHistorias = sprintActual2['historias']
@@ -2101,6 +2110,13 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
 # 4 cuando se selecciona ver Product backlog
 # despliega el product backlog
 def HistorialProductBacklog(request, id_proyecto):
+    """
+    Metodo que permite visualizar el product backlog del proyecto
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud HISTORIAL PRODUCT BACKLOG
+    """
     user_list = User.objects.all()
     user_filter = UserFilter(request.GET, queryset=user_list)
 
@@ -2256,6 +2272,13 @@ def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_h
 
 
 def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
+    """
+    Metodo que permite el calculo del esfuerzo ideal para el sprint
+
+    :param sprint_seleccionado: sprint seleccionado
+    :param desarrolladores: desarrolladores del sprint seleccionado
+    :return: respuesta a la solicitud de CALCULAR ESFUERZO IDEAL
+    """
     calendarioParaguay = Paraguay()
 
     # 2- calculamos la capacidad del equipo
@@ -2304,6 +2327,13 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def finalizarProyecto(request, id_proyecto):
+    """
+    Metodo que permite finalizar un proyecto que esta en curso
+
+    :param request: respuesta recibida
+    :param id_proyecto: identificador del proyecto que se desea finalizar
+    :return: respuesta a la solicitud de FINALIZAR PROYECTO
+    """
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
     sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
     print("la longitud de sprints es : ", len(sprints))
@@ -2325,6 +2355,13 @@ def finalizarProyecto(request, id_proyecto):
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def iniciarProyecto(request, id_proyecto):
+    """
+    Metodo que permite iniciar un proyecto que esta en estado 'PENDIENTE'
+
+    :param request: respuesta recibida
+    :param id_proyecto: identificador del proyecto que se desea finalizar
+    :return: respuesta a la solicitud de INICIAR PROYECTO
+    """
     proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
 
     miembros=UserProyecto.objects.filter(proyecto=proyecto_seleccionado)
@@ -2351,6 +2388,15 @@ def iniciarProyecto(request, id_proyecto):
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
 def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
+    """
+    Metodo que permite finalizar o expandir un sprint
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :param opcion: accion que se desea realizar: 'finalizar' o 'expandir'
+    :return: respuesta a la solicitud de FINALIZAR O EXPANDIR SPRINT
+    """
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
 
@@ -2428,7 +2474,13 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     #return redirect(tableroKanban)
 
 def infoProyecto(request, id_proyecto):
+    """
+    Metodo que permite una visualizacion de la informacion completa de un proyecto
 
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de INFO PROYECTO
+    """
     proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
 
     total_sprints= len(proyecto_seleccionado.id_sprints.all())
@@ -2492,7 +2544,12 @@ def infoProyecto(request, id_proyecto):
 
 
 def DuracionSprints(sprints):
+    """
+    Metodo que calcula la duracion promedio de sprints del proyecto
 
+    :param sprints: sprints del proyecto
+    :return: respuesta a la solicitud DURACION SPRINTS
+    """
     calendarioParaguay = Paraguay()
 
     total_sprints=len(sprints)
@@ -2518,6 +2575,13 @@ def DuracionSprints(sprints):
 
 
 def infoUsuario(request, id_usuario):
+    """
+    Metodo que permite una visualizacion de la informacion completa de un usuario del sistema
+
+    :param request: solicitud recibida
+    :param id_usuario: identificador del usuario
+    :return: respuesta a la solicitud de INFO USUARIO
+    """
     promedio_capacidad=0
     Total_proyectos=0
     Eficiencia=0
@@ -2599,12 +2663,14 @@ def tableroQA_Release2(request,id_proyecto,id_sprint):
 
 def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
     """
-    Metodo para administrar el cambio de estado de historias en el tablero kanban
+    Metodo para administrar las funcionalidades de Quality Assurance Release
 
     :param request: solicitud recibida
-    :param id: identificador de la historia a mover
-    :param opcion: estado de la historia
-    :return: tablero kanban actualizado
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :param id_historia: identificador de la historia de usuario
+    :param opcion: accion que se desea realizar con la historia seleccionada
+    :return: respuesta a la solicitud de FUNCIONALIDADES QA
     """
 
 
@@ -2644,6 +2710,12 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
 #La vistas 2 -----------------------------------------------------------------------
 @login_required
 def inicio(request):
+    """
+    Metodo para visualizar la pantalla de inicio del sistema
+
+    :param request: solicitud recibida
+    :return: respuesta a la solicitud de INICIO
+    """
     usuarioActual = User.objects.get(username=request.user.username)
 
 
@@ -2672,7 +2744,13 @@ def inicio(request):
 #url= /proyecto/id_proyecto/
 @login_required
 def homeProyecto(request,id_proyecto):
+    """
+    Metodo que permite visualizar la pantalla de inicio del proyecto con las opciones disponibles
 
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de HOME PROYECTO
+    """
 
     #Paso 1, realiza el swich de proyecto
     u = User.objects.get(username=request.user.username)
@@ -2707,6 +2785,8 @@ def modificarHistoria2(request,id_proyecto,id_historia):
     posibilidad de modificar algunos datos
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_historia: identificador del user story
     :return: respuesta a la solicitud de MODIFICAR HISTORIA
     """
 
@@ -2743,6 +2823,8 @@ def eliminarHistoria2(request,id_proyecto,id_historia):
     Metodo que permite la eliminacion de una historia de usuario
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_historia: identificador del user story
     :return: respuesta: a la solicitud de ELIMINAR HISTORIA
     """
 
@@ -2766,6 +2848,7 @@ def modificarSprint2(request, id_proyecto, id_sprint):
     posibilidad de modificar algunos datos
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
     :param id_sprint: identificador del sprint que se quiere modificar
     :return: respuesta a la solicitud de MODIFICAR SPRINT
     """
@@ -2807,6 +2890,7 @@ def step1_SprintPlanning2(request,id_proyecto):
     Metodo auxiliar para la realizacion del Sprint Planning de un proyecto
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
     :return: respuesta a la solicitud de SPRINT PLANNING
     """
 
@@ -2850,6 +2934,12 @@ def step1_SprintPlanning2(request,id_proyecto):
 
 #Proceso de step1_SprintPlanning2
 def calcularRango(proyecto):
+    """
+    Metodo auxiliar del metodo 'step1_SprintPlanning2' que permite calcular el rango de tiempo disponible
+
+    :param proyecto: proyecto actual
+    :return: rango disponible
+    """
     cantidad_iniciado = len(proyecto.id_sprints.filter(estados="INICIADO"))
     cantidad_finalizado = len(proyecto.id_sprints.filter(estados="FINALIZADO"))
 
@@ -2869,6 +2959,15 @@ def calcularRango(proyecto):
 
 #Proceso de step1_SprintPlanning2
 def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
+    """
+    Metodo que permite la validacion de la fecha ingresada en el sprint planning
+
+    :param id_proyecto: identificador del proyecto
+    :param sp_fechaInicio: fecha de inicio ingresado
+    :param sp_fechaFin: fecha de finalizacion estimado ingresado
+    :param situacion: posicion que se encuentra el sprint; en planificacion o modificacion
+    :return: respuesta a la solicitud de VALIDAR FECHA INGRESADA
+    """
     esvalido=False
     pasos = timedelta(days=1)
 
@@ -2938,6 +3037,8 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     Metodo para la seleccion de desarrolladores en el Sprint Planning
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
     :return: respuesta a la solicitud de SPRINT PLANNING
     """
 
@@ -2966,7 +3067,9 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
     Metodo para asignar la capacidad de trabajo de un desarrollador
 
     :param request: Solicitud recibida
-    :param id: identificador de usuario
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :param id_usuario: identificador de usuario
     :return: respuesta a la solicitud ASIGNAR CAPACIDAD
     """
 
@@ -3007,6 +3110,8 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     Metodo para la asignacion de users storys del product backlog al sprint backlog en el Sprint Planning
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint que se quiere modificar
     :return: respuesta a la solicitud de SPRINT PLANNING
     """
 
@@ -3070,7 +3175,9 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     Metodo para administrar la asignacion o remocion de encargado de un user story
 
     :param request: Solicitud recibida
-    :param id: identificador del user story
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :param id_historia: identificador del user story
     :param opcion: accion a realizar
     :return: Respuesta a la solicitud ASIGNAR ENCARGADO
     """
@@ -3173,6 +3280,8 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
     Metodo para visualizar los user story que estan como objetivos del sprint
 
     :param request: consulta recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
     :return: respuesta a la solicitud de ejecucion de SPRINT BACKLOG
     """
 
@@ -3191,6 +3300,8 @@ def tableroKanban2(request,id_proyecto,id_sprint):
     Metodo que posibilita visualizar el tablero kanban
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
     :return: respuesta a la solicitud de TABLERO KANBAN
     """
 
@@ -3260,7 +3371,9 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
     :param request: solicitud recibida
-    :param id: identificador de la historia a mover
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :param id_historia: identificador de la historia a mover
     :param opcion: estado de la historia
     :return: tablero kanban actualizado
     """
@@ -3332,6 +3445,7 @@ def eliminarSprint2(request, id_proyecto,id_sprint):
     Metodo que permite la eliminacion de un sprint
 
     :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
     :param id_sprint: identificador del sprint que se desea eliminar
     :return: respuesta a la solicitud de ELIMINAR SPRINT
     """
@@ -3369,6 +3483,14 @@ def eliminarSprint2(request, id_proyecto,id_sprint):
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0 or u.is_superuser,login_url="/AccesoDenegado/")
 def intercambiarMiembro(request,id_proyecto,id_sprint):
+    """
+    Metodo que permite el intercambio de desarrolladores de un sprint con otro del mismo proyecto
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :return: respuesta a la solicitud de INTERCAMBIAR MIEMBRO
+    """
     if request.method == "POST":
         formulario= intercambiardeveloperForm(request.POST,dato=request.session)
         if (formulario.is_valid()):
@@ -3432,10 +3554,11 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
 #Es un proceso
 def swichProyecto2(request,u,p, id_proyecto):
     """
-    Metodo para cambiar de un proyecto a otro con las reasignaciones de roles correspondiente
+    Metodo para cambiar usuario de un proyecto a otro con las reasignaciones de roles correspondiente
 
     :param request: Solicitud recibida
-    :param id: identificador del proyecto
+    :param u: usuario
+    :param p: proyecto
     :return: void
     """
 

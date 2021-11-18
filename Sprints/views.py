@@ -37,9 +37,6 @@ def updateSprint(datosSprint):
     return newSprint
 
 
-
-
-
 def sprintActivoen(idProyecto):
     """
     Metodo que verifica si hay o no un sprint activo en el proyecto
@@ -61,7 +58,6 @@ def sprintActivoen(idProyecto):
         return True
     else:
         return False
-
 
 
 #dado un id te retorna el sprint
@@ -91,18 +87,12 @@ def guardarCamposdeSprint(request, sprint_seleccionado,proyecto):
     :return: (boolean) Confirmacion de la accion realizada
     """
 
-
-
-
-
-
     SprintActual = model_to_dict(sprint_seleccionado)
 
     request.session['id'] =  SprintActual['id']
     request.session['sprintNumber'] = SprintActual['sprintNumber']
     request.session['fecha_inicio'] = SprintActual['fecha_inicio'].strftime("%Y/%m/%d")
     request.session['fecha_fin'] = SprintActual['fecha_fin'].strftime("%Y/%m/%d")
-
 
     return True
 

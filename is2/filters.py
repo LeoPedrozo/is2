@@ -35,6 +35,9 @@ class SprintFilter(django_filters.FilterSet):
         fields = ['estados']
 
 class ProyectoFilter(django_filters.FilterSet):
+    """
+    Clase que implementa la busqueda de un proyecto con la opcion de filtrar por: 'estado'
+    """
     class  Meta:
         model=Proyecto
         fields= ['estado']

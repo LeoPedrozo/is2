@@ -14,21 +14,26 @@
 </head>
 
 <body>
+
 {% block content %}
     <div class="container">
         <div class="row">
 
         <div class="col s12">
             <div class="card-action">
-            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-                <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
+            <a href="http://127.0.0.1:8000/proyecto/{{ proyecto.id }}/Sprints/" style="color:dodgerblue;">
+                <i class="material-icons" style="vertical-align: -5px;">navigate_before</i>Volver al sprint
             </a>
             </div>
         </div>
 
             <div class="col s12">
                 <div class="card white-text lighten-2 blue">
-                    <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
+                <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
+                    <br>
+                <i class="material-icons" style="vertical-align: bottom;">timeline</i>Sprint nro. {{ Sprint.sprintNumber }}
+                    <br>
+                <i class="material-icons" style="vertical-align: bottom;">folder_open</i>{{ proyecto.nombre }}
                 </div>
             </div>
             <div class="col s9 l9">

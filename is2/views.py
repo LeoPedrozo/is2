@@ -2135,6 +2135,10 @@ def BurndownChart(request,id_proyecto,id_sprint):
     :param request: solicitud recibida
     :return: grafico de burndown chart
     """
+    if( Proyecto.objects.filter(id=id_proyecto).exists()):
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto=None
     calendarioParaguay = Paraguay()
 
     sprintActual = Sprint.objects.get(id=id_sprint)
@@ -2203,7 +2207,8 @@ def BurndownChart(request,id_proyecto,id_sprint):
                        "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
                        "horasLaboralesReal": ','.join(horasLaborales_Real),
                        "cantidadDias": dias_de_sprint,
-                       "miembros": miembrosSprint})
+                       "miembros": miembrosSprint,
+                       "proyecto" : proyecto})
 
 
 
@@ -2304,7 +2309,7 @@ def finalizarProyecto(request, id_proyecto):
     print("la longitud de sprints es : ", len(sprints))
     if (len(sprints) == 0):
 
-        if (len(proy.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
+        if (len(proyecto_seleccionado.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
             proyecto_seleccionado.estado = "FINALIZADO"
             proyecto_seleccionado.fecha_finalizacion = date.today()
             proyecto_seleccionado.save()

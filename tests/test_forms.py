@@ -70,7 +70,9 @@ class TestForms(unittest.TestCase):
         self.invalid = 404
 
     def test_crearRolForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearRolForm' reciba datos validos
+        """
         form = crearRolForm(
          data={
             'RolName':'New rol',
@@ -80,7 +82,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarRolForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarRolForm' reciba datos validos
+        """
         c = Client()
         res = c.post('/asignarRol/2/', {'Usuario': 'Cristhian', 'Roles': 'Scrum Master'})
 
@@ -88,7 +92,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_seleccionarRolForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'seleccionarRolForm' reciba datos validos
+        """
         c = Client()
         res = c.post('/modificarRol/2/', {'Rol': 'Scrum Master'})
 
@@ -96,7 +102,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarRolForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarRolForm' reciba datos validos
+        """
         c = Client()
         res = c.post('/modificarRol/3/', {'RolName': 'Scrum Master'})
 
@@ -104,6 +112,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearUsuarioForm(self):
+        """
+        Verifica que al utilizar el formulario 'crearUsuarioForm' reciba datos validos
+        """
         form = crearUsuarioForm(data={
             'Nombre':'Juan',
             'correo':'juan3@gmail.com'
@@ -112,8 +123,10 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
 
-    def test_registroDeUsuariosForm1(self):
-
+    def test_registroDeUsuariosForm(self):
+        """
+        Verifica que al utilizar el formulario 'registroDeUsuariosForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
 
@@ -121,7 +134,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarcapacidadForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarcapacidadForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
 
@@ -129,7 +144,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarCapacidadForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarCapacidadForm' reciba datos validos
+        """
         form = asignarcapacidadForm({
             'capacidad':14
         })
@@ -137,7 +154,9 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
     def test_crearproyectoForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearproyectoForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/nuevo/',
                     {'nombre':'Proyecto1',
@@ -152,7 +171,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarproyectoForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'odificarproyectoForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/1/modificar/',
                     {'id':1,
@@ -168,6 +189,9 @@ class TestForms(unittest.TestCase):
         self.assertEquals(res.status_code, self.valid1)
 
     def test_seleccionarproyectoForm(self):
+        """
+        Verifica que al utilizar el formulario 'seleccionarproyectoForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/modificarRol/1/',
                     {'Proyecto': self.proyecto,
@@ -177,6 +201,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_importarRolForm(self):
+        """
+        Verifica que al utilizar el formulario 'importarRolForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/modificarRol/1/',
                     {'ProyectoA': self.proyecto,
@@ -187,7 +214,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearsprintForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearsprintForm' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/nuevo/InformacionBasica/',
@@ -202,7 +231,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarsprintForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarsprintForm' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/nuevo/',
@@ -218,7 +249,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_visualizarsprintForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'visualizarsprintForm' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/nuevo/',
@@ -234,7 +267,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_extendersprintForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'extendersprintForm' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/',
@@ -246,7 +281,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_intercambiardeveloperForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'intercambiardeveloperForm' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/2/intercambiar/',
@@ -259,7 +296,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearHistoriaForm' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/1/ProductBacklog/nuevo/',
                     {'nombre':'Historia Nro1',
@@ -273,7 +312,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_cargarHorasHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'cargarHorasHistoriaForm' reciba datos validos
+        """
         c = Client()
         res = c.get('proyecto/1/Sprints/1/KanbanActivo/Historia1/Op5',
                     {
@@ -285,7 +326,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_seleccionarHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'seleccionarHistoriaForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('modificarHistoria/1/',
@@ -298,7 +341,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarEncargadoForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarEncargadoForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('asignarEncargado/',
@@ -312,7 +357,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarHistoriaForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/ProductBacklog/modificar/Historia1/',
@@ -325,7 +372,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_eliminarHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'eliminarHistoriaForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/ProductBacklog/Eliminar/Historia1/',
@@ -338,7 +387,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignaryestimarHistoriaForm(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignaryestimarHistoriaForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/Sprints/2/AsignarHistorias/',
@@ -351,7 +402,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearRolForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearRolForms' reciba datos validos
+        """
         form = crearRolForm(
          data={
             'RolName':'New rol',
@@ -361,7 +414,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarRolForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarRolForms' reciba datos validos
+        """
         c = Client()
         res = c.post('/asignarRol/2/', {'Usuario': 'Cristhian', 'Roles': 'Scrum Master'})
 
@@ -369,7 +424,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_seleccionarRolForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'seleccionarRolForms' reciba datos validos
+        """
         c = Client()
         res = c.post('/modificarRol/2/', {'Rol': 'Scrum Master'})
 
@@ -377,7 +434,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarRolForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarRolForms' reciba datos validos
+        """
         c = Client()
         res = c.post('/modificarRol/3/', {'RolName': 'Scrum Master'})
 
@@ -385,6 +444,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearUsuarioForms(self):
+        """
+        Verifica que al utilizar el formulario 'crearUsuarioForms' reciba datos validos
+        """
         form = crearUsuarioForm(data={
             'Nombre':'Juan',
             'correo':'juan3@gmail.com'
@@ -394,7 +456,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_registroDeUsuariosForms1(self):
-
+        """
+        Verifica que al utilizar el formulario 'registroDeUsuariosForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
 
@@ -402,7 +466,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarcapacidadForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarcapacidadForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/registrarUsuario/', {'Usuario':'Cristhian', 'Habilitado':'true'})
 
@@ -410,7 +476,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarCapacidadForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarCapacidadForms' reciba datos validos
+        """
         form = asignarcapacidadForm({
             'capacidad':14
         })
@@ -418,7 +486,9 @@ class TestForms(unittest.TestCase):
         self.assertTrue(form.is_valid())
 
     def test_crearproyectoForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearproyectoForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/nuevo/',
                     {'nombre':'Proyecto1',
@@ -433,7 +503,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarproyectoForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarproyectoForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/1/modificar/',
                     {'id':1,
@@ -449,6 +521,9 @@ class TestForms(unittest.TestCase):
         self.assertEquals(res.status_code, self.valid1)
 
     def test_seleccionarproyectoForms(self):
+        """
+        Verifica que al utilizar el formulario 'seleccionarproyectoForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/modificarRol/1/',
                     {'Proyecto': self.proyecto,
@@ -458,6 +533,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_importarRolForms(self):
+        """
+        Verifica que al utilizar el formulario 'importarRolForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/modificarRol/1/',
                     {'ProyectoA': self.proyecto,
@@ -468,7 +546,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearsprintForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearsprintForms' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/nuevo/InformacionBasica/',
@@ -483,7 +563,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarsprintForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarsprintForms' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/nuevo/',
@@ -499,7 +581,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_visualizarsprintForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'visualizarsprintForms' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/nuevo/',
@@ -515,7 +599,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_extendersprintForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'extendersprintForms' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/',
@@ -527,7 +613,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_intercambiardeveloperForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'intercambiardeveloperForms' reciba datos validos
+        """
         c = Client()
 
         r = c.get('/proyecto/1/Sprints/2/intercambiar/',
@@ -540,7 +628,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_crearHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'crearHistoriaForms' reciba datos validos
+        """
         c = Client()
         res = c.get('/proyecto/1/ProductBacklog/nuevo/',
                     {'nombre':'Historia Nro1',
@@ -554,7 +644,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_cargarHorasHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'cargarHorasHistoriaForms' reciba datos validos
+        """
         c = Client()
         res = c.get('proyecto/1/Sprints/1/KanbanActivo/Historia1/Op5',
                     {
@@ -566,7 +658,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_seleccionarHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'seleccionarHistoriaForms' reciba datos validos
+        """
         c = Client()
 
         res = c.get('modificarHistoria/1/',
@@ -579,7 +673,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignarEncargadoForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignarEncargadoForms' reciba datos validos
+        """
         c = Client()
 
         res = c.get('asignarEncargado/',
@@ -593,7 +689,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_modificarHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'modificarHistoriaForms' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/ProductBacklog/modificar/Historia1/',
@@ -606,7 +704,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_eliminarHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'eliminarHistoriaForms' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/ProductBacklog/Eliminar/Historia1/',
@@ -619,7 +719,9 @@ class TestForms(unittest.TestCase):
 
 
     def test_asignaryestimarHistoriaForms(self):
-
+        """
+        Verifica que al utilizar el formulario 'asignaryestimarHistoriaForm' reciba datos validos
+        """
         c = Client()
 
         res = c.get('proyecto/1/Sprints/2/AsignarHistorias/',

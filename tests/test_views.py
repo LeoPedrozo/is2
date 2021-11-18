@@ -1043,3 +1043,252 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
+    def test_saludo1(self):
+
+        response = self.client.get(self.accesoDenegado_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_acceso_Denegado(self):
+
+        response = self.client.get(self.saludo_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_inicio1(self):
+
+
+        User = get_user_model()
+        # self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.inicio_url)
+        # user = User.objects.get(username='temporary')
+        self.assertEqual(response.context['mail'], 'user1@example.com')
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_step1_crear_Rol(self):
+
+        User = get_user_model()
+        # self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.step1_crear_rol_url)
+        # user = User.objects.get(username='temporary')
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step2_crear_Rol(self):
+
+        User = get_user_model()
+        # self.client.login(username='temporary', password='temporary')
+        response = self.client.get(self.step2_crear_rol_url)
+        # user = User.objects.get(username='temporary')
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step1_asignar_Rol(self):
+
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
+        response = self.client.get(self.step2_asignar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step2_asignar_Rol(self):
+
+        User = get_user_model()
+        self.client.login(username='temporary2', password='temporary2')
+        response = self.client.get(self.step2_asignar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_eliminar_Rol(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step1_eliminar_Rol(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step2_eliminar_Rol(self):
+
+        response = self.client.get(self.eliminar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step1_modificar_Rol(self):
+
+        response = self.client.get(self.step1_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step2_modificar_Rol(self):
+
+        response = self.client.get(self.step2_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step3_modificar_Rol(self):
+
+        response = self.client.get(self.step3_modificar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_importar_Rol(self):
+
+        response = self.client.get(self.importar_rol_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_registrar_Usuario(self):
+
+        response = self.client.get(self.registrar_usuario_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_crear_Proyecto(self):
+
+        response = self.client.get(self.crear_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_modificar_Proyecto(self):
+
+        response = self.client.get(self.modificar_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+
+    def test_eliminar_Proyecto(self):
+
+        response = self.client.get(self.eliminar_proyecto_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_swich_Proyecto(self):
+
+        response = self.client.get(self.inicio_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_Permisos(self):
+
+        response = self.client.get(self.inicio_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step1_Sprint_Planning(self):
+
+        response = self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_step2_Sprint_Planning(self):
+
+        response = self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_step3_Sprint_Planning(self):
+
+        response = self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_step3_asignar_Encargado(self):
+
+        response = self.client.get(self.step1_SprintPlanning_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_crear_Sprint(self):
+
+        response = self.client.get(self.crear_sprints_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+
+    def test_visualizar_Sprint(self):
+
+        response = self.client.get(self.visualizar_sprint_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_tablero_Kanban(self):
+
+        response = self.client.get(self.tablero_kanban_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_seleccionar_Historia(self):
+
+        response = self.client.get(self.seleccionar_historia_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_asignar_HistoriaEncargado(self):
+
+        response = self.client.get(self.asignarHistoriaEncargado_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_eliminar_Historia(self):
+
+        response = self.client.get(self.eliminar_historia_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+
+    def test_product_Backlog(self):
+
+        response = self.client.get(self.product_Backlog_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_searchs(self):
+
+        response = self.client.get(self.search_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+
+    def test_tableroQA_Release(self):
+
+        response = self.client.get(self.tableroQA_Release_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+
+    def test_visualizar_SprintFilter(self):
+
+        response = self.client.get(self.searchvisualizarSprintFilter_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_Historial_ProyectoFilter(self):
+
+        response = self.client.get(self.HistorialProyectoFilter_url)
+
+        self.assertEquals(response.status_code, 200)
+
+    def test_historico_Sprint(self):
+
+        response = self.client.get(self.historicoSprint_url)
+
+        self.assertEquals(response.status_code, 200)

@@ -2304,7 +2304,7 @@ def finalizarProyecto(request, id_proyecto):
     print("la longitud de sprints es : ", len(sprints))
     if (len(sprints) == 0):
 
-        if (len(proy.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
+        if (len(proyecto_seleccionado.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
             proyecto_seleccionado.estado = "FINALIZADO"
             proyecto_seleccionado.fecha_finalizacion = date.today()
             proyecto_seleccionado.save()

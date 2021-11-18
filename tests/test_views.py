@@ -79,7 +79,6 @@ class TestViews(TestCase):
         response = self.client.get(self.accesoDenegado_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, '403.html')
 
 
     def test_accesoDenegado(self):
@@ -89,7 +88,6 @@ class TestViews(TestCase):
         response = self.client.get(self.saludo_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'rolCreado.html')
 
 
     def test_inicio(self):
@@ -104,7 +102,6 @@ class TestViews(TestCase):
         self.assertEqual(response.context['mail'], 'user1@example.com')
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registroRequerido.html')
 
 
     """def test_documentaciones(self):
@@ -124,7 +121,6 @@ class TestViews(TestCase):
         #user = User.objects.get(username='temporary')
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step2_crearRol(self):
@@ -138,7 +134,6 @@ class TestViews(TestCase):
         #user = User.objects.get(username='temporary')
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'crearRol.html')
 
 
     def test_step1_asignarRol(self):
@@ -151,7 +146,6 @@ class TestViews(TestCase):
         response = self.client.get(self.step2_asignar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step2_asignarRol(self):
@@ -164,7 +158,6 @@ class TestViews(TestCase):
         response = self.client.get(self.step2_asignar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_eliminarRol(self):
@@ -175,7 +168,6 @@ class TestViews(TestCase):
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step1_eliminarRol(self):
@@ -186,7 +178,6 @@ class TestViews(TestCase):
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step2_eliminarRol(self):
@@ -196,7 +187,6 @@ class TestViews(TestCase):
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
 
@@ -207,7 +197,6 @@ class TestViews(TestCase):
         response = self.client.get(self.step1_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step2_modificarRol(self):
@@ -217,8 +206,6 @@ class TestViews(TestCase):
         response = self.client.get(self.step2_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_step3_modificarRol(self):
@@ -228,8 +215,6 @@ class TestViews(TestCase):
         response = self.client.get(self.step3_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_importarRol(self):
@@ -239,8 +224,6 @@ class TestViews(TestCase):
         response = self.client.get(self.importar_rol_url)
 
         self.assertEquals(response.status_code, 200)
-        #self.assertTemplateUsed(response, 'outputmodificarRol.html')
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
 
     def test_registrarUsuario(self):
@@ -250,7 +233,6 @@ class TestViews(TestCase):
         response = self.client.get(self.registrar_usuario_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'RegistrarUsuario.html')
 
 
     def test_crearProyecto(self):
@@ -260,7 +242,6 @@ class TestViews(TestCase):
         response = self.client.get(self.crear_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'crearProyecto.html')
 
 
     def test_modificarProyecto(self):
@@ -270,8 +251,8 @@ class TestViews(TestCase):
         response = self.client.get(self.modificar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
-        #self.assertTemplateUsed(response, 'outputmodificarProyecto.html')
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
+
     """
     def test_modificarProyecto2(self):
 
@@ -289,7 +270,6 @@ class TestViews(TestCase):
         response = self.client.get(self.eliminar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'eliminarProyecto.html')
 
     """
     def test_eliminarProyecto2(self):
@@ -307,7 +287,6 @@ class TestViews(TestCase):
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registroRequerido.html')
 
 
     def test_getPermisos(self):
@@ -317,7 +296,6 @@ class TestViews(TestCase):
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registroRequerido.html')
 
 
     def test_step1_SprintPlanning(self):
@@ -327,7 +305,6 @@ class TestViews(TestCase):
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
 
     def test_step2_SprintPlanning(self):
@@ -337,7 +314,6 @@ class TestViews(TestCase):
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     """
     def test_asignarCapacidad(self):
@@ -364,7 +340,6 @@ class TestViews(TestCase):
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
 
     def test_step3_asignarEncargado(self):
@@ -374,7 +349,7 @@ class TestViews(TestCase):
         response =  self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     """
     def test_modificarSprint(self):
@@ -400,7 +375,7 @@ class TestViews(TestCase):
         response = self.client.get(self.crear_sprints_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
 
     """
@@ -420,7 +395,7 @@ class TestViews(TestCase):
         response = self.client.get(self.visualizar_sprint_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     """
     def test_visualizarSprint2(self):
@@ -438,7 +413,7 @@ class TestViews(TestCase):
         response = self.client.get(self.tablero_kanban_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     """
     def test_crearHistoria(self):
@@ -456,7 +431,7 @@ class TestViews(TestCase):
         response = self.client.get(self.seleccionar_historia_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarHistoria.html')
+
 
 
     def test_asignarHistoriaEncargado(self):
@@ -466,7 +441,7 @@ class TestViews(TestCase):
         response = self.client.get(self.asignarHistoriaEncargado_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'asignarEncargado.html')
+
 
     """
     def test_modificarHistoria(self):
@@ -484,7 +459,7 @@ class TestViews(TestCase):
         response = self.client.get(self.eliminar_historia_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'eliminarHistoria.html')
+
 
     """
     def test_sprintBacklog(self):
@@ -502,7 +477,7 @@ class TestViews(TestCase):
         response = self.client.get(self.product_Backlog_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'SprintBacklog.html')
+
 
     """
     def test_moverHistoria(self):
@@ -520,7 +495,7 @@ class TestViews(TestCase):
         response = self.client.get(self.search_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'SprintBacklog.html')
+
 
     """
     def test_asignarSprint(self):
@@ -547,7 +522,7 @@ class TestViews(TestCase):
         response = self.client.get(self.tableroQA_Release_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     """
     def test_moverHistoriaQA(self):
@@ -565,7 +540,7 @@ class TestViews(TestCase):
         response = self.client.get(self.searchvisualizarSprintFilter_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
 
     def test_HistorialProyectoFilter(self):
@@ -575,7 +550,7 @@ class TestViews(TestCase):
         response = self.client.get(self.HistorialProyectoFilter_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'seleccionarProyecto.html')
+
 
 
     def test_historicoSprint(self):
@@ -585,22 +560,30 @@ class TestViews(TestCase):
         response = self.client.get(self.historicoSprint_url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
+
 
     def test_saludoHTML(self):
-
-        response = self.client.get(self.accesoDenegado_url)
-
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, '403.html')
-
-    def test_accesoDenegadoHTML(self):
+        """
+        Comprueba que la vista 'saludo' utiliza la plantilla correcta
+        """
         response = self.client.get(self.saludo_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'rolCreado.html')
 
+    def test_accesoDenegadoHTML(self):
+        """
+        Comprueba que la vista 'accesoDenegado' utiliza la plantilla correcta
+        """
+        response = self.client.get(self.accesoDenegado_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, '403.html')
+
     def test_inicioHTML(self):
+        """
+        Comprueba que la vista 'inicio' utiliza la plantilla correcta
+        """
         User = get_user_model()
         # self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.inicio_url)
@@ -617,6 +600,9 @@ class TestViews(TestCase):
     """
 
     def test_step1_crearRolHTML(self):
+        """
+        Comprueba que la vista 'step1_crearRol' utiliza la plantilla correcta
+        """
         User = get_user_model()
         # self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.step1_crear_rol_url)
@@ -626,6 +612,9 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_step2_crearRolHTML(self):
+        """
+        Comprueba que la vista 'step2_crearRol' utiliza la plantilla correcta
+        """
         User = get_user_model()
         # self.client.login(username='temporary', password='temporary')
         response = self.client.get(self.step2_crear_rol_url)
@@ -635,6 +624,9 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'crearRol.html')
 
     def test_step1_asignarRolHTML(self):
+        """
+        Comprueba que la vista 'step1_asignarRol' utiliza la plantilla correcta
+        """
         User = get_user_model()
         self.client.login(username='temporary2', password='temporary2')
         response = self.client.get(self.step2_asignar_rol_url)
@@ -643,6 +635,9 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_step2_asignarRolHTML(self):
+        """
+        Comprueba que la vista 'step2_asignarRol' utiliza la plantilla correcta
+        """
         User = get_user_model()
         self.client.login(username='temporary2', password='temporary2')
         response = self.client.get(self.step2_asignar_rol_url)
@@ -651,30 +646,45 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_eliminarRolHTML(self):
+        """
+        Comprueba que la vista 'eliminarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
-    def test_step1eliminarRolHTML(self):
+    def test_step1_eliminarRolHTML(self):
+        """
+        Comprueba que la vista 'step1_eliminarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
-    def test_step2eliminarRolHTML(self):
+    def test_step2_eliminarRolHTML(self):
+        """
+        Comprueba que la vista 'step2_eliminarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.eliminar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_step1_modificarRolHTML(self):
+        """
+        Comprueba que la vista 'step1_modificarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step1_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_step2_modificarRolHTML(self):
+        """
+        Comprueba que la vista 'step2_modificarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step2_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -682,6 +692,9 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_step3_modificarRolHTML(self):
+        """
+        Comprueba que la vista 'step3_modificarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step3_modificar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -689,6 +702,9 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_importarRolHTML(self):
+        """
+        Comprueba que la vista 'importarRol' utiliza la plantilla correcta
+        """
         response = self.client.get(self.importar_rol_url)
 
         self.assertEquals(response.status_code, 200)
@@ -696,18 +712,27 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_registrarUsuarioHTML(self):
+        """
+        Comprueba que la vista 'registrarUsuario' utiliza la plantilla correcta
+        """
         response = self.client.get(self.registrar_usuario_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'RegistrarUsuario.html')
 
     def test_crearProyectoHTML(self):
+        """
+        Comprueba que la vista 'crearProyecto' utiliza la plantilla correcta
+        """
         response = self.client.get(self.crear_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'crearProyecto.html')
 
     def test_modificarProyectoHTML(self):
+        """
+        Comprueba que la vista 'modicicarProyecto' utiliza la plantilla correcta
+        """
         response = self.client.get(self.modificar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
@@ -725,6 +750,9 @@ class TestViews(TestCase):
     """
 
     def test_eliminarProyectoHTML(self):
+        """
+        Comprueba que la vista 'eliminarProyecto' utiliza la plantilla correcta
+        """
         response = self.client.get(self.eliminar_proyecto_url)
 
         self.assertEquals(response.status_code, 200)
@@ -740,24 +768,36 @@ class TestViews(TestCase):
     """
 
     def test_swichProyectoHTML(self):
+        """
+        Comprueba que la vista 'swichProyecto' utiliza la plantilla correcta
+        """
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'registroRequerido.html')
 
     def test_getPermisosHTML(self):
+        """
+        Comprueba que la vista 'getPermisos' utiliza la plantilla correcta
+        """
         response = self.client.get(self.inicio_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'registroRequerido.html')
 
     def test_step1_SprintPlanningHTML(self):
+        """
+        Comprueba que la vista 'step1_SprintPlanning' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     def test_step2_SprintPlanningHTML(self):
+        """
+        Comprueba que la vista 'step2_SprintPlanning' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -782,12 +822,18 @@ class TestViews(TestCase):
     """
 
     def test_step3_SprintPlanningHTML(self):
+        """
+        Comprueba que la vista 'step2_SprintPlanning' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     def test_step3_asignarEncargadoHTML(self):
+        """
+        Comprueba que la vista 'step3_asignarEncargado' utiliza la plantilla correcta
+        """
         response = self.client.get(self.step1_SprintPlanning_url)
 
         self.assertEquals(response.status_code, 200)
@@ -811,6 +857,9 @@ class TestViews(TestCase):
     """
 
     def test_crearSprintHTML(self):
+        """
+        Comprueba que la vista 'crearSprint' utiliza la plantilla correcta
+        """
         response = self.client.get(self.crear_sprints_url)
 
         self.assertEquals(response.status_code, 200)
@@ -826,6 +875,9 @@ class TestViews(TestCase):
     """
 
     def test_visualizarSprintHTML(self):
+        """
+        Comprueba que la vista 'visualizarSprint' utiliza la plantilla correcta
+        """
         response = self.client.get(self.visualizar_sprint_url)
 
         self.assertEquals(response.status_code, 200)
@@ -841,6 +893,9 @@ class TestViews(TestCase):
     """
 
     def test_tableroKanbanHTML(self):
+        """
+        Comprueba que la vista 'tableroKanban' utiliza la plantilla correcta
+        """
         response = self.client.get(self.tablero_kanban_url)
 
         self.assertEquals(response.status_code, 200)
@@ -856,12 +911,18 @@ class TestViews(TestCase):
     """
 
     def test_seleccionarHistoriaHTML(self):
+        """
+        Comprueba que la vista 'seleccionarHistoria' utiliza la plantilla correcta
+        """
         response = self.client.get(self.seleccionar_historia_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarHistoria.html')
 
     def test_asignarHistoriaEncargadoHTML(self):
+        """
+        Comprueba que la vista 'asignarHistoriaEncargado' utiliza la plantilla correcta
+        """
         response = self.client.get(self.asignarHistoriaEncargado_url)
 
         self.assertEquals(response.status_code, 200)
@@ -877,6 +938,9 @@ class TestViews(TestCase):
     """
 
     def test_eliminarHistoriaHTML(self):
+        """
+        Comprueba que la vista 'eliminarHistoria' utiliza la plantilla correcta
+        """
         response = self.client.get(self.eliminar_historia_url)
 
         self.assertEquals(response.status_code, 200)
@@ -892,6 +956,9 @@ class TestViews(TestCase):
     """
 
     def test_productBacklogHTML(self):
+        """
+        Comprueba que la vista 'productBacklog' utiliza la plantilla correcta
+        """
         response = self.client.get(self.product_Backlog_url)
 
         self.assertEquals(response.status_code, 200)
@@ -907,6 +974,9 @@ class TestViews(TestCase):
     """
 
     def test_searchHTML(self):
+        """
+        Comprueba que la vista 'search' utiliza la plantilla correcta
+        """
         response = self.client.get(self.search_url)
 
         self.assertEquals(response.status_code, 200)
@@ -930,6 +1000,9 @@ class TestViews(TestCase):
     """
 
     def test_tableroQAReleaseHTML(self):
+        """
+        Comprueba que la vista 'tableroQARelease' utiliza la plantilla correcta
+        """
         response = self.client.get(self.tableroQA_Release_url)
 
         self.assertEquals(response.status_code, 200)
@@ -944,18 +1017,27 @@ class TestViews(TestCase):
     """
 
     def test_visualizarSprintFilterHTML(self):
+        """
+        Comprueba que la vista 'visualizarSprintFilter' utiliza la plantilla correcta
+        """
         response = self.client.get(self.searchvisualizarSprintFilter_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     def test_HistorialProyectoFilterHTML(self):
+        """
+        Comprueba que la vista 'HistorialProyectoFilter' utiliza la plantilla correcta
+        """
         response = self.client.get(self.HistorialProyectoFilter_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'seleccionarProyecto.html')
 
     def test_historicoSprintHTML(self):
+        """
+        Comprueba que la vista 'historicoSprint' utiliza la plantilla correcta
+        """
         response = self.client.get(self.historicoSprint_url)
 
         self.assertEquals(response.status_code, 200)

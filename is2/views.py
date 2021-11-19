@@ -2983,12 +2983,12 @@ def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
         if (cantidad_iniciado!=0):
             sprint=proyecto.id_sprints.get(estados="INICIADO")
             #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
-            if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
+            if( (sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
                 esvalido = True
 
         #CASO 2= NUEVO SPRINT EN EL INICIO
         if (cantidad_finalizado == 0 and cantidad_iniciado == 0):
-            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > proyecto.fecha)):
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio >= proyecto.fecha)):
                 esvalido = True
 
 
@@ -2997,7 +2997,7 @@ def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
             sps = proyecto.id_sprints.filter(estados="FINALIZADO")
             for s in sps:
                 sprint_anterior=s
-            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_fin)):
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_final)):
                 esvalido = True
 
     #CUANDO SE LLAMA EN MODIFICAR SPRINT
@@ -3246,6 +3246,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                     calcularEsfuerzoIdeal(sprint_actual, listaDevelopers)
 
                 sprint_actual.estados = 'INICIADO'
+                sprint_actual.fecha_inicio = date.today()
                 sprint_actual.save()
 
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"

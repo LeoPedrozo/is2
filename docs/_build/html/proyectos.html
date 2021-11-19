@@ -105,7 +105,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.apps">proyectos.apps module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.forms">proyectos.forms module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.models">proyectos.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#proyectos-tests-module">proyectos.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos.views">proyectos.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-proyectos">Module contents</a></li>
 </ul>
@@ -213,13 +212,9 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.apps.</span></span><span class="sig-name descname"><span class="pre">ProyectosConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.apps.ProyectosConfig" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
 <p>Clase para configurar algunos de los atributos de la aplicación.
-En esta:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>El tipo predeterminado de clave primaria: Un entero de 64 bits</p></li>
-<li><p>El nombre de la aplicacion: proyectos</p></li>
-</ul>
-</div></blockquote>
+En esta:
+- El tipo predeterminado de clave primaria: Un entero de 64 bits
+- El nombre de la aplicacion: proyectos</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="proyectos.apps.ProyectosConfig.default_auto_field">
 <span class="sig-name descname"><span class="pre">default_auto_field</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'django.db.models.BigAutoField'</span></em><a class="headerlink" href="#proyectos.apps.ProyectosConfig.default_auto_field" title="Enlazar permanentemente con esta definición">¶</a></dt>
@@ -239,7 +234,7 @@ En esta:</p>
 <dt class="sig sig-object py" id="proyectos.forms.crearproyectoForm">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">crearproyectoForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.crearproyectoForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
-<p>Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la creacion de un proyecto</p>
+<p>Implementa la clase para ejecutar un formulario donde se solicitan los datos necesarios para la creacion de un proyecto</p>
 <p><strong>Form fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">nombre</span></code>: Nombre (<code class="xref py py-class docutils literal notranslate"><span class="pre">CharField</span></code>)</p></li>
@@ -269,16 +264,18 @@ En esta:</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="proyectos.forms.eliminarProyectoForm">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">eliminarProyectoForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.eliminarProyectoForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dt class="sig sig-object py" id="proyectos.forms.importarRolForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">importarRolForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.importarRolForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Implementa un formulario que permite importar roles definidos de un proyecto a otro</p>
 <p><strong>Form fields:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Seleccione algun proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ProyectoA</span></code>: Importar Roles del proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ProyectoB</span></code>: al proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
 </ul>
 <dl class="py property">
-<dt class="sig sig-object py" id="proyectos.forms.eliminarProyectoForm.media">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#proyectos.forms.eliminarProyectoForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dt class="sig sig-object py" id="proyectos.forms.importarRolForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#proyectos.forms.importarRolForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Return all media required to render the widgets on this form.</p>
 </dd></dl>
 
@@ -288,7 +285,7 @@ En esta:</p>
 <dt class="sig sig-object py" id="proyectos.forms.modificarproyectoForm">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">modificarproyectoForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.modificarproyectoForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
-<p>Implementa la clase para ejecutar un formulario de solicitud de datos necesarios para la modificacion de un proyecto</p>
+<p>Implementa la clase para ejecutar un formulario donde se solicitan los datos necesarios para modificar un proyecto</p>
 <p><strong>Form fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: ID del proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">IntegerField</span></code>)</p></li>
@@ -299,6 +296,7 @@ En esta:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">fecha</span></code>: Fecha de Creacion (<code class="xref py py-class docutils literal notranslate"><span class="pre">DateField</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fecha_entrega</span></code>: Fecha de Entrega (<code class="xref py py-class docutils literal notranslate"><span class="pre">DateField</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">miembros</span></code>: Eliminar miembros [Los usuarios seleccionados seran eliminados] (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMultipleChoiceField</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">usuarios</span></code>: Agregar Nuevos usuarios (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMultipleChoiceField</span></code>)</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="proyectos.forms.modificarproyectoForm.__init__">
@@ -313,6 +311,23 @@ En esta:</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="proyectos.forms.modificarproyectoForm.media">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#proyectos.forms.modificarproyectoForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Return all media required to render the widgets on this form.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="proyectos.forms.seleccionarProyectoForm">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">proyectos.forms.</span></span><span class="sig-name descname"><span class="pre">seleccionarProyectoForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data=None</span></em>, <em class="sig-param"><span class="pre">files=None</span></em>, <em class="sig-param"><span class="pre">auto_id='id_%s'</span></em>, <em class="sig-param"><span class="pre">prefix=None</span></em>, <em class="sig-param"><span class="pre">initial=None</span></em>, <em class="sig-param"><span class="pre">error_class=&lt;class</span> <span class="pre">'django.forms.utils.ErrorList'&gt;</span></em>, <em class="sig-param"><span class="pre">label_suffix=None</span></em>, <em class="sig-param"><span class="pre">empty_permitted=False</span></em>, <em class="sig-param"><span class="pre">field_order=None</span></em>, <em class="sig-param"><span class="pre">use_required_attribute=None</span></em>, <em class="sig-param"><span class="pre">renderer=None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.forms.seleccionarProyectoForm" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.forms.forms.Form</span></code></p>
+<p>Implementa un formulario que posibilita seleccionar un proyecto de varios disponibles</p>
+<p><strong>Form fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Proyecto</span></code>: Seleccione algun proyecto (<code class="xref py py-class docutils literal notranslate"><span class="pre">ModelChoiceField</span></code>)</p></li>
+</ul>
+<dl class="py property">
+<dt class="sig sig-object py" id="proyectos.forms.seleccionarProyectoForm.media">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">media</span></span><a class="headerlink" href="#proyectos.forms.seleccionarProyectoForm.media" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Return all media required to render the widgets on this form.</p>
 </dd></dl>
 
@@ -337,6 +352,7 @@ nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints</p>
 <li><p><strong>fecha</strong> (<em>DateField</em>) – Fecha</p></li>
 <li><p><strong>fecha_entrega</strong> (<em>DateField</em>) – Fecha entrega</p></li>
 <li><p><strong>fecha_finalizacion</strong> (<em>DateField</em>) – Fecha finalizacion</p></li>
+<li><p><strong>roles_name</strong> (<em>ArrayField</em>) – Roles name</p></li>
 <li><p><strong>id_sprints</strong> (<em>ManyToManyField</em>) – Id sprints</p></li>
 </ul>
 </dd>
@@ -443,9 +459,33 @@ nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="proyectos.models.Proyecto.proyectos">
+<span class="sig-name descname"><span class="pre">proyectos</span></span><a class="headerlink" href="#proyectos.models.Proyecto.proyectos" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyectos asociados, accesses the M2M <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="proyectos.models.Proyecto.roles_name">
+<span class="sig-name descname"><span class="pre">roles_name</span></span><a class="headerlink" href="#proyectos.models.Proyecto.roles_name" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> roles name</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="proyectos.models.Proyecto.user_set">
 <span class="sig-name descname"><span class="pre">user_set</span></span><a class="headerlink" href="#proyectos.models.Proyecto.user_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> proyecto, accesses the M2M <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="proyectos.models.Proyecto.userproyecto_set">
+<span class="sig-name descname"><span class="pre">userproyecto_set</span></span><a class="headerlink" href="#proyectos.models.Proyecto.userproyecto_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the M2M <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.UserProyecto" title="gestionUsuario.models.UserProyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserProyecto</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="proyectos.models.Proyecto.usersprint_set">
+<span class="sig-name descname"><span class="pre">usersprint_set</span></span><a class="headerlink" href="#proyectos.models.Proyecto.usersprint_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the M2M <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.UserSprint" title="gestionUsuario.models.UserSprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserSprint</span></code></a> model.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -458,21 +498,18 @@ que no se hayan completado todos los campos obligatorios en el proyecto.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="proyectos-tests-module">
-<h2>proyectos.tests module<a class="headerlink" href="#proyectos-tests-module" title="Enlazar permanentemente con este título">¶</a></h2>
-</div>
 <div class="section" id="module-proyectos.views">
 <span id="proyectos-views-module"></span><h2>proyectos.views module<a class="headerlink" href="#module-proyectos.views" title="Enlazar permanentemente con este título">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="proyectos.views.deleteProyecto">
 <span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">deleteProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proyecto</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.deleteProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo para la eliminacion de proyecto</p>
+<dd><p>Metodo para la eliminacion de un proyecto</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros</dt>
 <dd class="field-odd"><p><strong>proyecto</strong> – proyecto a eliminar</p>
 </dd>
 <dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>void</p>
 </dd>
 </dl>
 </dd></dl>
@@ -483,7 +520,7 @@ que no se hayan completado todos los campos obligatorios en el proyecto.</p>
 <dd><p>Metodo para obtener todos los datos de un proyecto</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros</dt>
-<dd class="field-odd"><p><strong>project_name</strong> – nombre del proyecto</p>
+<dd class="field-odd"><p><strong>project_id</strong> – identificador del proyecto</p>
 </dd>
 <dt class="field-even">Devuelve</dt>
 <dd class="field-even"><p>informacion completa del proyecto</p>
@@ -494,7 +531,19 @@ que no se hayan completado todos los campos obligatorios en el proyecto.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="proyectos.views.guardarCamposdeProyecto">
 <span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">guardarCamposdeProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usuarioActual</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.guardarCamposdeProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Metodo que guarda todos lo campos de un proyecto</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Solicitud recibida</p></li>
+<li><p><strong>usuarioActual</strong> – objeto del usuario actual</p></li>
+</ul>
+</dd>
+<dt class="field-even">Devuelve</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="proyectos.views.nuevoProyecto">
@@ -513,13 +562,13 @@ que no se hayan completado todos los campos obligatorios en el proyecto.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="proyectos.views.updateProyecto">
 <span class="sig-prename descclassname"><span class="pre">proyectos.views.</span></span><span class="sig-name descname"><span class="pre">updateProyecto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#proyectos.views.updateProyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
-<dd><p>Metodo que se ejecuta para actualizar los datos de un nuevo proyecto creado</p>
+<dd><p>Metodo que se ejecuta para actualizar los datos de un proyecto</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parámetros</dt>
 <dd class="field-odd"><p><strong>datos</strong> – informaciones referentes a los compos de datos de un proyecto</p>
 </dd>
 <dt class="field-even">Devuelve</dt>
-<dd class="field-even"><p>info del nuevo proyecto</p>
+<dd class="field-even"><p>void</p>
 </dd>
 </dl>
 </dd></dl>

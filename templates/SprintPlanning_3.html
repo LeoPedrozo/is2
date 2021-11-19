@@ -1,0 +1,474 @@
+{% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
+{% load material_form %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sprint Planning</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('select').formSelect();
+        });
+    </script>
+
+</head>
+<body>
+
+
+<main class="content">
+    <div class="col s12">
+        <div class="card-action">
+            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+                <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
+            </a>
+        </div>
+    </div>
+
+    <div class="container p-0">
+
+        <h1 class="h3 mb-3">SPRINT PLANNING </h1>
+        <h5> Agregar Historias al sprint </h5>
+        <h5> SPRINT NUMERO : {{ Sprint.sprintNumber }} </h5>
+        <h5> DURACION : {{ Duracion }} Dias  </h5>
+
+        {% if Porcentaje >= 0 and Porcentaje < 40 %}
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: {{ Porcentaje }}% " aria-valuenow="50" aria-valuemin="0"
+                     aria-valuemax="100"> {{ Porcentaje }}% </div>
+            </div>
+        {% endif %}
+
+        {% if Porcentaje >= 40 and Porcentaje < 70 %}
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ Porcentaje }}%" aria-valuenow="25"
+                     aria-valuemin="0" aria-valuemax="100">{{ Porcentaje }}%
+                </div>
+            </div>
+        {% endif %}
+
+        {% if Porcentaje >= 70 and Porcentaje < 90 %}
+            <div class="progress">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ Porcentaje }}%" aria-valuenow="75"
+                     aria-valuemin="0" aria-valuemax="100">{{ Porcentaje }}%</div>
+            </div>
+        {% endif %}
+
+        {% if Porcentaje >= 90 %}
+            <div class="progress">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ Porcentaje }}%" aria-valuenow="100"
+                     aria-valuemin="0" aria-valuemax="100">{{ Porcentaje }}%</div>
+            </div>
+        {% endif %}
+
+            <!-- Guardar -->
+            <a class="btn btn-outline-primary"
+            href="/SprintPlanning/3/{{ 0 }}/{{ 4 }}/">Finalizar</a>
+        <div class="row">
+
+            <!-- Product Backlog -->
+            <div class="col-12 col-lg-6 col-xl-6 ">
+                <div class="card card-border-primary">
+                    <div class="card-header">
+                        <h5 class="card-title">Product Backlog</h5>
+                        <h6 class="card-subtitle text-muted"></h6>
+                    </div>
+
+                    {% for historia in p_backlog %}
+                        {% if historia.encargado == None and historia.estados == "" %}
+                            <div class="card-body p-3">
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body p-3">
+
+                                        <!--El menu de opciones-->
+                                        <div class="card-actions float-right">
+                                            <div class="dropdown show">
+                                                <a href="#" data-toggle="dropdown" data-display="static">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-more-horizontal align-middle">
+                                                        <circle cx="12" cy="12" r="1"></circle>
+                                                        <circle cx="19" cy="12" r="1"></circle>
+                                                        <circle cx="5" cy="12" r="1"></circle>
+                                                    </svg>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-right">
+
+                                                    <a class="dropdown-item modal-trigger"
+                                                       data-target="modal_asignarEncargado{{ historia.id_historia }}">Asignar
+                                                        Encargado </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <p>Historia : {{ historia.nombre }}.</p>
+                                        <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">Ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+                                                <br><b>Descripcion</b>
+                                                <p>{{ historia.descripcion }}.</p>
+                                                <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Ok</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--MODAL -->
+                            <div id="modal_asignarEncargado{{ historia.id_historia }}" class="modal "
+                                 style="width: 30% !important;
+                                    height: 40% !important;">
+
+                                <div class="modal-content">
+                                    <h2>Asignar Encargado</h2>
+                                    <div class="row">
+                                        {% if form.errors %}
+                                            <script>M.toast({
+                                                html: "Por favor revisa los campos",
+                                                classes: 'red rounded',
+                                                displayLength: 5000
+                                            });</script>
+                                        {% endif %}
+
+                                        <form action="/SprintPlanning/3/{{ historia.id_historia }}/{{ 1 }}/"
+                                              method="POST">
+                                            {% csrf_token %}
+                                            {% form form=form %}{% endform %}
+
+                                            <input type="submit" value="Asignar" class="btn red">
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer" style=" width: 0 !important;
+        max-height: 100% !important;
+        height: 0 !important;"></div>
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <!-- Sprint backlog -->
+            <div class="col-12 col-lg-6 col-xl-6">
+                <div class="card card-border-warning">
+                    <div class="card-header">
+                        <h5 class="card-title">Sprint Backlog</h5>
+                        <h6 class="card-subtitle text-muted"></h6>
+                    </div>
+                    {% for historia in s_backlog %}
+                        {% if historia.encargado != None and historia.estados == "PENDIENTE" %}
+                            <div class="card-body">
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body p-3">
+
+                                        <!--El menu de opciones-->
+                                        <div class="card-actions float-right">
+                                            <div class="dropdown show">
+                                                <a href="#" data-toggle="dropdown" data-display="static">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-more-horizontal align-middle">
+                                                        <circle cx="12" cy="12" r="1"></circle>
+                                                        <circle cx="19" cy="12" r="1"></circle>
+                                                        <circle cx="5" cy="12" r="1"></circle>
+                                                    </svg>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item modal-trigger"
+                                                       data-target="modal_asignarEncargado{{ historia.id_historia }}">Reasignar
+                                                        Encargado
+                                                    </a>
+
+
+                                                    <a class="dropdown-item"
+                                                       href="/SprintPlanning/3/{{ historia.id_historia }}/{{ 2 }}">Quitar</a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--Cargar Datos-->
+                                        <p>Historia : {{ historia.nombre }}.</p>
+                                        <p>Descripcion : {{ historia.descripcion }}.</p>
+                                        <p>Prioridad : {{ historia.prioridad }}.</p>
+                                        <p>Encargado : {{ historia.encargado }}.</p>
+
+                                        <!-- Modal Trigger -->
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!-- Modal Structure -->
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+
+                                                <h6> Descripcion </h6>
+                                                <p>{{ historia.descripcion }}</p>
+                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href=""
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--MODAL -->
+                            <div id="modal_asignarEncargado{{ historia.id_historia }}" class="modal "
+                                 style="width: 30% !important;
+                                    height: 40% !important;">
+
+                                <div class="modal-content">
+                                    <h2>Asignar Encargado</h2>
+                                    <div class="row">
+                                        {% if form.errors %}
+                                            <script>M.toast({
+                                                html: "Por favor revisa los campos",
+                                                classes: 'red rounded',
+                                                displayLength: 5000
+                                            });</script>
+                                        {% endif %}
+
+                                        <form action="/SprintPlanning/3/{{ historia.id_historia }}/{{ 1 }}/"
+                                              method="POST">
+                                            {% csrf_token %}
+                                            {% form form=form %}{% endform %}
+
+                                            <input type="submit" value="Asignar" class="btn red">
+                                        </form>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer" style=" width: 0 !important;
+        max-height: 100% !important;
+        height: 0 !important;"></div>
+                            </div>
+
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</main>
+
+
+<style type="text/css">
+    body {
+        margin-top: 20px;
+        background: #fafafa
+    }
+
+    .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .025)
+    }
+
+    .card-border-primary {
+        border-top: 4px solid #2979ff
+    }
+
+    .card-border-secondary {
+        border-top: 4px solid #efefef
+    }
+
+    .card-border-success {
+        border-top: 4px solid #00c853
+    }
+
+    .card-border-info {
+        border-top: 4px solid #3d5afe
+    }
+
+    .card-border-warning {
+        border-top: 4px solid #ff9100
+    }
+
+    .card-border-danger {
+        border-top: 4px solid #ff1744
+    }
+
+    .card-border-light {
+        border-top: 4px solid #f8f9fa
+    }
+
+    .card-border-dark {
+        border-top: 4px solid #6c757d
+    }
+
+    .card-header {
+        border-bottom-width: 1px
+    }
+
+    .card-actions a {
+        color: #495057;
+        text-decoration: none
+    }
+
+    .card-actions svg {
+        width: 16px;
+        height: 16px
+    }
+
+    .card-actions .dropdown {
+        line-height: 1.4
+    }
+
+    .card-title {
+        font-weight: 500;
+        margin-top: .1rem
+    }
+
+    .card-subtitle {
+        font-weight: 400
+    }
+
+    .card-table {
+        margin-bottom: 0
+    }
+
+    .card-table tr td:first-child,
+    .card-table tr th:first-child {
+        padding-left: 1.25rem
+    }
+
+    .card-table tr td:last-child,
+    .card-table tr th:last-child {
+        padding-right: 1.25rem
+    }
+
+    .card-img-top {
+        height: 100%
+    }
+
+    .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, .025);
+    }
+
+    .card {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #e5e9f2;
+        border-radius: .2rem;
+    }
+
+    .card-header:first-child {
+        border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
+    }
+
+    .card-header {
+        border-bottom-width: 1px;
+    }
+
+    .card-header {
+        padding: .75rem 1.25rem;
+        margin-bottom: 0;
+        color: inherit;
+        background-color: #fff;
+        border-bottom: 1px solid #e5e9f2;
+    }
+
+    .modal {
+
+        width: 30% !important;
+        max-height: 100% !important;
+        height: 40% !important;
+    }
+
+    .progress {
+        height: 5% !important;
+    }
+</style>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <script>M.toast({html: "{{ message }}", classes: 'green rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'info' %}
+                <script>M.toast({html: "{{ message }}", classes: 'blue rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'warning' %}
+                <script>M.toast({html: "{{ message }}", classes: 'yellow rounded', displayLength: 5000});</script>
+            {% elif message.tags == 'error' %}
+                <script>M.toast({html: "{{ message }}", classes: 'red rounded', displayLength: 5000});</script>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+    });
+
+
+</script>
+
+
+<!-- Iniciar -->
+<!--
+<a class="btn btn-outline-primary"
+   href="/SprintPlanning/3/{{ 0 }}/{{ 3 }}/">Iniciar Sprint</a>
+-->
+
+</body>
+
+</html>

@@ -36,13 +36,7 @@ userStory.models module
    :undoc-members:
    :show-inheritance:
 
-userStory.tests module
-----------------------
 
-.. automodule:: userStory.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 userStory.views module
 ----------------------

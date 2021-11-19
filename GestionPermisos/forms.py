@@ -25,16 +25,31 @@ class asignarRolForm(forms.Form):
     """
     Formulario de asignacion de roles a usuarios del sistema con consulta a un filtro de usuario previo
     """
-    ##Aca debe hacerse una cosulta para filtrar a los usuarios
-    ##estos usuarios se cargaran en un choice diccionary para poder ser usado en el campo usuario
-    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"), initial=0)
-    Roles = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"),initial=0)
+    # overwrite __init__
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("proyecto")  # store value of request
+        super(asignarRolForm, self).__init__(*args, **kwargs)
+        #self.fields['Usuario'].queryset = User.objects.filter(proyecto_id=self.datos['id_proyecto']).exclude(username="admin")
+        self.fields['Usuario'].choices = self.datos['usuario_names']
+        self.fields['Roles'].choices = self.datos['roles_name']
+
+    #Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin"))
+    Usuario = forms.ChoiceField()
+    Roles = forms.ChoiceField()
 
 
+#class seleccionarRolForm(forms.Form):
+#    Rol = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"), initial=0,label="Seleccione Rol")
 
 class seleccionarRolForm(forms.Form):
-    Rol = forms.ModelChoiceField(queryset=Group.objects.all().exclude(name="registrado"), initial=0,label="Seleccione Rol")
-
+    """
+    Formulario de seleccion de roles del sistema
+    """
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("proyecto")  # store value of request
+        super(seleccionarRolForm, self).__init__(*args, **kwargs)
+        self.fields['Rol'].choices = self.datos['roles_name']
+    Rol = forms.ChoiceField()
 
 
 
@@ -67,12 +82,6 @@ class modificarRolForm(forms.Form):
     Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
 
 
-
-
-
-
-
-
 class crearUsuarioForm(forms.Form):
     """
     Formulario de creacion de usuarios del sistema, solicitando el nombre y correo
@@ -83,13 +92,20 @@ class crearUsuarioForm(forms.Form):
 
 class registroDeUsuariosForm(forms.Form):
     """
-    Formulario para habilitacion de usuarios dentro del sistema
+    Formulario para habilitar o restringir acceso al sistema
     """
+
+    def __init__(self, *args, **kwargs):
+        self.datos = kwargs.pop("request")  # store value of request
+        super(registroDeUsuariosForm, self).__init__(*args, **kwargs)
+        self.fields['Usuario'].choices = self.datos['miembros']
+
+
     estados=(
         (True,"Habilitar acceso al sistema"),
         (False,"Restringir acceso al sistema"),
     )
-    Usuario = forms.ModelChoiceField(queryset=User.objects.all().exclude(username="admin" and "Admin"), initial=0,label="Seleccione un usuario")
+    Usuario = forms.ChoiceField(initial=0,label="Seleccione un usuario")
     Habilitado = forms.ChoiceField(required=True, widget=forms.RadioSelect, choices=estados,label="Usted desea?")
 
 

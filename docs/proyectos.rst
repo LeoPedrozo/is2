@@ -44,13 +44,6 @@ proyectos.models module
    :undoc-members:
    :show-inheritance:
 
-proyectos.tests module
-----------------------
-
-.. automodule:: proyectos.tests
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 proyectos.views module
 ----------------------

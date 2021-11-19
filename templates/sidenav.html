@@ -32,6 +32,8 @@
         </a>
 
         <ul class="sidenav" id="menu-side">
+
+
             <!--perfil-->
             <li>
                 <div class="user-view">
@@ -57,15 +59,57 @@
                         <a href="">
                             <span class="email white-text">{{ user.email }}</span>
                         </a>
+                        {% if not user.is_superuser %}
+                            <a href="">
+                                <span class="email white-text">En Proyecto : {{ proyectoActual }}</span>
+                                <span class="email white-text">Rol : {{ roles }}</span>
+                            </a>
+                        {% else %}
+                            <span class="email white-text">En Proyecto : {{ proyectoActual }}</span>
+                            <span class="email white-text">Rol : Admin</span>
+                        {% endif %}
+
                     {% endif %}
                 </div>
             </li>
-            <!--menu-->
-            <!--primer elemento-->
 
+
+
+
+
+
+
+
+            <!--menu-->
+
+            <!--MIS PROYECTOS-->
             <li>
                 <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
-                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown1'>
+
+                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdownProyectos'>
+                    <p>Mis proyectos</p>
+                </a>
+                <ul id='dropdownProyectos' class='dropdown-content'>
+                    {% for proyecto in proyectos %}
+
+                       {% if proyecto.estado == "INICIADO" %}
+                        <a href="http://127.0.0.1:8000/inicio/{{ proyecto.pk }}/">
+                            <li>{{ proyecto.nombre }}</li>
+                        </a>
+                        {% endif %}
+                    {% empty %}
+                        <li>
+                            <i class="material-icons" style="vertical-align: -3px">mood_bad</i>
+                            No tienes proyectos
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </li>
+            <!--PROYECTO-->
+            <li>
+                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
+               <!-- <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown1'>
                     <p>Proyecto</p>
                 </a>
                 <ul id='dropdown1' class='dropdown-content'>
@@ -106,82 +150,19 @@
                             </a>
                         {% endif %}
                     </li>
-                </ul>
-            </li>
-
-            <div class="divider"></div>
-            <!-- Segundo elemento-->
-
-            <li>
-                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
-                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown2'>
-                    <p> Usuario </p>
+                </ul>-->
+            <a class='blue-grey btn' href='/proyecto/'>
+                    <p>Proyecto</p>
                 </a>
-
-                <!-- Dropdown Structure -->
-                <!-- Tabla que va a desplegar el contenido-->
-                <ul id='dropdown2' class='dropdown-content'>
-                    <!-- Listado sin iconos -->
-                    <!-- <li><a href="#!">one</a></li> -->
-
-                    <!-- divisor-->
-                    <!-- <li class="divider" tabindex="-1"></li>  -->
-                    <!-- El menu despliega este contenido-->
-
-                    {% if perms.gestionUsuario.add_user %}
-                        <li><a href="http://127.0.0.1:8000/registrarUsuario/"><i class="material-icons">person_add</i>Registrar
-                            Usuario</a></li>
-                    {% else %}
-                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">person_add</i>Registrar
-                            Usuario</a></li>
-                    {% endif %}
-
-                    {% if perms.auth.add_group %}
-                        <li><a href="http://127.0.0.1:8000/crearRol/"><i class="material-icons">assignment_ind</i>Crear
-                            Rol</a>
-                        </li>
-
-                        <li><a href="http://127.0.0.1:8000/asignarRol/"><i
-                                class="material-icons">assignment_turned_in</i>Asignar
-                            Rol</a></li>
-                    {% else %}
-                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">assignment_ind</i>Crear Rol</a>
-                        </li>
-
-                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">assignment_turned_in</i>Asignar
-                            Rol</a></li>
-                    {% endif %}
-
-
-                    {% if perms.auth.change_group %}
-                        <li><a href="http://127.0.0.1:8000/modificarRol/1/"><i class="material-icons">build</i>Modificar
-                            Rol</a>
-                        </li>
-                    {% else %}
-                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">build</i>Modificar Rol</a>
-                        </li>
-                    {% endif %}
-
-                    {% if perms.auth.delete_group %}
-                        <li><a href="http://127.0.0.1:8000/eliminarRol/"><i class="material-icons">delete</i>Eliminar
-                            Rol</a>
-                        </li>
-                    {% else %}
-                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">delete</i>Eliminar Rol</a>
-                        </li>
-                    {% endif %}
-
-                </ul>
             </li>
-
             <!--Divisor-->
             <div class="divider"></div>
-
+            <!--SPRINT-->
             <li>
-                <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
-                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown3'>
-                    <p>Sprint</p>
-                </a>
+
+                 <a class='blue-grey btn' href="http://127.0.0.1:8000/historialSprint/"><p>Sprint</p>
+                    </a>
+            <!--
                 <ul id='dropdown3' class='dropdown-content'>
                     <li>
                         {% if perms.Sprints.add_sprint %}
@@ -189,11 +170,7 @@
                                 <i class="material-icons">assignment</i>
                                 Crear Sprint
                             </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">assignment</i>
-                                Crear Sprint
-                            </a>
+
                         {% endif %}
 
                         {% if perms.Sprints.change_sprint %}
@@ -246,79 +223,86 @@
                         {% endif %}
                     </li>
                 </ul>
+
+            -->
             </li>
 
             <div class="divider"></div>
+            <!--PRODUCT BACKLOG-->
+            <li>
+                <!--El data-target debe ser igual al id e la tabla que va a desplegar el contenido-->
+                <a class='blue-grey btn' href='/productBacklog/'>
+                    <p>Product Backlog</p>
+                </a>
 
+            </li>
+
+
+            <div class="divider"></div>
+            <!--ADMINISTRADOR-->
             <li>
                 <!--El data-target debe ser igual al id de la tabla que va a desplegar el contenido-->
-                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown4'>
-                    <p>Historia</p>
+                <a class='dropdown-trigger blue-grey btn' href='#' data-target='dropdown2'>
+                    <p> ADMINISTRADOR </p>
                 </a>
-                <ul id='dropdown4' class='dropdown-content'>
-                    <li>
-                        {% if perms.userStory.add_historia %}
-                            <a href="http://127.0.0.1:8000/crearHistoria/">
-                                <i class="material-icons">assignment</i>
-                                Crear Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">assignment</i>
-                                Crear Historia
-                            </a>
-                        {% endif %}
 
-                        {% if perms.userStory.change_historia %}
-                            <a href="http://127.0.0.1:8000/modificarHistoria/1/">
-                                <i class="material-icons">build</i>
-                                Modificar Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">build</i>
-                                Modificar Historia
-                            </a>
-                        {% endif %}
+                <!-- Dropdown Structure -->
+                <!-- Tabla que va a desplegar el contenido-->
+                <ul id='dropdown2' class='dropdown-content'>
+                    <!-- Listado sin iconos -->
+                    <!-- <li><a href="#!">one</a></li> -->
 
-                        {% if perms.userStory.delete_historia %}
-                            <a href="http://127.0.0.1:8000/eliminarHistoria/">
-                                <i class="material-icons">delete</i>
-                                Eliminar Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">delete</i>
-                                Eliminar Historia
-                            </a>
-                        {% endif %}
+                    <!-- divisor-->
+                    <!-- <li class="divider" tabindex="-1"></li>  -->
+                    <!-- El menu despliega este contenido-->
 
-                        {% if perms.userStory.view_historia %}
-                            <a href="http://127.0.0.1:8000/verHistorias/">
-                                <i class="material-icons">remove_red_eye</i>
-                                Ver Product Backlog
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">remove_red_eye</i>
-                                Ver Product Backlog
-                            </a>
-                        {% endif %}
+                    {% if perms.gestionUsuario.add_user %}
+                        <li><a href="http://127.0.0.1:8000/registrarUsuario/"><i class="material-icons">person_add</i>Registrar
+                            Usuario</a></li>
+                    {% else %}
+                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">person_add</i>Registrar
+                            Usuario</a></li>
+                    {% endif %}
 
-                        {% if perms.userStory.view_historia %}
-                            <a href="http://127.0.0.1:8000/asignarEncargado/">
-                                <i class="material-icons">person_add</i>
-                                Encargado Historia
-                            </a>
-                        {% else %}
-                            <a href="#" onclick="toast_permisos()">
-                                <i class="material-icons">person_add</i>
-                                Encargado Historia
-                            </a>
-                        {% endif %}
-                    </li>
+                    {% if perms.auth.add_group %}
+                        <li><a href="http://127.0.0.1:8000/crearRol/1/"><i class="material-icons">assignment_ind</i>Crear
+                            Rol</a>
+                        </li>
+
+                        <li><a href="http://127.0.0.1:8000/asignarRol/1/"><i
+                                class="material-icons">assignment_turned_in</i>Asignar
+                            Rol</a></li>
+                    {% else %}
+                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">assignment_ind</i>Crear Rol</a>
+                        </li>
+
+                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">assignment_turned_in</i>Asignar
+                            Rol</a></li>
+                    {% endif %}
+
+
+                    {% if perms.auth.change_group %}
+                        <li><a href="http://127.0.0.1:8000/modificarRol/1/"><i class="material-icons">build</i>Modificar
+                            Rol</a>
+                        </li>
+                    {% else %}
+                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">build</i>Modificar Rol</a>
+                        </li>
+                    {% endif %}
+
+                    {% if perms.auth.delete_group %}
+                        <li><a href="http://127.0.0.1:8000/eliminarRol/"><i class="material-icons">delete</i>Eliminar
+                            Rol</a>
+                        </li>
+                    {% else %}
+                        <li><a href="#" onclick="toast_permisos()"><i class="material-icons">delete</i>Eliminar Rol</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
             </li>
+
+
         </ul>
     </div>
 

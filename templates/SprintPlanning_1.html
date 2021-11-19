@@ -26,6 +26,14 @@
 </head>
 
 <body>
+<nav>
+    <div class="nav-wrapper">
+      <div class="col s12">
+        <a href="#!" class="breadcrumb">Home</a>
+        <a href="#!" class="breadcrumb">Crear Sprint</a>
+      </div>
+    </div>
+  </nav>
     <div class="container">
         <div class="card-action">
           <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
@@ -43,7 +51,7 @@
                 {% csrf_token %}
                 {% form form=form %}{% endform %}
 
-                <input type="submit" value="Crear" class="btn blue">
+                <input type="submit" value="Siguente" class="btn blue">
             </form>
         </div>
     </div>

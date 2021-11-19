@@ -15,7 +15,8 @@ def nuevaHistoria(datosHistoria):
                   descripcion=datosHistoria["descripcion"],
                   prioridad=datosHistoria["prioridad"],
                   fecha_creacion=datosHistoria["fecha_creacion"],#sera que se le asigna correctamente?
-                  horasEstimadas=datosHistoria["horasEstimadas"],
+                  #horasEstimadas=datosHistoria["horasEstimadas"],
+                  horasEstimadas=0,
                   estados='',
                   horas_dedicadas=0,
                   proyecto=datosHistoria['proyecto'])
@@ -24,7 +25,7 @@ def nuevaHistoria(datosHistoria):
 #modificacion en general
 def updateHistoria(datosHistoria):
     """
-    Metodo que se ejecuta para actualizar los datos de una nueva historia creada
+    Method que se ejecuta para actualizar los datos de una nueva historia creada
 
     :param datos: informaciones referentes a los compos de datos de una historia
     :return: info de la historia actualizada
@@ -34,9 +35,8 @@ def updateHistoria(datosHistoria):
     oldH.descripcion=datosHistoria["descripcion"]
     oldH.prioridad=datosHistoria["prioridad"]
     #oldH.fecha_creacion = datosHistoria["fecha_creacion"]
-    oldH.horasEstimadas=datosHistoria["horasEstimadas"]
-
-    oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]
+    #oldH.horasEstimadas=datosHistoria["horasEstimadas"]
+    #oldH.horas_dedicadas=datosHistoria["horas_dedicadas"]
     oldH.save()
 
 def asignarEncargado(Historia, encargado ):

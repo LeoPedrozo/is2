@@ -105,7 +105,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-userStory.admin">userStory.admin module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-userStory.apps">userStory.apps module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-userStory.models">userStory.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#userstory-tests-module">userStory.tests module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-userStory.views">userStory.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-userStory">Module contents</a></li>
 </ul>
@@ -211,13 +210,9 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userStory.apps.</span></span><span class="sig-name descname"><span class="pre">UserstoryConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.apps.UserstoryConfig" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
 <p>Clase para configurar algunos de los atributos de la aplicación.
-En esta:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>El tipo predeterminado de clave primaria: Un entero de 64 bits</p></li>
-<li><p>El nombre de la aplicacion: userStory</p></li>
-</ul>
-</div></blockquote>
+En esta:
+- El tipo predeterminado de clave primaria: Un entero de 64 bits
+- El nombre de la aplicacion: userStory</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="userStory.apps.UserstoryConfig.default_auto_field">
 <span class="sig-name descname"><span class="pre">default_auto_field</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'django.db.models.BigAutoField'</span></em><a class="headerlink" href="#userStory.apps.UserstoryConfig.default_auto_field" title="Enlazar permanentemente con esta definición">¶</a></dt>
@@ -235,7 +230,7 @@ En esta:</p>
 <span id="userstory-models-module"></span><h2>userStory.models module<a class="headerlink" href="#module-userStory.models" title="Enlazar permanentemente con este título">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="userStory.models.ESTADOS_CHOICES">
-<span class="sig-prename descclassname"><span class="pre">userStory.models.</span></span><span class="sig-name descname"><span class="pre">ESTADOS_CHOICES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[('FINALIZADO',</span> <span class="pre">'Finalizado'),</span> <span class="pre">('PENDIENTE',</span> <span class="pre">'Pendiente'),</span> <span class="pre">('EN_CURSO',</span> <span class="pre">'En</span> <span class="pre">Curso'),</span> <span class="pre">('QUALITY_ASSURANCE',</span> <span class="pre">'Quality</span> <span class="pre">Assurance')]</span></em><a class="headerlink" href="#userStory.models.ESTADOS_CHOICES" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">userStory.models.</span></span><span class="sig-name descname"><span class="pre">ESTADOS_CHOICES</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[('FINALIZADO',</span> <span class="pre">'Finalizado'),</span> <span class="pre">('PENDIENTE',</span> <span class="pre">'Pendiente'),</span> <span class="pre">('EN_CURSO',</span> <span class="pre">'En</span> <span class="pre">Curso'),</span> <span class="pre">('QUALITY_ASSURANCE',</span> <span class="pre">'Quality</span> <span class="pre">Assurance'),</span> <span class="pre">('RELEASE',</span> <span class="pre">'Release')]</span></em><a class="headerlink" href="#userStory.models.ESTADOS_CHOICES" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Definimos la prioridad de un userStory</p>
 </dd></dl>
 
@@ -258,6 +253,7 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <li><p><strong>horas_dedicadas</strong> (<em>IntegerField</em>) – Horas dedicadas</p></li>
 <li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
 <li><p><strong>encargado</strong> (ForeignKey to <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>) – Encargado</p></li>
+<li><p><strong>comentarios</strong> (<em>TextField</em>) – Comentarios</p></li>
 </ul>
 </dd>
 </dl>
@@ -271,6 +267,12 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <dt class="sig sig-object py" id="userStory.models.Historia.MultipleObjectsReturned">
 <em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#userStory.models.Historia.MultipleObjectsReturned" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.comentarios">
+<span class="sig-name descname"><span class="pre">comentarios</span></span><a class="headerlink" href="#userStory.models.Historia.comentarios" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> comentarios</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -328,6 +330,11 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.Historia.history">
+<span class="sig-name descname"><span class="pre">history</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;simple_history.manager.HistoryManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#userStory.models.Historia.history" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="userStory.models.Historia.horasEstimadas">
 <span class="sig-name descname"><span class="pre">horasEstimadas</span></span><a class="headerlink" href="#userStory.models.Historia.horasEstimadas" title="Enlazar permanentemente con esta definición">¶</a></dt>
 <dd><p><strong>Model field:</strong> horasEstimadas</p>
@@ -374,6 +381,13 @@ identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimada
 <dd><p><strong>Model field:</strong> proyecto</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.Historia.save_without_historical_record">
+<span class="sig-name descname"><span class="pre">save_without_historical_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.Historia.save_without_historical_record" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Save model without saving a historical record</p>
+<p>Make sure you know what you’re doing before you use this method.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="userStory.models.Historia.sprint_set">
 <span class="sig-name descname"><span class="pre">sprint_set</span></span><a class="headerlink" href="#userStory.models.Historia.sprint_set" title="Enlazar permanentemente con esta definición">¶</a></dt>
@@ -389,9 +403,248 @@ que se hayan completado o no todos los campos obligatorios en el User Story.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="userstory-tests-module">
-<h2>userStory.tests module<a class="headerlink" href="#userstory-tests-module" title="Enlazar permanentemente con este título">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">userStory.models.</span></span><span class="sig-name descname"><span class="pre">HistoricalHistoria</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_historia</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nombre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descripcion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prioridad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fecha_creacion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horasEstimadas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estados</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horas_dedicadas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comentarios</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proyecto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encargado</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_change_reason</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_user</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">simple_history.models.HistoricalChanges</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parámetros</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id_historia</strong> (<em>IntegerField</em>) – Id historia</p></li>
+<li><p><strong>nombre</strong> (<em>CharField</em>) – Nombre</p></li>
+<li><p><strong>descripcion</strong> (<em>TextField</em>) – Descripcion</p></li>
+<li><p><strong>prioridad</strong> (<em>CharField</em>) – Prioridad</p></li>
+<li><p><strong>fecha_creacion</strong> (<em>DateField</em>) – Fecha creacion</p></li>
+<li><p><strong>horasEstimadas</strong> (<em>IntegerField</em>) – Horasestimadas</p></li>
+<li><p><strong>estados</strong> (<em>CharField</em>) – Estados</p></li>
+<li><p><strong>horas_dedicadas</strong> (<em>IntegerField</em>) – Horas dedicadas</p></li>
+<li><p><strong>comentarios</strong> (<em>TextField</em>) – Comentarios</p></li>
+<li><p><strong>proyecto</strong> (ForeignKey to <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a>) – Proyecto</p></li>
+<li><p><strong>encargado</strong> (ForeignKey to <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>) – Encargado</p></li>
+<li><p><strong>history_id</strong> (<em>AutoField</em>) – History id</p></li>
+<li><p><strong>history_date</strong> (<em>DateTimeField</em>) – History date</p></li>
+<li><p><strong>history_change_reason</strong> (<em>CharField</em>) – History change reason</p></li>
+<li><p><strong>history_type</strong> (<em>CharField</em>) – History type</p></li>
+<li><p><strong>history_user</strong> (ForeignKey to <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a>) – History user</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.DoesNotExist">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.DoesNotExist" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.MultipleObjectsReturned">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.MultipleObjectsReturned" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.comentarios">
+<span class="sig-name descname"><span class="pre">comentarios</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.comentarios" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> comentarios</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.descripcion">
+<span class="sig-name descname"><span class="pre">descripcion</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.descripcion" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> descripcion</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.encargado">
+<span class="sig-name descname"><span class="pre">encargado</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.encargado" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> encargado, accesses the <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.encargado_id">
+<span class="sig-name descname"><span class="pre">encargado_id</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.encargado_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> encargado</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.estados">
+<span class="sig-name descname"><span class="pre">estados</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.estados" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> estados</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.fecha_creacion">
+<span class="sig-name descname"><span class="pre">fecha_creacion</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.fecha_creacion" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> fecha creacion</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_default_history_user">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_default_history_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_default_history_user" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Returns the user specified by <cite>get_user</cite> method for manually creating
+historical objects</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_estados_display">
+<span class="sig-name descname"><span class="pre">get_estados_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.CharField:</span> <span class="pre">estados&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_estados_display" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Shows the label of the <a class="reference internal" href="#userStory.models.HistoricalHistoria.estados" title="userStory.models.HistoricalHistoria.estados"><code class="xref py py-attr docutils literal notranslate"><span class="pre">estados</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_history_type_display">
+<span class="sig-name descname"><span class="pre">get_history_type_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.CharField:</span> <span class="pre">history_type&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_history_type_display" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Shows the label of the <a class="reference internal" href="#userStory.models.HistoricalHistoria.history_type" title="userStory.models.HistoricalHistoria.history_type"><code class="xref py py-attr docutils literal notranslate"><span class="pre">history_type</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_next_by_fecha_creacion">
+<span class="sig-name descname"><span class="pre">get_next_by_fecha_creacion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_creacion&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_next_by_fecha_creacion" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds next instance based on <a class="reference internal" href="#userStory.models.HistoricalHistoria.fecha_creacion" title="userStory.models.HistoricalHistoria.fecha_creacion"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_creacion</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_next_by_history_date">
+<span class="sig-name descname"><span class="pre">get_next_by_history_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">history_date&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_next_by_history_date" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds next instance based on <a class="reference internal" href="#userStory.models.HistoricalHistoria.history_date" title="userStory.models.HistoricalHistoria.history_date"><code class="xref py py-attr docutils literal notranslate"><span class="pre">history_date</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_previous_by_fecha_creacion">
+<span class="sig-name descname"><span class="pre">get_previous_by_fecha_creacion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateField:</span> <span class="pre">fecha_creacion&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_previous_by_fecha_creacion" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds previous instance based on <a class="reference internal" href="#userStory.models.HistoricalHistoria.fecha_creacion" title="userStory.models.HistoricalHistoria.fecha_creacion"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fecha_creacion</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_previous_by_history_date">
+<span class="sig-name descname"><span class="pre">get_previous_by_history_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">history_date&gt;</span></em>, <em class="sig-param"><span class="pre">is_next=False</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_previous_by_history_date" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Finds previous instance based on <a class="reference internal" href="#userStory.models.HistoricalHistoria.history_date" title="userStory.models.HistoricalHistoria.history_date"><code class="xref py py-attr docutils literal notranslate"><span class="pre">history_date</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.get_prioridad_display">
+<span class="sig-name descname"><span class="pre">get_prioridad_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">field=&lt;django.db.models.fields.CharField:</span> <span class="pre">prioridad&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.get_prioridad_display" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Autogenerated:</strong> Shows the label of the <a class="reference internal" href="#userStory.models.HistoricalHistoria.prioridad" title="userStory.models.HistoricalHistoria.prioridad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">prioridad</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_change_reason">
+<span class="sig-name descname"><span class="pre">history_change_reason</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_change_reason" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history change reason</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_date">
+<span class="sig-name descname"><span class="pre">history_date</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_date" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history date</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_id">
+<span class="sig-name descname"><span class="pre">history_id</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history id</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_object">
+<span class="sig-name descname"><span class="pre">history_object</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_object" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_type">
+<span class="sig-name descname"><span class="pre">history_type</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_type" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_user">
+<span class="sig-name descname"><span class="pre">history_user</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_user" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history user, accesses the <a class="reference internal" href="gestionUsuario.html#gestionUsuario.models.User" title="gestionUsuario.models.User"><code class="xref py py-class docutils literal notranslate"><span class="pre">User</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.history_user_id">
+<span class="sig-name descname"><span class="pre">history_user_id</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.history_user_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> history user</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.horasEstimadas">
+<span class="sig-name descname"><span class="pre">horasEstimadas</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.horasEstimadas" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> horasEstimadas</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.horas_dedicadas">
+<span class="sig-name descname"><span class="pre">horas_dedicadas</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.horas_dedicadas" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> horas dedicadas</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.id_historia">
+<span class="sig-name descname"><span class="pre">id_historia</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.id_historia" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> id historia</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.instance">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.instance" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.instance_type">
+<span class="sig-name descname"><span class="pre">instance_type</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.instance_type" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#userStory.models.Historia" title="userStory.models.Historia"><code class="xref py py-class docutils literal notranslate"><span class="pre">userStory.models.Historia</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.next_record">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">next_record</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.next_record" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Get the next history record for the instance. <cite>None</cite> if last.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.nombre">
+<span class="sig-name descname"><span class="pre">nombre</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.nombre" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> nombre</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#userStory.models.HistoricalHistoria.objects" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.prev_record">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">prev_record</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.prev_record" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>Get the previous history record for the instance. <cite>None</cite> if first.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.prioridad">
+<span class="sig-name descname"><span class="pre">prioridad</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.prioridad" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> prioridad</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.proyecto">
+<span class="sig-name descname"><span class="pre">proyecto</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.proyecto" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto, accesses the <a class="reference internal" href="proyectos.html#proyectos.models.Proyecto" title="proyectos.models.Proyecto"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proyecto</span></code></a> model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.proyecto_id">
+<span class="sig-name descname"><span class="pre">proyecto_id</span></span><a class="headerlink" href="#userStory.models.HistoricalHistoria.proyecto_id" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p><strong>Model field:</strong> proyecto</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="userStory.models.HistoricalHistoria.revert_url">
+<span class="sig-name descname"><span class="pre">revert_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#userStory.models.HistoricalHistoria.revert_url" title="Enlazar permanentemente con esta definición">¶</a></dt>
+<dd><p>URL for this change in the default admin site.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-userStory.views">
 <span id="userstory-views-module"></span><h2>userStory.views module<a class="headerlink" href="#module-userStory.views" title="Enlazar permanentemente con este título">¶</a></h2>

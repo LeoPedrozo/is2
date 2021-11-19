@@ -49,6 +49,11 @@ INSTALLED_APPS = [
     'userStory',
     'material',
     'Sprints',
+    'simple_history',
+    'mathfilters',
+    'django_filters',
+    'widget_tweaks',
+'bootstrap_daterangepicker',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+
 ]
 
 ROOT_URLCONF = 'is2.urls'
@@ -163,7 +170,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 #Configuraciones del sitio web
 #El numero de site id se guarda en la tabla django_site
-SITE_ID = 7
+SITE_ID = 8
 
 # Si el loggeo es exitoso dirigirse a:
 LOGIN_REDIRECT_URL = '/inicio/'
@@ -178,6 +185,13 @@ STATIC_ROOT = os.path.join(VENV_PATH, 'static_root')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+#Para envio de mails
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "scrumban.g8@gmail.com"
+EMAIL_HOST_PASSWORD = "is2_g8_fpuna"
 
 #Para acceder a la documentacion
 DOCS_ROOT = os.path.join(BASE_DIR, './docs/_build/html')
@@ -187,3 +201,4 @@ DOCS_ACCESS = 'public'
 #login_required - docs are visible only to authenticated users
 #staff - docs are visible only to staff users (user.is_staff == True)
 #superuser - docs are visible only to superusers (user.is_superuser == True)
+

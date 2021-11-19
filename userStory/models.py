@@ -1,5 +1,6 @@
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
@@ -11,6 +12,7 @@ ESTADOS_CHOICES=[
     ('PENDIENTE','Pendiente'),
     ('EN_CURSO','En Curso'),
     ('QUALITY_ASSURANCE','Quality Assurance'),
+    ('RELEASE','Release')
 ]
 
 """
@@ -28,7 +30,7 @@ class Historia(models.Model):
     identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
     """
     id_historia = models.AutoField(primary_key = True)
-    nombre=models.CharField(max_length=20)
+    nombre=models.CharField(max_length=50)
     descripcion = models.TextField()
     prioridad = models.CharField(max_length=20, choices=PRIORIDAD_CHOICES)
     fecha_creacion = models.DateField(auto_now_add=True)
@@ -38,7 +40,10 @@ class Historia(models.Model):
     proyecto=models.ForeignKey(to='proyectos.Proyecto', on_delete=models.SET_NULL,null=True,blank=True)
 
     #Jose= esto lo agrego por que estoy re loco
-    encargado=models.ForeignKey(to='gestionUsuario.user', on_delete=models.SET_NULL,null=True,blank=True)
+    encargado=models.ForeignKey(to='gestionUsuario.User', on_delete=models.SET_NULL,null=True,blank=True)
+
+    comentarios=models.TextField(default='')
+    history = HistoricalRecords(user_model='gestionUsuario.User')
 
     class Meta:
         verbose_name = 'Historia'
@@ -68,3 +73,11 @@ class Historia(models.Model):
         if not self.horasEstimadas:
             return False
         return True
+
+    @property
+    def _history_user(self):
+        return self.encargado
+
+    @_history_user.setter
+    def _history_user(self, value):
+        self.encargado = value

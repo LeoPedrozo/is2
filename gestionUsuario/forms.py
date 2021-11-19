@@ -1,18 +1,10 @@
 from django import forms
 
-class crearRolForm(forms.Form):
+class asignarcapacidadForm(forms.Form):
     """
-    Formulario de creacion de roles con las opciones de 'agregar', 'borrar','modificar' y 'ver'
+    Clase que implementa un formulario para la asignacion de capacidad, requisito necesario para el sprint planning
     """
 
-    Rol = forms.CharField()
-    OPTIONS = (
-        ("add", "Agregar"),
-        ("delete", "Borrar"),
-        ("change","Modificar"),
-        ("view","Ver"),
-    )
-    Historia = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
-    Proyecto = forms.MultipleChoiceField(required=False,widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
-    Sprint = forms.MultipleChoiceField(required=False, widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
-
+    capacidad = forms.IntegerField(initial=0, widget=forms.NumberInput(
+        attrs={'type': 'number', 'id': 'register-form-horas', 'name': 'register-form-horas', 'value': '0',
+               'class': 'form-control'}))

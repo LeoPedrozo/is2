@@ -12,3 +12,4 @@ is2
    userStory
    oauth_app
    Sprints
+   tests

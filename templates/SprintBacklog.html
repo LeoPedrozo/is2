@@ -12,21 +12,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <meta charset="UTF-8">
-    <title>Lista de Historias</title>
+    <title>Sprint Backlog</title>
 </head>
 <body>
 
-        <h3 style = "position:relative; left:10px;">PRODUCT BACKLOG</h3>
-    {% if not historias %}
-        <div class="card-action" style = "position:relative; left:10px;" >
-            <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay historias creadas</p>
-            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-                <i class="material-icons tiny" style="vertical-align: -2px;">arrow_back</i>Volver a Inicio
-            </a>
-        </div>
-    {% endif %}
+<h3 style="position:relative; left:10px;">SPRINT BACKLOG</h3>
+{% if not historias %}
+    <div class="card-action" style="position:relative; left:10px;">
+        <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay historias creadas</p>
+        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
+            <i class="material-icons tiny" style="vertical-align: -2px;">arrow_back</i>Volver a Inicio
+        </a>
+    </div>
+{% endif %}
 
- {% for historia in historias  %}
+{% for historia in historias %}
     <ul class="collection">
         <li class="collection-item avatar">
 
@@ -46,8 +46,7 @@
             <p>
                 <span class="title">Hora Dedicadas: {{ historia.horas_dedicadas }}</span>
             </p>
-
-            <a class="btn btn-outline-primary btn-sm" href="/verHistorias/{{ historia.id_historia }}">Agregar a Sprint</a>
+            
         </li>
     </ul>
 {% endfor %}

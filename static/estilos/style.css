@@ -10,7 +10,8 @@ h1{
 
 
 .cover {
-    height: 600px;
+
+    height: 717px;
     overflow-y: hidden; /* Hide vertical scrollbar */
     overflow-x: hidden; /* Hide horizontal scrollbar */
     color: rgb(255, 255, 255);

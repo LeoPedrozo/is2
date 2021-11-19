@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from Sprints.models import Sprint
@@ -18,6 +19,7 @@ class Proyecto(models.Model):
     Implementa la clase de Proyectos, almacena datos generales acerca del proyecto:
     nombre, estado, fecha, fecha entrega, fecha finalizacion e id sprints
     """
+
     nombre = models.CharField(max_length=100)
     descripcion=models.TextField(null=True,blank=False)
     estado = models.CharField(max_length=50, choices=ESTADOS_CHOICES)
@@ -25,6 +27,8 @@ class Proyecto(models.Model):
     fecha_entrega = models.DateField(blank=False)
     fecha_finalizacion = models.DateField(null=True, blank=True)
     id_sprints = models.ManyToManyField(Sprint, blank=True)
+    #Los roles del proyecto.
+    roles_name = ArrayField(models.CharField(max_length=30), default=list, blank=True)
 
     class Meta:
         verbose_name = 'Proyecto'
@@ -36,6 +40,7 @@ class Proyecto(models.Model):
 
         :return: retorna el valor del campo nombre del objeto actual
         """
+
         return self.nombre
 
     def validate_test(self):

@@ -1,35 +1,54 @@
 from django.shortcuts import render
-from gestionUsuario.models import User
+from gestionUsuario.models import User, UserProyecto
+
+
 # Create your views here.
 
 ##una vista que reciba el id del proyecto recien creado y luego asociar ese id con los usuarios seleccionados tambien el formulario
 ##asociarmiembrosaproyecto
 
-def asociarProyectoaUsuario( proyecto,miembros):
+def asociarProyectoaUsuario( proyecto,correos):
     """Metodo para asociar un proyecto a un grupo de usuarios del sistema
 
     :param proyecto: proyecto que se quiere asociar
     :param miembros: lista de usuarios que van a ser asociados al proyecto
     :return: void
     """
-    for miembro in miembros:
-        u= User.objects.get(username=miembro)
+
+    for correo in correos:
+
+        u= User.objects.get(email=correo)
         u.proyecto=proyecto
+        u.proyectos_asociados.add(proyecto)
+        if UserProyecto.objects.filter(usuario=u, proyecto=proyecto).exists():
+            a = UserProyecto.objects.get(usuario=u, proyecto=proyecto)
+            a.rol_name = ''
+            a.save()
+        else:
+            nuevo = UserProyecto(usuario=u, proyecto=proyecto, rol_name='')
+            nuevo.save()
         u.save()
 
-
 ##No se si funca como deberia
-def desasociarUsuariodeProyecto(miembros):
-    """Metodo para desasociar a un usuario de un proyecto
+def desasociarUsuariodeProyecto(proyecto,correos):
+    """Metodo para desasociar a un grupo de usuarios de un proyecto
 
-    :param miembro: usuario que va ser excluido del proyecto
+    :param miembro: usuarios que van a ser excluidos del proyecto
     :return: void
     """
 
-    for miembro in miembros:
-        u = User.objects.get(username=miembro)
-        u.proyecto = None
+    for correo in correos:
+        u = User.objects.get(email=correo)
+        #u.proyecto = None
+        u.proyectos_asociados.remove(proyecto)
+
+        print("lista de proyectos asociados Despues ", u.proyectos_asociados.all())
+        if UserProyecto.objects.filter(usuario=u, proyecto=proyecto).exists():
+            a = UserProyecto.objects.get(usuario=u, proyecto=proyecto)
+            a.delete()
+
         u.save()
+
 
 
 

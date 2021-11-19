@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!------ Include the above in your HEAD tag ---------->
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Informacion de Sprint</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        window.alert = function () {
+        };
+        var defaultCSS = document.getElementById('bootstrap-css');
+
+        function changeCSS(css) {
+            if (css) $('head > link').filter(':first').replaceWith('<link rel="stylesheet" href="' + css + '" type="text/css" />');
+            else $('head > link').filter(':first').replaceWith(defaultCSS);
+        }
+
+        $(document).ready(function () {
+            var iframe_height = parseInt($('html').height());
+            window.parent.postMessage(iframe_height, 'https://bootsnipp.com');
+        });
+    </script>
+</head>
+
+<body>
+
+<div class="container emp-profile">
+
+<a class="btn btn-primary" href="/proyecto/{{ Proyecto.id }}/Sprints/">Atras</a>
+
+    <!--SECCION CARGAR FOTO-->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-img">
+                <img src="https://cafe-agil.com/wp-content/uploads/2020/03/Agile.png" alt="">
+                <!--<div class="file btn btn-lg btn-primary">
+                    Change Photo
+                    <input type="file" name="file">
+                </div>-->
+            </div>
+        </div>
+
+        <!-- FOTO -->
+        <div class="col-md-6">
+            <div class="profile-head">
+                <h5>
+                    Sprint #{{ Sprint.sprintNumber }}
+                </h5>
+
+                <h6>
+                    Estado </h6>
+                <h7>
+                    {{ Sprint.estados }}
+                </h7>
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                           aria-controls="home" aria-selected="true">Equipo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                           aria-controls="profile" aria-selected="false">Estadisticas</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+         <!--SECCION DE Roles-->
+
+        <div class="col-md-4">
+            <div class="profile-work">
+
+
+
+            </div>
+        </div>
+
+
+        <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+
+                <!--SECCION DE MIEMBROS-->
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                    {% for miembro in Miembros %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Nombre de Usuario </label><br>
+                            <label>Nombre completo </label><br>
+                            <label>Correo Electronico </label><br>
+                            <label> Rol </label>
+                        </div>
+                        <div class="col-md-6">
+                            <label style="color: #0062cc "> {{ miembro.username }}</label><br>
+                            <label style="color: #0062cc ">{{ miembro.first_name }} {{ miembro.last_name }}</label><br>
+                            <label style="color: #0062cc ">{{ miembro.email }}</label><br>
+
+                        <label style="color: #0062cc "> </label>
+                            <a class="btn btn-outline-primary" href="/Usuario/{{ miembro.pk }}/info/">Mas Detalle</a>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!--SECCION DE ESTADISTICAS-->
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Fecha de Inicio</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ FechaInicio }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Fecha estimada de Entrega</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ FechaFin }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Fecha de Finalizacion</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ FechaFinal }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Cantidad de Historias</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ CantidadHistorias }} Historias </p>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Duracion del Spritn</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ Duracion }} dias</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Tiempo transcurrido</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p> {{ Transcurrido }} dias</p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+</script>
+
+
+</div>
+</body>
+
+<style>
+
+    body {
+        background: #0d6efd;
+    }
+
+    .emp-profile {
+        padding: 3%;
+        margin-top: 3%;
+        margin-bottom: 3%;
+        border-radius: 0.5rem;
+        background: #fff;
+    }
+
+    .profile-img {
+        text-align: center;
+    }
+
+    .profile-img img {
+        width: 70%;
+        height: 100%;
+    }
+
+    .profile-img .file {
+        position: relative;
+        overflow: hidden;
+        margin-top: -20%;
+        width: 70%;
+        border: none;
+        border-radius: 0;
+        font-size: 15px;
+        background: #212529b8;
+    }
+
+    .profile-img .file input {
+        position: absolute;
+        opacity: 0;
+        right: 0;
+        top: 0;
+    }
+
+    .profile-head h5 {
+        color: #333;
+    }
+
+    .profile-head h6 {
+        color: #0062cc;
+    }
+
+    .profile-edit-btn {
+        border: none;
+        border-radius: 1.5rem;
+        width: 70%;
+        padding: 2%;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
+    }
+
+    .proile-rating {
+        font-size: 12px;
+        color: #818182;
+        margin-top: 5%;
+    }
+
+    .proile-rating span {
+        color: #495057;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .profile-head .nav-tabs {
+        margin-bottom: 5%;
+    }
+
+    .profile-head .nav-tabs .nav-link {
+        font-weight: 600;
+        border: none;
+    }
+
+    .profile-head .nav-tabs .nav-link.active {
+        border: none;
+        border-bottom: 2px solid #0062cc;
+    }
+
+    .profile-work {
+        padding: 14%;
+        margin-top: -15%;
+    }
+
+    .profile-work p {
+        font-size: 12px;
+        color: #818182;
+        font-weight: 600;
+        margin-top: 10%;
+    }
+
+    .profile-work a {
+        text-decoration: none;
+        color: #495057;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .profile-work ul {
+        list-style: none;
+    }
+
+    .profile-tab label {
+        font-weight: 600;
+    }
+
+    .profile-tab p {
+        font-weight: 600;
+        color: #0062cc;
+    }
+</style>
+
+</html>
+
+
+<script type="text/javascript">
+    (function ($) {
+        $('#theme_chooser').change(function () {
+            whichCSS = $(this).val();
+            document.getElementById('snippet-preview').contentWindow.changeCSS(whichCSS);
+        });
+    })(jQuery);
+</script>

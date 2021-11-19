@@ -242,6 +242,17 @@
 
                         <ul class="dropdown-menu" aria-labelledby="dropdown{{ sprint.id }}">
 
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                       data-bs-target="#modal_iniciar{{ sprint.id }}"> </i>
+                                     </a>
+                            </li>
+
+
+                                                            <li><a class="dropdown-item"
+                                   href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/info/"> <i class="fas fa-users"></i>
+                                                                Ver informacion del sprint</a></li>
+
+
                             {% if sprint.estados == "PLANNING"%}
 
                                 {% if perms.Sprints.change_sprint or usuario.is_superuser%}

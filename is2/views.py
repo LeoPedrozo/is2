@@ -3527,14 +3527,18 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
         proyecto_actual = Proyecto.objects.get(id=id_proyecto)
         sprint_actual = Sprint.objects.get(id=id_sprint)
 
+
         lista = UserSprint.objects.filter(proyecto=proyecto_actual, sprint=sprint_actual)
+
+        lista2 = UserProyecto.objects.filter(proyecto=proyecto_actual)
+        disponibles = []
+
         equipo = []
         for l in lista:
             equipo.append((l.usuario.email,l.usuario.email))
 
-        lista2 = UserProyecto.objects.filter(proyecto=proyecto_actual)
 
-        disponibles = []
+
 
         for i in lista2:
             for j in lista:
@@ -3584,3 +3588,84 @@ def swichProyecto2(request,u,p, id_proyecto):
 
 
 
+
+def infoSprint(request,id_proyecto,id_sprint):
+    """
+    Metodo que permite una visualizacion de la informacion completa de un proyecto
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de INFO PROYECTO
+    """
+    proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
+    sprint_seleccionado=Sprint.objects.get(id=id_sprint)
+
+    #total_sprints= len(proyecto_seleccionado.id_sprints.all())
+    total_historias=len(sprint_seleccionado.historias.all())
+    #promedioSprint=DuracionSprints(proyecto_seleccionado.id_sprints.all())
+
+    #total_backlog=  len(Historia.objects.filter(proyecto=proyecto_seleccionado))
+
+    if(sprint_seleccionado.verificado):
+        verificado=True
+    else:
+        verificado=False
+
+
+
+    #lista de miembros
+    lista1=[]
+    #lista2=[]
+    tabla_temporal=UserSprint.objects.filter(proyecto=proyecto_seleccionado,sprint=sprint_seleccionado)
+    for m in tabla_temporal:
+        lista1.append(m.usuario)
+
+        #if(m.rol_name != ""):
+        #    lista2.append(m.rol_name)
+        #else:
+        #    lista2.append("No tiene rol")
+
+
+    #miembros=zip(lista1,lista2)
+
+    miembros = lista1
+
+    #contamos la duracion del proyecto en dias
+    calendarioParaguay = Paraguay()
+    pasos = timedelta(days=1)
+    #duracion_proyecto=0
+    duracion_sprint=0
+    #transcurrido_proyecto=0
+    transcurrido_sprint=0
+    #fechaInicio=proyecto_seleccionado.fecha
+    #fechaFin=proyecto_seleccionado.fecha_entrega
+    fechaInicio=sprint_seleccionado.fecha_inicio
+    fechaFin=sprint_seleccionado.fecha_fin
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            #duracion_proyecto=duracion_proyecto+1
+            duracion_sprint=duracion_sprint+1
+        if( date.today() <= fechaFin and calendarioParaguay.is_working_day(date.today())):
+            #transcurrido_proyecto=transcurrido_proyecto+1
+            transcurrido_sprint = transcurrido_sprint+1
+
+        fechaInicio += pasos
+
+    #fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
+    fechaInicio = sprint_seleccionado.fecha_inicio.strftime("%m/%d/%Y")
+
+    #fechaFin = proyecto_seleccionado.fecha_entrega.strftime("%m/%d/%Y")
+    fechaFin = sprint_seleccionado.fecha_fin.strftime("%m/%d/%Y")
+
+    try:
+        fechaFinal = sprint_seleccionado.fecha_final.strftime("%m/%d/%Y")
+    except AttributeError:
+        fechaFinal="Sin proceso QA"
+
+
+
+    return render(request, "info-Sprint.html",
+                  {"Proyecto":proyecto_seleccionado,"Sprint":sprint_seleccionado,"Miembros":miembros,"CantidadHistorias":total_historias,
+                   "Duracion":duracion_sprint,
+                   "Transcurrido":transcurrido_sprint,
+                   "FechaInicio":fechaInicio,"FechaFin":fechaFin,"FechaFinal":fechaFinal})

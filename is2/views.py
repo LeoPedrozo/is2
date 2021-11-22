@@ -3358,17 +3358,22 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         formulioExtender = extenderSprintForm(dato=request.session)
 
+        item=UserProyecto.objects.get(proyecto=proyectoActual,usuario=usuarioActual)
+        if(item.rol_name!=''):
+            rol=item.rol_name
+        else:
+            rol=""
 
         return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual})
+                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual,"proyecto":proyectoActual,"Rol_de_usuario":rol})
 
     except ObjectDoesNotExist:
         return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
 
 @login_required
 def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
-    """
+    """request = {WSGIRequest} <WSGIRequest: GET '/proyecto/48/Sprints/92/KanbanActivo/Historia132/Op5'>
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
     :param request: solicitud recibida
@@ -3409,29 +3414,43 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
             messages.error(request, "No eres el encargado de la historia")
     # Este es para cargar horas y comentario
     if(opcion == 5):
-        if request.method == 'POST':
-            form = cargarHorasHistoriaForm(request.POST)
-            if (form.is_valid()):
-                horas = form.cleaned_data['horas']
-                comentario = form.cleaned_data['comentario']
-                if horas > 0:
-                    if request.user == h.encargado:
-                        h.horas_dedicadas = h.horas_dedicadas + horas
-                        h.comentarios = comentario
-                        h._change_reason = "comentario"
-                        messages.success(request, "Horas registradas")
-                    else:
-                        messages.error(request, "No eres el encargado de la historia")
-                        messages.info(request, f"El encargado es {h.encargado}")
-                else:
-                    messages.error(request, 'Ingrese una hora valida')
+        horas= int(request.GET['Horas'])
+
+        comentario=request.GET['Comentario']
+        if horas > 0:
+            if request.user == h.encargado:
+                h.horas_dedicadas = h.horas_dedicadas + horas
+                h.comentarios = comentario
+                h._change_reason = "comentario"
+                messages.success(request, "Horas registradas")
             else:
-                print("formulario invalido")
+                messages.error(request, "No eres el encargado de la historia")
+                messages.info(request, f"El encargado es {h.encargado}")
+        else:
+                messages.error(request, 'Ingrese una hora valida')
+
+
+        # if request.method == 'POST':
+        #    form = cargarHorasHistoriaForm(request.POST)
+        #    if (form.is_valid()):
+        #        horas = form.cleaned_data['horas']
+        #        comentario = form.cleaned_data['comentario']
+        #        if horas > 0:
+        #            if request.user == h.encargado:
+        #                h.horas_dedicadas = h.horas_dedicadas + horas
+        #                h.comentarios = comentario
+        #                h._change_reason = "comentario"
+        #                messages.success(request, "Horas registradas")
+        #            else:
+        #                messages.error(request, "No eres el encargado de la historia")
+        #                messages.info(request, f"El encargado es {h.encargado}")
+        #        else:
+        #            messages.error(request, 'Ingrese una hora valida')
+        #    else:
+        #        print("formulario invalido")
 
     h.save()
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
-
-    #return tableroKanban(request)
     return redirect(url)
 
 

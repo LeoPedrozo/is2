@@ -190,6 +190,13 @@ def step2_asignarRol(request):
             # user_object.groups.clear()
             # enlazar con el rol asignado para el proyecto
             enlazar_Usuario_con_Rol(user_object, rol_object)
+
+            #Email 1.2 de rol asignado a usuario.
+
+
+            #-----------------------------------
+
+
             # registrar_usuario(user_object, 'True')
             # user_object.save()
             # Retornar mensaje de exito
@@ -550,7 +557,11 @@ def crearProyecto(request):
 
             # proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto, miembros)
-            # Retornar mensaje de exito
+
+            #Email-1 Agregar usuario a proyecto. Pero sin especificar su rol
+
+
+            #-----------------------------------
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
         #Lista de miembros
@@ -2343,6 +2354,9 @@ def finalizarProyecto(request, id_proyecto):
             proyecto_seleccionado.estado = "FINALIZADO"
             proyecto_seleccionado.fecha_finalizacion = date.today()
             proyecto_seleccionado.save()
+
+            #email 12
+
         else:
             mensaje = "No puede finalizar el proyecto ya que hay un sprint sin proceso QA"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
@@ -2420,6 +2434,8 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
         sprintActual.estados = 'FINALIZADO'
         sprintActual.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        #Email 11 de finalizar spritn
+
         return redirect(url)
 
     if (opcion == "expandir"):
@@ -2463,6 +2479,9 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
                 
 
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
+
+            #email 10 PAara los miembros del equipo del sprint extendido.
+
             return redirect(url)
 
             # fecha = request.GET['fecha_fin']
@@ -2675,11 +2694,16 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
 
 
     # aceptar en quality assurance la historia, entonces va a pasar a Release
+
     if (opcion == 6):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = 'RELEASE'
         messages.info(request, "Historia enviada a Release")
         h.save()
+
+        #email de historias aceptada email 9.1
+
+
     # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
@@ -2690,6 +2714,8 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
             h.prioridad = 'ALTA'
         messages.info(request, "Historia rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
+
+        #email 9.2
         h.save()
 
     #marcar como verificado.
@@ -2698,6 +2724,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         sp.verificado=True
         sp.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        #email 9.3
         return redirect(url)
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/QualityAssurance/"
@@ -2717,15 +2744,12 @@ def inicio(request):
     :return: respuesta a la solicitud de INICIO
     """
     usuarioActual = User.objects.get(username=request.user.username)
-
-
     if usuarioActual.groups.filter(name='registrado'):
         usuarioActual=User.objects.get(username=request.user.username)
         usuarioActual.proyecto=None
         if(usuarioActual.is_superuser ):
             listaProyectos = Proyecto.objects.all()
             fotodeususario = "No tiene"
-
         else:
             listaProyectos=usuarioActual.proyectos_asociados.all()
             fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
@@ -2904,6 +2928,9 @@ def step1_SprintPlanning2(request,id_proyecto):
             if (sepuedecrear):
                 newSprint = nuevoSprint(datosSprint)
                 request.session['sprint_planning_id'] = newSprint.id
+
+                #email 14 Nuevo sprint en planning agregado
+
                 url = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
                 return redirect(url)
             else:
@@ -3162,6 +3189,11 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     formulario_asignar= asignaryestimarHistoria(developers=request.session)
     #formulario = asignarDesarrolladorForm(developers=request.session)  "form": formulario
 
+
+
+
+
+
     return render(request, "step3_SprintPlanning_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
                                                      "s_backlog": sprintbacklog, "Total": cantidaddehistorias,
                                                      "formulario_asignar": formulario_asignar, "Porcentaje": porcentaje,
@@ -3222,6 +3254,8 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
         sprint_actual.historias.remove(h)
         sprint_actual.save()
 
+
+
     # Iniciar
     if (opcion == 3):
 
@@ -3249,6 +3283,8 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 sprint_actual.fecha_inicio = date.today()
                 sprint_actual.save()
 
+                #Email 19
+
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
                 return redirect(url)
             else:
@@ -3263,6 +3299,9 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     if (opcion == 4):
         sprint_actual.estados = 'PLANNING'
         sprint_actual.save()
+        #Email 2 enviar email a los encargados.
+
+
 
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         return redirect(url)
@@ -3388,28 +3427,33 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
     encargado = User.objects.get(username=request.user.username)
     # Agregar Tiempo
 
-    #Se agrega mueve la historia a la columna pendiente
+    #Se mueve la historia a la columna pendiente
     if (opcion == 1):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'PENDIENTE'
             messages.success(request, "Pasado a pendiente")
+            #email
+
         else:
             messages.error(request, "No eres el encargado de la historia")
-    #Se agrega mueve la historia a la columna En curso
+    #Se mueve la historia a la columna En curso
     if (opcion == 2):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'EN_CURSO'
             messages.success(request, "Pasado a en curso")
+            #email 4
         else:
             messages.error(request, "No eres el encargado de la historia")
-    # Se agrega mueve la historia a la columna Finalizado
+    # Se mueve la historia a la columna Finalizado
     if (opcion == 3):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
             messages.success(request, "Finalizado")
+            #email5
+            #email 14 enfocado para los scrum masters
         else:
             messages.error(request, "No eres el encargado de la historia")
     # Este es para cargar horas y comentario
@@ -3423,6 +3467,9 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
                 h.comentarios = comentario
                 h._change_reason = "comentario"
                 messages.success(request, "Horas registradas")
+                #email 3
+                #email 6
+
             else:
                 messages.error(request, "No eres el encargado de la historia")
                 messages.info(request, f"El encargado es {h.encargado}")
@@ -3452,7 +3499,6 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
     h.save()
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
     return redirect(url)
-
 
 
 
@@ -3574,7 +3620,6 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
     return render(request, "IntercambiarMiembro.html", {"form": formulario})
 
 
-
 #Es un proceso
 def swichProyecto2(request,u,p, id_proyecto):
     """
@@ -3603,9 +3648,6 @@ def swichProyecto2(request,u,p, id_proyecto):
         else:
             return proy.rol_name
             print("No tiene ROl")
-
-
-
 
 
 def infoSprint(request,id_proyecto,id_sprint):

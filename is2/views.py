@@ -2983,12 +2983,12 @@ def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
         if (cantidad_iniciado!=0):
             sprint=proyecto.id_sprints.get(estados="INICIADO")
             #si el nuevo sprint esta esta dentro del proyecto y despues de su sprint antecesor es valido
-            if( (sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
+            if( (sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio>sprint.fecha_fin)):
                 esvalido = True
 
         #CASO 2= NUEVO SPRINT EN EL INICIO
         if (cantidad_finalizado == 0 and cantidad_iniciado == 0):
-            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > proyecto.fecha)):
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio >= proyecto.fecha)):
                 esvalido = True
 
 
@@ -2997,7 +2997,7 @@ def validarfechaingresada(id_proyecto,sp_fechaInicio,sp_fechaFin,situacion):
             sps = proyecto.id_sprints.filter(estados="FINALIZADO")
             for s in sps:
                 sprint_anterior=s
-            if ((sp_fechaFin < proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_fin)):
+            if ((sp_fechaFin <= proyecto.fecha_entrega) and (sp_fechaInicio > sprint_anterior.fecha_final)):
                 esvalido = True
 
     #CUANDO SE LLAMA EN MODIFICAR SPRINT
@@ -3246,6 +3246,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                     calcularEsfuerzoIdeal(sprint_actual, listaDevelopers)
 
                 sprint_actual.estados = 'INICIADO'
+                sprint_actual.fecha_inicio = date.today()
                 sprint_actual.save()
 
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
@@ -3357,17 +3358,22 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         formulioExtender = extenderSprintForm(dato=request.session)
 
+        item=UserProyecto.objects.get(proyecto=proyectoActual,usuario=usuarioActual)
+        if(item.rol_name!=''):
+            rol=item.rol_name
+        else:
+            rol=""
 
         return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual})
+                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual,"proyecto":proyectoActual,"Rol_de_usuario":rol})
 
     except ObjectDoesNotExist:
         return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
 
 @login_required
 def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
-    """
+    """request = {WSGIRequest} <WSGIRequest: GET '/proyecto/48/Sprints/92/KanbanActivo/Historia132/Op5'>
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
     :param request: solicitud recibida
@@ -3408,29 +3414,43 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
             messages.error(request, "No eres el encargado de la historia")
     # Este es para cargar horas y comentario
     if(opcion == 5):
-        if request.method == 'POST':
-            form = cargarHorasHistoriaForm(request.POST)
-            if (form.is_valid()):
-                horas = form.cleaned_data['horas']
-                comentario = form.cleaned_data['comentario']
-                if horas > 0:
-                    if request.user == h.encargado:
-                        h.horas_dedicadas = h.horas_dedicadas + horas
-                        h.comentarios = comentario
-                        h._change_reason = "comentario"
-                        messages.success(request, "Horas registradas")
-                    else:
-                        messages.error(request, "No eres el encargado de la historia")
-                        messages.info(request, f"El encargado es {h.encargado}")
-                else:
-                    messages.error(request, 'Ingrese una hora valida')
+        horas= int(request.GET['Horas'])
+
+        comentario=request.GET['Comentario']
+        if horas > 0:
+            if request.user == h.encargado:
+                h.horas_dedicadas = h.horas_dedicadas + horas
+                h.comentarios = comentario
+                h._change_reason = "comentario"
+                messages.success(request, "Horas registradas")
             else:
-                print("formulario invalido")
+                messages.error(request, "No eres el encargado de la historia")
+                messages.info(request, f"El encargado es {h.encargado}")
+        else:
+                messages.error(request, 'Ingrese una hora valida')
+
+
+        # if request.method == 'POST':
+        #    form = cargarHorasHistoriaForm(request.POST)
+        #    if (form.is_valid()):
+        #        horas = form.cleaned_data['horas']
+        #        comentario = form.cleaned_data['comentario']
+        #        if horas > 0:
+        #            if request.user == h.encargado:
+        #                h.horas_dedicadas = h.horas_dedicadas + horas
+        #                h.comentarios = comentario
+        #                h._change_reason = "comentario"
+        #                messages.success(request, "Horas registradas")
+        #            else:
+        #                messages.error(request, "No eres el encargado de la historia")
+        #                messages.info(request, f"El encargado es {h.encargado}")
+        #        else:
+        #            messages.error(request, 'Ingrese una hora valida')
+        #    else:
+        #        print("formulario invalido")
 
     h.save()
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
-
-    #return tableroKanban(request)
     return redirect(url)
 
 
@@ -3526,14 +3546,18 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
         proyecto_actual = Proyecto.objects.get(id=id_proyecto)
         sprint_actual = Sprint.objects.get(id=id_sprint)
 
+
         lista = UserSprint.objects.filter(proyecto=proyecto_actual, sprint=sprint_actual)
+
+        lista2 = UserProyecto.objects.filter(proyecto=proyecto_actual)
+        disponibles = []
+
         equipo = []
         for l in lista:
             equipo.append((l.usuario.email,l.usuario.email))
 
-        lista2 = UserProyecto.objects.filter(proyecto=proyecto_actual)
 
-        disponibles = []
+
 
         for i in lista2:
             for j in lista:
@@ -3583,3 +3607,84 @@ def swichProyecto2(request,u,p, id_proyecto):
 
 
 
+
+def infoSprint(request,id_proyecto,id_sprint):
+    """
+    Metodo que permite una visualizacion de la informacion completa de un proyecto
+
+    :param request: solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de INFO PROYECTO
+    """
+    proyecto_seleccionado=Proyecto.objects.get(id=id_proyecto)
+    sprint_seleccionado=Sprint.objects.get(id=id_sprint)
+
+    #total_sprints= len(proyecto_seleccionado.id_sprints.all())
+    total_historias=len(sprint_seleccionado.historias.all())
+    #promedioSprint=DuracionSprints(proyecto_seleccionado.id_sprints.all())
+
+    #total_backlog=  len(Historia.objects.filter(proyecto=proyecto_seleccionado))
+
+    if(sprint_seleccionado.verificado):
+        verificado=True
+    else:
+        verificado=False
+
+
+
+    #lista de miembros
+    lista1=[]
+    #lista2=[]
+    tabla_temporal=UserSprint.objects.filter(proyecto=proyecto_seleccionado,sprint=sprint_seleccionado)
+    for m in tabla_temporal:
+        lista1.append(m.usuario)
+
+        #if(m.rol_name != ""):
+        #    lista2.append(m.rol_name)
+        #else:
+        #    lista2.append("No tiene rol")
+
+
+    #miembros=zip(lista1,lista2)
+
+    miembros = lista1
+
+    #contamos la duracion del proyecto en dias
+    calendarioParaguay = Paraguay()
+    pasos = timedelta(days=1)
+    #duracion_proyecto=0
+    duracion_sprint=0
+    #transcurrido_proyecto=0
+    transcurrido_sprint=0
+    #fechaInicio=proyecto_seleccionado.fecha
+    #fechaFin=proyecto_seleccionado.fecha_entrega
+    fechaInicio=sprint_seleccionado.fecha_inicio
+    fechaFin=sprint_seleccionado.fecha_fin
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            #duracion_proyecto=duracion_proyecto+1
+            duracion_sprint=duracion_sprint+1
+        if( date.today() <= fechaFin and calendarioParaguay.is_working_day(date.today())):
+            #transcurrido_proyecto=transcurrido_proyecto+1
+            transcurrido_sprint = transcurrido_sprint+1
+
+        fechaInicio += pasos
+
+    #fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
+    fechaInicio = sprint_seleccionado.fecha_inicio.strftime("%m/%d/%Y")
+
+    #fechaFin = proyecto_seleccionado.fecha_entrega.strftime("%m/%d/%Y")
+    fechaFin = sprint_seleccionado.fecha_fin.strftime("%m/%d/%Y")
+
+    try:
+        fechaFinal = sprint_seleccionado.fecha_final.strftime("%m/%d/%Y")
+    except AttributeError:
+        fechaFinal="Sin proceso QA"
+
+
+
+    return render(request, "info-Sprint.html",
+                  {"Proyecto":proyecto_seleccionado,"Sprint":sprint_seleccionado,"Miembros":miembros,"CantidadHistorias":total_historias,
+                   "Duracion":duracion_sprint,
+                   "Transcurrido":transcurrido_sprint,
+                   "FechaInicio":fechaInicio,"FechaFin":fechaFin,"FechaFinal":fechaFinal})

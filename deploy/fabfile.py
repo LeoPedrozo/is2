@@ -1,11 +1,64 @@
 import os
+import sys
 from contextlib import contextmanager
 from fabric.api import cd, env, prefix, run, sudo, task
 
+
+def menuTag():
+    print("""
+    Ingrese una opción: 
+    1. Tag v0.1
+    2. Tag v0.2
+    3. Tag v0.3
+    4. Tag v0.4
+    5. Tag v0.5""")
+
+    return "v0." + input() + "-alpha"
+
+
+def menuEjecucion():
+    retorno = "desarrollo"
+    if TAG == "v0.5-alpha":
+        print("""
+        Ingrese una opción: 
+        1. Ejecutar en modo desarrollo
+        2. Ejecutar en modo Produccion""")
+        if (int(input()) == 1):
+            retorno = "desarrollo"
+        else:
+            retorno = "produccion"
+    else:
+        print("""
+        Ingrese una opción: 
+        1. Ejecutar en modo desarrollo
+        """)
+        if (int(input()) == 1):
+            retorno = "desarrollo"
+    return retorno
+
+
+def limpiarDeploy():
+    """Limpia el directorio de despliegue"""
+    # check if the directory exists
+    if os.path.exists(PROJECT_ROOT):
+        sudo('rm -rf %s' % PROJECT_ROOT)
+        sudo('rm /etc/supervisor/conf.d/celeryd.conf || true')
+        sudo('rm /etc/supervisor/conf.d/celerycam.conf || true')
+        sudo('rm /etc/supervisor/conf.d/celerybeat.conf || true')
+        sudo('rm /etc/supervisor/conf.d/{}.conf || true'.format(PROJECT_NAME))
+        sudo('rm /etc/nginx/sites-enabled/{}.conf || true'.format(PROJECT_NAME))
+
+
+env.password = 'luis'
 PROJECT_NAME = 'is2'
 PROJECT_ROOT = '/var/www/%s' % PROJECT_NAME
 VENV_DIR = os.path.join(PROJECT_ROOT, '.venv')
 REPO = 'git@github.com:LeoPedrozo/%s.git' % PROJECT_NAME
+SITE_ID = '7'
+
+TAG = menuTag()
+
+ENTORNO = menuEjecucion()
 
 env.hosts = []
 
@@ -72,6 +125,7 @@ def deploy():
 
 @task
 def bootstrap():
+    limpiarDeploy()
     """Bootstrap the latest code at the app servers"""
     # sudo(
     #    'apt-get update && apt-get install git supervisor nginx memcached libjpeg8-dev postgresql libpq-dev python-dev python-pip python-virtualenv libfreetype6-dev libncurses5-dev'
@@ -79,11 +133,11 @@ def bootstrap():
 
     sudo('mkdir -p {}'.format(PROJECT_ROOT))
     sudo('chown -R {}:{} {}'.format(env.user, env.user, PROJECT_ROOT))
-    run('git clone {} {}'.format(REPO, PROJECT_ROOT))
+    run('git clone -b {} --single-branch {} {}'.format(TAG, REPO, PROJECT_ROOT))
 
     with cd(PROJECT_ROOT):
         # run('git pull origin master')
-        run('git pull origin iteracion_5')
+        # run('git pull origin iteracion_5')
         # run('virtualenv .env')
         run('python3 -m venv .venv')
         with source_virtualenv():
@@ -97,19 +151,25 @@ def bootstrap():
 
     chown()
 
-    # Deploy web and app server configs
-    for service in ('celerybeat', 'celerycam', 'celeryd', PROJECT_NAME):
-        sudo('ln -s {project_root}/deploy/{environment}/{service}.conf /etc/supervisor/conf.d/{service}.conf'.format(
-            project_root=PROJECT_ROOT, environment=env.environment, service=service))
-    sudo('ln -s {project_root}/deploy/{environment}/nginx.conf /etc/nginx/sites-enabled/{project_name}.conf'.format(
-        project_root=PROJECT_ROOT, environment=env.environment, project_name=PROJECT_NAME))
+    if ENTORNO == "produccion":
+        # Deploy web and app server configs
+        # Si la iteracion lleva dentro las configuraciones de produccion
+        for service in ('celerybeat', 'celerycam', 'celeryd', PROJECT_NAME):
+            sudo(
+                'ln -s {project_root}/deploy/{environment}/{service}.conf /etc/supervisor/conf.d/{service}.conf'.format(
+                    project_root=PROJECT_ROOT, environment=env.environment, service=service))
 
-    restart()
+        sudo('ln -s {project_root}/deploy/{environment}/nginx.conf /etc/nginx/sites-enabled/{project_name}.conf'.format(
+            project_root=PROJECT_ROOT, environment=env.environment, project_name=PROJECT_NAME))
+        # sino
 
-    run('bash {project_root}/deploy/{environment}/restoreDB.sh'.format(project_root=PROJECT_ROOT,
-                                                                       environment=env.environment))
+        restart()
 
-    run('bash {project_root}/activarEntorno.sh'.format(project_root=PROJECT_ROOT))
+    # restaurar base de datos
+    if TAG == "v0.5-alpha":
+        run('bash {project_root}/deploy/{environment}/restoreDB.sh'.format(project_root=PROJECT_ROOT,
+                                                                           environment=env.environment))
+        run('bash {project_root}/activarEntorno.sh'.format(project_root=PROJECT_ROOT))
 
     sudo('chmod -R 777 {project_root}/'.format(project_root=PROJECT_ROOT))
 
@@ -129,3 +189,13 @@ def bootstrap():
             run('./manage.py makemigrations')
             # fake migrate
             run('./manage.py migrate --fake')
+
+    run("sed -i '/SITE_ID*/c\SITE_ID = {site_id}' {project_root}/{project_name}/settings.py".format(site_id=SITE_ID,
+                                                                                                    project_root=PROJECT_ROOT,
+                                                                                                    project_name=PROJECT_NAME))
+
+    # si el servidor es desarrollo
+    if ENTORNO == "desarrollo":
+        sys.exit(0)
+    else:
+        sys.exit(1)

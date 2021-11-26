@@ -2154,186 +2154,6 @@ def HistorialProductBacklog(request, id_proyecto):
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name,"proyecto":proyecto_seleccionado})
 
-
-def BurndownChart(request,id_proyecto,id_sprint):
-    """
-    Metodo para Graficar el burndown chart en un gráfico de linea
-
-    :param request: solicitud recibida
-    :return: grafico de burndown chart
-    """
-    if( Proyecto.objects.filter(id=id_proyecto).exists()):
-        proyecto = Proyecto.objects.get(id=id_proyecto)
-    else:
-        proyecto=None
-    calendarioParaguay = Paraguay()
-
-    sprintActual = Sprint.objects.get(id=id_sprint)
-
-    # 2- calculamos la capacidad del equipo
-    capacidad_de_equipo = 0
-    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
-    for desarrollador in desarrolladores:
-        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
-
-    # 3- se extrae la lista de historias.
-    sprintActual2 = model_to_dict(sprintActual)
-    listaHistorias = sprintActual2['historias']
-    cantidad_total_historia = len(listaHistorias)
-
-    # Los miembros en forma de cadena para saber su estado
-    total_horas_estimadas = 0
-    miembrosSprint = []
-    for hist in listaHistorias:
-        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
-        try:
-            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
-            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
-            if not miembro in miembrosSprint:
-                miembrosSprint.append(miembro)
-        except AttributeError:
-            print(f"la historia {hist} aun no tiene encargado")
-        # esto no se toca
-
-    # 4 Se calcula la cantidad de dias del sprint
-    fechaInicio = sprintActual2['fecha_inicio']
-    fechaFin = sprintActual2['fecha_fin']
-    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-
-    # 5 Se inicializan las variables que son necesarios para el line chart
-    diasLaborales_py = []
-    horasLaborales_Ideal = []
-    horasLaborales_Real = []
-    pasos = timedelta(days=1)
-
-        # 6 Se genera la lista para el eje x del line chart
-    while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
-        fechaInicio += pasos
-
-    total_horas_dedicadas = 0
-
-    # 8 Calculamos el efuerzo real.
-    # Calcula la lista de esfuerzo real y lo guarda en el modelo
-    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
-
-    # SE PREPARAN LAS 2 LINEAS
-    for i in sprintActual.horasLaboralesIdeal:
-        horasLaborales_Ideal.append(str(i))
-
-    # Se le da el formato actual para el line chart
-    for i in sprintActual.horasLaboralesReal:
-        horasLaborales_Real.append(str(i))
-
-    return render(request, "lineChart.html",
-                      {"Sprint": sprintActual,
-                       "Historias": listaHistorias,
-                       "Total": cantidad_total_historia,
-                       "diasLaborales": ','.join(diasLaborales_py),
-                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
-                       "horasLaboralesReal": ','.join(horasLaborales_Real),
-                       "cantidadDias": dias_de_sprint,
-                       "miembros": miembrosSprint,
-                       "proyecto" : proyecto})
-
-
-
-def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_horas_estimadas):
-    """
-    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
-
-    :param Historias: Lista de Historias
-    :param sprint: Sprint actual
-    :param Dias: Dia actual
-    :return: void
-    """
-    # FASE 1
-    # Calcula el esfuerzo total del dia
-    total_horas_dedicadas = 0
-    for historia in Historias:
-        #  esfuerzo_del_dia = esfuerzo_del_dia + (historia.horasEstimadas - historia.horas_dedicadas)
-        total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
-    # -------------------------------
-    esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
-
-    # FASE 2
-    # Se agrega a el esfuerzo a la lista
-    hoy = datetime.today()
-    hoy = hoy + timedelta(days=13) #???
-    hoy = hoy.strftime("%d-%b")
-
-    print("la lista de dias laborales es ",dias_laborales)
-    print("FEcha evaluada = ", hoy)
-
-    if (hoy in dias_laborales):
-        posicion = dias_laborales.index(hoy)
-
-        # si no hay todavia elementos en la lista de horas laborales reales se isnerta
-        if (len(sprint_seleccionado.horasLaboralesReal) == 0):
-            sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
-        else:  # se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
-            try:
-                sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
-                sprint_seleccionado.horasLaboralesReal.pop(posicion + 1)
-            except IndexError:
-                print("posicion+1 no existia")
-
-        sprint_seleccionado.save()
-
-
-def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
-    """
-    Metodo que permite el calculo del esfuerzo ideal para el sprint
-
-    :param sprint_seleccionado: sprint seleccionado
-    :param desarrolladores: desarrolladores del sprint seleccionado
-    :return: respuesta a la solicitud de CALCULAR ESFUERZO IDEAL
-    """
-    calendarioParaguay = Paraguay()
-
-    # 2- calculamos la capacidad del equipo
-    capacidad_de_equipo = 0
-    # desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
-    for desarrollador in desarrolladores:
-        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
-
-    # 3- se extrae la lista de historias.
-    # sprintActual2 = model_to_dict(sprintActual)
-    # listaHistorias = sprintActual2['historias']
-    listaHistorias = sprint_seleccionado.historias.all()
-    # cantidad_total_historia = len(listaHistorias)
-
-    # 4 Se calcula la cantidad de dias del sprint
-    fechaInicio = sprint_seleccionado.fecha_inicio
-    fechaFin = sprint_seleccionado.fecha_fin
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio,fechaFin) + 1
-    # fechaInicio = sprintActual2['fecha_inicio']
-    # fechaFin = sprintActual2['fecha_fin']
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-
-    diasLaborales_py = []
-    pasos = timedelta(days=1)
-
-    # 6 Se genera la lista para el eje x del line chart
-    while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
-        fechaInicio += pasos
-
-    total_horas_estimadas = 0
-    for h in listaHistorias:
-        total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
-
-    for dia in diasLaborales_py:
-        if(total_horas_estimadas - capacidad_de_equipo >=0 ):
-            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
-            total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
-        else:
-            sprint_seleccionado.horasLaboralesIdeal.append(0)
-            break
-
-
 #Todos los sprints deben ser verificados antes de finalizar proyecto.
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
@@ -2430,7 +2250,7 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
                 hist.encargado = None
             hist.save()
 
-        sprintActual.fecha_final=date.today()
+        sprintActual.fecha_final=date.today()# + timedelta(days=6)
         sprintActual.estados = 'FINALIZADO'
         sprintActual.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
@@ -3149,8 +2969,9 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     fechaInicio = sprintActual.fecha_inicio
     fechaFin = sprintActual.fecha_fin
     dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    horaslaboralespordia=9
 
-    capacidad_sprint_horas = dias_de_sprint * 24
+    capacidad_sprint_horas = dias_de_sprint * horaslaboralespordia
 
     # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
     Lista1 = Historia.objects.filter(proyecto=proyectoActual, estados="")
@@ -3402,10 +3223,15 @@ def tableroKanban2(request,id_proyecto,id_sprint):
             rol=item.rol_name
         else:
             rol=""
+        calendarioParaguay = Paraguay()
+        if calendarioParaguay.is_working_day(date.today()):
 
-        return render(request, "tableroKanban2.html",
+            return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
                            "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual,"proyecto":proyectoActual,"Rol_de_usuario":rol})
+        else:
+            return render(request, "Condicion_requerida.html", {"mensaje": "No puede acceder al tablero kanban. No es un dia laboral"})
+
 
     except ObjectDoesNotExist:
         return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
@@ -3730,3 +3556,198 @@ def infoSprint(request,id_proyecto,id_sprint):
                    "Duracion":duracion_sprint,
                    "Transcurrido":transcurrido_sprint,
                    "FechaInicio":fechaInicio,"FechaFin":fechaFin,"FechaFinal":fechaFinal})
+
+
+
+
+
+
+def BurndownChart(request,id_proyecto,id_sprint):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
+
+    calendarioParaguay = Paraguay()
+    sprintActual = Sprint.objects.get(id=id_sprint)
+
+    if( Proyecto.objects.filter(id=id_proyecto).exists()):
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto=None
+
+
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del equipo
+    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    sprintActual2 = model_to_dict(sprintActual)
+    listaHistorias = sprintActual2['historias']
+    cantidad_total_historia = len(listaHistorias)
+
+    # Los miembros en forma de cadena para saber su estado
+    total_horas_estimadas = 0
+    miembrosSprint = []
+    for hist in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
+        try:
+            #no entiendo
+            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
+            if not miembro in miembrosSprint:
+                miembrosSprint.append(miembro)
+        except AttributeError:
+            print(f"la historia {hist} aun no tiene encargado")
+        # esto no se toca
+
+    # 4 Se calcula la cantidad de dias del sprint
+    fechaInicio = sprintActual2['fecha_inicio']
+    fechaFin = sprintActual2['fecha_fin']
+
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    # 5 Se inicializan las variables que son necesarios para el line chart
+    diasLaborales_py = []
+    horasLaborales_Ideal = []
+    horasLaborales_Real = []
+    pasos = timedelta(days=1)
+
+    # 6 Se genera la lista para el eje x del line chart
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_dedicadas = 0
+
+    # 8 Calculamos el efuerzo real.
+    # Calcula la lista de esfuerzo real y lo guarda en el modelo
+    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+
+    # SE PREPARAN LAS 2 LINEAS
+    for i in sprintActual.horasLaboralesIdeal:
+        horasLaborales_Ideal.append(str(i))
+
+    # Se le da el formato actual para el line chart
+    for i in sprintActual.horasLaboralesReal:
+        horasLaborales_Real.append(str(i))
+
+    return render(request, "lineChart.html",
+                      {"Sprint": sprintActual,
+                       "Historias": listaHistorias,
+                       "Total": cantidad_total_historia,
+                       "diasLaborales": ','.join(diasLaborales_py),
+                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
+                       "horasLaboralesReal": ','.join(horasLaborales_Real),
+                       "cantidadDias": dias_de_sprint,
+                       "miembros": miembrosSprint,
+                       "proyecto" : proyecto})
+
+
+
+def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_horas_estimadas):
+    """
+    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
+
+    :param Historias: Lista de Historias
+    :param sprint: Sprint actual
+    :param Dias: Dia actual
+    :return: void
+    """
+    # FASE 1
+    # Calcula el esfuerzo total del dia
+    total_horas_dedicadas = 0
+    for historia in Historias:
+        #  esfuerzo_del_dia = esfuerzo_del_dia + (historia.horasEstimadas - historia.horas_dedicadas)
+        total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
+    # -------------------------------
+    esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
+
+    # FASE 2
+    # Se agrega a el esfuerzo a la lista
+    calendarioParaguay = Paraguay()
+    hoy = datetime.today()
+
+    #hoy = hoy + timedelta(days=1) #Este parametro se toca para poder avanzar en el dia
+    #print("Es dia laboral",hoy)
+    #if calendarioParaguay.is_working_day(hoy):
+    print("Es dia laboral")
+    hoy = hoy.strftime("%d-%b")
+
+    print("la lista de dias laborales es ",dias_laborales)
+    print("FEcha evaluada = ", hoy)
+
+    #la fecha de hoy esta dentro de los dias laborales del sprint
+    #si posicion=0 entonces es el dia 1,
+    #si posicion=1 entonces es el dia 2
+    if (hoy in dias_laborales):
+        posicion = dias_laborales.index(hoy)
+    # si todavia no hay elementos en la lista de horas laborales reales se agrega
+        if (len(sprint_seleccionado.horasLaboralesReal) == 0):
+            sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+        else:  # se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
+            try:
+                sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+                sprint_seleccionado.horasLaboralesReal.pop(posicion + 1)
+            except IndexError:
+                print("posicion+1 no existia")
+
+        sprint_seleccionado.save()
+
+
+def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
+    """
+    Metodo que permite el calculo del esfuerzo ideal para el sprint
+
+    :param sprint_seleccionado: sprint seleccionado
+    :param desarrolladores: desarrolladores del sprint seleccionado
+    :return: respuesta a la solicitud de CALCULAR ESFUERZO IDEAL
+    """
+    calendarioParaguay = Paraguay()
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0
+    # desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    # sprintActual2 = model_to_dict(sprintActual)
+    # listaHistorias = sprintActual2['historias']
+    listaHistorias = sprint_seleccionado.historias.all()
+    # cantidad_total_historia = len(listaHistorias)
+
+    # 4 Se calcula la cantidad de dias del sprint
+    fechaInicio = sprint_seleccionado.fecha_inicio
+    fechaFin = sprint_seleccionado.fecha_fin
+    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio,fechaFin) + 1
+    # fechaInicio = sprintActual2['fecha_inicio']
+    # fechaFin = sprintActual2['fecha_fin']
+    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+
+    diasLaborales_py = []
+    pasos = timedelta(days=1)
+
+    # 6 Se genera la lista para el eje x del line chart
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_estimadas = 0
+    for h in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
+
+    for dia in diasLaborales_py:
+        if(total_horas_estimadas - capacidad_de_equipo >=0 ):
+            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+            total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
+        else:
+            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas - capacidad_de_equipo)
+            break
+

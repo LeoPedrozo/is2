@@ -11,29 +11,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
 </head>
 
 <body>
 
+
+
+<!-- Dropdown Structure -->
+<ul id="dropdown1" class="dropdown-content" style="alignment: left">
+    <li><a href="#!">Ver Informacion</a></li>
+    <li class="divider"></li>
+    <li><a href="#!">Cerrar Sesion</a></li>
+</ul>
+<nav style="background-color: #2f2f2f">
+    <div class="nav-wrapper">
+
+        <a href="#!" class="brand-logo" style="padding-left: 12px; padding-top: 10px;"> <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;"> </a>
+
+        <ul class="right hide-on-med-and-down">
+            <li>
+            <div class="container">
+                <div class="row">
+                    <div class="col s10">Jose Elias Gonzalez Valdez</div>
+                    <div class="col s5">Proyecto R d x a dfa </div>
+                    <div class="col s5">Scrum Master</div>
+                </div>
+
+            </div></li>
+
+            <!-- Dropdown Trigger -->
+            <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"  style="padding-right: 12px; padding-top: 10px;" ><img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;"><i class="material-icons left">arrow_drop_down</i></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems, options);
+  });
+
+  // Or with jQuery
+
+  $('.dropdown-trigger').dropdown();
+
+</script>
 {% block content %}
     <div class="container">
         <div class="row">
 
-        <div class="col s12">
-            <div class="card-action">
-            <a href="http://127.0.0.1:8000/proyecto/{{ proyecto.id }}/Sprints/" style="color:dodgerblue;">
-                <i class="material-icons" style="vertical-align: -5px;">navigate_before</i>Volver al sprint
-            </a>
+            <div class="col s12">
+                <div class="card-action">
+                    <a href="http://127.0.0.1:8000/proyecto/{{ proyecto.id }}/Sprints/" style="color:dodgerblue;">
+                        <i class="material-icons" style="vertical-align: -5px;">navigate_before</i>Volver al sprint
+                    </a>
+                </div>
             </div>
-        </div>
 
             <div class="col s12">
                 <div class="card white-text lighten-2 blue">
-                <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
+                    <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
                     <br>
-                <i class="material-icons" style="vertical-align: bottom;">timeline</i>Sprint nro. {{ Sprint.sprintNumber }}
+                    <i class="material-icons" style="vertical-align: bottom;">timeline</i>Sprint
+                    nro. {{ Sprint.sprintNumber }}
                     <br>
-                <i class="material-icons" style="vertical-align: bottom;">folder_open</i>{{ proyecto.nombre }}
+                    <i class="material-icons" style="vertical-align: bottom;">folder_open</i>{{ proyecto.nombre }}
                 </div>
             </div>
             <div class="col s9 l9">
@@ -260,6 +312,7 @@
 
 
 </style>
+
 
 </body>
 </html>

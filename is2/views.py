@@ -658,12 +658,19 @@ def modificarProyecto2(request,id_proyecto):
                 # se agrega los usuarios nuevos
                 asociarProyectoaUsuario(proyecto, usuarios)
                 # se elimina los usuarios viejos
-                desasociarUsuariodeProyecto(proyecto,miembros)
 
-                miembrosActuales = User.objects.filter(proyecto=idproyecto)
-                # Retornar mensaje de exito
-                return render(request, "outputmodificarProyecto.html",
+                if(verificarOcupaciondemiembros(id_proyecto,miembros)):
+
+
+                    desasociarUsuariodeProyecto(proyecto,miembros)
+
+                    miembrosActuales = User.objects.filter(proyecto=idproyecto)
+                    # Retornar mensaje de exito
+                    return render(request, "outputmodificarProyecto.html",
                               {"proyectoCreado": datosProyecto, "members": miembrosActuales})
+                else:
+                    return render(request, "Condicion_requerida.html", {"mensaje": "No puede quitar a los usuarios que selecciono ya que algunos de ellos necesita ser sustituido en el sprint activo"})
+
         else:
             #usuarioActual = User.objects.get(username=request.user.username)
             #if (usuarioActual.proyecto == None):
@@ -678,6 +685,22 @@ def modificarProyecto2(request,id_proyecto):
         print("El usuario no posee ningun proyecto")
         messages.error(request, 'El usuario no posee ningun proyecto')
         return redirect(inicio)
+
+
+
+def verificarOcupaciondemiembros(id_proyecto,emails):
+    proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
+
+    usuarios=[]
+    for e in emails:
+        usuarios.append(User.objects.get(email=e))
+
+    for u in usuarios:
+        if(len(Historia.objects.filter(proyecto=proyecto_seleccionado,estados="EN_CURSO",encargado=u))!=0):
+            return False
+
+    return True
+
 
 
 
@@ -2191,6 +2214,14 @@ def finalizarProyecto(request, id_proyecto):
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
 
     return redirect(inicio)
+
+
+def finalizable_proyecto(proyecto_seleccionado):
+    sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
+
+
+
+
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")

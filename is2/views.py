@@ -2062,6 +2062,11 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
         fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
 
     proyectoActual = Proyecto.objects.get(id=id_proyecto)
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
 
     for hist in listaHistorias:
         if hist.history.filter(
@@ -2094,6 +2099,7 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
             x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
                 history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).last()
             hist.nombre = x.nombre
+            hist.encargado = x.encargado
             hist.descripcion = x.descripcion
             hist.prioridad = x.prioridad
             hist.horasEstimadas = x.horasEstimadas
@@ -2104,7 +2110,7 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
             print("No existe")
     return render(request, "KanbanHistorico.html",
                   {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual})
+                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual, "proyecto":proyectoActual,"Rol_de_usuario":rol})
 
 
 # 4 cuando se selecciona ver Product backlog

@@ -31,11 +31,13 @@ def asociarProyectoaUsuario( proyecto,correos):
             nuevo = UserProyecto(usuario=u, proyecto=proyecto, rol_name='')
             nuevo.save()
         u.save()
+        """
         asunto = "Nuevo Proyecto!!"
         mensaje =  "Hola "+u.username+", has sido agregado a un nuevo proyecto\n\n Nombre del Proyecto: " +proyecto.nombre+"\n Fecha de creacion: "+str(proyecto.fecha)
         de = settings.EMAIL_HOST_USER
         destino = [u.email]
         send_mail(asunto,mensaje,de,destino)
+        """
 
 
 ##No se si funca como deberia

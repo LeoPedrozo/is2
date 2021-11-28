@@ -3006,8 +3006,8 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     fechaInicio = sprintActual.fecha_inicio
     fechaFin = sprintActual.fecha_fin
     dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-    horaslaboralespordia=9
 
+    horaslaboralespordia=9
     capacidad_sprint_horas = dias_de_sprint * horaslaboralespordia
 
     # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
@@ -3608,24 +3608,22 @@ def BurndownChart(request,id_proyecto,id_sprint):
     """
 
     calendarioParaguay = Paraguay()
+    proyecto = Proyecto.objects.get(id=id_proyecto)
     sprintActual = Sprint.objects.get(id=id_sprint)
 
-    if( Proyecto.objects.filter(id=id_proyecto).exists()):
-        proyecto = Proyecto.objects.get(id=id_proyecto)
-    else:
-        proyecto=None
 
 
 
     # 2- calculamos la capacidad del equipo
-    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del equipo
+    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del sprint
     desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
     for desarrollador in desarrolladores:
         capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
 
     # 3- se extrae la lista de historias.
-    sprintActual2 = model_to_dict(sprintActual)
-    listaHistorias = sprintActual2['historias']
+    #sprintActual2 = model_to_dict(sprintActual)
+    #listaHistorias = sprintActual2['historias']
+    listaHistorias = sprintActual.historias.all()
     cantidad_total_historia = len(listaHistorias)
 
     # Los miembros en forma de cadena para saber su estado
@@ -3644,8 +3642,11 @@ def BurndownChart(request,id_proyecto,id_sprint):
         # esto no se toca
 
     # 4 Se calcula la cantidad de dias del sprint
-    fechaInicio = sprintActual2['fecha_inicio']
-    fechaFin = sprintActual2['fecha_fin']
+    #fechaInicio = sprintActual2['fecha_inicio']
+    #fechaFin = sprintActual2['fecha_fin']
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+
 
     dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
     # 5 Se inicializan las variables que son necesarios para el line chart
@@ -3654,6 +3655,7 @@ def BurndownChart(request,id_proyecto,id_sprint):
     horasLaborales_Real = []
     pasos = timedelta(days=1)
 
+    diasLaborales_py.append("Inicio")
     # 6 Se genera la lista para el eje x del line chart
     while fechaInicio <= fechaFin:
         if calendarioParaguay.is_working_day(fechaInicio):
@@ -3664,13 +3666,19 @@ def BurndownChart(request,id_proyecto,id_sprint):
 
     # 8 Calculamos el efuerzo real.
     # Calcula la lista de esfuerzo real y lo guarda en el modelo
-    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+    if(sprintActual.estados=="INICIADO"):
+        calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
 
+
+    #horasLaborales_Ideal.append("Dia 0")
+    #horasLaborales_Real.append("Dia 0")
     # SE PREPARAN LAS 2 LINEAS
+
     for i in sprintActual.horasLaboralesIdeal:
         horasLaborales_Ideal.append(str(i))
 
     # Se le da el formato actual para el line chart
+
     for i in sprintActual.horasLaboralesReal:
         horasLaborales_Real.append(str(i))
 
@@ -3700,9 +3708,10 @@ def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_h
     # Calcula el esfuerzo total del dia
     total_horas_dedicadas = 0
     for historia in Historias:
-        #  esfuerzo_del_dia = esfuerzo_del_dia + (historia.horasEstimadas - historia.horas_dedicadas)
         total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
-    # -------------------------------
+
+
+
     esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
 
     # FASE 2
@@ -3749,28 +3758,23 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 
     # 2- calculamos la capacidad del equipo
     capacidad_de_equipo = 0
-    # desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
     for desarrollador in desarrolladores:
         capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
 
     # 3- se extrae la lista de historias.
-    # sprintActual2 = model_to_dict(sprintActual)
-    # listaHistorias = sprintActual2['historias']
     listaHistorias = sprint_seleccionado.historias.all()
-    # cantidad_total_historia = len(listaHistorias)
+
 
     # 4 Se calcula la cantidad de dias del sprint
     fechaInicio = sprint_seleccionado.fecha_inicio
     fechaFin = sprint_seleccionado.fecha_fin
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio,fechaFin) + 1
-    # fechaInicio = sprintActual2['fecha_inicio']
-    # fechaFin = sprintActual2['fecha_fin']
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
 
     diasLaborales_py = []
     pasos = timedelta(days=1)
 
     # 6 Se genera la lista para el eje x del line chart
+
+    diasLaborales_py.append("Inicio")
     while fechaInicio <= fechaFin:
         if calendarioParaguay.is_working_day(fechaInicio):
             diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
@@ -3780,11 +3784,38 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
     for h in listaHistorias:
         total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
 
+
+    #Opcion 2 planteado por edher
+    dias_de_sprint=len(diasLaborales_py)-1
+    dias_de_sprint2 = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    print("cantidad de dias con el len = "+str(dias_de_sprint))
+
+    print("cantidad de dias con el get working days = " + str(dias_de_sprint2))
+    promedio_de_quemado=total_horas_estimadas/dias_de_sprint
+
+    #esto es para que ambos tengan en el inicio el mismo numero de horas
+    sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+    sprint_seleccionado.horasLaboralesReal.append(total_horas_estimadas)
+
     for dia in diasLaborales_py:
-        if(total_horas_estimadas - capacidad_de_equipo >=0 ):
+        total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
+        if(total_horas_estimadas >0 ):
             sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
-            total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
         else:
-            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas - capacidad_de_equipo)
+            sprint_seleccionado.horasLaboralesIdeal.append(0)
             break
+
+
+
+
+
+    #bandera=dias_de_sprint
+    #while(bandera>0):
+    #    total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
+    #    if (total_horas_estimadas > 0):
+    #        sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+    #
+    #    else:
+    #        sprint_seleccionado.horasLaboralesIdeal.append(0)
+    #    bandera=bandera-1
 

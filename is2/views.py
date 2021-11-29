@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required,user_passes_test
 from django.contrib.auth.models import Group
@@ -3185,8 +3185,28 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
 
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
     historias = sprintseleccionado.historias.all()
+    historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
+    historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
+    historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
+    usuarioActual = auth.get_user(request)
 
-    return render(request, "SprintBacklog.html", {"historias": historias})
+    if (usuarioActual.is_superuser):
+        fotodeususario = None
+    else:
+        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    cantidaddehistorias = len(historias)
+    return render(request, "SprintBacklog.html", {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeususario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja })
 
 
 

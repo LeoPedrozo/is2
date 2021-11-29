@@ -7,48 +7,211 @@
 
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>Sprint Backlog</title>
 </head>
 <body>
 
-<h3 style="position:relative; left:10px;">SPRINT BACKLOG</h3>
-{% if not historias %}
+
+ <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;">
+                    Grupo 8
+                </a>
+
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints">Volver al Sprint</a></li>
+
+
+
+                    {% if perms.Sprints.add_sprint and proyecto.estado == "INICIADO" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page"
+                               href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+            </div>
+            <!-- Collapsible wrapper -->
+
+            <!-- Right elements -->
+            <div class="container_row " >
+                <div class="layer1 d-flex justify-content-end" style="color: white">
+                    {{ usuario.first_name }} {{ usuario.last_name }}
+                </div>
+                <div class="layer2 d-flex justify-content-end" style="color: white">
+                    {{ usuario.email }}
+                </div>
+                <div class="layer3 d-flex justify-content-end" style="color: white">
+                     {{ proyecto.nombre }} | {{ Rol_de_usuario }}
+                </div>
+
+            </div>
+
+            <div class="d-flex align-items-center">
+
+                <div class="nav-item dropstart">
+                    <a type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        {% if user.is_superuser %}
+                            <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="rounded-circle"
+                                 style='filter: invert(100%);width:50px;height:50px;'>
+                        {% else %}
+                            <img src="{{ avatar }}" alt="" class="rounded-circle" style="width:50px;height:50px;">
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if not user.is_superuser %}
+                            <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+
+                        {% endif %}
+                        <li><a class="dropdown-item" href="/inicio/logout">Cerrar Sesion</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    </nav>
+
+<p></p>
+<div class="container">
+  <div class="row">
+    <h3 class="text-info">SPRINT BACKLOG</h3>
+      <h4>Sprint Numero : {{ sprint.sprintNumber }}</h4>
+      <h5>Cantidad de Historias : {{ cantidad_de_historias }}</h5>
+  </div>
+</div>
+{% if not historiasAlta and historiasBaja and historiasMedia %}
     <div class="card-action" style="position:relative; left:10px;">
         <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay historias creadas</p>
-        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-            <i class="material-icons tiny" style="vertical-align: -2px;">arrow_back</i>Volver a Inicio
-        </a>
     </div>
 {% endif %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <p class="text-white bg-dark">&nbsp;Nombre</p>
+    </div>
+    <div class="col">
+       <p class="text-white bg-dark">&nbsp;Descripcion</p>
+    </div>
+    <div class="col">
+      <p class="text-white bg-dark">&nbsp;Prioridad</p>
+    </div>
+      <div class="col">
+      <p class="text-white bg-dark">&nbsp;Fecha Creacion</p>
+    </div>
+      <div class="col">
+      <p class="text-white bg-dark">&nbsp;Horas Estimadas</p>
+    </div>
+      <div class="col">
+      <p class="text-white bg-dark">&nbsp;Horas Dedicadas</p>
+    </div>
+  </div>
+        <!-- Prioridad Alta -->
 
-{% for historia in historias %}
-    <ul class="collection">
-        <li class="collection-item avatar">
+    {% for historia in historiasAlta %}
+  <div class="row">
+    <div class="col">
+      {{ historia.nombre }}
+    </div>
+    <div class="col">
+      {{ historia.descripcion }}
+    </div>
+    <div class="col">
+      {{ historia.prioridad }}
+    </div>
+      <div class="col">
+      {{ historia.fecha_creacion }}
+    </div>
+      <div class="col">
+      {{ historia.horasEstimadas }}
+    </div>
+      <div class="col">
+      {{ historia.horas_dedicadas }}
+    </div>
+  </div>
+    {% endfor %}
+        <!-- Prioridad media -->
+        {% for historia in historiasMedia %}
+  <div class="row">
+    <div class="col">
+      {{ historia.nombre }}
+    </div>
+    <div class="col">
+      {{ historia.descripcion }}
+    </div>
+    <div class="col">
+      {{ historia.prioridad }}
+    </div>
+      <div class="col">
+      {{ historia.fecha_creacion }}
+    </div>
+      <div class="col">
+      {{ historia.horasEstimadas }}
+    </div>
+      <div class="col">
+      {{ historia.horas_dedicadas }}
+    </div>
+  </div>
+    {% endfor %}
 
-            <span class="title">Nombre: {{ historia.nombre }}</span>
-            <p>
-                <span class="title">Descripcion: {{ historia.descripcion }}</span>
-            </p>
-            <p>
-                <span class="title">Prioridad: {{ historia.prioridad }}</span>
-            </p>
-            <p>
-                <span class="title">Fecha Creacion: {{ historia.fecha_creacion }}</span>
-            </p>
-            <p>
-                <span class="title">Horas Estimadas: {{ historia.horasEstimadas }}</span>
-            </p>
-            <p>
-                <span class="title">Hora Dedicadas: {{ historia.horas_dedicadas }}</span>
-            </p>
-            
-        </li>
-    </ul>
-{% endfor %}
+<!-- Prioridad Baja -->
+        {% for historia in historiasBaja %}
+  <div class="row">
+    <div class="col">
+      {{ historia.nombre }}
+    </div>
+    <div class="col">
+      {{ historia.descripcion }}
+    </div>
+    <div class="col">
+      {{ historia.prioridad }}
+    </div>
+      <div class="col">
+      {{ historia.fecha_creacion }}
+    </div>
+      <div class="col">
+      {{ historia.horasEstimadas }}
+    </div>
+      <div class="col">
+      {{ historia.horas_dedicadas }}
+    </div>
+  </div>
+    {% endfor %}
+</div>
+
 </body>
 </html>

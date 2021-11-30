@@ -12,7 +12,7 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
 
 </head>
 
@@ -22,32 +22,35 @@
 
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content" style="alignment: left">
-    <li><a href="#!">Ver Informacion</a></li>
+    <li><a href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
     <li class="divider"></li>
-    <li><a href="#!">Cerrar Sesion</a></li>
+    <li><a href="/inicio/logout">Cerrar Sesion</a></li>
 </ul>
-<nav style="background-color: #2f2f2f">
+<nav style="background-color: #2f2f2f;height: 13%" >
     <div class="nav-wrapper">
-
-        <a href="#!" class="brand-logo" style="padding-left: 12px; padding-top: 10px;"> <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="#!" style="padding-left: 12px; padding-top: 10px;"> <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
                          loading="lazy"
-                         style="width:50px;height:50px;"> </a>
+                         style="width:50px;height:50px;"> </a></li>
+            <li><a href="/inicio/" style="font-size: larger">Inicio</a></li>
+            <li><a href="/proyecto/{{ proyecto.id }}/Sprints" style="font-size: larger"> Volver a Sprint</a></li>
+        </ul>
+
 
         <ul class="right hide-on-med-and-down">
             <li>
-            <div class="container">
-                <div class="row">
-                    <div class="col s10">Jose Elias Gonzalez Valdez</div>
-                    <div class="col s5">Proyecto R d x a dfa </div>
-                    <div class="col s5">Scrum Master</div>
-                </div>
-
-            </div></li>
+                <p style="line-height: 1.5;">
+                {{ usuario.first_name }} {{ usuario.last_name }} <br>
+            {{ usuario.email }} <br>
+            {{ proyecto.nombre }} | {{ Rol_de_usuario }}
+                </p>
 
             <!-- Dropdown Trigger -->
-            <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"  style="padding-right: 12px; padding-top: 10px;" ><img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+            <li>
+                <a class="dropdown-trigger" href="#!" data-target="dropdown1"  style="padding-right: 12px; padding-top: 10px;" ><img src="{{ avatar }}" class="circle" height="15" alt=""
                          loading="lazy"
-                         style="width:50px;height:50px;"><i class="material-icons left">arrow_drop_down</i></a>
+                         style="width:50px;height:50px;"><i class="material-icons left">arrow_drop_down</i>
+                </a>
             </li>
         </ul>
     </div>
@@ -69,24 +72,10 @@
 {% block content %}
     <div class="container">
         <div class="row">
-
-            <div class="col s12">
-                <div class="card-action">
-                    <a href="http://127.0.0.1:8000/proyecto/{{ proyecto.id }}/Sprints/" style="color:dodgerblue;">
-                        <i class="material-icons" style="vertical-align: -5px;">navigate_before</i>Volver al sprint
-                    </a>
-                </div>
-            </div>
-
-            <div class="col s12">
-                <div class="card white-text lighten-2 blue">
-                    <i class="material-icons" style="vertical-align: bottom;">show_chart</i>Sprint Burndown Chart
-                    <br>
-                    <i class="material-icons" style="vertical-align: bottom;">timeline</i>Sprint
-                    nro. {{ Sprint.sprintNumber }}
-                    <br>
-                    <i class="material-icons" style="vertical-align: bottom;">folder_open</i>{{ proyecto.nombre }}
-                </div>
+            <div class="col offset-s3">
+                <h5>
+                    <i class="fas fa-chart-line">&nbsp;Sprint Burndown Chart</i>
+                </h5>
             </div>
             <div class="col s9 l9">
                 <div class="chartWrapper">
@@ -111,7 +100,7 @@
             <div class="col s9 l3 offset-s9">
                 <div class="card blue white-text">
                     <div class="card-content">
-                        <p>Sprint : &nbsp; {{ Sprint.sprintNumber }}</p>
+                        <p>Sprint nro.: &nbsp; {{ Sprint.sprintNumber }}</p>
                         Inicio : {{ Sprint.fecha_inicio }}
                         <br>Fin : &nbsp;&nbsp;&nbsp; {{ Sprint.fecha_fin }}
                     </div>

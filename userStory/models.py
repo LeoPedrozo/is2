@@ -27,7 +27,7 @@ PRIORIDAD_CHOICES=[
 class Historia(models.Model):
     """
     Implementa la clase de Historias de Usuario, almacena datos generales acerca del userStory:
-    identificador, nombre, descripcion, prioridad, fecha de creacion, horas estimadas estados y horas dedicadas
+    identificador, nombre, descripcion,comentarios, prioridad, fecha de creacion, horas estimadas estados, horas dedicadas y comentario extra
     """
     id_historia = models.AutoField(primary_key = True)
     nombre=models.CharField(max_length=50)
@@ -43,6 +43,7 @@ class Historia(models.Model):
     encargado=models.ForeignKey(to='gestionUsuario.User', on_delete=models.SET_NULL,null=True,blank=True)
 
     comentarios=models.TextField(default='')
+    extraData = models.TextField(default='')
     history = HistoricalRecords(user_model='gestionUsuario.User')
 
     class Meta:

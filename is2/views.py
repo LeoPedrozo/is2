@@ -1861,10 +1861,7 @@ def moverHistoriaQA(request,id_proyecto,id_sprint,id_historia, opcion):
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
-        if h.prioridad == 'BAJA':
-            h.prioridad = 'MEDIA'
-        else:
-            h.prioridad = 'ALTA'
+        h.prioridad = 'ALTA'
         messages.info(request, "Historia rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
         h.save()
@@ -2526,8 +2523,24 @@ def tableroQA_Release2(request,id_proyecto,id_sprint):
 
         cantidaddehistorias = len(listaHistorias)
         print(listaHistorias)
+
+        usuarioActual = auth.get_user(request)
+
+        if (usuarioActual.is_superuser):
+            fotodeusuario = None
+        else:
+            fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+        proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+        item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+        if (item.rol_name != ''):
+            rol = item.rol_name
+        else:
+            rol = ""
         return render(request, "QA_sprint3.html",
-                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                      {"Rol_de_usuario":rol,"usuario":usuarioActual,"proyecto":proyectoActual,"avatar":fotodeusuario,"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
                        "versionesDic": versionesDic,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
     except IndexError:
@@ -3191,9 +3204,9 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
     usuarioActual = auth.get_user(request)
 
     if (usuarioActual.is_superuser):
-        fotodeususario = None
+        fotodeusuario = None
     else:
-        fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
 
     proyectoActual = Proyecto.objects.get(id=id_proyecto)
 
@@ -3206,7 +3219,7 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
         rol = ""
 
     cantidaddehistorias = len(historias)
-    return render(request, "SprintBacklog.html", {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeususario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja })
+    return render(request, "SprintBacklog.html", {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja })
 
 
 
@@ -3702,8 +3715,22 @@ def BurndownChart(request,id_proyecto,id_sprint):
     for i in sprintActual.horasLaboralesReal:
         horasLaborales_Real.append(str(i))
 
+    usuarioActual = auth.get_user(request)
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    item = UserProyecto.objects.get(proyecto=proyecto, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
     return render(request, "lineChart.html",
-                      {"Sprint": sprintActual,
+                      {"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint": sprintActual,
                        "Historias": listaHistorias,
                        "Total": cantidad_total_historia,
                        "diasLaborales": ','.join(diasLaborales_py),

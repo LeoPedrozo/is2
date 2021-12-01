@@ -26,6 +26,11 @@ from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modifica
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
+from weasyprint import HTML
+from weasyprint.text.fonts import FontConfiguration
 
 # Hola mundo para probar django
 @login_required
@@ -2102,11 +2107,11 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
     for hist in listaHistorias:
         if hist.history.filter(
                 Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                    history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
 
             x = hist.history.filter(
                 Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                    history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1)))
 
             listaDeComentarios = []
 
@@ -2126,9 +2131,9 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
 
     for hist in listaHistorias:
         if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
-                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+                history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
             x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
-                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).last()
+                history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
             hist.nombre = x.nombre
             hist.encargado = x.encargado
             hist.descripcion = x.descripcion
@@ -2282,6 +2287,7 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
             else:
                 hist.estados = ""
                 hist.encargado = None
+                hist.prioridad = "ALTA"
             hist.save()
 
         sprintActual.fecha_final=date.today()# + timedelta(days=6)
@@ -3197,10 +3203,41 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
     """
 
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
-    historias = sprintseleccionado.historias.all()
-    historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
-    historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
-    historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
+    if sprintseleccionado.estados == 'FINALIZADO':
+        sprintActual2 = model_to_dict(sprintseleccionado)
+        historias = sprintActual2['historias']
+        historiasAlta = []
+        historiasMedia = []
+        historiasBaja = []
+        for hist in historias:
+            if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                hist.nombre = x.nombre
+                hist.encargado = x.encargado
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas = x.horas_dedicadas
+                hist.estados = x.estados
+                if(hist.prioridad == 'ALTA'):
+                    historiasAlta.append(hist)
+                elif(hist.prioridad == 'MEDIA'):
+                    historiasMedia.append(hist)
+                elif (hist.prioridad == 'BAJA'):
+                    historiasBaja.append(hist)
+                finalizo = x.history_date
+            else:
+                print("No existe")
+    else:
+        #El caso de que el sprint no este finalizado, es el actual
+        historias = sprintseleccionado.historias.all()
+        historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
+        historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
+        historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
+
+
     usuarioActual = auth.get_user(request)
 
     if (usuarioActual.is_superuser):
@@ -3866,3 +3903,91 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
     #        sprint_seleccionado.horasLaboralesIdeal.append(0)
     #    bandera=bandera-1
 
+
+def informe_Sprint(request,id_proyecto,id_sprint):
+
+    sprintseleccionado = Sprint.objects.get(id=id_sprint)
+    if sprintseleccionado.estados == 'FINALIZADO':
+        print("Sprint finalizado")
+        sprintActual2 = model_to_dict(sprintseleccionado)
+        historias = sprintActual2['historias']
+        historiasAlta = []
+        historiasMedia = []
+        historiasBaja = []
+        for hist in historias:
+            if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                hist.nombre = x.nombre
+                hist.encargado = x.encargado
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas = x.horas_dedicadas
+                hist.estados = x.estados
+                if(hist.prioridad == 'ALTA'):
+                    historiasAlta.append(hist)
+                elif(hist.prioridad == 'MEDIA'):
+                    historiasMedia.append(hist)
+                elif (hist.prioridad == 'BAJA'):
+                    historiasBaja.append(hist)
+                finalizo = x.history_date
+            else:
+                print("No existe")
+    else:
+        #El caso de que el sprint no este finalizado, es el actual
+        historias = sprintseleccionado.historias.all()
+        historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
+        historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
+        historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    cantidaddehistorias = len(historias)
+
+
+    context = {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja }
+
+    html = render_to_string("informe_US_Sprint_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_Sprint.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+def informe_US_ProductBacklog(request, id_proyecto):
+    if Proyecto.objects.filter(id=id_proyecto).exists():
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto = None
+    historias = Historia.objects.filter(proyecto=id_proyecto)
+    context = {"historias":historias, "proyecto":proyecto}
+    html = render_to_string("informe_US_ProductBacklog_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_Horas.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response

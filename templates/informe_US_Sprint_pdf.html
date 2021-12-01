@@ -1,0 +1,107 @@
+{% extends "base_pdf.html" %}
+{% block content %}
+
+
+
+<h1 class="text-center">Reporte US del Sprint Backlog</h1>
+
+    <h2 class="text-center">{{ proyecto.nombre }}</h2>
+    <h5 class="text-center" style="color: gray">{{ proyecto.descripcion }}</h5>
+    <h4 class="text-center text-info">Sprint Nro. {{ sprint.sprintNumber }}</h4>
+        {% if sprint.estados == 'FINALIZADO' %}
+            <h5 class="text-center" style="color: gray">Finalizado</h5>
+        {% endif %}
+        {% if sprint.estados == 'INICIADO' %}
+            <h5 class="text-center" style="color: gray">En curso</h5>
+        {% endif %}
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Prioridad</th>
+      <th scope="col">Fecha Creacion</th>
+      <th scope="col">Encargado</th>
+      <th scope="col">Horas Estimadas</th>
+      <th scope="col">Horas Dedicadas</th>
+      <th scope="col">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+          {% for historia in historiasAlta %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
+
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
+
+<tbody>
+          {% for historia in historiasMedia %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
+
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
+
+<tbody>
+          {% for historia in historiasBaja %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
+
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -19,7 +19,7 @@ from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from is2.emails import email_rolAsignado, email_nuevoProyecto, email_historiaAsignado, email_actividadEnKanban, \
     email_actividadEnQA, email_nuevoSprint, email_sprintExtFin, email_proyectoFin, email_proyectoIni, \
-    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado
+    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado, sprintVerificado
 from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from proyectos.models import Proyecto
@@ -2597,7 +2597,6 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
         encargadoDeHistoria = h.encargado
-        h.encargado = None
         h.prioridad = 'ALTA'
         messages.info(request, f"historia {h.nombre} Rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
@@ -2606,18 +2605,22 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         messages.info(request, f"correo enviado a {encargadoDeHistoria.email}")
         messages.info(request, motivo)
         #email 9.2
-        h.save()
         # email 9.2
         email_actividadEnQA(h, id_proyecto, id_sprint, opcion, request.user)
+        h.encargado = None
+        h.save()
+
 
     #marcar como verificado.
     if opcion==8:
+        #h = Historia.objects.get(id_historia=id_historia)
         sp=Sprint.objects.get(id=id_sprint)
         sp.verificado=True
         sp.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         #email 9.3
-        email_actividadEnQA(h, id_proyecto, id_sprint, opcion, request.user)
+        #email_actividadEnQA(User, id_proyecto, id_sprint, opcion, request.user)
+        sprintVerificado(id_proyecto,id_sprint,request.user)
         return redirect(url)
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/QualityAssurance/"
@@ -2977,7 +2980,7 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
             usuarios.append(elemento.usuario)
 
     #email 50
-    email_nuevoSprint(id_proyecto,id_sprint,usuarios)
+    #email_nuevoSprint(id_proyecto,id_sprint,usuarios)
 
     return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
@@ -3013,6 +3016,7 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
                 else:
 
                     u.capacidad = capacidad
+                    #email_nuevoSprint(id_proyecto, id_sprint, u)
                     u.save()
 
             else:

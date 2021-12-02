@@ -2595,7 +2595,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
-        encargadoDeHistoria = User.objects.get(username=h.encargado)
+        encargadoDeHistoria = h.encargado
         h.encargado = None
         h.prioridad = 'ALTA'
         messages.info(request, f"historia {h.nombre} Rechazada")

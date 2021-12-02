@@ -9,6 +9,15 @@
         <style>
         @page {
             margin: 1.0cm 1.5cm 3.5cm 1.5cm;
+            @bottom-right{
+                content: "Pagina " counter(page) " de " counter(pages);
+                color: dimgrey;
+            }
+
+            @top-left{
+                content: "Grupo 8 - is2 2021";
+                color: dimgrey;
+            }
         }
         body {
             width: 100% !important;

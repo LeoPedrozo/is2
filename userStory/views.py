@@ -1,6 +1,9 @@
+from django.core.mail import send_mail
 from django.shortcuts import render
 
 # Create your views here.
+from is2 import settings
+from proyectos.models import Proyecto
 from userStory.models import Historia
 
 
@@ -49,12 +52,13 @@ def asignarEncargado(Historia, encargado ):
     """
     for historia in Historia:
         if historia.encargado is None:
+            p = Proyecto.objects.get(nombre=historia.proyecto)
             historia.encargado = encargado
             historia.save()
         else:
+            p = Proyecto.objects.get(nombre=historia.proyecto)
             print("La historia ya posee como encargado a : ",historia.encargado)
             print("Asignando de todas formas...")
             historia.encargado = encargado
             historia.save()
-
 

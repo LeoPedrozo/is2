@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 from allauth.socialaccount.models import SocialAccount
-from django.contrib import messages, auth
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required,user_passes_test
 from django.contrib.auth.models import Group
@@ -17,6 +17,9 @@ from Sprints.views import nuevoSprint, updateSprint, guardarCamposdeSprint, getS
 from gestionUsuario.forms import asignarcapacidadForm
 from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
+from is2.emails import email_rolAsignado, email_nuevoProyecto, email_historiaAsignado, email_actividadEnKanban, \
+    email_actividadEnQA, email_nuevoSprint, email_sprintExtFin, email_proyectoFin, email_proyectoIni, \
+    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado
 from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from proyectos.models import Proyecto
@@ -197,7 +200,7 @@ def step2_asignarRol(request):
             enlazar_Usuario_con_Rol(user_object, rol_object)
 
             #Email 1.2 de rol asignado a usuario.
-
+            email_rolAsignado(user_object, rol_object, proyecto_object)
 
             #-----------------------------------
 
@@ -564,7 +567,7 @@ def crearProyecto(request):
             asociarProyectoaUsuario(proyecto, miembros)
 
             #Email-1 Agregar usuario a proyecto. Pero sin especificar su rol
-
+            email_nuevoProyecto(proyecto, miembros)
 
             #-----------------------------------
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
@@ -607,6 +610,7 @@ def modificarProyecto(request):
 
                 # se agrega los usuarios nuevos
                 asociarProyectoaUsuario(proyecto, usuarios)
+
                 # se elimina los usuarios viejos
                 desasociarUsuariodeProyecto(miembros)
 
@@ -662,6 +666,7 @@ def modificarProyecto2(request,id_proyecto):
 
                 # se agrega los usuarios nuevos
                 asociarProyectoaUsuario(proyecto, usuarios)
+                email_nuevoProyecto(proyecto, usuarios)
                 # se elimina los usuarios viejos
 
                 if(verificarOcupaciondemiembros(id_proyecto,miembros)):
@@ -2207,7 +2212,7 @@ def finalizarProyecto(request, id_proyecto):
             proyecto_seleccionado.save()
 
             #email 12
-
+            email_proyectoFin(id_proyecto)
         else:
             mensaje = "No puede finalizar el proyecto ya que hay un sprint sin proceso QA"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
@@ -2252,6 +2257,8 @@ def iniciarProyecto(request, id_proyecto):
         proyecto_seleccionado.estado = "INICIADO"
         proyecto_seleccionado.fecha = date.today()
         proyecto_seleccionado.save()
+        #email 14
+        email_proyectoIni(id_proyecto)
         url="/proyecto/"+str(id_proyecto)+"/"
         return redirect(url)
     else:
@@ -2296,7 +2303,8 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
         sprintActual.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         #Email 11 de finalizar spritn
-
+        email_sprintExtFin(id_proyecto,id_sprint,opcion,request.user)
+        email_sprintFinalizado(id_proyecto,id_sprint)
         return redirect(url)
 
     if (opcion == "expandir"):
@@ -2342,7 +2350,7 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
 
             #email 10 PAara los miembros del equipo del sprint extendido.
-
+            email_sprintExtFin(id_proyecto, id_sprint, opcion, request.user)
             return redirect(url)
 
             # fecha = request.GET['fecha_fin']
@@ -2580,6 +2588,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         h.save()
 
         #email de historias aceptada email 9.1
+        email_actividadEnQA(h,id_proyecto,id_sprint,opcion,request.user)
 
 
     # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
@@ -2597,6 +2606,8 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         messages.info(request, motivo)
         #email 9.2
         h.save()
+        # email 9.2
+        email_actividadEnQA(h, id_proyecto, id_sprint, opcion, request.user)
 
     #marcar como verificado.
     if opcion==8:
@@ -2605,6 +2616,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         sp.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         #email 9.3
+        email_actividadEnQA(h, id_proyecto, id_sprint, opcion, request.user)
         return redirect(url)
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/QualityAssurance/"
@@ -2810,7 +2822,7 @@ def step1_SprintPlanning2(request,id_proyecto):
                 request.session['sprint_planning_id'] = newSprint.id
 
                 #email 14 Nuevo sprint en planning agregado
-
+                email_sprintCreado(id_proyecto,newSprint.id)
                 url = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
                 return redirect(url)
             else:
@@ -2962,6 +2974,9 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
         # si el usuario ya existe en la tabla entonces no hace falta agregar 2 veces. No entra en el if
         if (len(u) == 0):
             usuarios.append(elemento.usuario)
+
+    #email 50
+    email_nuevoSprint(id_proyecto,id_sprint,usuarios)
 
     return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
@@ -3124,6 +3139,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
             h.save()
             sprint_actual.historias.add(h)
             sprint_actual.save()
+            email_historiaAsignado(h, id_proyecto, usuarioSeleccionado)
 
 
     if (opcion == 2):
@@ -3164,8 +3180,8 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 sprint_actual.fecha_inicio = date.today()
                 sprint_actual.save()
 
-                #Email 19
-
+                #Email 20
+                email_sprintIniciado(id_proyecto,id_sprint)
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
                 return redirect(url)
             else:
@@ -3181,7 +3197,7 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
         sprint_actual.estados = 'PLANNING'
         sprint_actual.save()
         #Email 2 enviar email a los encargados.
-
+        #email_historiaAsignado(Historia, encargado)
 
 
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
@@ -3371,7 +3387,7 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
             h.estados = 'PENDIENTE'
             messages.success(request, "Pasado a pendiente")
             #email
-
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
         else:
             messages.error(request, "No eres el encargado de la historia")
     #Se mueve la historia a la columna En curso
@@ -3381,6 +3397,7 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
             h.estados = 'EN_CURSO'
             messages.success(request, "Pasado a en curso")
             #email 4
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
         else:
             messages.error(request, "No eres el encargado de la historia")
     # Se mueve la historia a la columna Finalizado
@@ -3389,8 +3406,9 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
             messages.success(request, "Finalizado")
-            #email5
-            #email 14 enfocado para los scrum masters
+            #email 7
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
+            #email 15 enfocado para los scrum masters
         else:
             messages.error(request, "No eres el encargado de la historia")
     # Este es para cargar horas y comentario
@@ -3406,6 +3424,7 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
                 messages.success(request, "Horas registradas")
                 #email 3
                 #email 6
+                email_actividadEnKanban(h, id_proyecto, id_sprint, h.encargado, horas, comentario, opcion)
 
             else:
                 messages.error(request, "No eres el encargado de la historia")

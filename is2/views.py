@@ -2177,7 +2177,7 @@ def HistorialProductBacklog(request, id_proyecto):
 
 
     if Historia.objects.filter(proyecto=proyecto_seleccionado).exists():
-        historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
+        historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado).order_by('id_historia')
     else:
         historia_list = historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
         # messages.info(request, "El proyecto no tiene historias")
@@ -2289,7 +2289,8 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
                 hist.encargado = None
                 hist.prioridad = "ALTA"
             hist.save()
-
+        messages.info(request, "Las historias finalizadas han ido a QA")
+        messages.info(request, "Las historias NO finalizadas han vuelto con prioridad ALTA")
         sprintActual.fecha_final=date.today()# + timedelta(days=6)
         sprintActual.estados = 'FINALIZADO'
         sprintActual.save()
@@ -2574,6 +2575,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
     if (opcion == 6):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = 'RELEASE'
+        h.extraData = ""
         messages.info(request, "Historia enviada a Release")
         h.save()
 
@@ -2584,13 +2586,15 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
-        if h.prioridad == 'BAJA':
-            h.prioridad = 'MEDIA'
-        else:
-            h.prioridad = 'ALTA'
-        messages.info(request, "Historia rechazada")
+        encargadoDeHistoria = User.objects.get(username=h.encargado)
+        h.encargado = None
+        h.prioridad = 'ALTA'
+        messages.info(request, f"historia {h.nombre} Rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
-
+        motivo = request.GET['motivo']
+        h.extraData = motivo
+        #messages.info(request, f"correo enviado a {encargadoDeHistoria.email}")
+        messages.info(request, motivo)
         #email 9.2
         h.save()
 
@@ -3905,8 +3909,16 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 
 
 def informe_Sprint(request,id_proyecto,id_sprint):
+    """
+    Metodo para generar el reporte del Sprint actual o finalizado
 
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
+    #Caso que el sprint ya haya finalizado, usar el historico de la historia en el punto de fin
     if sprintseleccionado.estados == 'FINALIZADO':
         print("Sprint finalizado")
         sprintActual2 = model_to_dict(sprintseleccionado)
@@ -3980,8 +3992,17 @@ def informe_US_ProductBacklog(request, id_proyecto):
         proyecto = Proyecto.objects.get(id=id_proyecto)
     else:
         proyecto = None
+
     historias = Historia.objects.filter(proyecto=id_proyecto)
-    context = {"historias":historias, "proyecto":proyecto}
+    historiasAlta = filter(lambda historia: historia.prioridad == 'ALTA', historias)
+    historiasMedia = filter(lambda historia: historia.prioridad == 'MEDIA', historias)
+    historiasBaja = filter(lambda historia: historia.prioridad == 'BAJA', historias)
+    historia_list = []
+    historia_list.extend(historiasAlta)
+    historia_list.extend(historiasMedia)
+    historia_list.extend(historiasBaja)
+
+    context = {"historias":historia_list, "proyecto":proyecto}
     html = render_to_string("informe_US_ProductBacklog_pdf.html", context)
 
     response = HttpResponse(content_type="application/pdf")

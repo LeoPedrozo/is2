@@ -71,7 +71,10 @@
                                 <p> {{ hist.horas_dedicadas }}. </p>
                                 <h6>Prioridad : </h6>
                                 <p> {{ hist.prioridad }}.</p>
-
+                                {% if hist.extraData %}
+                                    <p>Motivo de rechazo:</p>
+                                    <p>{{ hist.extraData }}</p>
+                                {% endif %}
                             </div>
                             <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -82,6 +85,54 @@
                 </div>
             </div>
 
+            {% if hist.extraData %}
+            <tr class="table-danger">
+                <td>{{ hist.id_historia }}</td>
+                <td>{{ hist.nombre }}</td>
+                <td>{{ hist.descripcion }}</td>
+                <td>{{ hist.prioridad }}</td>
+                <td>{{ hist.fecha_creacion }}</td>
+                <td>{{ hist.horas_dedicadas }}</td>
+                <td>{{ hist.encargado }}</td>
+                <td>{{ hist.estados }}</td>
+                <td>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary" href="#" role="button"
+                           id="dropdown{{ proyecto.pk }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bars"></i>
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="dropdown{{ proyecto.pk }}">
+
+                            {% if hist.estados == "" %}
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/ProductBacklog/modificar/Historia{{ hist.id_historia }}/"><i
+                                        class="fas fa-pen-square"></i> Modificar Historia</a>
+                                </li>
+                                <li><a class="dropdown-item"
+                                       href="/proyecto/{{ ID_proyecto }}/ProductBacklog/Eliminar/Historia{{ hist.id_historia }}/"><i
+                                        class="fas fa-trash-alt"></i> Eliminar Historia</a></li>
+
+                            {% endif %}
+
+
+
+
+                            <script>
+                                var myModal = new bootstrap.Modal(document.getElementById('modal_info{{ hist.id_historia}}'), options)
+                            </script>
+
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#modal_info{{ hist.id_historia }}"> <i
+                                    class="uil uil-expand-arrows-alt"></i> Ver informacion </a>
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
             <tr>
                 <td>{{ hist.id_historia }}</td>
                 <td>{{ hist.nombre }}</td>
@@ -128,6 +179,7 @@
                     </div>
                 </td>
             </tr>
+            {% endif %}
         {% empty %}
             <tr>
                 <td colspan="5">No hay coincidencias con ese criterio</td>

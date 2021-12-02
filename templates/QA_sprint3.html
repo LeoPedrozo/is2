@@ -139,6 +139,10 @@
                                         <script>
                                             var myModal = new bootstrap.Modal(document.getElementById('modal_QA{{ historia.id_historia }}'), options)
                                         </script>
+
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_Rechazar{{ historia.id_historia }}'), options)
+                                        </script>
                                         <a class="btn btn-outline-primary" data-bs-toggle="modal"
                                            data-bs-target="#modal_QA{{ historia.id_historia }}">ver</a>
                                         <!-- Aceptar y rechazar historias de Quality assurance-->
@@ -146,13 +150,47 @@
                                         <a class="btn btn-outline-primary"
                                            href="/proyecto/{{ ID_proyecto }}/Sprints/{{ Sprint.id }}/QualityAssurance/{{ historia.id_historia }}/{{ 6 }}/">
                                             <i class="fas fa-check"></i></a>
-                                        <!--  Opcion 7 rechazar historia y devolver al Product backlog-->
+                                        <!--
                                         <a class="btn btn-outline-primary"
                                            href="/proyecto/{{ ID_proyecto }}/Sprints/{{ Sprint.id }}/QualityAssurance/{{ historia.id_historia }}/{{ 7 }}/">
                                             <i class="fas fa-times"></i>
                                         </a>
+                                        -->
+                                        <!--  Opcion 7 rechazar historia y devolver al Product backlog-->
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_Rechazar{{ historia.id_historia }}"><i class="fas fa-times"></i></a>
 
-                                        <!-- Modal Structure -->
+
+                            <div class="modal fade" id="modal_Rechazar{{ historia.id_historia }}" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" style="position: fixed; margin-left: 6%; margin-top: 10%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Motivo de Rechazo</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" style="height: 250px">
+                                            <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ Sprint.id }}/QualityAssurance/{{ historia.id_historia }}/{{ 7 }}/" method="GET">
+                                                <div class="mb-3">
+                                                    <label for="message-text" class="col-form-label">Motivo:</label>
+                                                    <textarea class="form-control" type="text" name="motivo" id="message-text" rows="3"></textarea>
+                                                </div>
+                                                <div class="col" style="position: absolute; right: 20px;">
+
+                                                    <button value="Confirmar" type="submit" class="btn btn-primary">Confirmar
+                                                    </button>
+                                                    <button type="button" class="btn btn-secondary blue"
+                                                            data-bs-dismiss="modal">Cancelar
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                                        <!-- Modal Structure para mostrar informacion de la historia-->
                                         <div class="modal fade" id="modal_QA{{ historia.id_historia }}"
                                              tabindex="-1"
                                              aria-labelledby="exampleModalLabel2"

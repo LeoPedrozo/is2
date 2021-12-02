@@ -34,6 +34,7 @@ from django.template.loader import render_to_string
 
 from weasyprint import HTML
 from weasyprint.text.fonts import FontConfiguration
+from django.contrib import auth
 
 # Hola mundo para probar django
 @login_required
@@ -2602,7 +2603,7 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
         messages.info(request, f"Nueva prioridad {h.prioridad}")
         motivo = request.GET['motivo']
         h.extraData = motivo
-        #messages.info(request, f"correo enviado a {encargadoDeHistoria.email}")
+        messages.info(request, f"correo enviado a {encargadoDeHistoria.email}")
         messages.info(request, motivo)
         #email 9.2
         h.save()

@@ -3012,7 +3012,7 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
         proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto_actual)
         rol_name = proy.rol_name
 
-    return render(request, "step2_SprintPlanning_2_2.html", {"miembros": usuarios,"desarrolladores":lista,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyecto_actual})
+    return render(request, "step2_SprintPlanning_2_2.html", {"miembros": usuarios,"desarrolladores":lista,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyecto_actual,"sprint":sprint_actual})
 
 
 #@login_required
@@ -3105,7 +3105,7 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     calendarioParaguay = Paraguay()
     fechaInicio = sprintActual.fecha_inicio
     fechaFin = sprintActual.fecha_fin
-    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 2
 
     horaslaboralespordia=9
     capacidad_sprint_horas = dias_de_sprint * horaslaboralespordia
@@ -3715,6 +3715,10 @@ def infoSprint(request,id_proyecto,id_sprint):
     for m in tabla_temporal:
         lista1.append(m.usuario)
 
+
+
+    print(lista1)
+
         #if(m.rol_name != ""):
         #    lista2.append(m.rol_name)
         #else:
@@ -3723,13 +3727,14 @@ def infoSprint(request,id_proyecto,id_sprint):
 
     #miembros=zip(lista1,lista2)
 
-    miembros = lista1
+    #miembros = lista1
+    miembros=tabla_temporal
 
     #contamos la duracion del proyecto en dias
     calendarioParaguay = Paraguay()
     pasos = timedelta(days=1)
     #duracion_proyecto=0
-    duracion_sprint=0
+    duracion_sprint=1
     #transcurrido_proyecto=0
     transcurrido_sprint=0
     #fechaInicio=proyecto_seleccionado.fecha
@@ -3737,14 +3742,13 @@ def infoSprint(request,id_proyecto,id_sprint):
     fechaInicio=sprint_seleccionado.fecha_inicio
     fechaFin=sprint_seleccionado.fecha_fin
     while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            #duracion_proyecto=duracion_proyecto+1
-            duracion_sprint=duracion_sprint+1
-        if( date.today() <= fechaFin and calendarioParaguay.is_working_day(date.today())):
-            #transcurrido_proyecto=transcurrido_proyecto+1
-            transcurrido_sprint = transcurrido_sprint+1
-
+        if(calendarioParaguay.is_working_day(fechaInicio)):
+            duracion_sprint += 1
+            if(fechaInicio<=date.today()):
+                transcurrido_sprint+= 1
         fechaInicio += pasos
+
+
 
     #fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
     fechaInicio = sprint_seleccionado.fecha_inicio.strftime("%m/%d/%Y")

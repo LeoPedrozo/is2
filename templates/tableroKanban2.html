@@ -383,7 +383,6 @@
                                 {% if historia.encargado == request.user%}
                                 <div class="card border-warning mb-3">
                                     <div class="card-body p-3">
-
                                         <!--El menu de opciones-->
                                         <div class="card-title d-flex justify-content-end">
                                             <div class="dropdown">
@@ -414,15 +413,12 @@
                                         <p>{{ historia.nombre }}.</p>
                                         <h6 style="color:dodgerblue ">Encargado</h6>
                                         <p> {{ historia.encargado.email }}</p>
-
                                         <!-- Modal NUEVO -->
                                         <script>
                                             var myModal = new bootstrap.Modal(document.getElementById('modal_encurso_ver{{ historia.id_historia }}'), options)
                                         </script>
-
                                         <a class="btn btn-outline-primary" data-bs-toggle="modal"
                                            data-bs-target="#modal_encurso_ver{{ historia.id_historia }}"> Ver </a>
-
 
                                         <div class="modal fade" id="modal_encurso_ver{{ historia.id_historia }}"
                                              tabindex="-1"

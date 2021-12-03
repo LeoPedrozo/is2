@@ -93,21 +93,24 @@
                 <!--SECCION DE MIEMBROS-->
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                    {% for miembro in Miembros %}
+                    {% for l in Miembros %}
                     <div class="row">
                         <div class="col-md-6">
                             <label>Nombre de Usuario </label><br>
                             <label>Nombre completo </label><br>
                             <label>Correo Electronico </label><br>
-                            <label> Rol </label>
+                            <label>Capacidad </label>
+                            <label></label>
                         </div>
-                        <div class="col-md-6">
-                            <label style="color: #0062cc "> {{ miembro.username }}</label><br>
-                            <label style="color: #0062cc ">{{ miembro.first_name }} {{ miembro.last_name }}</label><br>
-                            <label style="color: #0062cc ">{{ miembro.email }}</label><br>
 
-                        <label style="color: #0062cc "> </label>
-                            <a class="btn btn-outline-primary" href="/Usuario/{{ miembro.pk }}/info/">Mas Detalle</a>
+                        <div class="col-md-6">
+                            <label style="color: #0062cc "> {{ l.usuario.username }}</label><br>
+                            <label style="color: #0062cc ">{{ l.usuario.first_name }} {{ l.usuario.last_name }}</label><br>
+                            <label style="color: #0062cc ">{{ l.usuario.email }}</label><br>
+                            <label style="color: #0062cc ">{{ l.capacidad }} hs diarias </label><br>
+
+
+                        <label style="color: #0062cc "><a class="btn btn-outline-primary" href="/Usuario/{{ l.usuario.pk }}/info/">Mas Detalle</a></label>
                         </div>
                     </div>
 
@@ -158,7 +161,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Duracion del Spritn</label>
+                            <label>Dias del Sprint</label>
                         </div>
                         <div class="col-md-6">
                             <p>{{ Duracion }} dias</p>
@@ -167,7 +170,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Tiempo transcurrido</label>
+                            <label>Dias Transcurridos</label>
                         </div>
                         <div class="col-md-6">
                             <p> {{ Transcurrido }} dias</p>

@@ -25,7 +25,7 @@
 </head>
 <body>
 
-   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
         <!-- Container wrapper -->
         <div class="container-fluid">
             <!-- Toggle button -->
@@ -104,7 +104,6 @@
         </div>
     </nav>
 <main class="content">
-
 
     <div class="container p-0">
         <p>  </p>
@@ -185,40 +184,6 @@
                             </div>
 
                         </div>
-                        <!--Modal-->
-                        <!--
-                        <div id="modal_capacidad{{ miembro.id }}" class="modal modal-fixed-footer"
-                             style="width: 30% !important;
-                                    height: 40% !important;">
-
-                            <div class="modal-content">
-                                <h2>Cargar Horas de trabajo</h2>
-                                 <p>NOMBRE : {{ miembro.first_name }} {{ miembro.last_name }}.</p>
-                                    <p>Email : {{ miembro.email }}.</p>
-
-                                <div class="row">
-                                    <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/FormarEquipo/{{ miembro.id }}/" method="POST"
-                                          class="col s12">
-                                        {% csrf_token %}
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <label for="capacidad-register">Capacidad para este sprint</label>
-                                                <input id="capacidad-register" name="capacidad" type="number"
-                                                       class="active validate">
-                                            </div>
-                                        </div>
-                                        <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
-                                        </button>
-                                    </form>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer"
-                                 style=" width: 0 !important;max-height: 100% !important; height: 0 !important;">
-                            </div>
-
-                        </div>
-                    -->
                     {% endfor %}
                 </div>
             </div>
@@ -252,11 +217,13 @@
                                         var myModal = new bootstrap.Modal(document.getElementById('modal_quitar{{ l.usuario.id }}'), options)
                                     </script>
 
+
                                     <a class="btn btn-outline-primary" data-bs-toggle="modal"
                                        data-bs-target="#modal_cambiar{{ l.usuario.id }}"> Cambiar Capacidad </a>
 
                                     <a class="btn btn-outline-primary" data-bs-toggle="modal"
                                        data-bs-target="#modal_quitar{{ l.usuario.id }}"> Quitar </a>
+
 
                                     <div class="modal fade" id="modal_cambiar{{ l.usuario.id }}" tabindex="-1"
                                          aria-labelledby="exampleModalLabel"
@@ -336,42 +303,6 @@
                             </div>
 
                         </div>
-                        <!--Modal viejo-->
-                        <div id="modal_capacidad{{ miembro.id }}" class="modal modal-fixed-footer"
-                             style="width: 30% !important;
-                                    height: 40% !important;">
-
-                            <div class="modal-content">
-
-                                <h2>Cargar Horas de trabajo </h2>
-                                <p>NOMBRE : {{ miembro.first_name }} {{ miembro.last_name }}.</p>
-                                <p>Email : {{ miembro.email }}.</p>
-
-
-                                <div class="row">
-
-                                    <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/FormarEquipo/{{ miembro.id }}/"
-                                          method="POST"
-                                          class="col s12">
-                                        {% csrf_token %}
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <label for="capacidad-register">Capacidad para este sprint</label>
-                                                <input id="capacidad-register" name="capacidad" type="number"
-                                                       class="active validate">
-                                            </div>
-                                        </div>
-                                        <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
-                                        </button>
-                                    </form>
-                                </div>
-
-                            </div>
-                            <div class="modal-footer"
-                                 style=" width: 0 !important;max-height: 100% !important; height: 0 !important;">
-                            </div>
-
-                        </div>
                     {% endfor %}
                 </div>
             </div>
@@ -383,7 +314,6 @@
         </div>
 
     </div>
-
 
 </main>
 
@@ -518,7 +448,6 @@
         height: 40% !important;
     }
 </style>
-
 {% if messages %}
     <ul class="messages">
         {% for message in messages %}

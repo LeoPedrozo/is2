@@ -4086,6 +4086,78 @@ def informe_Sprint(request,id_proyecto,id_sprint):
 
     return response
 
+
+def informe_Historia_Sprint(request,id_proyecto):
+    """
+    Metodo para generar el reporte de todos los Sprints de un proyecto(actual o finalizado)
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    historiasSprint = {}
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+    for sprintseleccionado in proyecto.id_sprints.all():
+        #Caso que el sprint ya haya finalizado, usar el historico de la historia en el punto de fin
+        if sprintseleccionado.estados == 'FINALIZADO':
+            print("Sprint finalizado")
+            sprintActual2 = model_to_dict(sprintseleccionado)
+            historias = sprintseleccionado.historias.order_by('id_historia')
+            historiasList  = []
+            for hist in historias:
+                if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                        history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                    x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                        history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                    hist.nombre = x.nombre
+                    hist.encargado = x.encargado
+                    hist.descripcion = x.descripcion
+                    hist.prioridad = x.prioridad
+                    hist.horasEstimadas = x.horasEstimadas
+                    hist.horas_dedicadas = x.horas_dedicadas
+                    hist.estados = x.estados
+                    historiasList.append(hist)
+                else:
+                    print("No existe")
+        else:
+            #El caso de que el sprint no este finalizado, es el actual
+            historiasList = sprintseleccionado.historias.all()
+        historiasSprint[sprintseleccionado.sprintNumber] = historiasList
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+
+
+    context = {"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasDict":historiasSprint }
+
+    html = render_to_string("informe_US_AllSprints_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_AllSprints.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
 def informe_US_ProductBacklog(request, id_proyecto):
     if Proyecto.objects.filter(id=id_proyecto).exists():
         proyecto = Proyecto.objects.get(id=id_proyecto)

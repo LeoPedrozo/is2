@@ -1,4 +1,5 @@
 {% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
 {% load material_form %}
 
 {% load static %}
@@ -26,6 +27,11 @@
 </head>
 
 <body>
+<ul id="dropdown1" class="dropdown-content" style="alignment: left">
+    <li><a href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+    <li class="divider"></li>
+    <li><a href="/inicio/logout">Cerrar Sesion</a></li>
+</ul>
 <nav style="background-color: #2f2f2f;height: 10%" >
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="left hide-on-med-and-down">
@@ -55,15 +61,23 @@
         </ul>
     </div>
 </nav>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems, options);
+  });
+
+  // Or with jQuery
+
+  $('.dropdown-trigger').dropdown();
+
+</script>
 
 
 
     <div class="container">
-        <div class="card-action">
-        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-            <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
-        </a>
-        </div>
+        <p> </p>
         <h3> Modificar Sprint</h3>
         <div class="row">
             {% if form.errors %}

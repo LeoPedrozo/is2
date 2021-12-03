@@ -2833,7 +2833,8 @@ def modificarSprint2(request, id_proyecto, id_sprint):
             fechavalida=validarfechaingresada(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],1)
             if (fechavalida):
 
-                a= request.user.groups.filter(name='Scrum Master').count()
+                #a= request.user.groups.filter(name='Scrum Master').count()
+                print(formulario.cleaned_data)
 
                 updated_sprint = updateSprint(formulario.cleaned_data)
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
@@ -3158,7 +3159,7 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     calendarioParaguay = Paraguay()
     fechaInicio = sprintActual.fecha_inicio
     fechaFin = sprintActual.fecha_fin
-    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 2
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
 
     horaslaboralespordia=9
     capacidad_sprint_horas = dias_de_sprint * horaslaboralespordia
@@ -3270,6 +3271,8 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
 
     # Iniciar
     if (opcion == 3):
+
+
 
         #proyectoPropietario = User.objects.get(username=request.user.username).proyecto
         proyectoPropietario = Proyecto.objects.get(id=id_proyecto)

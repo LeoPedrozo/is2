@@ -32,6 +32,7 @@ def updateSprint(datosSprint):
     """
 
     newSprint = Sprint.objects.get(id=datosSprint['id'])
+    newSprint.fecha_inicio=datosSprint['fecha_inicio']
     newSprint.fecha_fin = datosSprint['fecha_fin']
     newSprint.save()
     return newSprint

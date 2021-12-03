@@ -1,4 +1,5 @@
 {% include 'material/includes/material_css.html' %}
+{% include 'material/includes/material_js.html' %}
 {% load material_form %}
 
 {% load static %}
@@ -26,13 +27,57 @@
 </head>
 
 <body>
+<ul id="dropdown1" class="dropdown-content" style="alignment: left">
+    <li><a href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+    <li class="divider"></li>
+    <li><a href="/inicio/logout">Cerrar Sesion</a></li>
+</ul>
+<nav style="background-color: #2f2f2f;height: 10%" >
+    <div class="nav-wrapper">
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+            <li><a href="#!" style="padding-left: 12px; padding-top: 10px;"> <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;"> </a></li>
+            <li><a href="/inicio/" style="font-size: larger">Inicio</a></li>
+            <li><a href="/proyecto/{{ proyecto.id }}/Sprints" style="font-size: larger"> Volver a Sprint</a></li>
+        </ul>
+
+
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <p style="line-height: 1.5;">
+                {{ usuario.first_name }} {{ usuario.last_name }} <br>
+            {{ usuario.email }} <br>
+            {{ proyecto.nombre }} | {{ Rol_de_usuario }}
+                </p>
+
+            <!-- Dropdown Trigger -->
+            <li>
+                <a class="dropdown-trigger" href="#!" data-target="dropdown1"  style="padding-right: 12px; padding-top: 10px;" ><img src="{{ avatar }}" class="circle" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;"><i class="material-icons left">arrow_drop_down</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems, options);
+  });
+
+  // Or with jQuery
+
+  $('.dropdown-trigger').dropdown();
+
+</script>
+
+
 
     <div class="container">
-        <div class="card-action">
-        <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-            <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
-        </a>
-        </div>
+        <p> </p>
         <h3> Modificar Sprint</h3>
         <div class="row">
             {% if form.errors %}

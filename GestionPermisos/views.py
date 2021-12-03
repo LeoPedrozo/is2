@@ -97,6 +97,8 @@ def registrar_usuario(correo, state):
     """
     user=User.objects.get(email=correo)
 
+
+
     grupo = Group.objects.get(name='registrado')
     users_in_group = grupo.user_set.all()
 

@@ -1,7 +1,3 @@
-{% include 'material/includes/material_css.html' %}
-{% include 'material/includes/material_js.html' %}
-{% load material_form %}
-{% load static %}
 {% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
@@ -9,69 +5,83 @@
     <meta charset="utf-8">
     <title>Kanban</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
 
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body style="margin:0; padding: 0">
+
+
+
 <main class="content">
-<!--Nav Bar nuevo-->
-<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
-    <!-- Container wrapper -->
-    <div class="container-fluid">
-        <!-- Toggle button -->
-        <button
-                class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <i class="fas fa-bars"></i>
-        </button>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
 
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
-                <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt="" loading="lazy"
-                     style="width:50px;height:50px;">
-                Grupo 8
-            </a>
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;">
+                    Grupo 8
+                </a>
 
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
 
-
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Menu de Proyecto</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints">Volver a Sprint</a></li>
 
 
 
-            </ul>
+                    {% if perms.Sprints.add_sprint and proyecto.estado == "INICIADO" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page"
+                               href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
+                        </li>
+                    {% endif %}
+                </ul>
 
-        </div>
-        <!-- Collapsible wrapper -->
-
-        <!-- Right elements -->
-        <div class="container_row" >
-            <div class="layer1" style="color: white; margin: -15%;">
-                {{ usuario.first_name }} {{ usuario.last_name }}
             </div>
-            <div class="layer2" style="color: white; margin: -15%;">
-                {{ usuario.email }}
+            <!-- Collapsible wrapper -->
+
+            <!-- Right elements -->
+            <div class="container_row " >
+                <div class="layer1 d-flex justify-content-end" style="color: white">
+                    {{ usuario.first_name }} {{ usuario.last_name }}
+                </div>
+                <div class="layer2 d-flex justify-content-end" style="color: white">
+                    {{ usuario.email }}
+                </div>
+                <div class="layer3 d-flex justify-content-end" style="color: white">
+                     {{ proyecto.nombre }} | {{ Rol_de_usuario }}
+                </div>
+
             </div>
-
-
-        </div>
 
             <div class="d-flex align-items-center">
 
@@ -86,7 +96,7 @@
                             <img src="{{ avatar }}" alt="" class="rounded-circle" style="width:50px;height:50px;">
                         {% endif %}
                     </a>
-                    <ul class="dropdown-menu" style="margin-left: -60%">
+                    <ul class="dropdown-menu">
                         {% if not user.is_superuser %}
                             <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
 
@@ -94,26 +104,14 @@
                         <li><a class="dropdown-item" href="/inicio/logout">Cerrar Sesion</a></li>
                     </ul>
                 </div>
+
+
             </div>
-
-    </div>
-</nav>
-
-
-
-<!--
-    <div class="col s12">
-        <div class="card-action">
-            <a href="http://127.0.0.1:8000/inicio/" style="color:dodgerblue;">
-                <i class="material-icons" style="vertical-align: -5px;">home</i>Volver a Inicio
-            </a>
         </div>
-    </div>
--->
-
-
+    </nav>
 
     <div class="container p-0">
+
         <p></p>
         <h1 class="h3 mb-3">SPRINT BACKLOG </h1>
         <h5> SPRINT NUMERO : {{ Sprint.sprintNumber }} </h5>
@@ -134,45 +132,79 @@
                     {% for historia in Historias %}
                         {% if historia.estados == 'PENDIENTE' %}
                             <div class="card-body p-3">
-                                <div class="card mb-3 bg-light">
+
+                            {% if historia.encargado == request.user%}
+                                <div class="card border-warning mb-3">
                                     <div class="card-body p-3">
-
-                                        <!--El menu de opciones-->
-                                        <div class="card-actions float-right">
-                                            <div class="dropdown show">
-                                                <a href="#" data-toggle="dropdown" data-display="static">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                         class="feather feather-more-horizontal align-middle">
-                                                        <circle cx="12" cy="12" r="1"></circle>
-                                                        <circle cx="19" cy="12" r="1"></circle>
-                                                        <circle cx="5" cy="12" r="1"></circle>
-                                                    </svg>
+                                        <!--Opciones de Historia-->
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
                                                 </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Pasar
+                                                        a en curso</a></li>
+                                                </ul>
+                                            </div>
 
-                                                <div class="dropdown-menu dropdown-menu-right">
 
-                                                    <a class="dropdown-item"
-                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint}}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Pasar a
-                                                        'En curso' </a>
-                                                    <a class="dropdown-item" href="#">Quitar </a>
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+
+                                        <!-- MODAL DE VER -->
+
+                                        <!-- Modal Trigger -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_pendiente_ver{{ historia.id_historia }}'), options)
+                                        </script>
+
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_pendiente_ver{{ historia.id_historia }}"> Ver </a>
+
+                                        <!--MODAL BODY-->
+                                        <div class="modal fade" id="modal_pendiente_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+                                                        <br><b>Descripcion</b>
+                                                        <p>{{ historia.descripcion }}.</p>
+
+                                                        <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
+                                                        <p>Prioridad : {{ historia.prioridad }}.</p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!--Cargar Datos-->
-                                        <p>Historia : {{ historia.nombre }}.</p>
-                                        <p>Encargado : {{ historia.encargado }}</p>
-                                        <!--Posible lugar para cargar foto de perfil del encargado-->
-                                        <div class="float-right mt-n1">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="32"
-                                                 height="32" class="rounded-circle" alt="Avatar">
-                                        </div>
-                                        <!-- Modal Trigger -->
+                                        <!--MODAL ANTIGUO-->
+                                        <!--
                                         <a class="btn btn-outline-primary btn modal-trigger"
                                            href="#modal{{ historia.id_historia }}">ver</a>
-                                        <!-- Modal Structure -->
+
                                         <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
                                             <div class="modal-content">
                                                 <h4>{{ historia.nombre }}.</h4>
@@ -189,16 +221,105 @@
                                                    class="modal-close waves-effect waves-green btn blue">Cerrar</a>
                                             </div>
                                         </div>
-
+--> <!--Fin modal Ver -->
                                     </div>
                                 </div>
+                            {% else %}
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body p-3">
+                                        <!--Opciones de Historia-->
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Pasar
+                                                        a en curso</a></li>
+                                                </ul>
+                                            </div>
+
+
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+
+                                        <!-- MODAL DE VER -->
+
+                                        <!-- Modal Trigger -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_pendiente_ver{{ historia.id_historia }}'), options)
+                                        </script>
+
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_pendiente_ver{{ historia.id_historia }}"> Ver </a>
+
+                                        <!--MODAL BODY-->
+                                        <div class="modal fade" id="modal_pendiente_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+                                                        <br><b>Descripcion</b>
+                                                        <p>{{ historia.descripcion }}.</p>
+
+                                                        <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
+                                                        <p>Prioridad : {{ historia.prioridad }}.</p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}.</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--MODAL ANTIGUO-->
+                                        <!--
+                                        <a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>
+
+                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                            <div class="modal-content">
+                                                <h4>{{ historia.nombre }}.</h4>
+                                                <br><b>Descripcion</b>
+                                                <p>{{ historia.descripcion }}.</p>
+
+                                                <p>Tiempo de estimacion : {{ historia.horasEstimadas }}.</p>
+                                                <p>Prioridad : {{ historia.prioridad }}.</p>
+                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}.</p>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <a href="#"
+                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
+                                            </div>
+                                        </div>
+-->
+                                        <!- Fin Modal ver -->
+                                    </div>
+                                </div>
+                            {% endif %}
+
                             </div>
-
-
-
                         {% endif %}
-
-
                     {% endfor %}
                 </div>
             </div>
@@ -209,15 +330,174 @@
                 <div class="card card-border-warning">
                     <div class="card-header">
                         <h5 class="card-title">En Curso</h5>
-                        <h6 class="card-subtitle text-muted">Historias que estan siendo desarrolladas.</h6>
+                        <h6 class="card-subtitle text-muted">Historias en desarrollo.</h6>
                     </div>
                     {% for historia in Historias %}
                         {% if historia.estados == 'EN_CURSO' %}
+
+                            <div class="modal fade" id="modal_Horas_Comentarios{{ historia.id_historia }}" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Cargar Horas y
+                                                Comentario</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" style="height: 250px">
+
+
+                                            <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 5 }}"
+                                                  method="GET">
+                                                <div class="mb-3">
+                                                    <label for="recipient-name" class="col-form-label">Horas:</label>
+                                                    <input type="number" name= "Horas" id="recipient-name">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="message-text" class="col-form-label">Comentario:</label>
+                                                    <input type="text" name="Comentario" id="message-text">
+                                                </div>
+                                            <div class="col" style="position: absolute; right: 20px;">
+
+                                                <button value="Cargar" type="submit" class="btn btn-primary">Cargar
+                                                </button>
+                                                <button type="button" class="btn btn-secondary blue"
+                                                        data-bs-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+
+                                            </div>
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div class="card-body">
+
+                                {% if historia.encargado == request.user%}
+                                <div class="card border-warning mb-3">
+                                    <div class="card-body p-3">
+                                        <!--El menu de opciones-->
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item" data-bs-toggle="modal"
+                                                           data-bs-target="#modal_Horas_Comentarios{{ historia.id_historia }}">
+                                                        Cargar Horas</a></li>
+
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 3 }}">Pasar
+                                                        a
+                                                        'Finalizado' </a></li>
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 1 }}">Volver
+                                                        a
+                                                        'Pendiente' </a></li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+                                        <!-- Modal NUEVO -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_encurso_ver{{ historia.id_historia }}'), options)
+                                        </script>
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_encurso_ver{{ historia.id_historia }}"> Ver </a>
+
+                                        <div class="modal fade" id="modal_encurso_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+
+                                                        <h6> Descripcion </h6>
+                                                        <p>{{ historia.descripcion }}</p>
+                                                        <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                        <p>Tiempo restante Estimado :
+                                                            {% with i=historia.horasEstimadas %}
+                                                                {% with x=historia.horas_dedicadas %}
+                                                                    {{ i|sub:x }}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        </p>
+                                                        <p>Comentarios : </p>
+                                                        {% for key, value in versionesDic.items %}
+                                                            {% if key is historia.id_historia %}
+                                                                <ul>
+                                                                    {% for cm in value %}
+                                                                        <li>{{ cm }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            {% else %}
                                 <div class="card mb-3 bg-light">
                                     <div class="card-body p-3">
 
                                         <!--El menu de opciones-->
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item" data-bs-toggle="modal"
+                                                           data-bs-target="#modal_Horas_Comentarios{{ historia.id_historia }}">
+                                                        Cargar Horas</a></li>
+
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 3 }}">Pasar
+                                                        a
+                                                        'Finalizado' </a></li>
+                                                    <li><a class="dropdown-item"
+                                                           href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 1 }}">Volver
+                                                        a
+                                                        'Pendiente' </a></li>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+
+                                        <!--
                                         <div class="card-actions float-right">
                                             <div class="dropdown show">
                                                 <a href="#" data-toggle="dropdown" data-display="static">
@@ -236,29 +516,87 @@
                                                        data-target="modal_cargarHorasUS{{ historia.id_historia }}">cargar
                                                         Horas </a>
                                                     <a class="dropdown-item"
-                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint}}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 3 }}">Pasar a
+                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 3 }}">Pasar
+                                                        a
                                                         'Finalizado' </a>
                                                     <a class="dropdown-item"
-                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint}}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 1 }}">Volver a
+                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 1 }}">Volver
+                                                        a
                                                         'Pendiente' </a>
 
                                                 </div>
                                             </div>
+
+
                                         </div>
+                                       -->
                                         <!--Cargar Datos-->
-                                        <p>Historia : {{ historia.nombre }}.</p>
-                                        <p>Encargado : {{ historia.encargado }}.</p>
-                                        <p>Prioridad : {{ historia.prioridad }}.</p>
-                                        <!--Posible lugar para cargar foto de perfil del encargado-->
-                                        <div class="float-right mt-n1">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" width="32"
-                                                 height="32" class="rounded-circle" alt="Avatar">
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+
+                                        <!-- Modal NUEVO -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_encurso_ver{{ historia.id_historia }}'), options)
+                                        </script>
+
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_encurso_ver{{ historia.id_historia }}"> Ver </a>
+
+
+                                        <div class="modal fade" id="modal_encurso_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+
+                                                        <h6> Descripcion </h6>
+                                                        <p>{{ historia.descripcion }}</p>
+                                                        <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                        <p>Tiempo restante Estimado :
+                                                            {% with i=historia.horasEstimadas %}
+                                                                {% with x=historia.horas_dedicadas %}
+                                                                    {{ i|sub:x }}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        </p>
+                                                        <p>Comentarios : </p>
+                                                        {% for key, value in versionesDic.items %}
+                                                            {% if key is historia.id_historia %}
+                                                                <ul>
+                                                                    {% for cm in value %}
+                                                                        <li>{{ cm }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+
+
                                         <!-- INICIO Modal de Ver DETALLES DE HISTORIA -->
-                                        <a class="btn btn-outline-primary btn modal-trigger"
-                                           href="#modal{{ historia.id_historia }}">ver</a>
+                                        <!--<a class="btn btn-outline-primary btn modal-trigger"
+                                           href="#modal{{ historia.id_historia }}">ver</a>-->
                                         <!-- Modal Structure -->
-                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
+                                        <!--<div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
                                             <div class="modal-content">
                                                 <h4>{{ historia.nombre }}.</h4>
 
@@ -290,51 +628,15 @@
                                                 <a href="#"
                                                    class="modal-close waves-effect waves-green btn blue">Cerrar</a>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <!-- FINAL Modal de Ver DETALLES DE HISTORIA -->
                                     </div>
                                 </div>
+                            {% endif %}
+
+
 
                             </div>
-
-                            <!--INICIO Modal para cargar Historia y comentarios-->
-                            <div id="modal_cargarHorasUS{{ historia.id_historia }}" class="modal "
-                                 style="width: 30% !important;
-                                    height: 60% !important;">
-
-                                <div class="modal-content">
-                                    <h2>Cargar Horas de trabajos y Comentarios</h2>
-
-                                    <div class="row">
-                                        <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint}}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 5 }}" method="POST"
-                                              class="col s12">
-                                            {% csrf_token %}
-                                            <div class="row">
-                                                <div class="input-field col s12">
-                                                    <label for="horas-register">Horas dedicadas</label>
-                                                    <input id="horas-register" name="horas" type="number"
-                                                           class="active validate">
-                                                    <p>
-                                                        <label for="comentario-register">Comentario</label>
-                                                        <input id="comentario-register" name="comentario" type="text"
-                                                               class="active validate">
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer" style=" width: 0 !important;
-        max-height: 100% !important;
-        height: 0 !important;">
-
-                                </div>
-                            </div>
-
-                            <!--FIN Modal para cargar Historia y comentarios-->
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -352,73 +654,176 @@
                         {% if historia.estados == 'FINALIZADO' %}
 
                             <div class="card-body">
-                                <div class="card mb-3 bg-light">
+
+                                {% if historia.encargado == request.user%}
+                                <div class="card border-warning mb-3">
                                     <div class="card-body p-3">
                                         <!--El menu de opciones-->
-                                        <div class="card-actions float-right">
-                                            <div class="dropdown show">
-                                                <a href="#" data-toggle="dropdown" data-display="static">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                         class="feather feather-more-horizontal align-middle">
-                                                        <circle cx="12" cy="12" r="1"></circle>
-                                                        <circle cx="19" cy="12" r="1"></circle>
-                                                        <circle cx="5" cy="12" r="1"></circle>
-                                                    </svg>
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
                                                 </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item"
+                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Volver a
+                                                        'En Curso' </a></li>
+                                                </ul>
+                                            </div>
 
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item"
-                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint}}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Volver a
-                                                        'En Curso' </a>
+
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+
+                                        <!-- Modal NUEVO -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_finalizado_ver{{ historia.id_historia }}'), options)
+                                        </script>
+
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_finalizado_ver{{ historia.id_historia }}"> Ver </a>
+
+
+                                        <div class="modal fade" id="modal_finalizado_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+
+                                                        <h6> Descripcion </h6>
+                                                        <p>{{ historia.descripcion }}</p>
+                                                        <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                        <p>Tiempo restante Estimado :
+                                                            {% with i=historia.horasEstimadas %}
+                                                                {% with x=historia.horas_dedicadas %}
+                                                                    {{ i|sub:x }}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        </p>
+                                                        <p>Comentarios : </p>
+                                                        {% for key, value in versionesDic.items %}
+                                                            {% if key is historia.id_historia %}
+                                                                <ul>
+                                                                    {% for cm in value %}
+                                                                        <li>{{ cm }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!--Cargar Datos-->
-                                        <p>Historia : {{ historia.nombre }}.</p>
-                                        <p>Encargado : {{ historia.encargado }}.</p>
-                                        <p>Prioridad : {{ historia.prioridad }}.</p>
-                                        <!--Posible lugar para cargar foto de perfil del encargado-->
-                                        <div class="float-right mt-n1">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" width="32"
-                                                 height="32" class="rounded-circle" alt="Avatar">
-                                        </div>
-                                        <!-- Modal Trigger -->
-                                        <a class="btn btn-outline-primary btn modal-trigger"
-                                           href="#modal{{ historia.id_historia }}">ver</a>
-                                        <!-- Modal Structure -->
-                                        <div id="modal{{ historia.id_historia }}" class="modal modal-fixed-footer">
-                                            <div class="modal-content">
-                                                <h4>{{ historia.nombre }}.</h4>
-
-                                                <h6> Descripcion </h6>
-                                                <p>{{ historia.descripcion }}</p>
-                                                <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
-                                                <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
-                                                <p>Prioridad : {{ historia.prioridad }}.</p>
-                                                <p>Comentarios : </p>
-                                                {% for key, value in versionesDic.items %}
-                                                    {% if key is historia.id_historia %}
-                                                        <ul>
-                                                            {% for cm in value %}
-                                                                <li>{{ cm }}</li>
-                                                            {% endfor %}
-                                                        </ul>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <a href="#"
-                                                   class="modal-close waves-effect waves-green btn blue">Cerrar</a>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                  {% else %}
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body p-3">
+                                        <!--El menu de opciones-->
+                                        <div class="card-title d-flex justify-content-end">
+                                            <div class="dropdown">
+                                                <a type="button" id="dropdownMenuPendiente" data-bs-toggle="dropdown"
+                                                   aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuPendiente">
+                                                    <li><a class="dropdown-item"
+                                                       href="/proyecto/{{ ID_proyecto }}/Sprints/{{ ID_sprint }}/KanbanActivo/Historia{{ historia.id_historia }}/Op{{ 2 }}">Volver a
+                                                        'En Curso' </a></li>
+                                                </ul>
+                                            </div>
 
+
+                                        </div>
+
+                                        <!--Cargar Datos-->
+                                        <h6 style="color:dodgerblue "> Nombre</h6>
+                                        <p>{{ historia.nombre }}.</p>
+                                        <h6 style="color:dodgerblue ">Encargado</h6>
+                                        <p> {{ historia.encargado.email }}</p>
+
+                                        <!-- Modal NUEVO -->
+                                        <script>
+                                            var myModal = new bootstrap.Modal(document.getElementById('modal_finalizado_ver{{ historia.id_historia }}'), options)
+                                        </script>
+
+                                        <a class="btn btn-outline-primary" data-bs-toggle="modal"
+                                           data-bs-target="#modal_finalizado_ver{{ historia.id_historia }}"> Ver </a>
+
+
+                                        <div class="modal fade" id="modal_finalizado_ver{{ historia.id_historia }}"
+                                             tabindex="-1"
+                                             aria-labelledby="exampleModalLabel2"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel2">Informacion de
+                                                            Historia</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h4>{{ historia.nombre }}.</h4>
+
+                                                        <h6> Descripcion </h6>
+                                                        <p>{{ historia.descripcion }}</p>
+                                                        <p>Tiempo de Estimacion: {{ historia.horasEstimadas }}. </p>
+                                                        <p>Horas dedicadas : {{ historia.horas_dedicadas }}. </p>
+                                                        <p>Tiempo restante Estimado :
+                                                            {% with i=historia.horasEstimadas %}
+                                                                {% with x=historia.horas_dedicadas %}
+                                                                    {{ i|sub:x }}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        </p>
+                                                        <p>Comentarios : </p>
+                                                        {% for key, value in versionesDic.items %}
+                                                            {% if key is historia.id_historia %}
+                                                                <ul>
+                                                                    {% for cm in value %}
+                                                                        <li>{{ cm }}</li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary blue"
+                                                                data-bs-dismiss="modal">Cerrar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -426,208 +831,258 @@
             </div>
 
 
-            <!--Modal de extender-->
-            <div id="modal_extender" class="modal "
-                 style="width: 30% !important;
-                                    height: 60% !important;">
-
-                <div class="modal-content">
-                    <h2>Cargar Nueva de finalizacion</h2>
-
-                    <div class="row">
-                        <form action="/proyecto/{{ ID_proyecto }}/Sprints/{{ Sprint.pk }}/KanbanActivo/accion+expandir/" method="GET"
-                              class="col s12">
-
-                            {{ ExtenderForm }}
-
-                            <button value="Cargar" type="submit" class="modal-close btn blue">Cargar
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-                <div class="modal-footer" style=" width: 0 !important;
-        max-height: 100% !important;
-        height: 0 !important;">
-                </div>
-            </div>
-
-
-            </div>
-
         </div>
 
-
     </div>
-
 
 </main>
 
 
-<style type="text/css">
-    body {
-        margin-top: 20px;
-        background: #fafafa
-    }
-
-    .card {
-        margin-bottom: 1.5rem;
-        box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .025)
-    }
-
-    .card-border-primary {
-        border-top: 4px solid #2979ff
-    }
-
-    .card-border-secondary {
-        border-top: 4px solid #efefef
-    }
-
-    .card-border-success {
-        border-top: 4px solid #00c853
-    }
-
-    .card-border-info {
-        border-top: 4px solid #3d5afe
-    }
-
-    .card-border-warning {
-        border-top: 4px solid #ff9100
-    }
-
-    .card-border-danger {
-        border-top: 4px solid #ff1744
-    }
-
-    .card-border-light {
-        border-top: 4px solid #f8f9fa
-    }
-
-    .card-border-dark {
-        border-top: 4px solid #6c757d
-    }
-
-    .card-header {
-        border-bottom-width: 1px
-    }
-
-    .card-actions a {
-        color: #495057;
-        text-decoration: none
-    }
-
-    .card-actions svg {
-        width: 16px;
-        height: 16px
-    }
-
-    .card-actions .dropdown {
-        line-height: 1.4
-    }
-
-    .card-title {
-        font-weight: 500;
-        margin-top: .1rem
-    }
-
-    .card-subtitle {
-        font-weight: 400
-    }
-
-    .card-table {
-        margin-bottom: 0
-    }
-
-    .card-table tr td:first-child,
-    .card-table tr th:first-child {
-        padding-left: 1.25rem
-    }
-
-    .card-table tr td:last-child,
-    .card-table tr th:last-child {
-        padding-right: 1.25rem
-    }
-
-    .card-img-top {
-        height: 100%
-    }
-
-    .card {
-        margin-bottom: 1.5rem;
-        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, .025);
-    }
-
-    .card {
-        position: relative;
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        min-width: 0;
-        word-wrap: break-word;
-        background-color: #fff;
-        background-clip: border-box;
-        border: 1px solid #e5e9f2;
-        border-radius: .2rem;
-    }
-
-    .card-header:first-child {
-        border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
-    }
-
-    .card-header {
-        border-bottom-width: 1px;
-    }
-
-    .card-header {
-        padding: .75rem 1.25rem;
-        margin-bottom: 0;
-        color: inherit;
-        background-color: #fff;
-        border-bottom: 1px solid #e5e9f2;
-    }
-
-    .modal {
-
-        width: 30% !important;
-        max-height: 100% !important;
-        height: 40% !important;
-    }
-</style>
-
-{% if messages %}
-    <ul class="messages">
+    {% if messages %}
         {% for message in messages %}
             {% if message.tags == 'success' %}
-                <script>M.toast({html: "{{ message }}", classes: 'green rounded', displayLength: 5000});</script>
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
             {% elif message.tags == 'info' %}
-                <script>M.toast({html: "{{ message }}", classes: 'blue rounded', displayLength: 5000});</script>
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
             {% elif message.tags == 'warning' %}
-                <script>M.toast({html: "{{ message }}", classes: 'yellow rounded', displayLength: 5000});</script>
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
             {% elif message.tags == 'error' %}
-                <script>M.toast({html: "{{ message }}", classes: 'red rounded', displayLength: 5000});</script>
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
             {% endif %}
         {% endfor %}
-    </ul>
-{% endif %}
+    {% endif %}
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        //Dropdown menu
+    <style type="text/css">
+        .toast-title {
+            font-weight: bold;
+        }
 
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl)
-        })
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems);
-    });
-</script>
+        .toast-message {
+            -ms-word-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        .toast-message a,
+        .toast-message label {
+            color: #ffffff;
+        }
+
+        .toast-message a:hover {
+            color: #cccccc;
+            text-decoration: none;
+        }
+
+        .toast-close-button {
+            position: relative;
+            right: -0.3em;
+            top: -0.3em;
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            -webkit-text-shadow: 0 1px 0 #ffffff;
+            text-shadow: 0 1px 0 #ffffff;
+            opacity: 0.8;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+            filter: alpha(opacity=80);
+        }
+
+        .toast-close-button:hover,
+        .toast-close-button:focus {
+            color: #000000;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+            filter: alpha(opacity=40);
+        }
+
+        /*Additional properties for button version
+         iOS requires the button element instead of an anchor tag.
+         If you want the anchor version, it requires `href="#"`.*/
+        button.toast-close-button {
+            padding: 0;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            -webkit-appearance: none;
+        }
+
+        .toast-top-center {
+            top: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        .toast-bottom-center {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        .toast-top-full-width {
+            top: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        .toast-bottom-full-width {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+        }
+
+        .toast-top-left {
+            top: 12px;
+            left: 12px;
+        }
+
+        .toast-top-right {
+            top: 12px;
+            right: 12px;
+        }
+
+        .toast-bottom-right {
+            right: 12px;
+            bottom: 12px;
+        }
+
+        .toast-bottom-left {
+            bottom: 12px;
+            left: 12px;
+        }
+
+        #toast-container {
+            position: fixed;
+            z-index: 999999;
+            /*overrides*/
+
+        }
+
+        #toast-container * {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        #toast-container > div {
+            position: relative;
+            overflow: hidden;
+            margin: 0 0 6px;
+            padding: 15px 15px 15px 50px;
+            width: 300px;
+            -moz-border-radius: 3px 3px 3px 3px;
+            -webkit-border-radius: 3px 3px 3px 3px;
+            border-radius: 3px 3px 3px 3px;
+            background-position: 15px center;
+            background-repeat: no-repeat;
+        {#-moz-box-shadow: 0 0 12px #999999;#}{#-webkit-box-shadow: 0 0 12px #999999;#}{#box-shadow: 0 0 12px #999999;#}{#color: #ffffff;#} opacity: 1;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+            filter: alpha(opacity=100);
+        }
+
+        #toast-container > div:hover {
+        {#-moz-box-shadow: 0 0 12px #000000;#}{#-webkit-box-shadow: 0 0 12px #000000;#}{#box-shadow: 0 0 12px #000000;#} opacity: 1;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
+            filter: alpha(opacity=100);
+            cursor: pointer;
+        }
+
+        #toast-container > .toast-info {
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII=") !important;
+        }
+
+        #toast-container > .toast-error {
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=") !important;
+        }
+
+        #toast-container > .toast-success {
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg==") !important;
+        }
+
+        #toast-container > .toast-warning {
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII=") !important;
+        }
+
+        #toast-container.toast-top-center > div,
+        #toast-container.toast-bottom-center > div {
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #toast-container.toast-top-full-width > div,
+        #toast-container.toast-bottom-full-width > div {
+            width: 96%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .toast {
+            background-color: #030303;
+        }
+
+        .toast-success {
+            background-color: #51a351;
+        }
+
+        .toast-error {
+            background-color: #bd362f;
+        }
+
+        .toast-info {
+            background-color: #2f96b4;
+        }
+
+        .toast-warning {
+            background-color: #f89406;
+        }
+
+        .toast-progress {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 4px;
+            background-color: #000000;
+            opacity: 0.4;
+            -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
+            filter: alpha(opacity=40);
+        }
+
+        /*Responsive Design*/
+        @media all and (max-width: 240px) {
+            #toast-container > div {
+                padding: 8px 8px 8px 50px;
+                width: 11em;
+            }
+
+            #toast-container .toast-close-button {
+                right: -0.2em;
+                top: -0.2em;
+            }
+        }
+
+        @media all and (min-width: 241px) and (max-width: 480px) {
+            #toast-container > div {
+                padding: 8px 8px 8px 50px;
+                width: 18em;
+            }
+
+            #toast-container .toast-close-button {
+                right: -0.2em;
+                top: -0.2em;
+            }
+        }
+
+        @media all and (min-width: 481px) and (max-width: 768px) {
+            #toast-container > div {
+                padding: 15px 15px 15px 50px;
+                width: 25em;
+            }
+        }
+
+    </style>
 
 </body>
 </html>

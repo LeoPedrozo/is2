@@ -34,7 +34,8 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     infoUsuario, modificarProyecto2, tableroQA_Release2, modificarHistoria2, eliminarHistoria2, step1_SprintPlanning2, \
     step2_SprintPlanning2, asignarCapacidad2, step3_SprintPlanning2, step3_Funcionalidades, modificarSprint2, \
     sprintBacklog2, tableroKanban2, moverHistoria2, funcionalidadesQA, KanbanHistorico, eliminarSprint2, homeProyecto, \
-    eliminarProyecto2, intercambiarMiembro, accesoDenegado, infoSprint
+    eliminarProyecto2, intercambiarMiembro, accesoDenegado, infoSprint, informe_US_ProductBacklog, informe_Sprint, \
+    informe_Historia_Sprint,informe_BurndownChart, historicoProyecto, informe_Proyecto
 from django.conf.urls import url
 
 
@@ -78,8 +79,8 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/eliminar/',eliminarProyecto2), #ok
     path('importarRoles/',importarRol),
     path('inicio/<int:id>/',swichProyecto),
-
-
+    path('proyecto/<int:id_proyecto>/historial/',historicoProyecto),
+    path('proyecto/<int:id_proyecto>/informeRegistro/',informe_Proyecto),
     #NUEVOS URLS relacionados a Historia
 
     path('proyecto/<int:id_proyecto>/ProductBacklog/nuevo/', crearHistoria),
@@ -101,7 +102,7 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/modificar/<int:id_sprint>/InformacionBasica/',modificarSprint2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/', step2_SprintPlanning2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarHistorias/', step3_SprintPlanning2),
-    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/', asignarCapacidad2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/<str:opcion>', asignarCapacidad2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarEncargado/Historia<int:id_historia>/Op<int:opcion>/', step3_Funcionalidades),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/Eliminar/', eliminarSprint2), #ok
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/info/', infoSprint), #ok
@@ -119,11 +120,12 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/',tableroQA_Release2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/QualityAssurance/<int:id_historia>/<int:opcion>/', funcionalidadesQA),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/kanbanHistorico/',KanbanHistorico),
+    path('proyecto/<int:id_proyecto>/exportUS/', informe_US_ProductBacklog),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/exportUS/', informe_Sprint),
+    path('proyecto/<int:id_proyecto>/exportUSALL/', informe_Historia_Sprint),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/exportBurndownChart/',informe_BurndownChart),
 
-
-
-
-#----------------------------------OLD URLS------------------------------------------
+    #----------------------------------OLD URLS------------------------------------------
 
 
     #Url ya desactualizado

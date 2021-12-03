@@ -85,6 +85,11 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/Finalizar/">Finalizar Proyecto</a></li>
                     {% endif %}
+
+                    {% if proyecto.historial %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ proyecto.pk }}/historial/">Historial</a></li>
+                    {% endif %}
                 {% endif %}
                 </ul>
 
@@ -100,7 +105,7 @@
                     {{ usuario.email }}
                 </div>
                 <div class="layer2" style="color: white">
-                    {{ Rol_de_usuario }}
+                    {{ proyecto.nombre }} | {{ Rol_de_usuario }}
                 </div>
             </div>
 

@@ -16,7 +16,7 @@
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
     <meta charset="UTF-8">
-    <title>Sprint Backlog</title>
+    <title>Historial del Proyecto</title>
 </head>
 <body>
 
@@ -50,16 +50,7 @@
                         <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
 
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/Sprints">Volver al Sprint</a></li>
-
-
-
-                    {% if perms.Sprints.add_sprint and proyecto.estado == "INICIADO" %}
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page"
-                               href="/proyecto/{{ ID_proyecto }}/Sprints/nuevo/InformacionBasica/">Crear Sprint</a>
-                        </li>
-                    {% endif %}
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Volver al Proyecto</a></li>
                 </ul>
 
             </div>
@@ -109,110 +100,32 @@
 <p></p>
 <div class="container">
   <div class="row">
-    <h3 class="text-info">SPRINT BACKLOG</h3>
-      <h4>Sprint Numero : {{ sprint.sprintNumber }}</h4>
-      <h5>Cantidad de Historias : {{ cantidad_de_historias }}</h5>
-  </div>
-    {% if not historiasAlta and not historiasBaja and not historiasMedia %}
-    <div class="card-action" style="position:relative; left:10px;">
-        <p><i class="material-icons red-text" style="vertical-align: -5px;">info</i> Aun no hay historias creadas</p>
-    </div>
-{% else %}
-    <a class="btn btn-primary btn-lg" href="/proyecto/{{ ID_proyecto }}/Sprints/{{ sprint.id }}/exportUS/" target="_blank" role="button"><i class="fas fa-file-pdf">&nbsp;Imprimir</i></a>
+    <h3 class="text-info">HISTORIAL DEL PROYECTO</h3>
+      <h4> Proyecto : {{ proyecto.nombre }}</h4>
+      <h5> {{ proyecto.descripcion }}</h5>
     <p></p>
-{% endif %}
-</div>
+  </div>
+      <a class="btn btn-primary" href="/proyecto/{{ ID_proyecto }}/informeRegistro/" target="_blank" role="button"><i class="fas fa-file-pdf">&nbsp;Imprimir</i></a>
 
-<div class="container">
-<table class="table">
+    <table class="table">
   <thead class="thead-light">
     <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Descripcion</th>
-      <th scope="col">Prioridad</th>
-      <th scope="col">Fecha Creacion</th>
-      <th scope="col">Encargado</th>
-      <th scope="col">Horas Estimadas</th>
-      <th scope="col">Horas Dedicadas</th>
-      <th scope="col">Estado</th>
+      <th scope="col">Registro de cambios en el proyecto</th>
     </tr>
   </thead>
   <tbody>
-          {% for historia in historiasAlta %}
+          {% for registro in Registros %}
     <tr>
-        <th scope="row">{{ historia.id_historia }}</th>
-        <td>{{ historia.nombre }}</td>
-        <td>{{ historia.descripcion }}</td>
-        <td>{{ historia.prioridad }}</td>
-        <td>{{ historia.fecha_creacion }}</td>
-        {% if historia.encargado %}
-            <td>{{ historia.encargado }}</td>
-        {% else %}
-            <td>---</td>
-        {% endif %}
-
-        <td>{{ historia.horasEstimadas }}</td>
-        <td>{{ historia.horas_dedicadas }}</td>
-        {% if historia.estados %}
-        <td>{{ historia.estados }}</td>
-        {% else %}
-         <td></td>
-        {% endif %}
-    </tr>
-          {% endfor %}
-  </tbody>
-
-<tbody>
-          {% for historia in historiasMedia %}
-    <tr>
-        <th scope="row">{{ historia.id_historia }}</th>
-        <td>{{ historia.nombre }}</td>
-        <td>{{ historia.descripcion }}</td>
-        <td>{{ historia.prioridad }}</td>
-        <td>{{ historia.fecha_creacion }}</td>
-        {% if historia.encargado %}
-            <td>{{ historia.encargado }}</td>
-        {% else %}
-            <td>---</td>
-        {% endif %}
-
-        <td>{{ historia.horasEstimadas }}</td>
-        <td>{{ historia.horas_dedicadas }}</td>
-        {% if historia.estados %}
-        <td>{{ historia.estados }}</td>
-        {% else %}
-         <td></td>
-        {% endif %}
-    </tr>
-          {% endfor %}
-  </tbody>
-
-<tbody>
-          {% for historia in historiasBaja %}
-    <tr>
-        <th scope="row">{{ historia.id_historia }}</th>
-        <td>{{ historia.nombre }}</td>
-        <td>{{ historia.descripcion }}</td>
-        <td>{{ historia.prioridad }}</td>
-        <td>{{ historia.fecha_creacion }}</td>
-        {% if historia.encargado %}
-            <td>{{ historia.encargado }}</td>
-        {% else %}
-            <td>---</td>
-        {% endif %}
-
-        <td>{{ historia.horasEstimadas }}</td>
-        <td>{{ historia.horas_dedicadas }}</td>
-        {% if historia.estados %}
-        <td>{{ historia.estados }}</td>
-        {% else %}
-         <td></td>
-        {% endif %}
+        <td>{{ registro }}</td>
     </tr>
           {% endfor %}
   </tbody>
 </table>
+
+</div>
+
+<div class="container">
+
 </div>
 
 </body>

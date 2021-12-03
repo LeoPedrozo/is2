@@ -17,6 +17,9 @@ from Sprints.views import nuevoSprint, updateSprint, guardarCamposdeSprint, getS
 from gestionUsuario.forms import asignarcapacidadForm
 from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
+from is2.emails import email_rolAsignado, email_nuevoProyecto, email_historiaAsignado, email_actividadEnKanban, \
+    email_actividadEnQA, email_nuevoSprint, email_sprintExtFin, email_proyectoFin, email_proyectoIni, \
+    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado, sprintVerificado, email_excluidoDelProyecto
 from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from proyectos.models import Proyecto
@@ -26,6 +29,12 @@ from userStory.forms import crearHistoriaForm, seleccionarHistoriaForm, modifica
 from userStory.models import Historia
 from userStory.views import nuevaHistoria, updateHistoria, asignarEncargado
 
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
+from weasyprint import HTML
+from weasyprint.text.fonts import FontConfiguration
+from django.contrib import auth
 
 # Hola mundo para probar django
 @login_required
@@ -190,6 +199,13 @@ def step2_asignarRol(request):
             # user_object.groups.clear()
             # enlazar con el rol asignado para el proyecto
             enlazar_Usuario_con_Rol(user_object, rol_object)
+
+            #Email 1.2 de rol asignado a usuario.
+            email_rolAsignado(user_object, rol_object, proyecto_object)
+
+            #-----------------------------------
+
+
             # registrar_usuario(user_object, 'True')
             # user_object.save()
             # Retornar mensaje de exito
@@ -547,10 +563,18 @@ def crearProyecto(request):
             datosProyecto = formulario.cleaned_data
             miembros = formulario.cleaned_data["miembros"]
             proyecto = nuevoProyecto(formulario.cleaned_data)
-
+            creadoPor = auth.get_user(request)
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}]Se ha creado un nuevo proyecto {proyecto.nombre} por {creadoPor.username}")
+            proyecto.save()
             # proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto, miembros)
-            # Retornar mensaje de exito
+
+            #Email-1 Agregar usuario a proyecto. Pero sin especificar su rol
+            email_nuevoProyecto(proyecto, miembros)
+
+            #-----------------------------------
             return render(request, "outputcrearProyecto.html", {"proyectoCreado": datosProyecto})
     else:
         #Lista de miembros
@@ -591,8 +615,14 @@ def modificarProyecto(request):
 
                 # se agrega los usuarios nuevos
                 asociarProyectoaUsuario(proyecto, usuarios)
+
                 # se elimina los usuarios viejos
                 desasociarUsuariodeProyecto(miembros)
+
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                modificadoPor = auth.get_user(request)
+                proyecto.historial.append(f"[{dt_string}] El proyecto {proyecto.nombre} ha sido modificado por {modificadoPor.username}")
 
                 miembrosActuales = User.objects.all().filter(proyecto=idproyecto)
                 # Retornar mensaje de exito
@@ -646,13 +676,21 @@ def modificarProyecto2(request,id_proyecto):
 
                 # se agrega los usuarios nuevos
                 asociarProyectoaUsuario(proyecto, usuarios)
+                email_nuevoProyecto(proyecto, usuarios)
                 # se elimina los usuarios viejos
-                desasociarUsuariodeProyecto(proyecto,miembros)
 
-                miembrosActuales = User.objects.filter(proyecto=idproyecto)
-                # Retornar mensaje de exito
-                return render(request, "outputmodificarProyecto.html",
+                if(verificarOcupaciondemiembros(id_proyecto,miembros)):
+
+
+                    desasociarUsuariodeProyecto(proyecto,miembros)
+                    email_excluidoDelProyecto(proyecto, miembros)
+                    miembrosActuales = User.objects.filter(proyecto=idproyecto)
+                    # Retornar mensaje de exito
+                    return render(request, "outputmodificarProyecto.html",
                               {"proyectoCreado": datosProyecto, "members": miembrosActuales})
+                else:
+                    return render(request, "Condicion_requerida.html", {"mensaje": "No puede quitar a los usuarios que selecciono ya que algunos de ellos necesita ser sustituido en el sprint activo"})
+
         else:
             #usuarioActual = User.objects.get(username=request.user.username)
             #if (usuarioActual.proyecto == None):
@@ -667,6 +705,22 @@ def modificarProyecto2(request,id_proyecto):
         print("El usuario no posee ningun proyecto")
         messages.error(request, 'El usuario no posee ningun proyecto')
         return redirect(inicio)
+
+
+
+def verificarOcupaciondemiembros(id_proyecto,emails):
+    proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
+
+    usuarios=[]
+    for e in emails:
+        usuarios.append(User.objects.get(email=e))
+
+    for u in usuarios:
+        if(len(Historia.objects.filter(proyecto=proyecto_seleccionado,estados="EN_CURSO",encargado=u))!=0):
+            return False
+
+    return True
+
 
 
 
@@ -868,7 +922,15 @@ def step1_SprintPlanning(request):
             datosSprint = formulario.cleaned_data
             print("SE CREA EL SPRINT")
             newSprint = nuevoSprint(datosSprint)
-
+            usuarioActual = User.objects.get(username=request.user.username)
+            if usuarioActual.proyecto_id is None:
+                print("No forma parte de ningun proyecto")
+            else:
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                proyecto = usuarioActual.proyecto
+                proyecto.historial.append(f"[{dt_string}] Se ha creado el sprint {newSprint.sprintNumber} del proyecto {proyecto.nombre} por {usuarioActual.username}")
+                proyecto.save()
             # Por practicidad se le pasa el id del sprint
             request.session['sprint_planning_id'] = newSprint.id
             # return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
@@ -1043,6 +1105,13 @@ def step3_asignarEncargado(request, id, opcion):
                 h.encargado = encargado
                 h.estados = 'PENDIENTE'
                 h.save()
+
+                proyecto = h.proyecto
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                proyecto.historial.append(f"[{dt_string}] Se ha asignado un encargado a la historia {h.nombre} por "
+                                          f"{request.user.username}, Encargado asignado: {encargado.username}")
+                proyecto.save()
                 # Se le agrega al sprint
                 sprint_actual.historias.add(h)
                 sprint_actual.save()
@@ -1330,8 +1399,13 @@ def crearHistoria(request,id_proyecto):
             datosHistoria['proyecto'] = getProyecto(formulario.cleaned_data['proyecto'])
 
 
-            nuevaHistoria(datosHistoria)
-
+            newHist = nuevaHistoria(datosHistoria)
+            proyecto = Proyecto.objects.get(id=id_proyecto)
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}] Se ha creado la historia {newHist.nombre} por "
+                                      f"{request.user.username}")
+            proyecto.save()
             # Retornar mensaje de exito
             return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria,"ID_proyecto":id_proyecto})
     else:
@@ -1423,7 +1497,13 @@ def modificarHistoria(request):
             print(datosdeHistoria)
             # metodo que realiza la logica de la modificacion
 
-            updateHistoria(datosdeHistoria)
+            hist = updateHistoria(datosdeHistoria)
+            proyecto = hist.proyecto
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}] Se ha modificado la historia {hist.nombre} por "
+                                      f"{request.user.username}")
+            proyecto.save()
             # Retornar mensaje de exito
             return render(request, "outputmodificarHistoria.html", {"historiaModificada": datosdeHistoria})
     else:
@@ -1827,10 +1907,7 @@ def moverHistoriaQA(request,id_proyecto,id_sprint,id_historia, opcion):
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
-        if h.prioridad == 'BAJA':
-            h.prioridad = 'MEDIA'
-        else:
-            h.prioridad = 'ALTA'
+        h.prioridad = 'ALTA'
         messages.info(request, "Historia rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
         h.save()
@@ -2062,15 +2139,20 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
         fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
 
     proyectoActual = Proyecto.objects.get(id=id_proyecto)
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
 
     for hist in listaHistorias:
         if hist.history.filter(
                 Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                    history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
 
             x = hist.history.filter(
                 Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
-                    history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1)))
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1)))
 
             listaDeComentarios = []
 
@@ -2090,21 +2172,22 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
 
     for hist in listaHistorias:
         if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
-                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
+                history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
             x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
-                history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).last()
+                history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
             hist.nombre = x.nombre
+            hist.encargado = x.encargado
             hist.descripcion = x.descripcion
             hist.prioridad = x.prioridad
             hist.horasEstimadas = x.horasEstimadas
             hist.horas_dedicadas = x.horas_dedicadas
             hist.estados = x.estados
-            finalizo = x.history_date
+            print("historia : ",hist)
         else:
             print("No existe")
     return render(request, "KanbanHistorico.html",
                   {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual})
+                   "versionesDic": versionesDic,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual, "proyecto":proyectoActual,"Rol_de_usuario":rol})
 
 
 # 4 cuando se selecciona ver Product backlog
@@ -2135,193 +2218,13 @@ def HistorialProductBacklog(request, id_proyecto):
 
 
     if Historia.objects.filter(proyecto=proyecto_seleccionado).exists():
-        historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
+        historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado).order_by('id_historia')
     else:
         historia_list = historia_list = Historia.objects.filter(proyecto=proyecto_seleccionado)
         # messages.info(request, "El proyecto no tiene historias")
         print("El proyecto no tiene historias")
     historia_filter = HistoriaFilter(request.GET, queryset=historia_list)
     return render(request, 'historialProduct.html', {'filter': historia_filter, 'ID_proyecto':id_proyecto,"avatar":fotodeususario,"usuario":usuario,"Rol_de_usuario": rol_name,"proyecto":proyecto_seleccionado})
-
-
-def BurndownChart(request,id_proyecto,id_sprint):
-    """
-    Metodo para Graficar el burndown chart en un gráfico de linea
-
-    :param request: solicitud recibida
-    :return: grafico de burndown chart
-    """
-    if( Proyecto.objects.filter(id=id_proyecto).exists()):
-        proyecto = Proyecto.objects.get(id=id_proyecto)
-    else:
-        proyecto=None
-    calendarioParaguay = Paraguay()
-
-    sprintActual = Sprint.objects.get(id=id_sprint)
-
-    # 2- calculamos la capacidad del equipo
-    capacidad_de_equipo = 0
-    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
-    for desarrollador in desarrolladores:
-        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
-
-    # 3- se extrae la lista de historias.
-    sprintActual2 = model_to_dict(sprintActual)
-    listaHistorias = sprintActual2['historias']
-    cantidad_total_historia = len(listaHistorias)
-
-    # Los miembros en forma de cadena para saber su estado
-    total_horas_estimadas = 0
-    miembrosSprint = []
-    for hist in listaHistorias:
-        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
-        try:
-            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
-            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
-            if not miembro in miembrosSprint:
-                miembrosSprint.append(miembro)
-        except AttributeError:
-            print(f"la historia {hist} aun no tiene encargado")
-        # esto no se toca
-
-    # 4 Se calcula la cantidad de dias del sprint
-    fechaInicio = sprintActual2['fecha_inicio']
-    fechaFin = sprintActual2['fecha_fin']
-    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-
-    # 5 Se inicializan las variables que son necesarios para el line chart
-    diasLaborales_py = []
-    horasLaborales_Ideal = []
-    horasLaborales_Real = []
-    pasos = timedelta(days=1)
-
-        # 6 Se genera la lista para el eje x del line chart
-    while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
-        fechaInicio += pasos
-
-    total_horas_dedicadas = 0
-
-    # 8 Calculamos el efuerzo real.
-    # Calcula la lista de esfuerzo real y lo guarda en el modelo
-    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
-
-    # SE PREPARAN LAS 2 LINEAS
-    for i in sprintActual.horasLaboralesIdeal:
-        horasLaborales_Ideal.append(str(i))
-
-    # Se le da el formato actual para el line chart
-    for i in sprintActual.horasLaboralesReal:
-        horasLaborales_Real.append(str(i))
-
-    return render(request, "lineChart.html",
-                      {"Sprint": sprintActual,
-                       "Historias": listaHistorias,
-                       "Total": cantidad_total_historia,
-                       "diasLaborales": ','.join(diasLaborales_py),
-                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
-                       "horasLaboralesReal": ','.join(horasLaborales_Real),
-                       "cantidadDias": dias_de_sprint,
-                       "miembros": miembrosSprint,
-                       "proyecto" : proyecto})
-
-
-
-def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_horas_estimadas):
-    """
-    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
-
-    :param Historias: Lista de Historias
-    :param sprint: Sprint actual
-    :param Dias: Dia actual
-    :return: void
-    """
-    # FASE 1
-    # Calcula el esfuerzo total del dia
-    total_horas_dedicadas = 0
-    for historia in Historias:
-        #  esfuerzo_del_dia = esfuerzo_del_dia + (historia.horasEstimadas - historia.horas_dedicadas)
-        total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
-    # -------------------------------
-    esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
-
-    # FASE 2
-    # Se agrega a el esfuerzo a la lista
-    hoy = datetime.today()
-    hoy = hoy + timedelta(days=13) #???
-    hoy = hoy.strftime("%d-%b")
-
-    print("la lista de dias laborales es ",dias_laborales)
-    print("FEcha evaluada = ", hoy)
-
-    if (hoy in dias_laborales):
-        posicion = dias_laborales.index(hoy)
-
-        # si no hay todavia elementos en la lista de horas laborales reales se isnerta
-        if (len(sprint_seleccionado.horasLaboralesReal) == 0):
-            sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
-        else:  # se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
-            try:
-                sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
-                sprint_seleccionado.horasLaboralesReal.pop(posicion + 1)
-            except IndexError:
-                print("posicion+1 no existia")
-
-        sprint_seleccionado.save()
-
-
-def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
-    """
-    Metodo que permite el calculo del esfuerzo ideal para el sprint
-
-    :param sprint_seleccionado: sprint seleccionado
-    :param desarrolladores: desarrolladores del sprint seleccionado
-    :return: respuesta a la solicitud de CALCULAR ESFUERZO IDEAL
-    """
-    calendarioParaguay = Paraguay()
-
-    # 2- calculamos la capacidad del equipo
-    capacidad_de_equipo = 0
-    # desarrolladores = UserSprint.objects.filter(proyecto=proyectoPropietario, sprint=sprintActual)
-    for desarrollador in desarrolladores:
-        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
-
-    # 3- se extrae la lista de historias.
-    # sprintActual2 = model_to_dict(sprintActual)
-    # listaHistorias = sprintActual2['historias']
-    listaHistorias = sprint_seleccionado.historias.all()
-    # cantidad_total_historia = len(listaHistorias)
-
-    # 4 Se calcula la cantidad de dias del sprint
-    fechaInicio = sprint_seleccionado.fecha_inicio
-    fechaFin = sprint_seleccionado.fecha_fin
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio,fechaFin) + 1
-    # fechaInicio = sprintActual2['fecha_inicio']
-    # fechaFin = sprintActual2['fecha_fin']
-    # dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-
-    diasLaborales_py = []
-    pasos = timedelta(days=1)
-
-    # 6 Se genera la lista para el eje x del line chart
-    while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
-        fechaInicio += pasos
-
-    total_horas_estimadas = 0
-    for h in listaHistorias:
-        total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
-
-    for dia in diasLaborales_py:
-        if(total_horas_estimadas - capacidad_de_equipo >=0 ):
-            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
-            total_horas_estimadas = total_horas_estimadas - capacidad_de_equipo
-        else:
-            sprint_seleccionado.horasLaboralesIdeal.append(0)
-            break
-
 
 #Todos los sprints deben ser verificados antes de finalizar proyecto.
 @login_required
@@ -2341,8 +2244,15 @@ def finalizarProyecto(request, id_proyecto):
 
         if (len(proyecto_seleccionado.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
             proyecto_seleccionado.estado = "FINALIZADO"
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            modificadoPor = auth.get_user(request)
+            proyecto_seleccionado.historial.append(f"[{dt_string}] Se ha finalizado el proyecto {proyecto_seleccionado.nombre} por {modificadoPor.username}")
             proyecto_seleccionado.fecha_finalizacion = date.today()
             proyecto_seleccionado.save()
+
+            #email 12
+            email_proyectoFin(id_proyecto)
         else:
             mensaje = "No puede finalizar el proyecto ya que hay un sprint sin proceso QA"
             return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
@@ -2351,6 +2261,14 @@ def finalizarProyecto(request, id_proyecto):
         return render(request, "Condicion_requerida.html", {"mensaje": mensaje})
 
     return redirect(inicio)
+
+
+def finalizable_proyecto(proyecto_seleccionado):
+    sprints = proyecto_seleccionado.id_sprints.filter(estados="INICIADO")
+
+
+
+
 
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() != 0,login_url="/AccesoDenegado/")
@@ -2378,7 +2296,15 @@ def iniciarProyecto(request, id_proyecto):
 
         proyecto_seleccionado.estado = "INICIADO"
         proyecto_seleccionado.fecha = date.today()
+
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        modificadoPor = auth.get_user(request)
+        proyecto_seleccionado.historial.append(
+            f"[{dt_string}] El proyecto {proyecto_seleccionado.nombre} ha sido iniciado por {modificadoPor.username}")
         proyecto_seleccionado.save()
+        #email 14
+        email_proyectoIni(id_proyecto)
         url="/proyecto/"+str(id_proyecto)+"/"
         return redirect(url)
     else:
@@ -2399,8 +2325,12 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     """
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
-
+    proyectoHistorico = Proyecto.objects.get(id=id_proyecto)
     if opcion == 'finalizar':
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        proyectoHistorico.historial.append(f"[{dt_string}] Se ha finalizado el sprint {sprintActual.sprintNumber} del proyecto {proyectoHistorico.nombre} por {usuarioActual.username}")
+        proyectoHistorico.save()
         listaHistorias = sprintActual.historias.all()
 
         for hist in listaHistorias:
@@ -2414,12 +2344,17 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
             else:
                 hist.estados = ""
                 hist.encargado = None
+                hist.prioridad = "ALTA"
             hist.save()
-
-        sprintActual.fecha_final=date.today()
+        messages.info(request, "Las historias finalizadas han ido a QA")
+        messages.info(request, "Las historias NO finalizadas han vuelto con prioridad ALTA")
+        sprintActual.fecha_final=date.today()# + timedelta(days=6)
         sprintActual.estados = 'FINALIZADO'
         sprintActual.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        #Email 11 de finalizar spritn
+        email_sprintExtFin(id_proyecto,id_sprint,opcion,request.user)
+        email_sprintFinalizado(id_proyecto,id_sprint)
         return redirect(url)
 
     if (opcion == "expandir"):
@@ -2457,12 +2392,19 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
                     proyecto.fecha_entrega = sprint_en_planning.fecha_fin
                     messages.info(request, "La fecha estimada de entrega del Proyecto se ha extendido")
                     messages.info(request, f"Dias extendidos: {extension}")
+                    now = datetime.now()
+                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                    proyecto.historial.append(
+                    f"[{dt_string}] Se ha extendido {extension} dias el sprint {sprintActual.sprintNumber} del proyecto {proyecto.nombre} por {usuarioActual.username}")
 
                 sprint_en_planning.save()
                 proyecto.save()
                 
 
             url = "/proyecto/" + str(id_proyecto) + "/Sprints/"
+
+            #email 10 PAara los miembros del equipo del sprint extendido.
+            email_sprintExtFin(id_proyecto, id_sprint, opcion, request.user)
             return redirect(url)
 
             # fecha = request.GET['fecha_fin']
@@ -2650,8 +2592,24 @@ def tableroQA_Release2(request,id_proyecto,id_sprint):
 
         cantidaddehistorias = len(listaHistorias)
         print(listaHistorias)
+
+        usuarioActual = auth.get_user(request)
+
+        if (usuarioActual.is_superuser):
+            fotodeusuario = None
+        else:
+            fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+        proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+        item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+        if (item.rol_name != ''):
+            rol = item.rol_name
+        else:
+            rol = ""
         return render(request, "QA_sprint3.html",
-                      {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
+                      {"Rol_de_usuario":rol,"usuario":usuarioActual,"proyecto":proyectoActual,"avatar":fotodeusuario,"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
                        "versionesDic": versionesDic,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
 
     except IndexError:
@@ -2675,29 +2633,47 @@ def funcionalidadesQA(request,id_proyecto,id_sprint,id_historia, opcion):
 
 
     # aceptar en quality assurance la historia, entonces va a pasar a Release
+
     if (opcion == 6):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = 'RELEASE'
+        h.extraData = ""
         messages.info(request, "Historia enviada a Release")
         h.save()
+
+        #email de historias aceptada email 9.1
+        email_actividadEnQA(h,id_proyecto,id_sprint,opcion,request.user)
+
+
     # Rechazar la historia, vuelve al Product backlog pero con prioridad aumentada
     if (opcion == 7):
         h = Historia.objects.get(id_historia=id_historia)
         h.estados = ""
-        if h.prioridad == 'BAJA':
-            h.prioridad = 'MEDIA'
-        else:
-            h.prioridad = 'ALTA'
-        messages.info(request, "Historia rechazada")
+        encargadoDeHistoria = h.encargado
+        h.prioridad = 'ALTA'
+        messages.info(request, f"historia {h.nombre} Rechazada")
         messages.info(request, f"Nueva prioridad {h.prioridad}")
+        motivo = request.GET['motivo']
+        h.extraData = motivo
+        messages.info(request, f"correo enviado a {encargadoDeHistoria.email}")
+        messages.info(request, motivo)
+        #email 9.2
+        # email 9.2
+        email_actividadEnQA(h, id_proyecto, id_sprint, opcion, request.user)
+        h.encargado = None
         h.save()
+
 
     #marcar como verificado.
     if opcion==8:
+        #h = Historia.objects.get(id_historia=id_historia)
         sp=Sprint.objects.get(id=id_sprint)
         sp.verificado=True
         sp.save()
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
+        #email 9.3
+        #email_actividadEnQA(User, id_proyecto, id_sprint, opcion, request.user)
+        sprintVerificado(id_proyecto,id_sprint,request.user)
         return redirect(url)
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/QualityAssurance/"
@@ -2717,15 +2693,12 @@ def inicio(request):
     :return: respuesta a la solicitud de INICIO
     """
     usuarioActual = User.objects.get(username=request.user.username)
-
-
     if usuarioActual.groups.filter(name='registrado'):
         usuarioActual=User.objects.get(username=request.user.username)
         usuarioActual.proyecto=None
         if(usuarioActual.is_superuser ):
             listaProyectos = Proyecto.objects.all()
             fotodeususario = "No tiene"
-
         else:
             listaProyectos=usuarioActual.proyectos_asociados.all()
             fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
@@ -2860,7 +2833,8 @@ def modificarSprint2(request, id_proyecto, id_sprint):
             fechavalida=validarfechaingresada(id_proyecto,datosSprint["fecha_inicio"],datosSprint["fecha_fin"],1)
             if (fechavalida):
 
-                a= request.user.groups.filter(name='Scrum Master').count()
+                #a= request.user.groups.filter(name='Scrum Master').count()
+                print(formulario.cleaned_data)
 
                 updated_sprint = updateSprint(formulario.cleaned_data)
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
@@ -2879,7 +2853,23 @@ def modificarSprint2(request, id_proyecto, id_sprint):
         rango = calcularRango(proyectoPropietario)
         request.session['rango'] = rango
         formulario = modificarSprintForm(request=request.session)
-        return render(request, "modificarSprint.html", {"form": formulario})
+
+        usuarioActual = auth.get_user(request)
+        if (usuarioActual.is_superuser):
+            fotodeusuario = None
+        else:
+            fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+        item = UserProyecto.objects.get(proyecto=proyectoPropietario, usuario=usuarioActual)
+
+        if (item.rol_name != ''):
+            rol = item.rol_name
+        else:
+            rol = ""
+
+
+
+        return render(request, "modificarSprint.html", {"form": formulario,"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint":  sprint_seleccionado,"proyecto": proyectoPropietario})
 
 
 @login_required
@@ -2904,6 +2894,9 @@ def step1_SprintPlanning2(request,id_proyecto):
             if (sepuedecrear):
                 newSprint = nuevoSprint(datosSprint)
                 request.session['sprint_planning_id'] = newSprint.id
+
+                #email 14 Nuevo sprint en planning agregado
+                email_sprintCreado(id_proyecto,newSprint.id)
                 url = "/proyecto/" + str(id_proyecto) + "/Sprints/" + str(newSprint.id) + "/FormarEquipo/"
                 return redirect(url)
             else:
@@ -3047,6 +3040,12 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     sprint_actual = Sprint.objects.get(id=id_sprint)
     usuarios = []
     PosiblesIntegrantes = UserProyecto.objects.filter(proyecto=proyecto_actual, rol_name="Desarrollador")
+    devs=[]
+    lista= UserSprint.objects.filter(sprint=sprint_actual);
+    #for l in lista:
+    #    devs.append(l.usuario)
+
+
 
     for elemento in PosiblesIntegrantes:
 
@@ -3056,13 +3055,24 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
         if (len(u) == 0):
             usuarios.append(elemento.usuario)
 
-    return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+    #email 50
+    #email_nuevoSprint(id_proyecto,id_sprint,usuarios)
+
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario = User.objects.get(username=request.user.username)
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto_actual)
+        rol_name = proy.rol_name
+
+    return render(request, "step2_SprintPlanning_2_2.html", {"miembros": usuarios,"desarrolladores":lista,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyecto_actual,"sprint":sprint_actual})
 
 
 #@login_required
 #@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 #Es mas un proceso
-def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
+def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario,opcion):
     """
     Metodo para asignar la capacidad de trabajo de un desarrollador
 
@@ -3073,32 +3083,60 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
     :return: respuesta a la solicitud ASIGNAR CAPACIDAD
     """
 
-    if request.method == 'POST':
-        form = asignarcapacidadForm(request.POST)
-        if (form.is_valid()):
-            capacidad = form.cleaned_data['capacidad']
-            if capacidad > 0:
-                usuario = User.objects.get(id=id_usuario)
-                proyecto_actual = Proyecto.objects.get(id=id_proyecto)
-                sprint_en_planning = Sprint.objects.get(id=id_sprint)
-                try:
-                    u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
-                except ObjectDoesNotExist:
-                    nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
-                                               capacidad=capacidad)
-                    nuevoElemento.save()
-                else:
+    # if request.method == 'POST':
+    #     form = asignarcapacidadForm(request.POST)
+    #     if (form.is_valid()):
+    #         capacidad = form.cleaned_data['capacidad']
+    #         if capacidad > 0:
+    #             usuario = User.objects.get(id=id_usuario)
+    #             proyecto_actual = Proyecto.objects.get(id=id_proyecto)
+    #             sprint_en_planning = Sprint.objects.get(id=id_sprint)
+    #             try:
+    #                 u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
+    #             except ObjectDoesNotExist:
+    #                 nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
+    #                                            capacidad=capacidad)
+    #                 nuevoElemento.save()
+    #             else:
+    #
+    #                 u.capacidad = capacidad
+    #                 #email_nuevoSprint(id_proyecto, id_sprint, u)
+    #                 u.save()
+    #
+    #         else:
+    #             messages.error(request, 'Ingrese una capacidad valida')
+    #     else:
+    #         print("formulario invalido")
 
-                    u.capacidad = capacidad
-                    u.save()
+    usuario_seleccionado = User.objects.get(id=id_usuario)
+    sprint_seleccionado = Sprint.objects.get(id=id_sprint)
+    proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
 
-            else:
-                messages.error(request, 'Ingrese una capacidad valida')
+    if(opcion=="Agregar"):
+        capacidad = int(request.GET['Capacidad'])
+        if capacidad > 0:
+             elemento=UserSprint(proyecto=proyecto_seleccionado,sprint=sprint_seleccionado,usuario=usuario_seleccionado,capacidad=capacidad)
+             elemento.save()
         else:
-            print("formulario invalido")
+            messages.error(request, 'Ingrese una capacidad valida')
+
+    if(opcion=="Quitar"):
+        elemento=UserSprint.objects.get(proyecto=proyecto_seleccionado, sprint=sprint_seleccionado,
+                                  usuario=usuario_seleccionado)
+        elemento.delete()
+
+    if(opcion=="Cambiar"):
+        capacidad = int(request.GET['Capacidad'])
+        if capacidad > 0:
+            elemento = UserSprint.objects.get(proyecto=proyecto_seleccionado, sprint=sprint_seleccionado,
+                                      usuario=usuario_seleccionado)
+            elemento.capacidad=capacidad
+            elemento.save()
+        else:
+            messages.error(request, 'Ingrese una capacidad valida')
+
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
-    #return redirect(step2_SprintPlanning)
     return redirect(url)
 
 
@@ -3123,7 +3161,8 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     fechaFin = sprintActual.fecha_fin
     dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
 
-    capacidad_sprint_horas = dias_de_sprint * 24
+    horaslaboralespordia=9
+    capacidad_sprint_horas = dias_de_sprint * horaslaboralespordia
 
     # Lista 1 y 2 son las historias del proyecto y del sprint actualmente
     Lista1 = Historia.objects.filter(proyecto=proyectoActual, estados="")
@@ -3151,8 +3190,11 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     developers = []
 
     # La lista de los desarrolladores para el sprint actual
+    # for elemento in tablatemporal:
+    #     developers.append((elemento.usuario.email, elemento.usuario.email))
+
     for elemento in tablatemporal:
-        developers.append((elemento.usuario.username, elemento.usuario.username))
+        developers.append(elemento.usuario.email)
 
     cantidaddehistorias = len(productbacklog)
     porcentaje = round((capacidad_ocupada_por_historias / capacidad_sprint_horas) * 100)
@@ -3162,10 +3204,21 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     formulario_asignar= asignaryestimarHistoria(developers=request.session)
     #formulario = asignarDesarrolladorForm(developers=request.session)  "form": formulario
 
-    return render(request, "step3_SprintPlanning_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario = User.objects.get(username=request.user.username)
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyectoActual)
+        rol_name = proy.rol_name
+
+
+
+
+    return render(request, "step3_SprintPlanning_3_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
                                                      "s_backlog": sprintbacklog, "Total": cantidaddehistorias,
                                                      "formulario_asignar": formulario_asignar, "Porcentaje": porcentaje,
-                                                     "Duracion": dias_de_sprint,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+                                                     "Duracion": dias_de_sprint,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"desarrolladores":developers,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyectoActual})
 
 
 
@@ -3189,28 +3242,20 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     #asigno encargado a la historia
     if (opcion == 1):
         h = Historia.objects.get(id_historia=id_historia)
-        #if request.method == 'POST':
-        #   formulario = asignaryestimarHistoria(request.POST, developers=request.session)
-        #    if (formulario.is_valid()):
-        #        usuarioSeleccionado = formulario.cleaned_data['encargado']
-        #        encargado = User.objects.get(username=usuarioSeleccionado)
-        #        h.encargado = encargado
-        #        h.estados = 'PENDIENTE'
-        #        h.horasEstimadas=formulario.cleaned_data['estimado']
-        #        h.save()
-        #        # Se le agrega al sprint
-        #        sprint_actual.historias.add(h)
-        #        sprint_actual.save()
-        #    else:
-        #        print("formulario invalido")
-        if request.method == 'POST':
-            usuarioSeleccionado = User.objects.get(username=request.POST['encargado'])
-            h.horasEstimadas=request.POST['estimado']
+
+        if request.method == 'GET':
+            encargado=request.GET['Encargado']
+            estimado = int(request.GET['Estimacion'])
+            usuarioSeleccionado=User.objects.get(email=encargado)
+
+            h.horasEstimadas = estimado
             h.encargado = usuarioSeleccionado
             h.estados = 'PENDIENTE'
             h.save()
             sprint_actual.historias.add(h)
             sprint_actual.save()
+
+            email_historiaAsignado(h, id_proyecto, usuarioSeleccionado)
 
 
     if (opcion == 2):
@@ -3222,8 +3267,12 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
         sprint_actual.historias.remove(h)
         sprint_actual.save()
 
+
+
     # Iniciar
     if (opcion == 3):
+
+
 
         #proyectoPropietario = User.objects.get(username=request.user.username).proyecto
         proyectoPropietario = Proyecto.objects.get(id=id_proyecto)
@@ -3249,6 +3298,8 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
                 sprint_actual.fecha_inicio = date.today()
                 sprint_actual.save()
 
+                #Email 20
+                email_sprintIniciado(id_proyecto,id_sprint)
                 url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
                 return redirect(url)
             else:
@@ -3263,6 +3314,9 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     if (opcion == 4):
         sprint_actual.estados = 'PLANNING'
         sprint_actual.save()
+        #Email 2 enviar email a los encargados.
+        #email_historiaAsignado(Historia, encargado)
+
 
         url="/proyecto/"+str(id_proyecto)+"/Sprints/"
         return redirect(url)
@@ -3287,9 +3341,59 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
     """
 
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
-    historias = sprintseleccionado.historias.all()
+    if sprintseleccionado.estados == 'FINALIZADO':
+        sprintActual2 = model_to_dict(sprintseleccionado)
+        historias = sprintActual2['historias']
+        historiasAlta = []
+        historiasMedia = []
+        historiasBaja = []
+        for hist in historias:
+            if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                hist.nombre = x.nombre
+                hist.encargado = x.encargado
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas = x.horas_dedicadas
+                hist.estados = x.estados
+                if(hist.prioridad == 'ALTA'):
+                    historiasAlta.append(hist)
+                elif(hist.prioridad == 'MEDIA'):
+                    historiasMedia.append(hist)
+                elif (hist.prioridad == 'BAJA'):
+                    historiasBaja.append(hist)
+            else:
+                print("No existe")
+    else:
+        #El caso de que el sprint no este finalizado, es el actual
+        historias = sprintseleccionado.historias.all()
+        historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
+        historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
+        historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
 
-    return render(request, "SprintBacklog.html", {"historias": historias})
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    cantidaddehistorias = len(historias)
+    return render(request, "SprintBacklog.html", {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja })
 
 
 
@@ -3328,7 +3432,9 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         #Preparacion de comentarios
         versionesDic = {}
+        total_horas_estimadas=0
         for hist in listaHistorias:
+            total_horas_estimadas=total_horas_estimadas+hist.horasEstimadas
             if hist.history.filter(
                     Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
                             history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
@@ -3358,17 +3464,42 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         formulioExtender = extenderSprintForm(dato=request.session)
 
+        item=UserProyecto.objects.get(proyecto=proyectoActual,usuario=usuarioActual)
+        if(item.rol_name!=''):
+            rol=item.rol_name
+        else:
+            rol=""
+        calendarioParaguay = Paraguay()
 
-        return render(request, "tableroKanban2.html",
+        diasLaborales_py = []
+        diasLaborales_py.append("Inicio")
+        # 6 Se genera la lista para el eje x del line chart
+        fechaInicio=sprintActual.fecha_inicio
+        fechaFin=sprintActual.fecha_fin
+        pasos = timedelta(days=1)
+
+        while fechaInicio <= fechaFin:
+            if calendarioParaguay.is_working_day(fechaInicio):
+                diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+            fechaInicio += pasos
+
+
+        if calendarioParaguay.is_working_day(date.today()):
+            calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+
+            return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual})
+                           "versionesDic": versionesDic, "Master": esMaster, "ExtenderForm": formulioExtender,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario,"usuario":usuarioActual,"proyecto":proyectoActual,"Rol_de_usuario":rol})
+        else:
+            return render(request, "Condicion_requerida.html", {"mensaje": "No puede acceder al tablero kanban. No es un dia laboral"})
+
 
     except ObjectDoesNotExist:
         return render(request, "Condicion_requerida.html", {"mensaje": "NO TIENE NINGUN SPRINT ACTIVO"})
 
 @login_required
 def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
-    """
+    """request = {WSGIRequest} <WSGIRequest: GET '/proyecto/48/Sprints/92/KanbanActivo/Historia132/Op5'>
     Metodo para administrar el cambio de estado de historias en el tablero kanban
 
     :param request: solicitud recibida
@@ -3383,57 +3514,81 @@ def moverHistoria2(request, id_proyecto, id_sprint, id_historia, opcion):
     encargado = User.objects.get(username=request.user.username)
     # Agregar Tiempo
 
-    #Se agrega mueve la historia a la columna pendiente
+    #Se mueve la historia a la columna pendiente
     if (opcion == 1):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'PENDIENTE'
             messages.success(request, "Pasado a pendiente")
+            #email
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
         else:
             messages.error(request, "No eres el encargado de la historia")
-    #Se agrega mueve la historia a la columna En curso
+    #Se mueve la historia a la columna En curso
     if (opcion == 2):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'EN_CURSO'
             messages.success(request, "Pasado a en curso")
+            #email 4
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
         else:
             messages.error(request, "No eres el encargado de la historia")
-    # Se agrega mueve la historia a la columna Finalizado
+    # Se mueve la historia a la columna Finalizado
     if (opcion == 3):
         #print("Encargado de historia = ", h.encargado, " el usuario actual = ", encargado)
         if (h.encargado == encargado):
             h.estados = 'FINALIZADO'
             messages.success(request, "Finalizado")
+            #email 7
+            email_actividadEnKanban(h,id_proyecto,id_sprint,h.encargado,0,"",opcion)
+            #email 15 enfocado para los scrum masters
         else:
             messages.error(request, "No eres el encargado de la historia")
     # Este es para cargar horas y comentario
     if(opcion == 5):
-        if request.method == 'POST':
-            form = cargarHorasHistoriaForm(request.POST)
-            if (form.is_valid()):
-                horas = form.cleaned_data['horas']
-                comentario = form.cleaned_data['comentario']
-                if horas > 0:
-                    if request.user == h.encargado:
-                        h.horas_dedicadas = h.horas_dedicadas + horas
-                        h.comentarios = comentario
-                        h._change_reason = "comentario"
-                        messages.success(request, "Horas registradas")
-                    else:
-                        messages.error(request, "No eres el encargado de la historia")
-                        messages.info(request, f"El encargado es {h.encargado}")
-                else:
-                    messages.error(request, 'Ingrese una hora valida')
+        horas= int(request.GET['Horas'])
+
+        comentario=request.GET['Comentario']
+        if horas > 0:
+            if request.user == h.encargado:
+                h.horas_dedicadas = h.horas_dedicadas + horas
+                h.comentarios = comentario
+                h._change_reason = "comentario"
+                messages.success(request, "Horas registradas")
+                #email 3
+                #email 6
+                email_actividadEnKanban(h, id_proyecto, id_sprint, h.encargado, horas, comentario, opcion)
+
             else:
-                print("formulario invalido")
+                messages.error(request, "No eres el encargado de la historia")
+                messages.info(request, f"El encargado es {h.encargado}")
+        else:
+                messages.error(request, 'Ingrese una hora valida')
+
+
+        # if request.method == 'POST':
+        #    form = cargarHorasHistoriaForm(request.POST)
+        #    if (form.is_valid()):
+        #        horas = form.cleaned_data['horas']
+        #        comentario = form.cleaned_data['comentario']
+        #        if horas > 0:
+        #            if request.user == h.encargado:
+        #                h.horas_dedicadas = h.horas_dedicadas + horas
+        #                h.comentarios = comentario
+        #                h._change_reason = "comentario"
+        #                messages.success(request, "Horas registradas")
+        #            else:
+        #                messages.error(request, "No eres el encargado de la historia")
+        #                messages.info(request, f"El encargado es {h.encargado}")
+        #        else:
+        #            messages.error(request, 'Ingrese una hora valida')
+        #    else:
+        #        print("formulario invalido")
 
     h.save()
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/KanbanActivo/"
-
-    #return tableroKanban(request)
     return redirect(url)
-
 
 
 
@@ -3555,7 +3710,6 @@ def intercambiarMiembro(request,id_proyecto,id_sprint):
     return render(request, "IntercambiarMiembro.html", {"form": formulario})
 
 
-
 #Es un proceso
 def swichProyecto2(request,u,p, id_proyecto):
     """
@@ -3584,9 +3738,6 @@ def swichProyecto2(request,u,p, id_proyecto):
         else:
             return proy.rol_name
             print("No tiene ROl")
-
-
-
 
 
 def infoSprint(request,id_proyecto,id_sprint):
@@ -3620,6 +3771,10 @@ def infoSprint(request,id_proyecto,id_sprint):
     for m in tabla_temporal:
         lista1.append(m.usuario)
 
+
+
+    print(lista1)
+
         #if(m.rol_name != ""):
         #    lista2.append(m.rol_name)
         #else:
@@ -3628,13 +3783,14 @@ def infoSprint(request,id_proyecto,id_sprint):
 
     #miembros=zip(lista1,lista2)
 
-    miembros = lista1
+    #miembros = lista1
+    miembros=tabla_temporal
 
     #contamos la duracion del proyecto en dias
     calendarioParaguay = Paraguay()
     pasos = timedelta(days=1)
     #duracion_proyecto=0
-    duracion_sprint=0
+    duracion_sprint=1
     #transcurrido_proyecto=0
     transcurrido_sprint=0
     #fechaInicio=proyecto_seleccionado.fecha
@@ -3642,14 +3798,13 @@ def infoSprint(request,id_proyecto,id_sprint):
     fechaInicio=sprint_seleccionado.fecha_inicio
     fechaFin=sprint_seleccionado.fecha_fin
     while fechaInicio <= fechaFin:
-        if calendarioParaguay.is_working_day(fechaInicio):
-            #duracion_proyecto=duracion_proyecto+1
-            duracion_sprint=duracion_sprint+1
-        if( date.today() <= fechaFin and calendarioParaguay.is_working_day(date.today())):
-            #transcurrido_proyecto=transcurrido_proyecto+1
-            transcurrido_sprint = transcurrido_sprint+1
-
+        if(calendarioParaguay.is_working_day(fechaInicio)):
+            duracion_sprint += 1
+            if(fechaInicio<=date.today()):
+                transcurrido_sprint+= 1
         fechaInicio += pasos
+
+
 
     #fechaInicio = proyecto_seleccionado.fecha.strftime("%m/%d/%Y")
     fechaInicio = sprint_seleccionado.fecha_inicio.strftime("%m/%d/%Y")
@@ -3669,3 +3824,610 @@ def infoSprint(request,id_proyecto,id_sprint):
                    "Duracion":duracion_sprint,
                    "Transcurrido":transcurrido_sprint,
                    "FechaInicio":fechaInicio,"FechaFin":fechaFin,"FechaFinal":fechaFinal})
+
+
+
+
+
+
+def BurndownChart(request,id_proyecto,id_sprint):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
+
+    calendarioParaguay = Paraguay()
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+    sprintActual = Sprint.objects.get(id=id_sprint)
+
+
+
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del sprint
+    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    #sprintActual2 = model_to_dict(sprintActual)
+    #listaHistorias = sprintActual2['historias']
+    listaHistorias = sprintActual.historias.all()
+    cantidad_total_historia = len(listaHistorias)
+
+    # Los miembros en forma de cadena para saber su estado
+    total_horas_estimadas = 0
+    miembrosSprint = []
+    for hist in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
+        try:
+            #no entiendo
+            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
+            if not miembro in miembrosSprint:
+                miembrosSprint.append(miembro)
+        except AttributeError:
+            print(f"la historia {hist} aun no tiene encargado")
+        # esto no se toca
+
+    # 4 Se calcula la cantidad de dias del sprint
+    #fechaInicio = sprintActual2['fecha_inicio']
+    #fechaFin = sprintActual2['fecha_fin']
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+
+
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    # 5 Se inicializan las variables que son necesarios para el line chart
+    diasLaborales_py = []
+    horasLaborales_Ideal = []
+    horasLaborales_Real = []
+    pasos = timedelta(days=1)
+
+    diasLaborales_py.append("Inicio")
+    # 6 Se genera la lista para el eje x del line chart
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_dedicadas = 0
+
+    # 8 Calculamos el efuerzo real.
+    # Calcula la lista de esfuerzo real y lo guarda en el modelo
+    #esto ha sido comentado
+    #if(sprintActual.estados=="INICIADO"):
+    #    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+
+
+    #horasLaborales_Ideal.append("Dia 0")
+    #horasLaborales_Real.append("Dia 0")
+    # SE PREPARAN LAS 2 LINEAS
+
+    for i in sprintActual.horasLaboralesIdeal:
+        horasLaborales_Ideal.append(str(i))
+
+    # Se le da el formato actual para el line chart
+
+    for i in sprintActual.horasLaboralesReal:
+        horasLaborales_Real.append(str(i))
+
+    usuarioActual = auth.get_user(request)
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    item = UserProyecto.objects.get(proyecto=proyecto, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    return render(request, "lineChart.html",
+                      {"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint": sprintActual,
+                       "Historias": listaHistorias,
+                       "Total": cantidad_total_historia,
+                       "diasLaborales": ','.join(diasLaborales_py),
+                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
+                       "horasLaboralesReal": ','.join(horasLaborales_Real),
+                       "cantidadDias": dias_de_sprint,
+                       "miembros": miembrosSprint,
+                       "proyecto" : proyecto})
+
+
+
+def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_horas_estimadas):
+    """
+    Metodo para obtener el esfuerzo diario en las historias de usuario, necesario para graficar el burndown chart
+
+    :param Historias: Lista de Historias
+    :param sprint: Sprint actual
+    :param Dias: Dia actual
+    :return: void
+    """
+    # FASE 1
+    # Calcula el esfuerzo total del dia
+    total_horas_dedicadas = 0
+    for historia in Historias:
+        total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
+
+
+
+    esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
+
+    # FASE 2
+    # Se agrega a el esfuerzo a la lista
+    calendarioParaguay = Paraguay()
+    hoy = datetime.today()
+
+    #hoy = hoy + timedelta(days=1) #Este parametro se toca para poder avanzar en el dia
+    #print("Es dia laboral",hoy)
+    #if calendarioParaguay.is_working_day(hoy):
+    print("Es dia laboral")
+    hoy = hoy.strftime("%d-%b")
+
+    print("la lista de dias laborales es ",dias_laborales)
+    print("FEcha evaluada = ", hoy)
+
+    #la fecha de hoy esta dentro de los dias laborales del sprint
+    #si posicion=0 entonces es el dia 1,
+    #si posicion=1 entonces es el dia 2
+    if (hoy in dias_laborales):
+        posicion = dias_laborales.index(hoy)
+    # si todavia no hay elementos en la lista de horas laborales reales se agrega
+        if (len(sprint_seleccionado.horasLaboralesReal) == 0):
+            sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+        else:  # se inserta en dicha posicion y se quita el elemento que antes estaba ahi.
+            try:
+                sprint_seleccionado.horasLaboralesReal.insert(posicion, esfuerzo_del_dia)
+                sprint_seleccionado.horasLaboralesReal.pop(posicion + 1)
+            except IndexError:
+                print("posicion+1 no existia")
+
+        sprint_seleccionado.save()
+
+
+def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
+    """
+    Metodo que permite el calculo del esfuerzo ideal para el sprint
+
+    :param sprint_seleccionado: sprint seleccionado
+    :param desarrolladores: desarrolladores del sprint seleccionado
+    :return: respuesta a la solicitud de CALCULAR ESFUERZO IDEAL
+    """
+    calendarioParaguay = Paraguay()
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    listaHistorias = sprint_seleccionado.historias.all()
+
+
+    # 4 Se calcula la cantidad de dias del sprint
+    fechaInicio = sprint_seleccionado.fecha_inicio
+    fechaFin = sprint_seleccionado.fecha_fin
+
+    diasLaborales_py = []
+    pasos = timedelta(days=1)
+
+    # 6 Se genera la lista para el eje x del line chart
+
+    diasLaborales_py.append("Inicio")
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_estimadas = 0
+    for h in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + (h.horasEstimadas)
+
+
+    #Opcion 2 planteado por edher
+    dias_de_sprint=len(diasLaborales_py)-1
+    dias_de_sprint2 = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    print("cantidad de dias con el len = "+str(dias_de_sprint))
+
+    print("cantidad de dias con el get working days = " + str(dias_de_sprint2))
+    promedio_de_quemado=total_horas_estimadas/dias_de_sprint
+
+    #esto es para que ambos tengan en el inicio el mismo numero de horas
+    sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+    sprint_seleccionado.horasLaboralesReal.append(total_horas_estimadas)
+
+    for dia in diasLaborales_py:
+        total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
+        if(total_horas_estimadas >0 ):
+            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+        else:
+            sprint_seleccionado.horasLaboralesIdeal.append(0)
+            break
+
+
+
+
+
+    #bandera=dias_de_sprint
+    #while(bandera>0):
+    #    total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
+    #    if (total_horas_estimadas > 0):
+    #        sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+    #
+    #    else:
+    #        sprint_seleccionado.horasLaboralesIdeal.append(0)
+    #    bandera=bandera-1
+
+
+def informe_Sprint(request,id_proyecto,id_sprint):
+    """
+    Metodo para generar el reporte del Sprint actual o finalizado
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :param id_sprint: identificador del sprint
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    sprintseleccionado = Sprint.objects.get(id=id_sprint)
+    #Caso que el sprint ya haya finalizado, usar el historico de la historia en el punto de fin
+    if sprintseleccionado.estados == 'FINALIZADO':
+        print("Sprint finalizado")
+        sprintActual2 = model_to_dict(sprintseleccionado)
+        historias = sprintActual2['historias']
+        historiasAlta = []
+        historiasMedia = []
+        historiasBaja = []
+        for hist in historias:
+            if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                    history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                hist.nombre = x.nombre
+                hist.encargado = x.encargado
+                hist.descripcion = x.descripcion
+                hist.prioridad = x.prioridad
+                hist.horasEstimadas = x.horasEstimadas
+                hist.horas_dedicadas = x.horas_dedicadas
+                hist.estados = x.estados
+                if(hist.prioridad == 'ALTA'):
+                    historiasAlta.append(hist)
+                elif(hist.prioridad == 'MEDIA'):
+                    historiasMedia.append(hist)
+                elif (hist.prioridad == 'BAJA'):
+                    historiasBaja.append(hist)
+            else:
+                print("No existe")
+    else:
+        #El caso de que el sprint no este finalizado, es el actual
+        historias = sprintseleccionado.historias.all()
+        historiasAlta = sprintseleccionado.historias.filter(prioridad='ALTA')
+        historiasMedia = sprintseleccionado.historias.filter(prioridad='MEDIA')
+        historiasBaja = sprintseleccionado.historias.filter(prioridad='BAJA')
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    cantidaddehistorias = len(historias)
+
+
+    context = {"cantidad_de_historias":cantidaddehistorias,"sprint":sprintseleccionado,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasAlta": historiasAlta,"historiasMedia": historiasMedia,"historiasBaja": historiasBaja }
+
+    html = render_to_string("informe_US_Sprint_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_Sprint.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+
+def informe_Historia_Sprint(request,id_proyecto):
+    """
+    Metodo para generar el reporte de todos los Sprints de un proyecto(actual o finalizado)
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    historiasSprint = {}
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+    for sprintseleccionado in proyecto.id_sprints.all():
+        #Caso que el sprint ya haya finalizado, usar el historico de la historia en el punto de fin
+        if sprintseleccionado.estados == 'FINALIZADO':
+            print("Sprint finalizado")
+            sprintActual2 = model_to_dict(sprintseleccionado)
+            historias = sprintseleccionado.historias.order_by('id_historia')
+            historiasList  = []
+            for hist in historias:
+                if hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                        history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).exists():
+                    x = hist.history.filter(Q(history_change_reason="fin_sprint") & Q(
+                        history_date__lte=sprintActual2['fecha_final'] + timedelta(days=1))).last()
+                    hist.nombre = x.nombre
+                    hist.encargado = x.encargado
+                    hist.descripcion = x.descripcion
+                    hist.prioridad = x.prioridad
+                    hist.horasEstimadas = x.horasEstimadas
+                    hist.horas_dedicadas = x.horas_dedicadas
+                    hist.estados = x.estados
+                    historiasList.append(hist)
+                else:
+                    print("No existe")
+        else:
+            #El caso de que el sprint no este finalizado, es el actual
+            historiasList = sprintseleccionado.historias.all()
+        historiasSprint[sprintseleccionado.sprintNumber] = historiasList
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+
+
+    context = {"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual,"historiasDict":historiasSprint }
+
+    html = render_to_string("informe_US_AllSprints_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_AllSprints.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+def informe_US_ProductBacklog(request, id_proyecto):
+    """
+    Metodo para generar el reporte de todas las historias un proyecto
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    if Proyecto.objects.filter(id=id_proyecto).exists():
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto = None
+
+    historias = Historia.objects.filter(proyecto=id_proyecto)
+    historiasAlta = filter(lambda historia: historia.prioridad == 'ALTA', historias)
+    historiasMedia = filter(lambda historia: historia.prioridad == 'MEDIA', historias)
+    historiasBaja = filter(lambda historia: historia.prioridad == 'BAJA', historias)
+    historia_list = []
+    historia_list.extend(historiasAlta)
+    historia_list.extend(historiasMedia)
+    historia_list.extend(historiasBaja)
+
+    context = {"historias":historia_list, "proyecto":proyecto}
+    html = render_to_string("informe_US_ProductBacklog_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_US_Horas.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+
+def informe_BurndownChart(request,id_proyecto,id_sprint):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea y exportarlo como pdf
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
+
+    calendarioParaguay = Paraguay()
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+    sprintActual = Sprint.objects.get(id=id_sprint)
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del sprint
+    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    #sprintActual2 = model_to_dict(sprintActual)
+    #listaHistorias = sprintActual2['historias']
+    listaHistorias = sprintActual.historias.all()
+    cantidad_total_historia = len(listaHistorias)
+
+    # Los miembros en forma de cadena para saber su estado
+    total_horas_estimadas = 0
+    miembrosSprint = []
+    for hist in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
+        try:
+            #no entiendo
+            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
+            if not miembro in miembrosSprint:
+                miembrosSprint.append(miembro)
+        except AttributeError:
+            print(f"la historia {hist} aun no tiene encargado")
+        # esto no se toca
+
+    # 4 Se calcula la cantidad de dias del sprint
+    #fechaInicio = sprintActual2['fecha_inicio']
+    #fechaFin = sprintActual2['fecha_fin']
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+
+
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    # 5 Se inicializan las variables que son necesarios para el line chart
+    diasLaborales_py = []
+    horasLaborales_Ideal = []
+    horasLaborales_Real = []
+    pasos = timedelta(days=1)
+
+    diasLaborales_py.append("Inicio")
+    # 6 Se genera la lista para el eje x del line chart
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_dedicadas = 0
+
+    # 8 Calculamos el efuerzo real.
+    # Calcula la lista de esfuerzo real y lo guarda en el modelo
+    #esto ha sido comentado
+    #if(sprintActual.estados=="INICIADO"):
+    #    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+
+
+    #horasLaborales_Ideal.append("Dia 0")
+    #horasLaborales_Real.append("Dia 0")
+    # SE PREPARAN LAS 2 LINEAS
+
+    for i in sprintActual.horasLaboralesIdeal:
+        horasLaborales_Ideal.append(str(i))
+
+    # Se le da el formato actual para el line chart
+
+    for i in sprintActual.horasLaboralesReal:
+        horasLaborales_Real.append(str(i))
+
+    usuarioActual = auth.get_user(request)
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    item = UserProyecto.objects.get(proyecto=proyecto, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+
+    context = {"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint": sprintActual,
+                       "Historias": listaHistorias,
+                       "Total": cantidad_total_historia,
+                       "diasLaborales": ','.join(diasLaborales_py),
+                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
+                       "horasLaboralesReal": ','.join(horasLaborales_Real),
+                       "cantidadDias": dias_de_sprint,
+                       "miembros": miembrosSprint,
+                       "proyecto" : proyecto}
+    html = render_to_string("informe_burndownChart_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_burndownChart.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+
+@login_required
+def historicoProyecto(request,id_proyecto):
+    """
+    Metodo para visualizar los registros del proyecto
+
+    :param request: consulta recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de ejecucion de Ver Historial del Proyecto
+    """
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    proyecto_dictionary = model_to_dict(proyectoActual)
+    print(proyecto_dictionary)
+    registros = proyecto_dictionary['historial']
+
+    print(registros)
+    return render(request, "historicoProyecto.html", {"Registros":registros,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual })
+
+
+def informe_Proyecto(request, id_proyecto):
+    """
+    Metodo para generar el reporte del registro del proyecto
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    if Proyecto.objects.filter(id=id_proyecto).exists():
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto = None
+
+    proyecto_dictionary = model_to_dict(proyecto)
+    print(proyecto_dictionary)
+    registro = proyecto_dictionary['historial']
+
+    context = {"Registros":registro, "proyecto":proyecto}
+    html = render_to_string("informe_registros_proyecto_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_Registro_proyecto.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response

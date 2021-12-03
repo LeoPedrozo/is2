@@ -1,0 +1,31 @@
+{% extends "base_pdf.html" %}
+{% block content %}
+
+
+
+<div class="container">
+
+    <h3 class="text-info">HISTORIAL DEL PROYECTO</h3>
+      <h4> Proyecto : {{ proyecto.nombre }}</h4>
+      <h5> {{ proyecto.descripcion }}</h5>
+
+
+    <table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Registro de cambios en el proyecto</th>
+    </tr>
+  </thead>
+  <tbody>
+          {% for registro in Registros %}
+    <tr>
+        <td>{{ registro }}</td>
+    </tr>
+          {% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+
+{% endblock %}

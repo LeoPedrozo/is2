@@ -1,81 +1,23 @@
-{% include 'material/includes/material_css.html' %}
-{% include 'material/includes/material_js.html' %}
-{% load material_form %}
+{% extends "base_burndown_pdf.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Burndown Chart</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-
-</head>
-
-<body>
 
 
 
-<!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content" style="alignment: left">
-    <li><a href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
-    <li class="divider"></li>
-    <li><a href="/inicio/logout">Cerrar Sesion</a></li>
-</ul>
-<nav style="background-color: #2f2f2f;height: 13%" >
-    <div class="nav-wrapper">
-        <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="#!" style="padding-left: 12px; padding-top: 10px;"> <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
-                         loading="lazy"
-                         style="width:50px;height:50px;"> </a></li>
-            <li><a href="/inicio/" style="font-size: larger">Inicio</a></li>
-            <li><a href="/proyecto/{{ proyecto.id }}/Sprints" style="font-size: larger"> Volver a Sprint</a></li>
-        </ul>
-
-
-        <ul class="right hide-on-med-and-down">
-            <li>
-                <p style="line-height: 1.5;">
-                {{ usuario.first_name }} {{ usuario.last_name }} <br>
-            {{ usuario.email }} <br>
-            {{ proyecto.nombre }} | {{ Rol_de_usuario }}
-                </p>
-
-            <!-- Dropdown Trigger -->
-            <li>
-                <a class="dropdown-trigger" href="#!" data-target="dropdown1"  style="padding-right: 12px; padding-top: 10px;" ><img src="{{ avatar }}" class="circle" height="15" alt=""
-                         loading="lazy"
-                         style="width:50px;height:50px;"><i class="material-icons left">arrow_drop_down</i>
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.dropdown-trigger');
-    var instances = M.Dropdown.init(elems, options);
-  });
-
-  // Or with jQuery
-
-  $('.dropdown-trigger').dropdown();
-
-</script>
 {% block content %}
+
+    <h1 class="text-center">Reporte Burndownchart</h1>
+    <h2 class="text-center">{{ proyecto.nombre }}</h2>
+    <h5 class="text-center" style="color: gray">{{ proyecto.descripcion }}</h5>
     <div class="container">
         <div class="row">
             <div class="col offset-s3">
                 <h5>
-                    <i class="fas fa-chart-line">&nbsp;Sprint Burndown Chart</i>
+                    <i class="fas fa-chart-line">&nbsp;Sprint nro.: &nbsp; {{ Sprint.sprintNumber }}</i>
                 </h5>
+                <h6 class="text-info">Inicio : {{ Sprint.fecha_inicio }}</h6>
+                <h6 class="text-info">Fin : &nbsp;&nbsp;&nbsp; {{ Sprint.fecha_fin }}</h6>
+
             </div>
             <div class="col s9 l9">
                 <div class="chartWrapper">
@@ -87,51 +29,47 @@
                     <canvas id="axis-Test" height="600" width="0"></canvas>
                 </div>
             </div>
-            <div class="col s9 l3 offset-s9">
-                <div class="card blue white-text">
-                    <div class="card-content">
-                        <p><b>Miembros Activos:</b></p>
-                        {% for miembro in miembros %}
-                            <p><i class="material-icons" style="vertical-align: bottom;">person</i> {{ miembro }} </p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="col s9 l3 offset-s9">
-                <div class="card blue white-text">
-                    <div class="card-content">
-                        <p>Sprint nro.: &nbsp; {{ Sprint.sprintNumber }}</p>
-                        Inicio : {{ Sprint.fecha_inicio }}
-                        <br>Fin : &nbsp;&nbsp;&nbsp; {{ Sprint.fecha_fin }}
-                    </div>
-                </div>
-            </div>
-            <div class="col s9 l3 offset-s9">
-                <ul class="collapsible">
-                    <div class="collapsible-header blue white-text">
-                        <i class="material-icons">assignment</i>
-                        Historias
-                        <span class="new badge grey darken-3 white-text">{{ Total }}</span>
-                    </div>
-                    {% for historia in Historias %}
-                        <li>
-                            <div class="collapsible-header">
-                                <i class="material-icons">expand_more</i>
-                                {{ historia.nombre }}
-                            </div>
-                            <div class="collapsible-body">
-                                Descripcion : {{ historia.descripcion }}
-                                <br>Encargado : {{ historia.encargado }}
-                                <br>Prioridad : {{ historia.prioridad }}
-                                <br>Estado : {{ historia.estados }}
-                                <br>Horas estimadas : {{ historia.horasEstimadas }}
-                                <br>Horas dedicadas : {{ historia.horas_dedicadas }}
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
 
+
+            <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Descripcion</th>
+                      <th scope="col">Prioridad</th>
+                      <th scope="col">Fecha Creacion</th>
+                      <th scope="col">Encargado</th>
+                      <th scope="col">Horas Estimadas</th>
+                      <th scope="col">Horas Dedicadas</th>
+                      <th scope="col">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for historia in Historias %}
+                    <tr>
+                        <th scope="row">{{ historia.id_historia }}</th>
+                        <td>{{ historia.nombre }}</td>
+                        <td>{{ historia.descripcion }}</td>
+                        <td>{{ historia.prioridad }}</td>
+                        <td>{{ historia.fecha_creacion }}</td>
+                        {% if historia.encargado %}
+                            <td>{{ historia.encargado }}</td>
+                        {% else %}
+                            <td>---</td>
+                        {% endif %}
+
+                        <td>{{ historia.horasEstimadas }}</td>
+                        <td>{{ historia.horas_dedicadas }}</td>
+                        {% if historia.estados %}
+                        <td>{{ historia.estados }}</td>
+                        {% else %}
+                         <td></td>
+                        {% endif %}
+                    </tr>
+                          {% endfor %}
+                  </tbody>
+                </table>
         </div>
     </div>
 
@@ -224,7 +162,7 @@
                             yAxes: [{
                                 ticks: {
                                     fontSize: 12,
-                                    beginAtZero: false
+                                    beginAtZero: true
                                 }
                             }]
                         },
@@ -272,9 +210,6 @@
 
 
     </script>
-
-{% endblock %}
-
 <style type="text/css">
     .chartWrapper {
         position: relative;
@@ -302,6 +237,5 @@
 
 </style>
 
+{% endblock %}
 
-</body>
-</html>

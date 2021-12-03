@@ -124,122 +124,95 @@
 </div>
 
 <div class="container">
-  <div class="row">
-    <div class="col">
-      <p class="text-white bg-dark">&nbsp;Nombre</p>
-    </div>
-    <div class="col">
-       <p class="text-white bg-dark">&nbsp;Descripcion</p>
-    </div>
-    <div class="col">
-      <p class="text-white bg-dark">&nbsp;Prioridad</p>
-    </div>
-      <div class="col">
-      <p class="text-white bg-dark">&nbsp;Fecha Creacion</p>
-    </div>
-    <div class="col">
-      <p class="text-white bg-dark">&nbsp;Encargado</p>
-    </div>
-    <div class="col">
-      <p class="text-white bg-dark">&nbsp;Horas Estimadas</p>
-    </div>
-      <div class="col">
-      <p class="text-white bg-dark">&nbsp;Horas Dedicadas</p>
-    </div>
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Prioridad</th>
+      <th scope="col">Fecha Creacion</th>
+      <th scope="col">Encargado</th>
+      <th scope="col">Horas Estimadas</th>
+      <th scope="col">Horas Dedicadas</th>
+      <th scope="col">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+          {% for historia in historiasAlta %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
 
-            <div class="col">
-      <p class="text-white bg-dark">&nbsp;Estado</p>
-    </div>
-  </div>
-        <!-- Prioridad Alta -->
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
 
-    {% for historia in historiasAlta %}
-  <div class="row">
-    <div class="col">
-      {{ historia.nombre }}
-    </div>
-    <div class="col">
-      {{ historia.descripcion }}
-    </div>
-    <div class="col">
-      {{ historia.prioridad }}
-    </div>
-      <div class="col">
-      {{ historia.fecha_creacion }}
-    </div>
-    <div class="col">
-      {{ historia.encargado }}
-    </div>
-      <div class="col">
-      {{ historia.horasEstimadas }}
-    </div>
-      <div class="col">
-      {{ historia.horas_dedicadas }}
-    </div>
-  <div class="col">
-      {{ historia.estados }}
-    </div>
-  </div>
-    {% endfor %}
-        <!-- Prioridad media -->
-        {% for historia in historiasMedia %}
-  <div class="row">
-    <div class="col">
-      {{ historia.nombre }}
-    </div>
-    <div class="col">
-      {{ historia.descripcion }}
-    </div>
-    <div class="col">
-      {{ historia.prioridad }}
-    </div>
-      <div class="col">
-      {{ historia.fecha_creacion }}
-    </div>
-    <div class="col">
-      {{ historia.encargado }}
-    </div>
-      <div class="col">
-      {{ historia.horasEstimadas }}
-    </div>
-      <div class="col">
-      {{ historia.horas_dedicadas }}
-    </div>
-  <div class="col">
-      {{ historia.estados }}
-    </div>
-  </div>
-    {% endfor %}
+<tbody>
+          {% for historia in historiasMedia %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
 
-<!-- Prioridad Baja -->
-        {% for historia in historiasBaja %}
-  <div class="row">
-    <div class="col">
-      {{ historia.nombre }}
-    </div>
-    <div class="col">
-      {{ historia.descripcion }}
-    </div>
-    <div class="col">
-      {{ historia.prioridad }}
-    </div>
-      <div class="col">
-      {{ historia.fecha_creacion }}
-    </div>
-    <div class="col">
-      {{ historia.encargado }}
-    </div>
-      <div class="col">
-      {{ historia.horasEstimadas }}
-    </div>
-      <div class="col">
-      {{ historia.horas_dedicadas }}
-    </div>
-  <div class="col">
-      {{ historia.estados }}
-    </div>
-  </div>
-    {% endfor %}
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
+
+<tbody>
+          {% for historia in historiasBaja %}
+    <tr>
+        <th scope="row">{{ historia.id_historia }}</th>
+        <td>{{ historia.nombre }}</td>
+        <td>{{ historia.descripcion }}</td>
+        <td>{{ historia.prioridad }}</td>
+        <td>{{ historia.fecha_creacion }}</td>
+        {% if historia.encargado %}
+            <td>{{ historia.encargado }}</td>
+        {% else %}
+            <td>---</td>
+        {% endif %}
+
+        <td>{{ historia.horasEstimadas }}</td>
+        <td>{{ historia.horas_dedicadas }}</td>
+        {% if historia.estados %}
+        <td>{{ historia.estados }}</td>
+        {% else %}
+         <td></td>
+        {% endif %}
+    </tr>
+          {% endfor %}
+  </tbody>
+</table>
 </div>
 
 </body>

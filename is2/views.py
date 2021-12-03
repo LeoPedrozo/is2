@@ -4016,6 +4016,7 @@ def informe_Sprint(request,id_proyecto,id_sprint):
     :param id_sprint: identificador del sprint
     :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
     """
+
     sprintseleccionado = Sprint.objects.get(id=id_sprint)
     #Caso que el sprint ya haya finalizado, usar el historico de la historia en el punto de fin
     if sprintseleccionado.estados == 'FINALIZADO':
@@ -4093,7 +4094,6 @@ def informe_Historia_Sprint(request,id_proyecto):
 
     :param request: Solicitud recibida
     :param id_proyecto: identificador del proyecto
-    :param id_sprint: identificador del sprint
     :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
     """
 
@@ -4159,6 +4159,14 @@ def informe_Historia_Sprint(request,id_proyecto):
     return response
 
 def informe_US_ProductBacklog(request, id_proyecto):
+    """
+    Metodo para generar el reporte de todas las historias un proyecto
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
     if Proyecto.objects.filter(id=id_proyecto).exists():
         proyecto = Proyecto.objects.get(id=id_proyecto)
     else:
@@ -4178,6 +4186,122 @@ def informe_US_ProductBacklog(request, id_proyecto):
 
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "inline; informe_US_Horas.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+
+def informe_BurndownChart(request,id_proyecto,id_sprint):
+    """
+    Metodo para Graficar el burndown chart en un gráfico de linea y exportarlo como pdf
+
+    :param request: solicitud recibida
+    :return: grafico de burndown chart
+    """
+
+    calendarioParaguay = Paraguay()
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+    sprintActual = Sprint.objects.get(id=id_sprint)
+
+    # 2- calculamos la capacidad del equipo
+    capacidad_de_equipo = 0  #suma de las capacidades de los miembros del sprint
+    desarrolladores = UserSprint.objects.filter(sprint=sprintActual)
+    for desarrollador in desarrolladores:
+        capacidad_de_equipo = capacidad_de_equipo + desarrollador.capacidad
+
+    # 3- se extrae la lista de historias.
+    #sprintActual2 = model_to_dict(sprintActual)
+    #listaHistorias = sprintActual2['historias']
+    listaHistorias = sprintActual.historias.all()
+    cantidad_total_historia = len(listaHistorias)
+
+    # Los miembros en forma de cadena para saber su estado
+    total_horas_estimadas = 0
+    miembrosSprint = []
+    for hist in listaHistorias:
+        total_horas_estimadas = total_horas_estimadas + hist.horasEstimadas
+        try:
+            #no entiendo
+            lastlog = hist.encargado.last_login.strftime("%d/%b - %I:%M %p")
+            miembro = f"{hist.encargado.email}\nUlt. activo : {lastlog}"
+            if not miembro in miembrosSprint:
+                miembrosSprint.append(miembro)
+        except AttributeError:
+            print(f"la historia {hist} aun no tiene encargado")
+        # esto no se toca
+
+    # 4 Se calcula la cantidad de dias del sprint
+    #fechaInicio = sprintActual2['fecha_inicio']
+    #fechaFin = sprintActual2['fecha_fin']
+    fechaInicio = sprintActual.fecha_inicio
+    fechaFin = sprintActual.fecha_fin
+
+
+    dias_de_sprint = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    # 5 Se inicializan las variables que son necesarios para el line chart
+    diasLaborales_py = []
+    horasLaborales_Ideal = []
+    horasLaborales_Real = []
+    pasos = timedelta(days=1)
+
+    diasLaborales_py.append("Inicio")
+    # 6 Se genera la lista para el eje x del line chart
+    while fechaInicio <= fechaFin:
+        if calendarioParaguay.is_working_day(fechaInicio):
+            diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+        fechaInicio += pasos
+
+    total_horas_dedicadas = 0
+
+    # 8 Calculamos el efuerzo real.
+    # Calcula la lista de esfuerzo real y lo guarda en el modelo
+    #esto ha sido comentado
+    #if(sprintActual.estados=="INICIADO"):
+    #    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+
+
+    #horasLaborales_Ideal.append("Dia 0")
+    #horasLaborales_Real.append("Dia 0")
+    # SE PREPARAN LAS 2 LINEAS
+
+    for i in sprintActual.horasLaboralesIdeal:
+        horasLaborales_Ideal.append(str(i))
+
+    # Se le da el formato actual para el line chart
+
+    for i in sprintActual.horasLaboralesReal:
+        horasLaborales_Real.append(str(i))
+
+    usuarioActual = auth.get_user(request)
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    item = UserProyecto.objects.get(proyecto=proyecto, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+
+    context = {"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint": sprintActual,
+                       "Historias": listaHistorias,
+                       "Total": cantidad_total_historia,
+                       "diasLaborales": ','.join(diasLaborales_py),
+                       "horasLaboralesIdeal": ','.join(horasLaborales_Ideal),
+                       "horasLaboralesReal": ','.join(horasLaborales_Real),
+                       "cantidadDias": dias_de_sprint,
+                       "miembros": miembrosSprint,
+                       "proyecto" : proyecto}
+    html = render_to_string("informe_burndownChart_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_burndownChart.pdf"
 
     font_config = FontConfiguration()
     HTML(string=html).write_pdf(response, font_config=font_config)

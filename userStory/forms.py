@@ -33,7 +33,7 @@ class crearHistoriaForm(forms.Form):
         ('BAJA', 'Baja'),
     ]
     #id_historia = forms.IntegerField(disabled=True, label="ID de Historia")
-    nombre = forms.CharField(max_length=50, help_text='50 characters max.')
+    nombre = forms.CharField(max_length=150, help_text='150 characters max.')
     descripcion = forms.CharField(widget=forms.Textarea)
     prioridad = forms.ChoiceField(widget=forms.RadioSelect, choices=PRIORIDAD_CHOICES)
     fecha_creacion = forms.DateField(initial=datetime.date.today, disabled=True, label="Fecha de Creacion")

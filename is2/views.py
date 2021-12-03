@@ -2799,7 +2799,23 @@ def modificarSprint2(request, id_proyecto, id_sprint):
         rango = calcularRango(proyectoPropietario)
         request.session['rango'] = rango
         formulario = modificarSprintForm(request=request.session)
-        return render(request, "modificarSprint.html", {"form": formulario})
+
+        usuarioActual = auth.get_user(request)
+        if (usuarioActual.is_superuser):
+            fotodeusuario = None
+        else:
+            fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+        item = UserProyecto.objects.get(proyecto=proyectoPropietario, usuario=usuarioActual)
+
+        if (item.rol_name != ''):
+            rol = item.rol_name
+        else:
+            rol = ""
+
+
+
+        return render(request, "modificarSprint.html", {"form": formulario,"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint":  sprint_seleccionado})
 
 
 @login_required
@@ -2970,6 +2986,12 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     sprint_actual = Sprint.objects.get(id=id_sprint)
     usuarios = []
     PosiblesIntegrantes = UserProyecto.objects.filter(proyecto=proyecto_actual, rol_name="Desarrollador")
+    devs=[]
+    lista= UserSprint.objects.filter(sprint=sprint_actual);
+    #for l in lista:
+    #    devs.append(l.usuario)
+
+
 
     for elemento in PosiblesIntegrantes:
 
@@ -2982,13 +3004,21 @@ def step2_SprintPlanning2(request, id_proyecto, id_sprint):
     #email 50
     #email_nuevoSprint(id_proyecto,id_sprint,usuarios)
 
-    return render(request, "step2_SprintPlanning_2.html", {"miembros": usuarios,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario = User.objects.get(username=request.user.username)
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyecto_actual)
+        rol_name = proy.rol_name
+
+    return render(request, "step2_SprintPlanning_2_2.html", {"miembros": usuarios,"desarrolladores":lista,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyecto_actual})
 
 
 #@login_required
 #@user_passes_test(lambda u: u.groups.filter(name='Scrum Master').count() == 0,login_url="/AccesoDenegado/")
 #Es mas un proceso
-def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
+def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario,opcion):
     """
     Metodo para asignar la capacidad de trabajo de un desarrollador
 
@@ -2999,33 +3029,60 @@ def asignarCapacidad2(request, id_proyecto,id_sprint,id_usuario):
     :return: respuesta a la solicitud ASIGNAR CAPACIDAD
     """
 
-    if request.method == 'POST':
-        form = asignarcapacidadForm(request.POST)
-        if (form.is_valid()):
-            capacidad = form.cleaned_data['capacidad']
-            if capacidad > 0:
-                usuario = User.objects.get(id=id_usuario)
-                proyecto_actual = Proyecto.objects.get(id=id_proyecto)
-                sprint_en_planning = Sprint.objects.get(id=id_sprint)
-                try:
-                    u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
-                except ObjectDoesNotExist:
-                    nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
-                                               capacidad=capacidad)
-                    nuevoElemento.save()
-                else:
+    # if request.method == 'POST':
+    #     form = asignarcapacidadForm(request.POST)
+    #     if (form.is_valid()):
+    #         capacidad = form.cleaned_data['capacidad']
+    #         if capacidad > 0:
+    #             usuario = User.objects.get(id=id_usuario)
+    #             proyecto_actual = Proyecto.objects.get(id=id_proyecto)
+    #             sprint_en_planning = Sprint.objects.get(id=id_sprint)
+    #             try:
+    #                 u = UserSprint.objects.get(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning)
+    #             except ObjectDoesNotExist:
+    #                 nuevoElemento = UserSprint(usuario=usuario, proyecto=proyecto_actual, sprint=sprint_en_planning,
+    #                                            capacidad=capacidad)
+    #                 nuevoElemento.save()
+    #             else:
+    #
+    #                 u.capacidad = capacidad
+    #                 #email_nuevoSprint(id_proyecto, id_sprint, u)
+    #                 u.save()
+    #
+    #         else:
+    #             messages.error(request, 'Ingrese una capacidad valida')
+    #     else:
+    #         print("formulario invalido")
 
-                    u.capacidad = capacidad
-                    #email_nuevoSprint(id_proyecto, id_sprint, u)
-                    u.save()
+    usuario_seleccionado = User.objects.get(id=id_usuario)
+    sprint_seleccionado = Sprint.objects.get(id=id_sprint)
+    proyecto_seleccionado = Proyecto.objects.get(id=id_proyecto)
 
-            else:
-                messages.error(request, 'Ingrese una capacidad valida')
+    if(opcion=="Agregar"):
+        capacidad = int(request.GET['Capacidad'])
+        if capacidad > 0:
+             elemento=UserSprint(proyecto=proyecto_seleccionado,sprint=sprint_seleccionado,usuario=usuario_seleccionado,capacidad=capacidad)
+             elemento.save()
         else:
-            print("formulario invalido")
+            messages.error(request, 'Ingrese una capacidad valida')
+
+    if(opcion=="Quitar"):
+        elemento=UserSprint.objects.get(proyecto=proyecto_seleccionado, sprint=sprint_seleccionado,
+                                  usuario=usuario_seleccionado)
+        elemento.delete()
+
+    if(opcion=="Cambiar"):
+        capacidad = int(request.GET['Capacidad'])
+        if capacidad > 0:
+            elemento = UserSprint.objects.get(proyecto=proyecto_seleccionado, sprint=sprint_seleccionado,
+                                      usuario=usuario_seleccionado)
+            elemento.capacidad=capacidad
+            elemento.save()
+        else:
+            messages.error(request, 'Ingrese una capacidad valida')
+
 
     url="/proyecto/"+str(id_proyecto)+"/Sprints/"+str(id_sprint)+"/FormarEquipo/"
-    #return redirect(step2_SprintPlanning)
     return redirect(url)
 
 
@@ -3320,7 +3377,9 @@ def tableroKanban2(request,id_proyecto,id_sprint):
 
         #Preparacion de comentarios
         versionesDic = {}
+        total_horas_estimadas=0
         for hist in listaHistorias:
+            total_horas_estimadas=total_horas_estimadas+hist.horasEstimadas
             if hist.history.filter(
                     Q(history_change_reason="comentario") & Q(history_date__gte=sprintActual2['fecha_inicio']) & Q(
                             history_date__lte=sprintActual2['fecha_fin'] + timedelta(days=1))).exists():
@@ -3356,7 +3415,22 @@ def tableroKanban2(request,id_proyecto,id_sprint):
         else:
             rol=""
         calendarioParaguay = Paraguay()
+
+        diasLaborales_py = []
+        diasLaborales_py.append("Inicio")
+        # 6 Se genera la lista para el eje x del line chart
+        fechaInicio=sprintActual.fecha_inicio
+        fechaFin=sprintActual.fecha_fin
+        pasos = timedelta(days=1)
+
+        while fechaInicio <= fechaFin:
+            if calendarioParaguay.is_working_day(fechaInicio):
+                diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+            fechaInicio += pasos
+
+
         if calendarioParaguay.is_working_day(date.today()):
+            calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
 
             return render(request, "tableroKanban2.html",
                           {"Sprint": sprintActual, "Historias": listaHistorias, "Total": cantidaddehistorias,
@@ -3764,8 +3838,9 @@ def BurndownChart(request,id_proyecto,id_sprint):
 
     # 8 Calculamos el efuerzo real.
     # Calcula la lista de esfuerzo real y lo guarda en el modelo
-    if(sprintActual.estados=="INICIADO"):
-        calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
+    #esto ha sido comentado
+    #if(sprintActual.estados=="INICIADO"):
+    #    calcularEsfuerzoReal(listaHistorias, sprintActual, diasLaborales_py, total_horas_estimadas)
 
 
     #horasLaborales_Ideal.append("Dia 0")

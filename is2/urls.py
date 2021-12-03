@@ -101,7 +101,7 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/modificar/<int:id_sprint>/InformacionBasica/',modificarSprint2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/', step2_SprintPlanning2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarHistorias/', step3_SprintPlanning2),
-    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/', asignarCapacidad2),
+    path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/FormarEquipo/<int:id_usuario>/<str:opcion>', asignarCapacidad2),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/AsignarEncargado/Historia<int:id_historia>/Op<int:opcion>/', step3_Funcionalidades),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/Eliminar/', eliminarSprint2), #ok
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/info/', infoSprint), #ok

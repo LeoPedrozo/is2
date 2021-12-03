@@ -2815,7 +2815,7 @@ def modificarSprint2(request, id_proyecto, id_sprint):
 
 
 
-        return render(request, "modificarSprint.html", {"form": formulario,"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint":  sprint_seleccionado})
+        return render(request, "modificarSprint.html", {"form": formulario,"usuario":usuarioActual,"Rol_de_usuario":rol,"avatar":fotodeusuario,"Sprint":  sprint_seleccionado,"proyecto": proyectoPropietario})
 
 
 @login_required
@@ -3136,8 +3136,11 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     developers = []
 
     # La lista de los desarrolladores para el sprint actual
+    # for elemento in tablatemporal:
+    #     developers.append((elemento.usuario.email, elemento.usuario.email))
+
     for elemento in tablatemporal:
-        developers.append((elemento.usuario.username, elemento.usuario.username))
+        developers.append(elemento.usuario.email)
 
     cantidaddehistorias = len(productbacklog)
     porcentaje = round((capacidad_ocupada_por_historias / capacidad_sprint_horas) * 100)
@@ -3147,15 +3150,21 @@ def step3_SprintPlanning2(request, id_proyecto, id_sprint):
     formulario_asignar= asignaryestimarHistoria(developers=request.session)
     #formulario = asignarDesarrolladorForm(developers=request.session)  "form": formulario
 
+    fotodeususario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+    usuario = User.objects.get(username=request.user.username)
+    if (usuario.is_superuser):
+        rol_name = "Administrador"
+    else:
+        proy = UserProyecto.objects.get(usuario=usuario, proyecto=proyectoActual)
+        rol_name = proy.rol_name
 
 
 
 
-
-    return render(request, "step3_SprintPlanning_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
+    return render(request, "step3_SprintPlanning_3_3.html", {"Sprint": sprintActual, "p_backlog": productbacklog,
                                                      "s_backlog": sprintbacklog, "Total": cantidaddehistorias,
                                                      "formulario_asignar": formulario_asignar, "Porcentaje": porcentaje,
-                                                     "Duracion": dias_de_sprint,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint})
+                                                     "Duracion": dias_de_sprint,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"desarrolladores":developers,"avatar":fotodeususario, "Rol_de_usuario": rol_name,"usuario":usuario,"proyecto":proyectoActual})
 
 
 
@@ -3179,28 +3188,19 @@ def step3_Funcionalidades(request, id_proyecto, id_sprint, id_historia, opcion):
     #asigno encargado a la historia
     if (opcion == 1):
         h = Historia.objects.get(id_historia=id_historia)
-        #if request.method == 'POST':
-        #   formulario = asignaryestimarHistoria(request.POST, developers=request.session)
-        #    if (formulario.is_valid()):
-        #        usuarioSeleccionado = formulario.cleaned_data['encargado']
-        #        encargado = User.objects.get(username=usuarioSeleccionado)
-        #        h.encargado = encargado
-        #        h.estados = 'PENDIENTE'
-        #        h.horasEstimadas=formulario.cleaned_data['estimado']
-        #        h.save()
-        #        # Se le agrega al sprint
-        #        sprint_actual.historias.add(h)
-        #        sprint_actual.save()
-        #    else:
-        #        print("formulario invalido")
-        if request.method == 'POST':
-            usuarioSeleccionado = User.objects.get(username=request.POST['encargado'])
-            h.horasEstimadas=request.POST['estimado']
+
+        if request.method == 'GET':
+            encargado=request.GET['Encargado']
+            estimado = int(request.GET['Estimacion'])
+            usuarioSeleccionado=User.objects.get(email=encargado)
+
+            h.horasEstimadas = estimado
             h.encargado = usuarioSeleccionado
             h.estados = 'PENDIENTE'
             h.save()
             sprint_actual.historias.add(h)
             sprint_actual.save()
+
             email_historiaAsignado(h, id_proyecto, usuarioSeleccionado)
 
 

@@ -138,7 +138,7 @@ class asignaryestimarHistoria(forms.Form):
         super(asignaryestimarHistoria, self).__init__(*args, **kwargs)
         self.fields['encargado'].choices = self.datos['developers']
 
-    encargado = forms.ChoiceField(required=False)
+    encargado = forms.ChoiceField(required=False, widget=forms.Select( attrs={'type': 'select', 'id':'encargado','name':'encargado', 'class':'form-control'}))
     estimado = forms.IntegerField(initial=0, widget=forms.NumberInput(
         attrs={'type': 'number', 'id': 'estimado', 'name': 'estimado', 'value': '0',
                'class': 'form-control'}))

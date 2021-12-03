@@ -60,6 +60,7 @@ class TestViews(TestCase):
         self.historicoSprint_url = reverse(historicoSprint)
         #self.HistorialSprintFilter_url = reverse(HistorialSprintFilter)
         #self.line_chart_url = reverse(lineChart)
+        self.BurndownChart_url = reverse(BurndownChart)
         #self.mover_Historia_url = reverse(moverHistoria, args={1,1})
         User = get_user_model()
         User.objects.create_superuser(
@@ -504,16 +505,24 @@ class TestViews(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'SprintBacklog.html')
-
-
-    def test_lineChart(self):
-
-        response = self.client.get(self.line_chart_url)
-
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'Condicion_requerida.html')
     """
 
+    def test_BurndownChart(self):
+        """
+       Verifica que la URL de la vista 'BurndownChart' existe en la ubicación deseada
+       """
+        response = self.client.get(self.BurndownChart_url)
+
+        self.assertEquals(response.status_code, 200)
+
+
+    def test_BurndownChartHTML(self):
+        """
+       Comprueba que la vista 'BurndownChart' utiliza la plantilla correcta
+       """
+        response = self.client.get(self.BurndownChart_url)
+
+        self.assertTemplateUsed(response, 'Condicion_requerida.html')
 
     def test_tableroQARelease(self):
         """

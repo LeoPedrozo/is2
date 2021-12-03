@@ -3937,7 +3937,8 @@ def BurndownChart(request,id_proyecto,id_sprint):
                        "horasLaboralesReal": ','.join(horasLaborales_Real),
                        "cantidadDias": dias_de_sprint,
                        "miembros": miembrosSprint,
-                       "proyecto" : proyecto})
+                       "proyecto" : proyecto,
+                       "longitud": len(diasLaborales_py)})
 
 
 
@@ -3955,7 +3956,6 @@ def calcularEsfuerzoReal(Historias, sprint_seleccionado, dias_laborales, total_h
     total_horas_dedicadas = 0
     for historia in Historias:
         total_horas_dedicadas = total_horas_dedicadas + historia.horas_dedicadas
-
 
 
     esfuerzo_del_dia = total_horas_estimadas - total_horas_dedicadas
@@ -4019,11 +4019,13 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
     pasos = timedelta(days=1)
 
     # 6 Se genera la lista para el eje x del line chart
-
+    dias_de_sprint=0
     diasLaborales_py.append("Inicio")
     while fechaInicio <= fechaFin:
+
         if calendarioParaguay.is_working_day(fechaInicio):
             diasLaborales_py.append(fechaInicio.strftime("%d-%b"))
+            dias_de_sprint += 1
         fechaInicio += pasos
 
     total_horas_estimadas = 0
@@ -4032,24 +4034,25 @@ def calcularEsfuerzoIdeal(sprint_seleccionado, desarrolladores):
 
 
     #Opcion 2 planteado por edher
-    dias_de_sprint=len(diasLaborales_py)-1
-    dias_de_sprint2 = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
-    print("cantidad de dias con el len = "+str(dias_de_sprint))
+    #dias_de_sprint=len(diasLaborales_py)-1
+    #dias_de_sprint2 = calendarioParaguay.get_working_days_delta(fechaInicio, fechaFin) + 1
+    #print("cantidad de dias con el len = "+str(dias_de_sprint))
 
-    print("cantidad de dias con el get working days = " + str(dias_de_sprint2))
     promedio_de_quemado=total_horas_estimadas/dias_de_sprint
 
     #esto es para que ambos tengan en el inicio el mismo numero de horas
     sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
     sprint_seleccionado.horasLaboralesReal.append(total_horas_estimadas)
 
+
     for dia in diasLaborales_py:
-        total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
-        if(total_horas_estimadas >0 ):
-            sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
-        else:
-            sprint_seleccionado.horasLaboralesIdeal.append(0)
-            break
+        if( dia != 'Inicio'):
+            total_horas_estimadas = total_horas_estimadas - promedio_de_quemado
+            if(total_horas_estimadas >0 ):
+                sprint_seleccionado.horasLaboralesIdeal.append(total_horas_estimadas)
+            else:
+                sprint_seleccionado.horasLaboralesIdeal.append(0)
+                break
 
 
 

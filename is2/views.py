@@ -2147,12 +2147,12 @@ def KanbanHistorico(request, id_proyecto,id_sprint):
             hist.horasEstimadas = x.horasEstimadas
             hist.horas_dedicadas = x.horas_dedicadas
             hist.estados = x.estados
-            finalizo = x.history_date
+            print("historia : ",hist)
         else:
             print("No existe")
     return render(request, "KanbanHistorico.html",
                   {"Sprint": sprintSeleccionado, "Historias": listaHistorias, "Total": cantidaddehistorias,
-                   "versionesDic": versionesDic, "finalizo": finalizo,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual, "proyecto":proyectoActual,"Rol_de_usuario":rol})
+                   "versionesDic": versionesDic,"ID_proyecto":id_proyecto,"ID_sprint":id_sprint,"avatar":fotodeusuario,"usuario":usuarioActual, "proyecto":proyectoActual,"Rol_de_usuario":rol})
 
 
 # 4 cuando se selecciona ver Product backlog
@@ -3309,7 +3309,6 @@ def sprintBacklog2(request,id_proyecto,id_sprint):
                     historiasMedia.append(hist)
                 elif (hist.prioridad == 'BAJA'):
                     historiasBaja.append(hist)
-                finalizo = x.history_date
             else:
                 print("No existe")
     else:
@@ -4043,7 +4042,6 @@ def informe_Sprint(request,id_proyecto,id_sprint):
                     historiasMedia.append(hist)
                 elif (hist.prioridad == 'BAJA'):
                     historiasBaja.append(hist)
-                finalizo = x.history_date
             else:
                 print("No existe")
     else:

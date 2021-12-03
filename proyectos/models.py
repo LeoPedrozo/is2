@@ -29,6 +29,7 @@ class Proyecto(models.Model):
     id_sprints = models.ManyToManyField(Sprint, blank=True)
     #Los roles del proyecto.
     roles_name = ArrayField(models.CharField(max_length=30), default=list, blank=True)
+    historial = ArrayField(models.TextField(), default=list, blank=True)
 
     class Meta:
         verbose_name = 'Proyecto'

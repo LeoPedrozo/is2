@@ -5,6 +5,7 @@ from GestionPermisos.views import fabricarRol
 from proyectos.models import Proyecto
 from django.contrib.auth.models import Group
 from gestionUsuario.models import User, UserProyecto
+from datetime import datetime
 
 # Create your views here.
 
@@ -23,7 +24,6 @@ def nuevoProyecto(datos):
     newP= Proyecto(nombre = datos['nombre'],estado = datos['estado'],
                    descripcion = datos['descripcion'],fecha = datos['fecha'],
                    fecha_entrega =datos['fecha_entrega'],fecha_finalizacion=None)
-
 
     scrum = {
         "RolName": "Scrum Master",
@@ -60,12 +60,18 @@ def updateProyecto(datos):
     """
 
     proyecto=Proyecto.objects.get(id=datos['id'])
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    proyecto.historial.append(f"[{dt_string}] Se ha modificado el proyecto {proyecto.nombre}")
     proyecto.nombre=datos['nombre']
     proyecto.estado = datos['estado']
     proyecto.descripcion = datos['descripcion']
     proyecto.fecha = datos['fecha']
     proyecto.fecha_entrega =datos['fecha_entrega']
     proyecto.fecha_finalizacion=None
+    proyecto.historial.append(f"[{dt_string}] Datos del proyecto ( Nombre: {proyecto.nombre} \n Estado: {proyecto.estado} \n Descripcion: {proyecto.descripcion} \n Fecha Creacion:{proyecto.fecha}\n"
+                              f" Fecha de entrega estimada: {proyecto.fecha_entrega})")
+
     proyecto.save()
 
 

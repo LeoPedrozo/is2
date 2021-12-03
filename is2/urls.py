@@ -34,7 +34,8 @@ from is2.views import inicio, saludo, documentaciones, step1_CrearRol, step2_Cre
     infoUsuario, modificarProyecto2, tableroQA_Release2, modificarHistoria2, eliminarHistoria2, step1_SprintPlanning2, \
     step2_SprintPlanning2, asignarCapacidad2, step3_SprintPlanning2, step3_Funcionalidades, modificarSprint2, \
     sprintBacklog2, tableroKanban2, moverHistoria2, funcionalidadesQA, KanbanHistorico, eliminarSprint2, homeProyecto, \
-    eliminarProyecto2, intercambiarMiembro, accesoDenegado, infoSprint, informe_US_ProductBacklog, informe_Sprint, informe_Historia_Sprint,informe_BurndownChart
+    eliminarProyecto2, intercambiarMiembro, accesoDenegado, infoSprint, informe_US_ProductBacklog, informe_Sprint, \
+    informe_Historia_Sprint,informe_BurndownChart, historicoProyecto, informe_Proyecto
 from django.conf.urls import url
 
 
@@ -78,8 +79,8 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/eliminar/',eliminarProyecto2), #ok
     path('importarRoles/',importarRol),
     path('inicio/<int:id>/',swichProyecto),
-
-
+    path('proyecto/<int:id_proyecto>/historial/',historicoProyecto),
+    path('proyecto/<int:id_proyecto>/informeRegistro/',informe_Proyecto),
     #NUEVOS URLS relacionados a Historia
 
     path('proyecto/<int:id_proyecto>/ProductBacklog/nuevo/', crearHistoria),
@@ -123,6 +124,7 @@ urlpatterns = [
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/exportUS/', informe_Sprint),
     path('proyecto/<int:id_proyecto>/exportUSALL/', informe_Historia_Sprint),
     path('proyecto/<int:id_proyecto>/Sprints/<int:id_sprint>/exportBurndownChart/',informe_BurndownChart),
+
     #----------------------------------OLD URLS------------------------------------------
 
 

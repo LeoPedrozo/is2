@@ -563,7 +563,11 @@ def crearProyecto(request):
             datosProyecto = formulario.cleaned_data
             miembros = formulario.cleaned_data["miembros"]
             proyecto = nuevoProyecto(formulario.cleaned_data)
-
+            creadoPor = auth.get_user(request)
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}]Se ha creado un nuevo proyecto {proyecto.nombre} por {creadoPor.username}")
+            proyecto.save()
             # proyecto = getProyecto(formulario.cleaned_data['nombre'])
             asociarProyectoaUsuario(proyecto, miembros)
 
@@ -614,6 +618,11 @@ def modificarProyecto(request):
 
                 # se elimina los usuarios viejos
                 desasociarUsuariodeProyecto(miembros)
+
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                modificadoPor = auth.get_user(request)
+                proyecto.historial.append(f"[{dt_string}] El proyecto {proyecto.nombre} ha sido modificado por {modificadoPor.username}")
 
                 miembrosActuales = User.objects.all().filter(proyecto=idproyecto)
                 # Retornar mensaje de exito
@@ -913,7 +922,15 @@ def step1_SprintPlanning(request):
             datosSprint = formulario.cleaned_data
             print("SE CREA EL SPRINT")
             newSprint = nuevoSprint(datosSprint)
-
+            usuarioActual = User.objects.get(username=request.user.username)
+            if usuarioActual.proyecto_id is None:
+                print("No forma parte de ningun proyecto")
+            else:
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                proyecto = usuarioActual.proyecto
+                proyecto.historial.append(f"[{dt_string}] Se ha creado el sprint {newSprint.sprintNumber} del proyecto {proyecto.nombre} por {usuarioActual.username}")
+                proyecto.save()
             # Por practicidad se le pasa el id del sprint
             request.session['sprint_planning_id'] = newSprint.id
             # return render(request, "outputCrearSprint.html", {"sprintCreado": datosSprint})
@@ -1088,6 +1105,13 @@ def step3_asignarEncargado(request, id, opcion):
                 h.encargado = encargado
                 h.estados = 'PENDIENTE'
                 h.save()
+
+                proyecto = h.proyecto
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                proyecto.historial.append(f"[{dt_string}] Se ha asignado un encargado a la historia {h.nombre} por "
+                                          f"{request.user.username}, Encargado asignado: {encargado.username}")
+                proyecto.save()
                 # Se le agrega al sprint
                 sprint_actual.historias.add(h)
                 sprint_actual.save()
@@ -1375,8 +1399,13 @@ def crearHistoria(request,id_proyecto):
             datosHistoria['proyecto'] = getProyecto(formulario.cleaned_data['proyecto'])
 
 
-            nuevaHistoria(datosHistoria)
-
+            newHist = nuevaHistoria(datosHistoria)
+            proyecto = Proyecto.objects.get(id=id_proyecto)
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}] Se ha creado la historia {newHist.nombre} por "
+                                      f"{request.user.username}")
+            proyecto.save()
             # Retornar mensaje de exito
             return render(request, "outputCrearUserStory.html", {"historiaCreado": datosHistoria,"ID_proyecto":id_proyecto})
     else:
@@ -1468,7 +1497,13 @@ def modificarHistoria(request):
             print(datosdeHistoria)
             # metodo que realiza la logica de la modificacion
 
-            updateHistoria(datosdeHistoria)
+            hist = updateHistoria(datosdeHistoria)
+            proyecto = hist.proyecto
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            proyecto.historial.append(f"[{dt_string}] Se ha modificado la historia {hist.nombre} por "
+                                      f"{request.user.username}")
+            proyecto.save()
             # Retornar mensaje de exito
             return render(request, "outputmodificarHistoria.html", {"historiaModificada": datosdeHistoria})
     else:
@@ -2209,6 +2244,10 @@ def finalizarProyecto(request, id_proyecto):
 
         if (len(proyecto_seleccionado.id_sprints.filter(estados="FINALIZADO", verificado=False)) == 0):
             proyecto_seleccionado.estado = "FINALIZADO"
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            modificadoPor = auth.get_user(request)
+            proyecto_seleccionado.historial.append(f"[{dt_string}] Se ha finalizado el proyecto {proyecto_seleccionado.nombre} por {modificadoPor.username}")
             proyecto_seleccionado.fecha_finalizacion = date.today()
             proyecto_seleccionado.save()
 
@@ -2257,6 +2296,12 @@ def iniciarProyecto(request, id_proyecto):
 
         proyecto_seleccionado.estado = "INICIADO"
         proyecto_seleccionado.fecha = date.today()
+
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        modificadoPor = auth.get_user(request)
+        proyecto_seleccionado.historial.append(
+            f"[{dt_string}] El proyecto {proyecto_seleccionado.nombre} ha sido iniciado por {modificadoPor.username}")
         proyecto_seleccionado.save()
         #email 14
         email_proyectoIni(id_proyecto)
@@ -2280,8 +2325,12 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
     """
     usuarioActual = User.objects.get(username=request.user.username)
     sprintActual = Sprint.objects.get(id=id_sprint)
-
+    proyectoHistorico = Proyecto.objects.get(id=id_proyecto)
     if opcion == 'finalizar':
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        proyectoHistorico.historial.append(f"[{dt_string}] Se ha finalizado el sprint {sprintActual.sprintNumber} del proyecto {proyectoHistorico.nombre} por {usuarioActual.username}")
+        proyectoHistorico.save()
         listaHistorias = sprintActual.historias.all()
 
         for hist in listaHistorias:
@@ -2343,6 +2392,10 @@ def finalizarOexpandirSprint(request,id_proyecto, id_sprint, opcion):
                     proyecto.fecha_entrega = sprint_en_planning.fecha_fin
                     messages.info(request, "La fecha estimada de entrega del Proyecto se ha extendido")
                     messages.info(request, f"Dias extendidos: {extension}")
+                    now = datetime.now()
+                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                    proyecto.historial.append(
+                    f"[{dt_string}] Se ha extendido {extension} dias el sprint {sprintActual.sprintNumber} del proyecto {proyecto.nombre} por {usuarioActual.username}")
 
                 sprint_en_planning.save()
                 proyecto.save()
@@ -4304,6 +4357,72 @@ def informe_BurndownChart(request,id_proyecto,id_sprint):
 
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = "inline; informe_burndownChart.pdf"
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+
+    return response
+
+
+@login_required
+def historicoProyecto(request,id_proyecto):
+    """
+    Metodo para visualizar los registros del proyecto
+
+    :param request: consulta recibida
+    :param id_proyecto: identificador del proyecto
+    :return: respuesta a la solicitud de ejecucion de Ver Historial del Proyecto
+    """
+
+
+    usuarioActual = auth.get_user(request)
+
+    if (usuarioActual.is_superuser):
+        fotodeusuario = None
+    else:
+        fotodeusuario = SocialAccount.objects.filter(user=request.user)[0].extra_data['picture']
+
+    proyectoActual = Proyecto.objects.get(id=id_proyecto)
+
+    item = UserProyecto.objects.get(proyecto=proyectoActual, usuario=usuarioActual)
+
+
+    if (item.rol_name != ''):
+        rol = item.rol_name
+    else:
+        rol = ""
+
+    proyecto_dictionary = model_to_dict(proyectoActual)
+    print(proyecto_dictionary)
+    registros = proyecto_dictionary['historial']
+
+    print(registros)
+    return render(request, "historicoProyecto.html", {"Registros":registros,"Rol_de_usuario":rol,"ID_proyecto":id_proyecto,"proyecto":proyectoActual,"avatar":fotodeusuario,"usuario":usuarioActual })
+
+
+def informe_Proyecto(request, id_proyecto):
+    """
+    Metodo para generar el reporte del registro del proyecto
+
+    :param request: Solicitud recibida
+    :param id_proyecto: identificador del proyecto
+    :return: Impresion de la historia con sus respectivos campos (nombre, encargado, descripcion, prioridad, horas Estimadas y dedicadas y su estado)
+    """
+
+    if Proyecto.objects.filter(id=id_proyecto).exists():
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+    else:
+        proyecto = None
+
+    proyecto_dictionary = model_to_dict(proyecto)
+    print(proyecto_dictionary)
+    registro = proyecto_dictionary['historial']
+
+    context = {"Registros":registro, "proyecto":proyecto}
+    html = render_to_string("informe_registros_proyecto_pdf.html", context)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = "inline; informe_Registro_proyecto.pdf"
 
     font_config = FontConfiguration()
     HTML(string=html).write_pdf(response, font_config=font_config)

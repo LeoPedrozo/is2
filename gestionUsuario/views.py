@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.shortcuts import render
 from gestionUsuario.models import User, UserProyecto
+from datetime import datetime
 
 
 # Create your views here.
@@ -19,6 +20,9 @@ def asociarProyectoaUsuario( proyecto,correos):
     """
 
     for correo in correos:
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        proyecto.historial.append(f"[{dt_string}] Se ha agregado al proyecto {proyecto.nombre} a {correo}")
 
         u= User.objects.get(email=correo)
         u.proyecto=proyecto
@@ -31,13 +35,15 @@ def asociarProyectoaUsuario( proyecto,correos):
             nuevo = UserProyecto(usuario=u, proyecto=proyecto, rol_name='')
             nuevo.save()
         u.save()
-        """
-        asunto = "Nuevo Proyecto!!"
-        mensaje =  "Hola "+u.username+", has sido agregado a un nuevo proyecto\n\n Nombre del Proyecto: " +proyecto.nombre+"\n Fecha de creacion: "+str(proyecto.fecha)
-        de = settings.EMAIL_HOST_USER
-        destino = [u.email]
-        send_mail(asunto,mensaje,de,destino)
-        """
+    proyecto.save()
+
+    """
+    asunto = "Nuevo Proyecto!!"
+    mensaje =  "Hola "+u.username+", has sido agregado a un nuevo proyecto\n\n Nombre del Proyecto: " +proyecto.nombre+"\n Fecha de creacion: "+str(proyecto.fecha)
+    de = settings.EMAIL_HOST_USER
+    destino = [u.email]
+    send_mail(asunto,mensaje,de,destino)
+    """
 
 
 ##No se si funca como deberia
@@ -49,6 +55,10 @@ def desasociarUsuariodeProyecto(proyecto,correos):
     """
 
     for correo in correos:
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        proyecto.historial.append(f"[{dt_string}] Se ha quitado del proyecto {proyecto.nombre} a {correo}")
+
         u = User.objects.get(email=correo)
         #u.proyecto = None
         u.proyectos_asociados.remove(proyecto)
@@ -59,7 +69,7 @@ def desasociarUsuariodeProyecto(proyecto,correos):
             a.delete()
 
         u.save()
-
+    proyecto.save()
 
 
 

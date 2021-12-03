@@ -1,0 +1,132 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <!-- Compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Historial del Proyecto</title>
+</head>
+<body>
+
+
+ <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2f2f2f;">
+        <!-- Container wrapper -->
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button
+                    class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Navbar brand -->
+                <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                    <img src="https://image.flaticon.com/icons/png/512/3486/3486614.png" height="15" alt=""
+                         loading="lazy"
+                         style="width:50px;height:50px;">
+                    Grupo 8
+                </a>
+
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/inicio/">Inicio</a></li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/proyecto/{{ ID_proyecto }}/">Volver al Proyecto</a></li>
+                </ul>
+
+            </div>
+            <!-- Collapsible wrapper -->
+
+            <!-- Right elements -->
+            <div class="container_row " >
+                <div class="layer1 d-flex justify-content-end" style="color: white">
+                    {{ usuario.first_name }} {{ usuario.last_name }}
+                </div>
+                <div class="layer2 d-flex justify-content-end" style="color: white">
+                    {{ usuario.email }}
+                </div>
+                <div class="layer3 d-flex justify-content-end" style="color: white">
+                     {{ proyecto.nombre }} | {{ Rol_de_usuario }}
+                </div>
+
+            </div>
+
+            <div class="d-flex align-items-center">
+
+                <div class="nav-item dropstart">
+                    <a type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        {% if user.is_superuser %}
+                            <img src="/static/estilos/img/admin-with-cogwheels.png" alt="" class="rounded-circle"
+                                 style='filter: invert(100%);width:50px;height:50px;'>
+                        {% else %}
+                            <img src="{{ avatar }}" alt="" class="rounded-circle" style="width:50px;height:50px;">
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if not user.is_superuser %}
+                            <li><a class="dropdown-item" href="/Usuario/{{ usuario.pk }}/info/">Ver Informacion</a></li>
+
+                        {% endif %}
+                        <li><a class="dropdown-item" href="/inicio/logout">Cerrar Sesion</a></li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    </nav>
+
+<p></p>
+<div class="container">
+  <div class="row">
+    <h3 class="text-info">HISTORIAL DEL PROYECTO</h3>
+      <h4> Proyecto : {{ proyecto.nombre }}</h4>
+      <h5> {{ proyecto.descripcion }}</h5>
+    <p></p>
+  </div>
+      <a class="btn btn-primary" href="/proyecto/{{ ID_proyecto }}/informeRegistro/" target="_blank" role="button"><i class="fas fa-file-pdf">&nbsp;Imprimir</i></a>
+
+    <table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Registro de cambios en el proyecto</th>
+    </tr>
+  </thead>
+  <tbody>
+          {% for registro in Registros %}
+    <tr>
+        <td>{{ registro }}</td>
+    </tr>
+          {% endfor %}
+  </tbody>
+</table>
+
+</div>
+
+<div class="container">
+
+</div>
+
+</body>
+</html>

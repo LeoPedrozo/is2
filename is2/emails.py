@@ -21,6 +21,21 @@ def email_nuevoProyecto(proyecto,miembros):
         #send_mail(asunto, mensaje, de, destino)
         print(mensaje)
 
+
+def email_excluidoDelProyecto(proyecto,miembros):
+
+    print("\nCorreo aviso, que ha sido excluido del proyecto\n")
+
+    for miembro in miembros:
+        u = User.objects.get(email=miembro)
+        asunto = "Apartado del Proyecto!!"
+        mensaje = "Hola " + u.first_name +" "+u.last_name+", has sido apartado del proyecto '" + proyecto.nombre + "'"
+        de = settings.EMAIL_HOST_USER
+        destino = [u.email]
+        #send_mail(asunto, mensaje, de, destino)
+        print(mensaje)
+
+
 #email 1.2
 #funca
 def email_rolAsignado(u, grupo, proyecto):
@@ -141,12 +156,12 @@ def email_actividadEnQA(historia,id_proyecto,id_sprint,opcion,scrumMaster):
         print(mensaje)
 
     # email 9.2
-    #a verificar
+    #oiko
     if (opcion == 7):
         print("\nCorreo cuando un scrum master rechaza un US\n")
         asunto = "User Story rechazado"
         mensaje = "Hola " + encargado.first_name + " " + encargado.last_name + ", el User Story '" + historia.nombre + "'" \
-                                                                          " del proyecto '" + p.nombre + " en el que estas como encargado, ha sido rechazado por el Scrum Master " + scrumMaster.first_name + " " + scrumMaster.last_name +"\n\n " \
+                                                                          " del proyecto '" + p.nombre + "' del que estas como encargado, ha sido rechazado por el Scrum Master " + scrumMaster.first_name + " " + scrumMaster.last_name +"\n\n " \
                                                                                                                                                                                                                                            "Motivo de rechazo: "+historia.extraData
         de = settings.EMAIL_HOST_USER
         destino = [encargado.email]
@@ -179,6 +194,7 @@ def sprintVerificado(id_proyecto,id_sprint,scrumMaster):
         print(mensaje)
 
 #email 10
+#oiko pero no usamos
 def email_nuevoSprint(id_proyecto, id_sprint, usuario):
 
     proyecto = Proyecto.objects.get(id=id_proyecto)
@@ -205,29 +221,33 @@ def email_sprintExtFin(id_proyecto,id_sprint,opcion,scrumMaster):
         miembros.append(usprint.usuario)
 
     # email 11
+    #oiko
     if (opcion == 'expandir'):
         print("\nCorreo cuando un sprint se extiende\n")
         for miembro in miembros:
             asunto = "Sprint Extendido"
             mensaje = "Hola " + miembro.first_name + " " + miembro.last_name + ", el sprint 'Nro. "+str(s.sprintNumber)+"' del proyecto '" + p.nombre + "en el que formas parte" \
-                                                            ", ha sido EXTENDIDO por el Scrum Master " + scrumMaster.first_name + " " + scrumMaster.last_name
+                                                            ", ha sido EXTENDIDO por el Scrum Master " + scrumMaster.first_name + " " + scrumMaster.last_name+" \n\nFecha de finalizacion actualizado del sprint: "+str(s.fecha_fin)
             de = settings.EMAIL_HOST_USER
             destino = [miembro.email]
             #send_mail(asunto, mensaje, de, destino)
             print(mensaje)
 
     # email 12
+    #oiko
     if (opcion == 'finalizar'):
         print("\nCorreo cuando un sprint se finaliza\n")
         for miembro in miembros:
             asunto = "Sprint Finalizado!!"
-            mensaje = "Hola " + miembro.first_name + " " + miembro.last_name + ", el sprint 'Nro. " + str(s.sprintNumber) + "' del proyecto '" + p.nombre + "en el que formas parte" \
+            mensaje = "Hola " + miembro.first_name + " " + miembro.last_name + ", el sprint 'Nro. " + str(s.sprintNumber) + "' del proyecto '" + p.nombre + "' del que formas parte" \
                                                                                                                                                        ", ha sido FINALIZADO por el Scrum Master " + scrumMaster.first_name + " " + scrumMaster.last_name
             de = settings.EMAIL_HOST_USER
             destino = [miembro.email]
             #send_mail(asunto, mensaje, de, destino)
             print(mensaje)
+
 # email 13 y 17
+#oiko
 def email_proyectoFin(id_proyecto):
 
     print("\nCorreo cuando un proyecto se finaliza\n")
@@ -247,6 +267,7 @@ def email_proyectoFin(id_proyecto):
         print(mensaje)
 
 # email 14 y 18
+#oiko
 def email_proyectoIni(id_proyecto):
 
     print("\nCorreo cuando un proyecto se inicia\n")
@@ -266,6 +287,7 @@ def email_proyectoIni(id_proyecto):
         print(mensaje)
 
 # email 19
+#oiko
 def email_sprintCreado(id_proyecto, id_sprint):
 
     print("\nCorreo al prodcut owner cuando un sprint se crea\n")
@@ -285,6 +307,7 @@ def email_sprintCreado(id_proyecto, id_sprint):
 
 
 # email 20
+#oiko
 def email_sprintIniciado(id_proyecto, id_sprint):
 
     print("\nCorreo al prodcut owner cuando un sprint se inicia\n")
@@ -303,6 +326,7 @@ def email_sprintIniciado(id_proyecto, id_sprint):
             print(mensaje)
 
 # email 21
+#oiko
 def email_sprintFinalizado(id_proyecto, id_sprint):
 
     print("\nCorreo cuando un proyecto se finaliza\n")

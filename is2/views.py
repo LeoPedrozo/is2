@@ -19,7 +19,7 @@ from gestionUsuario.models import User, UserProyecto, UserSprint
 from gestionUsuario.views import asociarProyectoaUsuario, desasociarUsuariodeProyecto
 from is2.emails import email_rolAsignado, email_nuevoProyecto, email_historiaAsignado, email_actividadEnKanban, \
     email_actividadEnQA, email_nuevoSprint, email_sprintExtFin, email_proyectoFin, email_proyectoIni, \
-    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado, sprintVerificado
+    email_sprintCreado, email_sprintIniciado, email_sprintFinalizado, sprintVerificado, email_excluidoDelProyecto
 from is2.filters import UserFilter, HistoriaFilter, SprintFilter, ProyectoFilter
 from proyectos.forms import crearproyectoForm, modificarproyectoForm, seleccionarProyectoForm, importarRolForm
 from proyectos.models import Proyecto
@@ -674,7 +674,7 @@ def modificarProyecto2(request,id_proyecto):
 
 
                     desasociarUsuariodeProyecto(proyecto,miembros)
-
+                    email_excluidoDelProyecto(proyecto, miembros)
                     miembrosActuales = User.objects.filter(proyecto=idproyecto)
                     # Retornar mensaje de exito
                     return render(request, "outputmodificarProyecto.html",

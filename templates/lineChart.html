@@ -150,7 +150,7 @@
 
                 var chartLabels = [];
                 var array = "{{ diasLaborales }}".split(',');
-                for (x = 0; x < {{ cantidadDias }}; x++) {
+                for (x = 0; x < {{ longitud}}; x++) {
                     chartLabels.push(array[x]);
                 }
                 return chartLabels;
@@ -159,7 +159,7 @@
             function generateDataIdeal() {
                 var chartData = [];
                 var array = "{{ horasLaboralesIdeal }}".split(',');
-                for (x = 0; x < {{ cantidadDias }}; x++) {
+                for (x = 0; x < {{ longitud}}; x++) {
                     chartData.push(array[x]);
                 }
                 return chartData;
@@ -202,7 +202,7 @@
                 var chartTest = new Chart(canvasTest, {
                     type: 'line',
                     data: chartData,
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
                     responsive: true,
                     options: {
                         tooltips: {

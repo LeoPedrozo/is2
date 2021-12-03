@@ -30,7 +30,6 @@ def updateSprint(datosSprint):
     :param datos: informaciones referentes a los compos de datos de un sprint
     :return: void
     """
-
     newSprint = Sprint.objects.get(id=datosSprint['id'])
     newSprint.fecha_inicio=datosSprint['fecha_inicio']
     newSprint.fecha_fin = datosSprint['fecha_fin']
